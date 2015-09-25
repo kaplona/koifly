@@ -1,0 +1,13 @@
+.DS_Store
+*.iml
+.idea/*
+
+# Generated files:
+nodemon.json
+.eslintignore
+webpack-assets.json
+
+node_modules/*
+npm-debug.log
+
+# Note: Webpack output directory is ignored using a gitignore file located in it.
