@@ -10,13 +10,12 @@ var App = React.createClass({
             <html>
                 <head>
                     <meta charSet='utf-8' />
-                    <title>Main App</title>
+                    <title>Koifly App</title>
+					<script src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s"></script>
                     <script src={getWebpackAssets().app.js}></script>
                 </head>
                 <body>
-                    <p>Hello world, this layout is rendered by a <strong>server-side</strong> react view (views/app.jsx)</p>
-                    <p>{'UTC time from server: ' + Date.now()}</p>
-                    <p id='counterContainer'>This text will be replaced by Counter component</p>
+                    <div id='app' />
                 </body>
             </html>
         );

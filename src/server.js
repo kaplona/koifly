@@ -78,18 +78,18 @@ server.register(plugins, (err) => {
     );
 
     // Catch-all
-    server.route({
-        method: 'GET',
-        path: '/{path*}',
-        handler: (request, reply) => {
-            reply('Hapi catch-all view for /' + encodeURIComponent(request.params.path));
-        }
-    });
+    // server.route({
+    //     method: 'GET',
+    //     path: '/{path*}',
+    //     handler: function (request, reply) {
+    //         reply('Hapi catch-all view for /' + encodeURIComponent(request.params.path));
+    //     }
+    // });
 
     // App
     server.route({
         method: 'GET',
-        path: '/',
+        path: '/{path*}',
         handler: {
             view: 'app' // app.jsx in /views
         }
