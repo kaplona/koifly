@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== 'development') {
 
 require('./main-sandbox.css');
 
-function mainSandbox () {
+function mainSandbox() {
     React.render(
         React.createElement(Counter),
         document.getElementById('counterContainer')

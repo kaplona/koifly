@@ -30,20 +30,9 @@ var Table = React.createClass({
 		};
 	},
 	
-	getDefaultSortingDirection: function(fieldName) {
-		var sortingDirection = true;
-		for (var i = 0; i < this.props.columns.length; i++) {
-			if (this.props.columns[i].key === fieldName) {
-				sortingDirection = this.props.columns[i].defaultSortingDirection;
-				break;
-			};
-		};
-		return sortingDirection;
-	},
-	
 	handleSorting: function(newSortingField) {
 		if (this.state.sortingField === newSortingField) {
-			this.setState(function(previousState, currentProps) {
+			this.setState(function(previousState) {
 				return {
 					sortingDirection: !previousState.sortingDirection
 				};
@@ -62,6 +51,17 @@ var Table = React.createClass({
 		if (this.props.onRowClick) {
 			this.props.onRowClick(flightId);
 		};
+	},
+
+	getDefaultSortingDirection: function(fieldName) {
+		var sortingDirection = true;
+		for (var i = 0; i < this.props.columns.length; i++) {
+			if (this.props.columns[i].key === fieldName) {
+				sortingDirection = this.props.columns[i].defaultSortingDirection;
+				break;
+			};
+		};
+		return sortingDirection;
 	},
 
 	render: function() {

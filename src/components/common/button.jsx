@@ -19,8 +19,7 @@ var Button = React.createClass({
 	handleClick: function() {
 		if (this.props.onClick) {
 			this.props.onClick();
-		};
-		return;
+		}
 	},
 	
 	render: function() {
@@ -29,7 +28,8 @@ var Button = React.createClass({
 				className='button'
 				type={ this.props.type }
 				value={ this.props.children }
-				onClick={this.handleClick} />
+				onClick={ this.handleClick }
+				/>
 		);
 	}
 });

@@ -16,13 +16,19 @@ var RemarksInput = require('./common/remarks-input');
 
 
 var GliderEditView = React.createClass({
+
+	propTypes: {
+		params: React.PropTypes.shape({
+			gliderId: React.PropTypes.string // TODO isRequired
+		})
+	},
 	
 	mixins: [ History ],
 	
 	getInitialState: function() {
 		var glider;
 		if (this.props.params.gliderId) {
-			glider = GliderModel.getGliderOutput(this.props.params.gliderId);	
+			glider = GliderModel.getGliderOutput(this.props.params.gliderId);
 		} else {
 			glider = GliderModel.getNewGliderOutput();
 		};
@@ -44,23 +50,6 @@ var GliderEditView = React.createClass({
 				minutes: ''
 			}
 		};
-	},
-	
-	validateForm: function(softValidation) {
-		var newGlider =  _.clone(this.state.glider);
-		var validationRespond = Validation.validateForm(
-			GliderModel.getValidationConfig(),
-			newGlider,
-			softValidation
-		);
-		// update errors state
-		var newErrorState =  _.clone(this.state.errors);
-		$.each(newErrorState, function(fieldName, errorMessage) {
-			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
-		});
-		this.setState({ errors: newErrorState });
-		
-		return validationRespond;
 	},
 	
 	handleSubmit: function(e) {
@@ -87,6 +76,23 @@ var GliderEditView = React.createClass({
 		GliderModel.deleteGlider(this.props.params.gliderId);
 		PubSub.publish('delete.glider', { gliderId: this.props.params.gliderId });
 	},
+
+	validateForm: function(softValidation) {
+		var newGlider =  _.clone(this.state.glider);
+		var validationRespond = Validation.validateForm(
+				GliderModel.getValidationConfig(),
+				newGlider,
+				softValidation
+		);
+		// update errors state
+		var newErrorState =  _.clone(this.state.errors);
+		$.each(newErrorState, function(fieldName) {
+			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+		});
+		this.setState({ errors: newErrorState });
+
+		return validationRespond;
+	},
 	
 	renderDeleteButton: function() {
 		if (this.props.params.gliderId) {
@@ -103,7 +109,7 @@ var GliderEditView = React.createClass({
 		return (
 			<div>
 				<Link to='/gliders'>Back to Gliders</Link>
-				<form onSubmit={this.handleSubmit}>
+				<form onSubmit={ this.handleSubmit }>
 					<TextInput
 						inputValue={ this.state.glider.name }
 						labelText={ <span>Name<sup>*</sup>:</span> }
@@ -120,7 +126,7 @@ var GliderEditView = React.createClass({
 					
 					<TimeInput
 						hours={ this.state.glider.hours }
-						minutes={this.state.glider.minutes}
+						minutes={ this.state.glider.minutes }
 						labelText='Airtime:'
 						errorMessageHours={ this.state.errors.hours }
 						errorMessageMinutes={ this.state.errors.minutes }

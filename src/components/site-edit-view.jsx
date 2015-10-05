@@ -14,10 +14,16 @@ var InteractiveMap = require('./common/interactive-map');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var AltitudeInput = require('./common/altitude-input');
-var RemarksInput = require('./common/remarks-input');
+// var RemarksInput = require('./common/remarks-input');
 
 
 var SiteEditView = React.createClass({
+
+	propTypes: {
+		params: React.PropTypes.shape({
+			siteId: React.PropTypes.string // TODO isRequired
+		})
+	},
 	
 	mixins: [ History ],
 	
@@ -45,24 +51,7 @@ var SiteEditView = React.createClass({
 			markerPosition: SiteModel.getLatLngCoordinates(this.props.params.siteId)
 		};
 	},
-	
-	validateForm: function(softValidation) {
-		var newSite =  _.clone(this.state.site);
-		var validationRespond = Validation.validateForm(
-			SiteModel.getValidationConfig(),
-			newSite,
-			softValidation
-		);
-		// update errors state
-		var newErrorState =  _.clone(this.state.errors);
-		$.each(newErrorState, function(fieldName, errorMessage) {
-			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
-		});
-		this.setState({ errors: newErrorState });
-		
-		return validationRespond;
-	},
-	
+
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var validationRespond = this.validateForm();
@@ -73,7 +62,7 @@ var SiteEditView = React.createClass({
 			this.history.pushState(null, '/sites');
 		};
 	},
-	
+
 	handleInputChange: function(inputName, inputValue) {
 		var newSite =  _.clone(this.state.site);
 		newSite[inputName] = inputValue;
@@ -81,12 +70,29 @@ var SiteEditView = React.createClass({
 			this.validateForm(true);
 		});
 	},
-	
+
 	handleDeleteSite: function() {
 		SiteModel.deleteSite(this.props.params.siteId);
 		PubSub.publish('delete.site', { siteId: this.props.params.siteId });
 	},
-	
+
+	validateForm: function(softValidation) {
+		var newSite =  _.clone(this.state.site);
+		var validationRespond = Validation.validateForm(
+				SiteModel.getValidationConfig(),
+				newSite,
+				softValidation
+		);
+		// update errors state
+		var newErrorState =  _.clone(this.state.errors);
+		$.each(newErrorState, function(fieldName) {
+			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+		});
+		this.setState({ errors: newErrorState });
+
+		return validationRespond;
+	},
+
 	dropPinByCoordinates: function() {
 		if (this.state.site.coordinates.trim() !== '' &&
 			this.state.errors.coordinates === '')
@@ -96,7 +102,7 @@ var SiteEditView = React.createClass({
 			this.setState({ markerPosition: newCoordinates });
 		};
 	},
-	
+
 	renderDeleteButton: function() {
 		if (this.props.params.siteId) {
 			return (
@@ -107,9 +113,9 @@ var SiteEditView = React.createClass({
 		};
 		return '';
 	},
-	
+
 	renderMap: function() {
-		var markerId = this.props.siteId ? this.props.siteId : 'new';
+		var markerId = this.props.params.siteId ? this.props.params.siteId : 'new';
 		if (this.state.markerPosition !== null) {
 			return (
 				<InteractiveMap
@@ -123,7 +129,7 @@ var SiteEditView = React.createClass({
 					onDataApply={ this.handleInputChange } />
 			);
 		};
-		
+
 		return (
 			<InteractiveMap
 				markerId={ markerId }
@@ -131,7 +137,8 @@ var SiteEditView = React.createClass({
 				location={ this.state.site.location }
 				launchAltitude={ this.state.site.launchAltitude }
 				altitudeUnits={ this.state.site.altitudeUnits }
-				onDataApply={ this.handleInputChange } />
+				onDataApply={ this.handleInputChange }
+				/>
 		);
 	},
 	
@@ -139,7 +146,7 @@ var SiteEditView = React.createClass({
 		return (
 			<div>
 				<Link to='/sites'>Back to Sites</Link>
-				<form onSubmit={this.handleSubmit}>
+				<form onSubmit={ this.handleSubmit }>
 					<TextInput
 						inputValue={ this.state.site.name }
 						labelText={ <span>Name<sup>*</sup>:</span> }

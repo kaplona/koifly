@@ -6,7 +6,6 @@ var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
-var Link = ReactRouter.Link;
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 

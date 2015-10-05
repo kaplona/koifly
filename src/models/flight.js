@@ -130,7 +130,7 @@ var FlightModelConstructor = function() {
 		var flightOutputs = [];
 		var self = this;
 		// For each flight
-		$.each(this.flights, function(flightId, flight) {
+		$.each(this.flights, function(flightId) {
 			flightOutputs.push(self.getFlightOutput(flightId));
 		});
 		return flightOutputs;
@@ -192,7 +192,7 @@ var FlightModelConstructor = function() {
 		var noFlightsYet = true;
 		var lastFlight = {};
 		lastFlight.date = '1900-01-01'; // date to start from
-		lastFlight.creationDateTime = '1900-01-01 00:00:00'
+		lastFlight.creationDateTime = '1900-01-01 00:00:00';
 
 		$.each(this.flights, function(flightId, flight) {
 			// Find the most recent date
@@ -212,7 +212,7 @@ var FlightModelConstructor = function() {
 		
 		if (noFlightsYet) {
 			// Take dafault flight properties
-			flight = {
+			lastFlight = {
 				siteId: SiteModel.getLastAddedId(), // null if no data has been added yet
 				gliderId: GliderModel.getLastAddedId() // null if no data has been added yet
 			};
@@ -281,9 +281,10 @@ var FlightModelConstructor = function() {
 	};
 
 	/**
+	 * Gets altitude above launch
 	 * @param {number|null} siteId
 	 * @param {number} flightAltitude
-	 * @returns {*}
+	 * @returns {number} altitude above launch
      */
 	this.getAltitudeAboveLaunches = function(siteId, flightAltitude) {
 		var siteAltitude = 0;
@@ -351,8 +352,8 @@ var FlightModelConstructor = function() {
 	};
 	
 	
-	PubSub.subscribe( 'delete.site', this.clearSiteId.bind(this) );
-	PubSub.subscribe( 'delete.glider', this.clearGliderId.bind(this) );
+	PubSub.subscribe('delete.site', this.clearSiteId.bind(this));
+	PubSub.subscribe('delete.glider', this.clearGliderId.bind(this));
 };
 
 FlightModelConstructor.prototype = Object.create(Object.prototype);

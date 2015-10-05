@@ -56,11 +56,10 @@ var Validation = {
 				if (rules.defaultVal === undefined) {
 					// Through an error
 					return rules.field + ' cannot be empty';
+				}
 				// If there is default value for the field
-				} else {
-					return true;
-				};
-			};
+				return true;
+			}
 			// Else validation passed (is not empty)
 			return false;
 		},
@@ -70,8 +69,8 @@ var Validation = {
 			
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			
@@ -97,12 +96,12 @@ var Validation = {
 			
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			
-			if ( !Util.isRightDateFormat(formData[fieldName]) ) {
+			if (!Util.isRightDateFormat(formData[fieldName])) {
 				return rules.field + ' must be in yyyy-mm-dd formate';
 			};
 			
@@ -114,8 +113,8 @@ var Validation = {
 
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			
@@ -150,13 +149,13 @@ var Validation = {
 			
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			
 			// If value is a number
-			if ( Util.isNumber(formData[fieldName]) ) {
+			if (Util.isNumber(formData[fieldName])) {
 				var errors = [];
 				// Check number quality against each given rule
 				if (rules.round && !Util.isInteger(formData[fieldName])) {
@@ -194,8 +193,8 @@ var Validation = {
 			
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			// I soft validation
@@ -210,8 +209,8 @@ var Validation = {
 			
 			var emptyStatus = this.isEmpty(formData[fieldName], rules);
 			// If empty return error message if shouldn't be empty, 'true' otherwise
-			if ( emptyStatus === true ||
-				(!soft && emptyStatus !== false) ) {
+			if (emptyStatus === true ||
+				(!soft && emptyStatus !== false)) {
 				return emptyStatus;
 			};
 			

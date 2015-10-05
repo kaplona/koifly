@@ -19,6 +19,12 @@ var DropDown = require('./common/dropdown');
 
 
 var FlightEditView = React.createClass({
+
+	propTypes: {
+		params: React.PropTypes.shape({
+			flightId: React.PropTypes.string // TODO isRequired
+		})
+	},
 	
 	mixins: [ History ],
 	
@@ -54,24 +60,7 @@ var FlightEditView = React.createClass({
 			}
 		};
 	},
-	
-	validateForm: function(softValidation) {
-		var newFlight =  _.clone(this.state.flight);
-		var validationRespond = Validation.validateForm(
-			FlightModel.getValidationConfig(),
-			newFlight,
-			softValidation
-		);
-		// update errors state
-		var newErrorState =  _.clone(this.state.errors);
-		$.each(newErrorState, function(fieldName, errorMessage) {
-			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
-		});
-		this.setState({ errors: newErrorState });
-		
-		return validationRespond;
-	},
-	
+
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var validationRespond = this.validateForm();
@@ -97,8 +86,25 @@ var FlightEditView = React.createClass({
 	handleDeleteFlight: function() {
 		FlightModel.deleteFlight(this.props.params.flightId);
 	},
-	
-	renderSelectOptions: function(initialData) {
+
+    validateForm: function(softValidation) {
+        var newFlight =  _.clone(this.state.flight);
+        var validationRespond = Validation.validateForm(
+            FlightModel.getValidationConfig(),
+            newFlight,
+            softValidation
+        );
+        // update errors state
+        var newErrorState =  _.clone(this.state.errors);
+        $.each(newErrorState, function(fieldName) {
+            newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+        });
+        this.setState({ errors: newErrorState });
+
+        return validationRespond;
+    },
+
+    renderSelectOptions: function(initialData) {
 		var options = [];
 		$.each(initialData, function(dataId, dataValue) {
 			options.push({ value: dataId, text: dataValue });
@@ -125,7 +131,7 @@ var FlightEditView = React.createClass({
 		return (
 			<div>
 				<div><Link to='/flights'>Back to Flights</Link></div>
-				<form onSubmit={this.handleSubmit}>
+				<form onSubmit={ this.handleSubmit }>
 					<TextInput
 						inputValue={ this.state.flight.date }
 						labelText={ <span>Date<sup>*</sup>:</span> }
@@ -134,7 +140,7 @@ var FlightEditView = React.createClass({
 					
 					<TimeInput
 						hours={ this.state.flight.hours }
-						minutes={this.state.flight.minutes}
+						minutes={ this.state.flight.minutes }
 						labelText='Airtime:'
 						errorMessageHours={ this.state.errors.hours }
 						errorMessageMinutes={ this.state.errors.minutes }

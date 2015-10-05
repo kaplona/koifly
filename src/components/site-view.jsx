@@ -11,13 +11,19 @@ var Button = require('./common/button');
 
 
 var SiteView = React.createClass({
+
+	propTypes: {
+		params: React.PropTypes.shape({
+			siteId: React.PropTypes.string.isRequired
+		})
+	},
 	
 	getInitialState: function() {
 		return {
 			site: SiteModel.getSiteOutput(this.props.params.siteId)
 		};
 	},
-	
+
 	renderMap: function() {
 		if (this.state.site.coordinates) {
 			var site =  _.clone(this.state.site);
@@ -53,7 +59,7 @@ var SiteView = React.createClass({
 				</div>
 				<div className='button__menu'>
 					<Link to={ '/site/' + this.props.params.siteId + '/edit' }><Button>Edit</Button></Link>
-					<Link to='/site/0/edit'><Button>Add Flight</Button></Link>
+					<Link to='/site/0/edit'><Button>Add Site</Button></Link>
 				</div>
 				{ this.renderMap() }
 			</div>

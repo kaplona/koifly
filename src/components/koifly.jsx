@@ -7,7 +7,7 @@ require('./koifly.css');
 
 var Koifly = React.createClass({
 
-    render: function () {
+    render: function() {
         return (
             <div>
                 <Header />

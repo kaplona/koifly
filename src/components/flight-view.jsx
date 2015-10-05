@@ -13,6 +13,12 @@ var StaticMap = require('./common/static-map');
 
 
 var FlightView = React.createClass({
+
+	propTypes: {
+		params: React.PropTypes.shape({
+			flightId: React.PropTypes.string.isRequired
+		})
+	},
 	
 	getInitialState: function() {
 		return {

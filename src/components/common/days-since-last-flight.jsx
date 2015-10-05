@@ -11,7 +11,7 @@ var DaysSinceLastFlight = React.createClass({
 		var lastFlightDate = FlightModel.getLastFlightDate();
 		if (lastFlightDate !== null) {
 			var milisecondsSince = Date.now() - Date.parse(lastFlightDate);
-			daysSinceLastFlight = Math.floor(milisecondsSince / (24*60*60*1000)) + ' days since last flight';
+			daysSinceLastFlight = Math.floor(milisecondsSince / (24 * 60 * 60 * 1000)) + ' days since last flight';
 		} else {
 			daysSinceLastFlight = 'no flights yet';
 		};

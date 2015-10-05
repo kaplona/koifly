@@ -11,7 +11,7 @@ var BackButton = React.createClass({
 	
 	render: function() {
 		return (
-			<div className='back_button' onClick={this.props.onClick} >
+			<div className='back_button' onClick={ this.props.onClick } >
 				{ this.props.children }
 			</div>
 		);

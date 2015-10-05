@@ -135,9 +135,8 @@ var PilotModel = {
 		// If no changes - keep the old value
 		// * We need to keep exact the same value in meters in DB
 		// * in order to get the same value in feet all the times
-		} else {
-			return oldVal;
-		};
+		}
+		return oldVal;
 	},
 	
 	getAltitudeUnitsList: function() {

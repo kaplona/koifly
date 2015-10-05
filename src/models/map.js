@@ -5,8 +5,10 @@ var PubSub = require('pubsub-js');
 var Util = require('./util');
 // var mapsapi = require('google-maps-api')('AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s');
 // mapsapi().then( function( maps ) {
-// 	//use the google.maps object as you please 
+// 	//use the google.maps object as you please
 // });
+
+/* global google */
 
 var Map = {
 	
@@ -47,7 +49,7 @@ var Map = {
 	},
 	center: {
 		world: { lat: 48.693829, lng: -98.893716 }, // USA
-		region: { lat: 49.2827291 , lng: -123.1207375 } // Vancouver
+		region: { lat: 49.2827291, lng: -123.1207375 } // Vancouver
 	},
 	
 	createMap: function(htmlContainer, centerCoordinates, zoomLevel) {
@@ -82,7 +84,7 @@ var Map = {
 		this.geocoder = new google.maps.Geocoder();
 		this.elevator = new google.maps.ElevationService();
 		
-		google.maps.event.addListener(this.siteMarkers[id], 'drag', function(e) {
+		google.maps.event.addListener(this.siteMarkers[id], 'drag', function() {
 			self.siteInfowindows[id].close();
 		});
 		google.maps.event.addListener(this.siteMarkers[id], 'dragend', function(e) {
@@ -111,7 +113,7 @@ var Map = {
 	
 	clearMarkers: function() {
 		var self = this;
-		$.each(this.siteMarkers, function(markerId, marker) {
+		$.each(this.siteMarkers, function(markerId) {
 			self.clearMarker(markerId);
 		});
 	},
@@ -139,7 +141,7 @@ var Map = {
 	
 	closeAllInfowindows: function() {
 		var self = this;
-		$.each(this.siteInfowindows, function(infowindowId, infowindow) {
+		$.each(this.siteInfowindows, function(infowindowId) {
 			self.closeInfowindow(infowindowId);
 		});
 	},
@@ -165,7 +167,7 @@ var Map = {
 	
 	clearInfowindows: function() {
 		var self = this;
-		$.each(this.siteInfowindows, function(infowindowId, infowindow) {
+		$.each(this.siteInfowindows, function(infowindowId) {
 			self.clearInfowindow(infowindowId);
 		});
 	},
@@ -217,7 +219,7 @@ var Map = {
 	
 	searchAddress: function(markerId) {
 		var address = document.getElementById('search_bar').value;
-		this.geocoder.geocode( { 'address': address}, function(results, status) {
+		this.geocoder.geocode({ 'address': address }, function(results, status) {
 			if (status == google.maps.GeocoderStatus.OK) {
 				var position = results[0].geometry.location;
 				Map.moveMarker(position, markerId);
@@ -248,7 +250,7 @@ var Map = {
 				self.infowindowContent.elevation = 0;
 			};
 			// Map.changeInfowindowContent();
-			PubSub.publish( 'infowindowContentChanged', self.infowindowContent );
+			PubSub.publish('infowindowContentChanged', self.infowindowContent);
 		});
 	},
 	
@@ -271,7 +273,7 @@ var Map = {
 				console.log('Address request failed');
 				self.infowindowContent.address = '';
 			};
-			PubSub.publish( 'infowindowContentChanged', self.infowindowContent );
+			PubSub.publish('infowindowContentChanged', self.infowindowContent);
 		});
 	},
 	
@@ -293,7 +295,7 @@ var Map = {
 		var lat = Math.round(lat * 1000000) / 1000000;
 		var lng = Math.round(lng * 1000000) / 1000000;
 		this.infowindowContent.coordinates = lat + ' ' + lng;
-		PubSub.publish( 'infowindowContentChanged', this.infowindowContent );
+		PubSub.publish('infowindowContentChanged', this.infowindowContent);
 	},
 	
 	// Examples of formated address:

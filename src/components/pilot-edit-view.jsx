@@ -33,24 +33,7 @@ var PilotEditView = React.createClass({
 			}
 		};
 	},
-	
-	validateForm: function(softValidation) {
-		var newPilotInfo =  _.clone(this.state.pilotInfo);
-		var validationRespond = Validation.validateForm(
-			PilotModel.getValidationConfig(),
-			newPilotInfo,
-			softValidation
-		);
-		// update errors state
-		var newErrorState =  _.clone(this.state.errors);
-		$.each(newErrorState, function(fieldName, errorMessage) {
-			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
-		});
-		this.setState({ errors: newErrorState });
 
-		return validationRespond;
-	},
-	
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var validationRespond = this.validateForm();
@@ -61,16 +44,31 @@ var PilotEditView = React.createClass({
 			PilotModel.savePilotInfo(newPilotInfo);
 			this.history.pushState(null, '/pilot');
 		};
-		return;
 	},
-	
+
 	handleInputChange: function(inputName, inputValue) {
 		var newPilotInfo =  _.clone(this.state.pilotInfo);
 		newPilotInfo[inputName] = inputValue;
 		this.setState({ pilotInfo: newPilotInfo }, function() {
 			this.validateForm(true);
 		});
-		return;
+	},
+
+	validateForm: function(softValidation) {
+		var newPilotInfo =  _.clone(this.state.pilotInfo);
+		var validationRespond = Validation.validateForm(
+				PilotModel.getValidationConfig(),
+				newPilotInfo,
+				softValidation
+		);
+		// update errors state
+		var newErrorState =  _.clone(this.state.errors);
+		$.each(newErrorState, function(fieldName) {
+			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+		});
+		this.setState({ errors: newErrorState });
+
+		return validationRespond;
 	},
 	
 	render: function() {
@@ -83,7 +81,7 @@ var PilotEditView = React.createClass({
 		});
 		
 		return (
-			<form onSubmit={this.handleSubmit}>
+			<form onSubmit={ this.handleSubmit }>
 				<div className='container__title'>{ this.state.pilotInfo.userName }</div>
 				
 				<div>My achievements before Koifly:</div>
@@ -96,15 +94,15 @@ var PilotEditView = React.createClass({
 				
 				<TimeInput
 					hours={ this.state.pilotInfo.hours }
-					minutes={this.state.pilotInfo.minutes}
+					minutes={ this.state.pilotInfo.minutes }
 					labelText='Airtime:'
 					errorMessageHours={ this.state.errors.hours }
 					errorMessageMinutes={ this.state.errors.minutes }
 					onChange={ this.handleInputChange } />
-					
+
 				<div className='line' />
 				<div>My settings:</div>
-				
+
 				<DropDown
 					selectedValue={ this.state.pilotInfo.altitudeUnits }
 					options={ altitudeUnitsList }

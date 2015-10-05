@@ -5,7 +5,6 @@ var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 var Util = require('../models/util');
 var PilotModel = require('../models/pilot');
-var SiteModel = require('../models/site');
 var Button = require('./common/button');
 var DaysSinceLastFlight = require('./common/days-since-last-flight');
 

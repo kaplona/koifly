@@ -39,7 +39,7 @@ server.register(plugins, (err) => {
 
     // Set up server side react views using Vision
     server.views({
-        engines: {jsx: HapiReactViews},
+        engines: { jsx: HapiReactViews },
         path: config.paths.serverViews
     });
 

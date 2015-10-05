@@ -4,7 +4,7 @@ var path = require('path');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
-//var SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
+// var SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
 var config = require('./variables');
 
 
@@ -30,7 +30,8 @@ var webpackConfig = {
         filename: config.webpack.outputFilename, // Bundle filename pattern
         path: config.paths.build  // Put bundle files in this directory (Note: dev server does not generate bundle files)
     },
-    devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
+    // devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
+    devtool: 'eval',
     module: {
         loaders: [
             {
@@ -41,7 +42,7 @@ var webpackConfig = {
         ]
     },
     plugins: [
-        //new SlowWebpackPlugin({delay: 2000}),
+        // new SlowWebpackPlugin({delay: 2000}),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
@@ -86,7 +87,7 @@ if (process.env.NODE_ENV === 'development') {
             new webpack.NoErrorsPlugin() // @TODO do we really want / need this? On dev or on production too?
         ],
         eslint: {
-            //failOnWarning: true,
+            // failOnWarning: true,
             failOnError: true
         }
     });

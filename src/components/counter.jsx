@@ -9,7 +9,7 @@ require('./counter.css');
  */
 class Counter extends React.Component {
 
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -22,7 +22,15 @@ class Counter extends React.Component {
         setInterval(this.increment.bind(this), 1000);
     }
 
-    render () {
+    increment() {
+        super.setState({ counter: this.state.counter + 1 });
+    }
+
+    remove() {
+        super.setState({ counter: this.state.counter - 1 });
+    }
+
+    render() {
         return (
             <div className='Counter'>
 
@@ -32,20 +40,12 @@ class Counter extends React.Component {
                 <p>If you edit any file that is bundled by webpack, webpack dev server will patch this page while preserving component state.</p>
                 <p>This is called <em>hot module reloading</em> and is more useful than just auto-reloading the whole page (if you reload the page, you'll see the counter drops to zero because component state is not persisted).</p>
 
-                <span className='-number'>{this.state.counter}</span>
-                <button className='-button' type='button' onClick={this.increment.bind(this)}>+</button>
-                <button className='-button' type='button' onClick={this.remove.bind(this)}>–</button>
+                <span className='-number'>{ this.state.counter }</span>
+                <button className='-button' type='button' onClick={ this.increment.bind(this) }>+</button>
+                <button className='-button' type='button' onClick={ this.remove.bind(this) }>–</button>
 
             </div>
         );
-    }
-
-    increment () {
-        super.setState({counter: this.state.counter + 1});
-    }
-
-    remove () {
-        super.setState({counter: this.state.counter - 1});
     }
 }
 

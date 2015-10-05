@@ -46,7 +46,7 @@ var InteractiveMap = React.createClass({
 	},
 	
 	componentWillMount: function() {
-		PubSub.subscribe( 'infowindowContentChanged', this.changeInfowindowContent );
+		PubSub.subscribe('infowindowContentChanged', this.changeInfowindowContent);
 	},
 	
 	componentDidMount: function() {
@@ -59,18 +59,18 @@ var InteractiveMap = React.createClass({
 		Map.bindMarkerAndInfowindow(this.props.markerId);
 		if (this.props.markerPosition !== null) {
 			Map.requestPositionInfo(this.props.markerPosition);
-		};
+		}
 	},
 	
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate: function(nextProps) {
 		if (nextProps.markerPosition !== this.props.markerPosition) {
 			Map.moveMarker(nextProps.markerPosition, this.props.markerId);
-		};
+		}
 		return false;
 	},
 	
 	componentWillUnmount: function() {
-		PubSub.unsubscribe( this.changeInfowindowContent );
+		PubSub.unsubscribe(this.changeInfowindowContent);
 		$('#apply_google_data').off('click');
 		Map.unmountMap();
 	},
@@ -93,7 +93,7 @@ var InteractiveMap = React.createClass({
 			$('#apply_google_data').on('click', function() {
 				this.applyGoogleData(address, infowindowContent.elevation, coordinates);
 			}.bind(this));
-		};
+		}
 	},
 	
 	composeInfowindowMessage: function(location, altitude, coordinates) {
@@ -116,7 +116,7 @@ var InteractiveMap = React.createClass({
 						altitude + ' ' + this.props.altitudeUnits +
 					'</div>' +
 					'<div>' +
-						'<input type="checkbox" style="display:inline;width:12px;" checked disabled>' + 
+						'<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
 						coordinates +
 					'</div>' +
 					'<button id="apply_google_data" type="button">Apply</button>' +
@@ -127,15 +127,15 @@ var InteractiveMap = React.createClass({
 		// If tranfering adress
 		if ($('#location_checkbox').prop('checked')) {
 			this.props.onDataApply('location', location);
-		};
+		}
 		// If transfering elevation
 		if ($('#launchAltitude_checkbox').prop('checked')) {
 			// Convert elevation into units that user chose in the form
 			var altitudeUnits = this.props.altitudeUnits;
-			var elevation = parseFloat(elevation);
-			var newLaunchAltitude = PilotModel.getAltitudeInGivenUnits(elevation, altitudeUnits);
+			var altitude = parseFloat(elevation);
+			var newLaunchAltitude = PilotModel.getAltitudeInGivenUnits(altitude, altitudeUnits);
 			this.props.onDataApply('launchAltitude', newLaunchAltitude);
-		};
+		}
 		// Coordinates transfers anyway
 		this.props.onDataApply('coordinates', coordinates);
 	},

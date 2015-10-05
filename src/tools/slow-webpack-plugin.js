@@ -5,7 +5,7 @@ var chalk = require('chalk');
 var logPrefix = '[WebpackSlowPlugin]: ';
 
 
-function SlowWebpackPlugin (options) {
+function SlowWebpackPlugin(options) {
     options = options || {};
     options.delay = parseInt(options.delay);
     options.delay = !isNaN(options.delay) ? options.delay : 1000;
@@ -14,7 +14,7 @@ function SlowWebpackPlugin (options) {
 }
 
 
-SlowWebpackPlugin.prototype.apply = function (compiler) {
+SlowWebpackPlugin.prototype.apply = function(compiler) {
     var delay = this.options.delay;
 
     compiler.plugin('done', () => {

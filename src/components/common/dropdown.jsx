@@ -25,13 +25,13 @@ var DropDown = React.createClass({
 	},
 	
 	render: function() {
-		var selectOptions = this.props.options.map(function (option) {
+		var selectOptions = this.props.options.map(function(option) {
 			return (
 				<option
-					key={option.value}
-					value={option.value}
+					key={ option.value }
+					value={ option.value }
 				>
-					{option.text}
+					{ option.text }
 				</option>
 			);
 		});

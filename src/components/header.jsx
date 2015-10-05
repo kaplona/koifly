@@ -8,7 +8,7 @@ require('./koifly.css');
 
 var Header = React.createClass({
 
-    render: function () {
+    render: function() {
         return (
             <div className='header'>
                 <Link to='/flight/0/edit' className='header__new_flight'>new flight</Link>

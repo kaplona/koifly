@@ -19,7 +19,7 @@
     "strict": [1, "global"],
 
     // Possible errors
-//    "comma-dangle": [1, "always-multiline"],
+//    "comma-dangle": [1, "always-multiline"], // should be never (default)
     "no-cond-assign": [2, "always"],
 //    "no-console": 1,
     "no-constant-condition": 1,
@@ -51,7 +51,7 @@
     "curly": 2,
     "dot-notation": 1,
     "dot-location": [1, "property"],
-    "eqeqeq": 2,
+//    "eqeqeq": 2,
     "no-alert": 1,
     "no-caller": 2,
     "no-div-regex": 2,
@@ -103,15 +103,15 @@
     "no-path-concat": 1,
 
     // Stylistic Issues
-    "array-bracket-spacing": [1, "never"],
+    "array-bracket-spacing": [1, "never", { "singleValue": true }],
     "block-spacing": [1, "always"],
-    "brace-style": [1, "1tbs"],
+//    "brace-style": [1, "1tbs"], // if multiple lines condition ?
     // http://eslint.org/docs/rules/camelcase
     "comma-spacing": 1,
-    "comma-style": [1, "last"],
+    "comma-style": 1,
     "computed-property-spacing": [1, "never"],
-    "consistent-this": [1, "this"],
-    "eol-last": 1,
+//    "consistent-this": [1, "this"], //sould be [1, "self"]
+//    "eol-last": 1,
     // http://eslint.org/docs/rules/func-names
     "jsx-quotes": [1, "prefer-single"],
     "key-spacing": [1, {"beforeColon": false, "afterColon": true, "mode": "minimum"}],
@@ -121,16 +121,16 @@
     "new-parens": 1,
     "no-array-constructor": 1,
     "no-lonely-if": 1,
-    "no-mixed-spaces-and-tabs": 1,
+//    "no-mixed-spaces-and-tabs": 1,
     "no-multiple-empty-lines": [1, {"max": 5}],
     "no-nested-ternary": 1,
     "no-new-object": 1,
     // http://eslint.org/docs/rules/no-restricted-syntax
     "no-spaced-func": 1,
-    "no-trailing-spaces": 1,
+    "no-trailing-spaces": [1, { "skipBlankLines": true }],
     "no-unneeded-ternary": 1,
-    "object-curly-spacing": [1, "never"],
-    "one-var": [2, "never"],
+    "object-curly-spacing": [1, "always"],
+    "one-var": [2, { uninitialized: "always", initialized: "never" }],
     // http://eslint.org/docs/rules/operator-linebreak
     // http://eslint.org/docs/rules/quote-props
     "quotes": [1, "single", "avoid-escape"],
@@ -140,12 +140,12 @@
     "space-after-keywords": [1, "always"],
     "space-before-keywords": [1, "always"],
     "space-before-blocks": [1, "always"],
-    "space-before-function-paren": [1, "always"],
+    "space-before-function-paren": [1, "never"],
     "space-in-parens": [1, "never"],
     "space-infix-ops": 1,
     "space-return-throw-case": 1,
     "space-unary-ops": [1, {"words": true, "nonwords": false}],
-//    "spaced-comment": [1, "always"],
+    "spaced-comment": [1, "always"],
 
     // EcmaScript 6
     "arrow-parens": [1, "always"],
@@ -157,7 +157,7 @@
     "no-dupe-class-members": 1,
     "no-this-before-super": 1,
     // http://eslint.org/docs/rules/no-var
-    "prefer-arrow-callback": 1,
+//    "prefer-arrow-callback": 1,
     // http://eslint.org/docs/rules/prefer-const
     "prefer-spread": 1,
     // http://eslint.org/docs/rules/prefer-reflect
@@ -170,8 +170,8 @@
     // Full list: https://github.com/yannickcr/eslint-plugin-react
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
     "react/jsx-boolean-value": 1,
-    "react/jsx-closing-bracket-location": [1, "props-aligned"],
-    "react/jsx-curly-spacing": [1, "never"],
+//    "react/jsx-closing-bracket-location": [1, "props-aligned"],
+    "react/jsx-curly-spacing": [1, "always"],
     "react/jsx-max-props-per-line": [1, {"maximum": 3}],
     "react/jsx-no-duplicate-props": [1, {"ignoreCase": true}],
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-literals.md
@@ -187,21 +187,29 @@
     "react/self-closing-comp": 1,
     "react/sort-comp": [1, {
       "order": [
+        "prop-types",
+        "mixins",
         "lifecycle",
         "event-handlers",
-        "render-helpers",
         "everything-else",
-        "prop-types"
+        "rendering"
       ],
       "groups": {
+        "prop-types": [
+          "propTypes",
+          "getDefaultProps"
+        ],
+        "mixins": [
+          "mixins"
+        ],
         "lifecycle": [
+          "getInitialState",
           "constructor",
           "componentWillMount",
           "componentDidMount",
           "componentWillReceiveProps",
           "shouldComponentUpdate",
           "componentWillUpdate",
-          "render",
           "componentDidUpdate",
           "componentWillUnmount"
         ],
@@ -209,12 +217,9 @@
           "/^handle.+$/",
           "/^on.+$/"
         ],
-        "render-helpers": [
-          "/^render.+$/"
-        ],
-        "prop-types": [
-          "getDefaultProps",
-          "propTypes"
+        "rendering": [
+          "/^render.+$/",
+          "render"
         ]
       }
     }],

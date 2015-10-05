@@ -25,7 +25,7 @@ var StaticMap = React.createClass({
 				React.PropTypes.string
 			]),
 			altitudeUnits: React.PropTypes.string,
-			cordinates: React.PropTypes.shape({
+			coordinates: React.PropTypes.shape({
 				lat: React.PropTypes.number,
 				lng: React.PropTypes.number
 			})
@@ -56,23 +56,23 @@ var StaticMap = React.createClass({
 		};
 	},
 	
-	shouldComponentUpdate: function(nextProps, nextState) {
+	shouldComponentUpdate: function() {
 		return false;
 	},
-	
+
 	componentWillUnmount: function() {
 		Map.unmountMap();
 	},
-	
+
 	composeInfowindowMessage: function(site) {
 		return '<div>' +
-					'<div><a href="/site/' + site.id + '">' + site.name + '</a></div>' +
-					'<div>' + site.location + '</div>' +
-					'<div>' + site.launchAltitude + ' ' + site.altitudeUnits + '</div>' +
-					'<div>' + site.coordinates + '</div>' +
-			   '</div>';
+				'<div><a href="/site/' + site.id + '">' + site.name + '</a></div>' +
+				'<div>' + site.location + '</div>' +
+				'<div>' + site.launchAltitude + ' ' + site.altitudeUnits + '</div>' +
+				'<div>' + site.coordinates + '</div>' +
+				'</div>';
 	},
-	
+
 	render: function() {
 		return <div className='map_container' ref='map' />;
 	}

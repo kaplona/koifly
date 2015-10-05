@@ -11,7 +11,7 @@ var SiteModel = {
 			id: 23,
 			name: 'Hope',
 			location: 'Hope, BC, Canada',
-			coordinates: { lat: 49.368961 , lng: -121.495056 },
+			coordinates: { lat: 49.368961, lng: -121.495056 },
 			launchAltitude: 0,
 			creationDateTime: '2015-02-04 12:48:00'
 		},
@@ -19,7 +19,7 @@ var SiteModel = {
 			id: 24,
 			name: 'Woodside',
 			location: 'Agazzis, BC, Canada',
-			coordinates: { lat: 49.2445 , lng: -121.888504 },
+			coordinates: { lat: 49.2445, lng: -121.888504 },
 			launchAltitude: 670.56,
 			creationDateTime: '2015-05-24 12:48:00'
 		},
@@ -27,7 +27,7 @@ var SiteModel = {
 			id: 25,
 			name: 'Pemberton',
 			location: '',
-			coordinates: { lat: 50.369117 , lng: -122.78698 },
+			coordinates: { lat: 50.369117, lng: -122.78698 },
 			launchAltitude: 1249.68,
 			creationDateTime: '2015-06-02 12:48:00'
 		},
@@ -35,7 +35,7 @@ var SiteModel = {
 			id: 26,
 			name: 'Blanchard',
 			location: 'Bellingham, WA, US',
-			coordinates: { lat: 48.652758 , lng: -122.465115 },
+			coordinates: { lat: 48.652758, lng: -122.465115 },
 			launchAltitude: 548.7,
 			creationDateTime: '2015-02-04 14:19:00'
 		}
@@ -87,7 +87,7 @@ var SiteModel = {
 	getSitesArray: function() {
 		var self = this;
 		var siteOutputs = [];
-		$.each(this.sites, function(siteId, site) {
+		$.each(this.sites, function(siteId) {
 			siteOutputs.push(self.getSiteOutput(siteId));
 		});
 		return siteOutputs;

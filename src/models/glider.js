@@ -88,7 +88,7 @@ var GliderModel = {
 	getGlidersArray: function() {
 		var self = this;
 		var gliderOutputs = [];
-		$.each(this.gliders, function(gliderId, glider) {
+		$.each(this.gliders, function(gliderId) {
 			gliderOutputs.push(self.getGliderOutput(gliderId));
 		});
 		return gliderOutputs;
