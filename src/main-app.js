@@ -8,7 +8,7 @@ var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
-
+var $ = require('jquery');
 var Home = require('./components/home');
 var Koifly = require('./components/koifly');
 var FlightListView = require('./components/flight-list-view');
@@ -27,6 +27,15 @@ require('./components/koifly.css');
 
 
 function mainApp() {
+
+	$.ajax({
+		method: 'GET',
+		url: '/test'
+	})
+	.done(function(msg) {
+		console.log('respond: ' + msg);
+	});
+
     React.render((
         <Router history={ createBrowserHistory() }>
         	<Route path='/' component={ Koifly }>

@@ -86,11 +86,8 @@ var GliderModel = {
 	},
 	
 	getGlidersArray: function() {
-		var self = this;
 		var gliderOutputs = [];
-		$.each(this.gliders, function(gliderId) {
-			gliderOutputs.push(self.getGliderOutput(gliderId));
-		});
+		$.each(this.gliders, (gliderId) => gliderOutputs.push(this.getGliderOutput(gliderId)));
 		return gliderOutputs;
 	},
 	
@@ -100,7 +97,7 @@ var GliderModel = {
 			this.gliders[id] === undefined)
 		{
 			return null;
-		};
+		}
 		var FlightModel = require('./flight');
 		var trueFlightNum = this.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
 		var trueAirtime = this.gliders[id].initialAirtime + FlightModel.getGliderAirtime(id);
@@ -137,7 +134,7 @@ var GliderModel = {
 		// If creating a new glider
 		if (newGlider.id === undefined) {
 			newGlider.id = 'tempId' + Date.now(); // change id after server saving !!!
-		};
+		}
 		newGlider.initialFlightNum = parseInt(newGlider.initialFlightNum);
 		newGlider.initialAirtime = parseFloat(newGlider.initialAirtime);
 		newGlider.creationDateTime = Util.today() + ' ' + Util.timeNow();
@@ -152,7 +149,7 @@ var GliderModel = {
 			{
 				// Set it to its default value
 				newGlider[fieldName] = config.rules.defaultVal;
-			};
+			}
 		});
 		return newGlider;
 	},
@@ -178,7 +175,7 @@ var GliderModel = {
 		$.each(this.gliders, function(gliderId, glider) {
 			if (lastGlider.creationDateTime < glider.creationDateTime) {
 				lastGlider = glider;
-			};
+			}
 		});
 		return lastGlider.id;
 	},

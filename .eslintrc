@@ -19,7 +19,7 @@
     "strict": [1, "global"],
 
     // Possible errors
-//    "comma-dangle": [1, "always-multiline"], // should be never (default)
+//    "comma-dangle": [1, "always-multiline"],
     "no-cond-assign": [2, "always"],
 //    "no-console": 1,
     "no-constant-condition": 1,
@@ -105,12 +105,12 @@
     // Stylistic Issues
     "array-bracket-spacing": [1, "never", { "singleValue": true }],
     "block-spacing": [1, "always"],
-//    "brace-style": [1, "1tbs"], // if multiple lines condition ?
+//    "brace-style": [1, "1tbs"],
     // http://eslint.org/docs/rules/camelcase
     "comma-spacing": 1,
     "comma-style": 1,
     "computed-property-spacing": [1, "never"],
-//    "consistent-this": [1, "this"], //sould be [1, "self"]
+    "consistent-this": [1, "this"],
 //    "eol-last": 1,
     // http://eslint.org/docs/rules/func-names
     "jsx-quotes": [1, "prefer-single"],

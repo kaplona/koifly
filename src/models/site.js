@@ -85,11 +85,10 @@ var SiteModel = {
 	},
 	
 	getSitesArray: function() {
-		var self = this;
 		var siteOutputs = [];
 		$.each(this.sites, function(siteId) {
-			siteOutputs.push(self.getSiteOutput(siteId));
-		});
+			siteOutputs.push(this.getSiteOutput(siteId));
+		}.bind(this));
 		return siteOutputs;
 	},
 	

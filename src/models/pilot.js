@@ -75,7 +75,8 @@ var PilotModel = {
 			flightNumTotal: flightNumTotal,
 			airtimeTotal: airtimeTotal,
 			siteNum: FlightModel.getNumberOfVisitedSites(),
-			gliderNum: GliderModel.getNumberOfGliders()
+			gliderNum: GliderModel.getNumberOfGliders(),
+			altitudeUnits: this.pilot.altitudeUnits
 		};
 	},
 	

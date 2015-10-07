@@ -80,18 +80,17 @@ var Map = {
 	},
 	
 	addMarkerMoveEventListner: function(id) {
-		var self = this;
 		this.geocoder = new google.maps.Geocoder();
 		this.elevator = new google.maps.ElevationService();
 		
-		google.maps.event.addListener(this.siteMarkers[id], 'drag', function() {
-			self.siteInfowindows[id].close();
+		google.maps.event.addListener(this.siteMarkers[id], 'drag', () => {
+			this.siteInfowindows[id].close();
 		});
-		google.maps.event.addListener(this.siteMarkers[id], 'dragend', function(e) {
-			self.moveMarker(e.latLng, id);
+		google.maps.event.addListener(this.siteMarkers[id], 'dragend', (e) => {
+			this.moveMarker(e.latLng, id);
 		});
-		google.maps.event.addListener(this.map, 'click', function(e) {
-			self.moveMarker(e.latLng, id);
+		google.maps.event.addListener(this.map, 'click', (e) => {
+			this.moveMarker(e.latLng, id);
 		});
 		
 		this.addSearchBarControl(id);
@@ -112,9 +111,8 @@ var Map = {
 	},
 	
 	clearMarkers: function() {
-		var self = this;
-		$.each(this.siteMarkers, function(markerId) {
-			self.clearMarker(markerId);
+		$.each(this.siteMarkers, (markerId) => {
+			this.clearMarker(markerId);
 		});
 	},
 	
@@ -140,18 +138,16 @@ var Map = {
 	},
 	
 	closeAllInfowindows: function() {
-		var self = this;
-		$.each(this.siteInfowindows, function(infowindowId) {
-			self.closeInfowindow(infowindowId);
+		$.each(this.siteInfowindows, (infowindowId) => {
+			this.closeInfowindow(infowindowId);
 		});
 	},
 	
 	bindMarkerAndInfowindow: function(id) {
-		var self = this;
 		// Add marker onclick event
-		google.maps.event.addListener(self.siteMarkers[id], 'click', function() {
-			self.closeAllInfowindows();
-			self.openInfowindow(id); // Open infowindow of the clicked marker
+		google.maps.event.addListener(this.siteMarkers[id], 'click', () => {
+			this.closeAllInfowindows();
+			this.openInfowindow(id); // Open infowindow of the clicked marker
 		});
 	},
 	
@@ -166,9 +162,8 @@ var Map = {
 	},
 	
 	clearInfowindows: function() {
-		var self = this;
-		$.each(this.siteInfowindows, function(infowindowId) {
-			self.clearInfowindow(infowindowId);
+		$.each(this.siteInfowindows, (infowindowId) => {
+			this.clearInfowindow(infowindowId);
 		});
 	},
 	
@@ -230,32 +225,30 @@ var Map = {
 	},
 	
 	getElevation: function(googleMapPosition) {
-		var self = this;
 		// Create a LocationElevationRequest object using the array's one value
 		var positionalRequest = {
 			'locations': [ googleMapPosition ]
 		};
 		// Initiate the location request
-		this.elevator.getElevationForLocations(positionalRequest, function(results, status) {
+		this.elevator.getElevationForLocations(positionalRequest, (results, status) => {
 			if (status == google.maps.ElevationStatus.OK) {
 				// Retrieve the first result
 				if (results[0] && Util.isNumber(results[0].elevation)) {
-					self.infowindowContent.elevation = results[0].elevation;
+					this.infowindowContent.elevation = results[0].elevation;
 				} else {
 					console.log('No elevation data for given position');
-					self.infowindowContent.elevation = 0;
+					this.infowindowContent.elevation = 0;
 				};
 			} else {
 				console.log('Elevation request failed');
-				self.infowindowContent.elevation = 0;
+				this.infowindowContent.elevation = 0;
 			};
 			// Map.changeInfowindowContent();
-			PubSub.publish('infowindowContentChanged', self.infowindowContent);
+			PubSub.publish('infowindowContentChanged', this.infowindowContent);
 		});
 	},
 	
 	getAdress: function(googleMapPosition) {
-		var self = this;
 		// Create a LocationAddressRequest object
 		var positionalRequest = {
 			'location': googleMapPosition
@@ -264,17 +257,17 @@ var Map = {
 			if (status == google.maps.GeocoderStatus.OK) {
 				// Retrieve the second result (less detailed compare to the first one)
 				if (results[1]) {
-					self.infowindowContent.address = self.formateGeacoderAddress(results[0].address_components);
+					this.infowindowContent.address = this.formateGeacoderAddress(results[0].address_components);
 				} else {
 					console.log('No address for given position');
-					self.infowindowContent.address = '';
+					this.infowindowContent.address = '';
 				};
 			} else {
 				console.log('Address request failed');
-				self.infowindowContent.address = '';
+				this.infowindowContent.address = '';
 			};
-			PubSub.publish('infowindowContentChanged', self.infowindowContent);
-		});
+			PubSub.publish('infowindowContentChanged', this.infowindowContent);
+		}.bind(this));
 	},
 	
 	getCoordinates: function(position) {

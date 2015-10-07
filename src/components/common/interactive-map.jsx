@@ -79,8 +79,8 @@ var InteractiveMap = React.createClass({
 		// If all google map information requests were completed
 		if (infowindowContent.address !== undefined &&
 			infowindowContent.elevation !== undefined &&
-			infowindowContent.coordinates !== undefined)
-		{
+			infowindowContent.coordinates !== undefined
+		) {
 			// Formate infowindow content
 			var address = infowindowContent.address;
 			var altitude = PilotModel.getAltitudeInPilotUnits(parseFloat(infowindowContent.elevation)); // Google map returns elevtion in meters

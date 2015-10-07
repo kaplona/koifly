@@ -7,16 +7,15 @@ var Util = require('./util');
 var Validation = {
 	
 	validateForm: function(validationConfig, formData, softValidation) {
-		var self = this;
 		var errors = {};
 		var noErrors = true;
 		
 		// For each field of given form
-		$.each(validationConfig, function(fieldName, config) {
+		$.each(validationConfig, (fieldName, config) => {
 			// Call validation method for this field
 			var methodName = config.method;
 			var rules = config.rules;
-			var validationResult = self.methods[methodName](formData, fieldName, rules, softValidation);
+			var validationResult = this.methods[methodName](formData, fieldName, rules, softValidation);
 			
 			// If validation failed
 			if (validationResult != true) {

@@ -95,8 +95,15 @@ server.register(plugins, (err) => {
         }
     });
 
+    server.route({
+        method: 'GET',
+        path: '/test',
+        handler: function(request, reply) {
+            reply('Hello World');
+        }
+    });
 
-    // DEV SETUP
+    // Dev sandbox
     if (process.env.NODE_ENV === 'development') {
         // Proxy webpack assets requests to webpack-dev-server
         // Note: in development webpack bundles are served from memory, not filesystem

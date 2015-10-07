@@ -128,19 +128,15 @@ var FlightModelConstructor = function() {
 	
 	this.getFlightsArray = function() {
 		var flightOutputs = [];
-		var self = this;
 		// For each flight
 		$.each(this.flights, function(flightId) {
-			flightOutputs.push(self.getFlightOutput(flightId));
-		});
+			flightOutputs.push(this.getFlightOutput(flightId));
+		}.bind(this));
 		return flightOutputs;
 	};
 	
 	this.getFlightOutput = function(id) {
-		if (id === null ||
-			id === undefined ||
-			this.flights[id] === undefined)
-		{
+		if (id === null || id === undefined || this.flights[id] === undefined) {
 			return null;
 		};
 		// If site is not defined for this flight show '-' to user instead
