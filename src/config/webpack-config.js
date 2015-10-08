@@ -30,8 +30,8 @@ var webpackConfig = {
         filename: config.webpack.outputFilename, // Bundle filename pattern
         path: config.paths.build  // Put bundle files in this directory (Note: dev server does not generate bundle files)
     },
-    // devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
-    devtool: 'eval',
+    devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
+    // devtool: 'eval',
     module: {
         loaders: [
             {

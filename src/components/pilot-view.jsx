@@ -3,21 +3,40 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var PubSub = require('../models/pubsub');
 var Util = require('../models/util');
 var PilotModel = require('../models/pilot');
 var Button = require('./common/button');
 var DaysSinceLastFlight = require('./common/days-since-last-flight');
+var Loader = require('./common/loader');
 
 
 var PilotView = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			pilot: PilotModel.getPilotOutput()
+			pilot: null
 		};
+	},
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
+	},
+
+	onDataModified: function() {
+		var pilot = PilotModel.getPilotOutput();
+		this.setState({ pilot: pilot });
 	},
 	
 	render: function() {
+		if (this.state.pilot === null) {
+			return <Loader />;
+		}
 		
 		var airtimeTotal = Util.hoursMinutes(this.state.pilot.airtimeTotal);
 		
@@ -47,6 +66,3 @@ var PilotView = React.createClass({
 
 
 module.exports = PilotView;
-
-
-

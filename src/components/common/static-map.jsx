@@ -25,10 +25,7 @@ var StaticMap = React.createClass({
 				React.PropTypes.string
 			]),
 			altitudeUnits: React.PropTypes.string,
-			coordinates: React.PropTypes.shape({
-				lat: React.PropTypes.number,
-				lng: React.PropTypes.number
-			})
+			coordinates: React.PropTypes.string
 		}))
 	},
 	

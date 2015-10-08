@@ -14,7 +14,7 @@ var DaysSinceLastFlight = React.createClass({
 			daysSinceLastFlight = Math.floor(milisecondsSince / (24 * 60 * 60 * 1000)) + ' days since last flight';
 		} else {
 			daysSinceLastFlight = 'no flights yet';
-		};
+		}
 				
 		return (
 			<div className='container__days_since'>

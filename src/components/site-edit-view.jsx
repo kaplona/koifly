@@ -6,7 +6,7 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('pubsub-js');
+var PubSub = require('../models/pubsub');
 var Map = require('../models/map');
 var SiteModel = require('../models/site');
 var Validation = require('../models/validation');
@@ -15,41 +15,39 @@ var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var AltitudeInput = require('./common/altitude-input');
 // var RemarksInput = require('./common/remarks-input');
+var Loader = require('./common/loader');
 
 
 var SiteEditView = React.createClass({
 
 	propTypes: {
 		params: React.PropTypes.shape({
-			siteId: React.PropTypes.string // TODO isRequired
+			siteId: React.PropTypes.string
 		})
 	},
 	
 	mixins: [ History ],
 	
 	getInitialState: function() {
-		var site;
-		if (this.props.params.siteId) {
-			site = SiteModel.getSiteOutput(this.props.params.siteId);
-		} else {
-			site = SiteModel.getNewSiteOutput();
-		};
-		
-		// TODO
-		// if (site === null) {
-		// 	throw new ViewRenderException();
-		// };
-		
 		return {
-			site: site,
+			site: null,
 			errors: {
 				name: '',
 				launchAltitude: '',
 				location: '',
 				coordinates: ''
 			},
-			markerPosition: SiteModel.getLatLngCoordinates(this.props.params.siteId)
+			markerPosition: null
 		};
+	},
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
 	},
 
 	handleSubmit: function(e) {
@@ -60,7 +58,7 @@ var SiteEditView = React.createClass({
 			var newSite =  _.clone(this.state.site);
 			SiteModel.saveSite(newSite);
 			this.history.pushState(null, '/sites');
-		};
+		}
 	},
 
 	handleInputChange: function(inputName, inputValue) {
@@ -73,7 +71,22 @@ var SiteEditView = React.createClass({
 
 	handleDeleteSite: function() {
 		SiteModel.deleteSite(this.props.params.siteId);
-		PubSub.publish('delete.site', { siteId: this.props.params.siteId });
+		// PubSub.publish('delete.site', { siteId: this.props.params.siteId });
+	},
+
+	onDataModified: function() {
+		var site;
+		if (this.props.params.siteId) {
+			site = SiteModel.getSiteOutput(this.props.params.siteId);
+		} else {
+			site = SiteModel.getNewSiteOutput();
+		}
+		var markerPosition = (site !== null) ? SiteModel.getLatLngCoordinates(this.props.params.siteId) : null;
+		// TODO if no site with given id => show error
+		this.setState({
+			site: site,
+			markerPosition: markerPosition
+		});
 	},
 
 	validateForm: function(softValidation) {
@@ -100,7 +113,24 @@ var SiteEditView = React.createClass({
 			// Change user input in { lat: 56.56734543, lng: 123.4567543 } form
 			var newCoordinates = SiteModel.formCoordinatesInput(this.state.site.coordinates);
 			this.setState({ markerPosition: newCoordinates });
-		};
+		}
+	},
+
+	renderLoader: function() {
+		var deleteButton = (this.props.params.siteId) ? <Button active={ false }>Delete</Button> : '';
+		return (
+			<div>
+				<Link to='/sites'>Back to Sites</Link>
+				<Loader />
+				<div className='button__menu'>
+					<Button active={ false }>Save</Button>
+					{ deleteButton }
+					<Link to={ this.props.params.siteId ? ('/site/' + this.props.params.siteId) : '/sites' }>
+						<Button>Cancel</Button>
+					</Link>
+				</div>
+			</div>
+		);
 	},
 
 	renderDeleteButton: function() {
@@ -110,7 +140,7 @@ var SiteEditView = React.createClass({
 					<Button onClick={ this.handleDeleteSite }>Delete</Button>
 				</Link>
 			);
-		};
+		}
 		return '';
 	},
 
@@ -128,7 +158,7 @@ var SiteEditView = React.createClass({
 					altitudeUnits={ this.state.site.altitudeUnits }
 					onDataApply={ this.handleInputChange } />
 			);
-		};
+		}
 
 		return (
 			<InteractiveMap
@@ -143,6 +173,10 @@ var SiteEditView = React.createClass({
 	},
 	
 	render: function() {
+		if (this.state.site === null) {
+			return (<div>{ this.renderLoader() }</div>);
+		}
+
 		return (
 			<div>
 				<Link to='/sites'>Back to Sites</Link>

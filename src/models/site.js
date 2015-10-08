@@ -1,46 +1,14 @@
 'use strict';
 
 var $ = require('jquery');
+var PubSub = require('./pubsub');
+var DataService = require('../services/dataService');
 var Util = require('./util');
 var PilotModel = require('./pilot');
 
 
 var SiteModel = {
-	sites: {
-		23: {
-			id: 23,
-			name: 'Hope',
-			location: 'Hope, BC, Canada',
-			coordinates: { lat: 49.368961, lng: -121.495056 },
-			launchAltitude: 0,
-			creationDateTime: '2015-02-04 12:48:00'
-		},
-		24: {
-			id: 24,
-			name: 'Woodside',
-			location: 'Agazzis, BC, Canada',
-			coordinates: { lat: 49.2445, lng: -121.888504 },
-			launchAltitude: 670.56,
-			creationDateTime: '2015-05-24 12:48:00'
-		},
-		25: {
-			id: 25,
-			name: 'Pemberton',
-			location: '',
-			coordinates: { lat: 50.369117, lng: -122.78698 },
-			launchAltitude: 1249.68,
-			creationDateTime: '2015-06-02 12:48:00'
-		},
-		26: {
-			id: 26,
-			name: 'Blanchard',
-			location: 'Bellingham, WA, US',
-			coordinates: { lat: 48.652758, lng: -122.465115 },
-			launchAltitude: 548.7,
-			creationDateTime: '2015-02-04 14:19:00'
-		}
-	},
-	
+
 	formValidationConfig: {
 		name: {
 			method: 'unique',
@@ -85,36 +53,40 @@ var SiteModel = {
 	},
 	
 	getSitesArray: function() {
+		if (DataService.data.sites === null) {
+			return null;
+		}
 		var siteOutputs = [];
-		$.each(this.sites, function(siteId) {
-			siteOutputs.push(this.getSiteOutput(siteId));
-		}.bind(this));
+		$.each(DataService.data.sites, (siteId) => siteOutputs.push(this.getSiteOutput(siteId)));
 		return siteOutputs;
 	},
 	
 	getSiteOutput: function(id) {
-		if (id === null ||
-			id === undefined ||
-			this.sites[id] === undefined)
-		{
+		if (DataService.data.sites === null) {
 			return null;
-		};
-		var coordinates = this.formCoordinatesOutput(this.sites[id].coordinates);
-		var altitude = PilotModel.getAltitudeInPilotUnits(this.sites[id].launchAltitude);
+		}
+		if (DataService.data.sites[id] === undefined) {
+			return null;
+		}
+		var coordinates = this.formCoordinatesOutput(DataService.data.sites[id].coordinates);
+		var altitude = PilotModel.getAltitudeInPilotUnits(DataService.data.sites[id].launchAltitude);
 		var altitudeUnits = PilotModel.getAltitudeUnits();
 		
 		return {
-			id: this.sites[id].id,
-			name: this.sites[id].name,
-			location: this.sites[id].location,
-			launchAltitude: altitude,
+			id: id,
+			name: DataService.data.sites[id].name,
+			location: DataService.data.sites[id].location,
 			coordinates: coordinates,
+			launchAltitude: altitude,
 			altitudeUnits: altitudeUnits,
-			locationSort: this.sites[id].location.toUpperCase()
+			locationSort: DataService.data.sites[id].location.toUpperCase()
 		};
 	},
 	
 	getNewSiteOutput: function() {
+		if (DataService.data.sites === null) {
+			return null;
+		}
 		return {
 			name: '',
 			location: '',
@@ -126,73 +98,74 @@ var SiteModel = {
 	
 	saveSite: function(newSite) {
 		newSite = this.setSiteInput(newSite);
-		this.sites[newSite.id] = newSite;
+		// TODO don't change data directly, send it to DataService for server updates
+		DataService.data.sites[newSite.id] = newSite;
 	},
 	
 	setSiteInput: function(newSite) {
 		// Set default values to empty fields
 		newSite = this.setDefaultValues(newSite);
 		
-		var oldAltitude = 0;
+		var oldAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
 		var newAltitude = newSite.launchAltitude;
 		var units = newSite.altitudeUnits;
-		// If creating a new site
+		// TODO no need to create id, it will be generated on server
 		if (newSite.id === undefined) {
-			newSite.id = 'tempId' + Date.now(); // change id after server saving !!!
-		// If editing existing site
-		} else {
-			oldAltitude = this.sites[newSite.id].launchAltitude;
-		};
+			newSite.id = 'tempId' + Date.now();
+		}
 		newSite.launchAltitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
 		newSite.coordinates = this.formCoordinatesInput(newSite.coordinates);
+		// TODO creationDateTime ('dateModified') will be set on server
 		newSite.creationDateTime = Util.today() + ' ' + Util.timeNow();
 		return newSite;
 	},
 	
 	setDefaultValues: function(newSite) {
-		$.each(this.formValidationConfig, function(fieldName, config) {
+		$.each(this.formValidationConfig, (fieldName, config) => {
 			// If there is default value for the field which val is null or undefined or ''
 			if ((newSite[fieldName] === null || (newSite[fieldName] + '').trim() === '') &&
-				 config.rules.defaultVal !== undefined)
-			{
+				 config.rules.defaultVal !== undefined
+			) {
 				// Set it to its default value
 				newSite[fieldName] = config.rules.defaultVal;
-			};
+			}
 		});
 		return newSite;
 	},
 	
 	deleteSite: function(siteId) {
-		delete this.sites[siteId];
+		PubSub.emit('siteDeleted', { siteId: siteId });
+		// TODO don't change data directly, send it to DataService for server updates
+		delete DataService.data.sites[siteId];
 	},
 	
 	getLatLngCoordinates: function(siteId) {
-		return this.sites[siteId] ? this.sites[siteId].coordinates : null;
+		return DataService.data.sites[siteId] ? DataService.data.sites[siteId].coordinates : null;
 	},
 	
 	formCoordinatesOutput: function(coordinates) {
 		var outputString = '';
 		if (coordinates !== null) {
 			outputString = coordinates.lat + ' ' + coordinates.lng;
-		};
+		}
 		return outputString;
 	},
 	
 	formCoordinatesInput: function(validString) {
 		if (validString === null) {
-			return validString;
-		};
-		var validString = validString.replace(/°/g, ' ').trim();
+			return null;
+		}
+		validString = validString.replace(/°/g, ' ').trim();
 		var latLng = validString.split(/\s*,*[,\s],*\s*/);
 		return { lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1]) };
 	},
 	
 	getNumberOfSites: function() {
-		return Object.keys(this.sites).length;
+		return Object.keys(DataService.data.sites).length;
 	},
 	
 	getSiteNameById: function(id) {
-		return this.sites[id].name;
+		return DataService.data.sites[id].name;
 	},
 	
 	// Return last added site id or null if no data has been added yet
@@ -201,28 +174,28 @@ var SiteModel = {
 			id: null,
 			creationDateTime: '1900-01-01 00:00:00'
 		};
-		$.each(this.sites, function(siteId, site) {
+		$.each(DataService.data.sites, (siteId, site) => {
 			if (lastSite.creationDateTime < site.creationDateTime) {
 				lastSite = site;
-			};
+			}
 		});
 		return lastSite.id;
 	},
 	
 	getLaunchAltitudeById: function(id) {
-		return this.sites[id].launchAltitude;
+		return DataService.data.sites[id].launchAltitude;
 	},
 	
 	getSiteSimpleList: function() {
 		var simpleList = {};
-		$.each(this.sites, function(siteId, site) {
+		$.each(DataService.data.sites, (siteId, site) => {
 			simpleList[siteId] = site.name;
 		});
 		return simpleList;
 	},
 	
 	getSiteIdsList: function() {
-		return Object.keys(this.sites);
+		return Object.keys(DataService.data.sites);
 	},
 	
 	getValidationConfig: function() {
@@ -232,5 +205,3 @@ var SiteModel = {
 
 
 module.exports = SiteModel;
-
-

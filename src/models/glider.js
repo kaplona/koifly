@@ -1,37 +1,13 @@
 'use strict';
 
 var $ = require('jquery');
+var PubSub = require('./pubsub');
+var DataService = require('../services/dataService');
 var Util = require('./util');
 
 
 var GliderModel = {
-	gliders: {
-		1: {
-			id: 1,
-			name: 'Sport 2',
-			initialFlightNum: 4,
-			initialAirtime: 90,
-			remarks: 'need spare downtube',
-			creationDateTime: '2015-08-31 18:12:00'
-		},
-		2: {
-			id: 2,
-			name: 'Pulse 9m',
-			initialFlightNum: 10,
-			initialAirtime: 120,
-			remarks: 'need after crash check',
-			creationDateTime: '2015-02-20 09:05:00'
-		},
-		3: {
-			id: 3,
-			name: 'Falcon 14',
-			initialFlightNum: 23,
-			initialAirtime: 80,
-			remarks: '',
-			creationDateTime: '2015-06-04 12:48:00'
-		}
-	},
-	
+
 	formValidationConfig: {
 		name: {
 			method: 'unique',
@@ -86,34 +62,40 @@ var GliderModel = {
 	},
 	
 	getGlidersArray: function() {
+		if (DataService.data.gliders === null) {
+			return null;
+		}
 		var gliderOutputs = [];
-		$.each(this.gliders, (gliderId) => gliderOutputs.push(this.getGliderOutput(gliderId)));
+		$.each(DataService.data.gliders, (gliderId) => gliderOutputs.push(this.getGliderOutput(gliderId)));
 		return gliderOutputs;
 	},
 	
 	getGliderOutput: function(id) {
-		if (id === null ||
-			id === undefined ||
-			this.gliders[id] === undefined)
-		{
+		if (DataService.data.gliders === null) {
+			return null;
+		}
+		if (DataService.data.gliders[id] === undefined) {
 			return null;
 		}
 		var FlightModel = require('./flight');
-		var trueFlightNum = this.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
-		var trueAirtime = this.gliders[id].initialAirtime + FlightModel.getGliderAirtime(id);
+		var trueFlightNum = DataService.data.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
+		var trueAirtime = DataService.data.gliders[id].initialAirtime + FlightModel.getGliderAirtime(id);
 		
 		return {
-			id: this.gliders[id].id,
-			name: this.gliders[id].name,
-			initialFlightNum: this.gliders[id].initialFlightNum,
-			initialAirtime: this.gliders[id].initialAirtime,
-			remarks: this.gliders[id].remarks,
+			id: id,
+			name: DataService.data.gliders[id].name,
+			initialFlightNum: DataService.data.gliders[id].initialFlightNum,
+			initialAirtime: DataService.data.gliders[id].initialAirtime,
+			remarks: DataService.data.gliders[id].remarks,
 			trueFlightNum: trueFlightNum,
 			trueAirtime: trueAirtime
 		};
 	},
 	
 	getNewGliderOutput: function() {
+		if (DataService.data.gliders === null) {
+			return null;
+		}
 		return {
 			name: '',
 			initialFlightNum: 0,
@@ -124,25 +106,26 @@ var GliderModel = {
 	
 	saveGlider: function(newGlider) {
 		newGlider = this.setGliderInput(newGlider);
-		this.gliders[newGlider.id] = newGlider;
+		// TODO don't change data directly, send it to DataService for server updates
+		DataService.data.gliders[newGlider.id] = newGlider;
 	},
 	
 	setGliderInput: function(newGlider) {
 		// Set default values to empty fields
 		newGlider = this.setDefaultValues(newGlider);
-		
-		// If creating a new glider
+		// TODO no need to create id, it will be generated on server
 		if (newGlider.id === undefined) {
-			newGlider.id = 'tempId' + Date.now(); // change id after server saving !!!
+			newGlider.id = 'tempId' + Date.now();
 		}
 		newGlider.initialFlightNum = parseInt(newGlider.initialFlightNum);
 		newGlider.initialAirtime = parseFloat(newGlider.initialAirtime);
+		// TODO creationDateTime ('dateModified') will be set on server
 		newGlider.creationDateTime = Util.today() + ' ' + Util.timeNow();
 		return newGlider;
 	},
 	
 	setDefaultValues: function(newGlider) {
-		$.each(this.formValidationConfig, function(fieldName, config) {
+		$.each(this.formValidationConfig, (fieldName, config) => {
 			// If there is default value for the field which val is null or undefined or ''
 			if ((newGlider[fieldName] === null || (newGlider[fieldName] + '').trim() === '') &&
 				 config.rules.defaultVal !== undefined)
@@ -155,15 +138,17 @@ var GliderModel = {
 	},
 	
 	deleteGlider: function(gliderId) {
-		delete this.gliders[gliderId];
+		PubSub.emit('gliderDeleted', { gliderId: gliderId });
+		// TODO don't change data directly, send it to DataService for server updates
+		delete DataService.data.gliders[gliderId];
 	},
 	
 	getNumberOfGliders: function() {
-		return Object.keys(this.gliders).length;
+		return Object.keys(DataService.data.gliders).length;
 	},
 	
 	getGliderNameById: function(id) {
-		return this.gliders[id].name;
+		return DataService.data.gliders[id].name;
 	},
 	
 	// Return last added glider id or null if no data has been added yet
@@ -172,7 +157,7 @@ var GliderModel = {
 			id: null,
 			creationDateTime: '1900-01-01 00:00:00'
 		};
-		$.each(this.gliders, function(gliderId, glider) {
+		$.each(DataService.data.gliders, (gliderId, glider) => {
 			if (lastGlider.creationDateTime < glider.creationDateTime) {
 				lastGlider = glider;
 			}
@@ -182,14 +167,14 @@ var GliderModel = {
 	
 	getGliderSimpleList: function() {
 		var simpleList = {};
-		$.each(this.gliders, function(gliderId, glider) {
+		$.each(DataService.data.gliders, (gliderId, glider) => {
 			simpleList[gliderId] = glider.name;
 		});
 		return simpleList;
 	},
 	
 	getGliderIdsList: function() {
-		return Object.keys(this.gliders);
+		return Object.keys(DataService.data.gliders);
 	},
 	
 	getValidationConfig: function() {
@@ -199,5 +184,3 @@ var GliderModel = {
 
 
 module.exports = GliderModel;
-
-

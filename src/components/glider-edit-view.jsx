@@ -6,13 +6,14 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('pubsub-js');
+var PubSub = require('../models/pubsub');
 var GliderModel = require('../models/glider');
 var Validation = require('../models/validation');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
 var RemarksInput = require('./common/remarks-input');
+var Loader = require('./common/loader');
 
 
 var GliderEditView = React.createClass({
@@ -26,22 +27,8 @@ var GliderEditView = React.createClass({
 	mixins: [ History ],
 	
 	getInitialState: function() {
-		var glider;
-		if (this.props.params.gliderId) {
-			glider = GliderModel.getGliderOutput(this.props.params.gliderId);
-		} else {
-			glider = GliderModel.getNewGliderOutput();
-		};
-		
-		// TODO
-		// if (glider === null) {
-		// 	throw new ViewRenderException();
-		// };
-		
-		glider.hours = Math.floor(glider.initialAirtime / 60);
-		glider.minutes = glider.initialAirtime % 60;
 		return {
-			glider: glider,
+			glider: null,
 			errors: {
 				name: '',
 				initialFlightNum: '',
@@ -50,6 +37,15 @@ var GliderEditView = React.createClass({
 				minutes: ''
 			}
 		};
+	},
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
 	},
 	
 	handleSubmit: function(e) {
@@ -61,7 +57,7 @@ var GliderEditView = React.createClass({
 			newGlider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
 			GliderModel.saveGlider(newGlider);
 			this.history.pushState(null, '/gliders');
-		};
+		}
 	},
 	
 	handleInputChange: function(inputName, inputValue) {
@@ -74,7 +70,22 @@ var GliderEditView = React.createClass({
 	
 	handleDeleteGlider: function() {
 		GliderModel.deleteGlider(this.props.params.gliderId);
-		PubSub.publish('delete.glider', { gliderId: this.props.params.gliderId });
+		// PubSub.publish('delete.glider', { gliderId: this.props.params.gliderId });
+	},
+
+	onDataModified: function() {
+		var glider;
+		if (this.props.params.gliderId) {
+			glider = GliderModel.getGliderOutput(this.props.params.gliderId);
+		} else {
+			glider = GliderModel.getNewGliderOutput();
+		}
+		// TODO if no flight with given id => show error
+		if (glider !== null) {
+			glider.hours = Math.floor(glider.initialAirtime / 60);
+			glider.minutes = glider.initialAirtime % 60;
+		}
+		this.setState({ glider: glider });
 	},
 
 	validateForm: function(softValidation) {
@@ -93,6 +104,23 @@ var GliderEditView = React.createClass({
 
 		return validationRespond;
 	},
+
+	renderLoader: function() {
+		var deleteButton = (this.props.params.gliderId) ? <Button active={ false }>Delete</Button> : '';
+		return (
+			<div>
+				<Link to='/gliders'>Back to Gliders</Link>
+				<Loader />
+				<div className='button__menu'>
+					<Button active={ false }>Save</Button>
+					{ deleteButton }
+					<Link to={ this.props.params.gliderId ? ('/glider/' + this.props.params.gliderId) : '/gliders' }>
+						<Button>Cancel</Button>
+					</Link>
+				</div>
+			</div>
+		);
+	},
 	
 	renderDeleteButton: function() {
 		if (this.props.params.gliderId) {
@@ -101,11 +129,15 @@ var GliderEditView = React.createClass({
 					<Button onClick={ this.handleDeleteGlider }>Delete</Button>
 				</Link>
 			);
-		};
+		}
 		return '';
 	},
 	
 	render: function() {
+		if (this.state.glider === null) {
+			return (<div>{ this.renderLoader() }</div>);
+		}
+
 		return (
 			<div>
 				<Link to='/gliders'>Back to Gliders</Link>
@@ -150,6 +182,3 @@ var GliderEditView = React.createClass({
 
 
 module.exports = GliderEditView;
-
-
-

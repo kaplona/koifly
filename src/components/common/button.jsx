@@ -7,12 +7,14 @@ var Button = React.createClass({
 	
 	propTypes: {
 		type: React.PropTypes.string,
-		onClick: React.PropTypes.func
+		onClick: React.PropTypes.func,
+		active: React.PropTypes.bool
 	},
 	
 	getDefaultProps: function() {
 		return {
-			type: 'button'
+			type: 'button',
+			active: true
 		};
 	},
 	
@@ -25,7 +27,7 @@ var Button = React.createClass({
 	render: function() {
 		return (
 			<input
-				className='button'
+				className={ 'button' + (!this.props.active ? ' button--disabled' : '') }
 				type={ this.props.type }
 				value={ this.props.children }
 				onClick={ this.handleClick }

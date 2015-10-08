@@ -6,9 +6,10 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var GliderModel = require('../models/glider');
+var PubSub = require('../models/pubsub');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
+var GliderModel = require('../models/glider');
 var Validation = require('../models/validation');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
@@ -16,37 +17,22 @@ var TimeInput = require('./common/time-input');
 var AltitudeInput = require('./common/altitude-input');
 var RemarksInput = require('./common/remarks-input');
 var DropDown = require('./common/dropdown');
+var Loader = require('./common/loader');
 
 
 var FlightEditView = React.createClass({
 
 	propTypes: {
 		params: React.PropTypes.shape({
-			flightId: React.PropTypes.string // TODO isRequired
+			flightId: React.PropTypes.string
 		})
 	},
 	
 	mixins: [ History ],
 	
 	getInitialState: function() {
-		var flight;
-		if (this.props.params.flightId) {
-			flight = FlightModel.getFlightOutput(this.props.params.flightId);
-		} else {
-			flight = FlightModel.getNewFlightOutput();
-		}
-		
-		// TODO
-		// if (flight === null) {
-		// 	throw new ViewRenderException();
-		// };
-		
-		flight.siteId = (flight.siteId === null) ? 'other' : flight.siteId;
-		flight.gliderId = (flight.gliderId === null) ? 'other' : flight.gliderId;
-		flight.hours = Math.floor(flight.airtime / 60);
-		flight.minutes = flight.airtime % 60;
 		return {
-			flight: flight,
+			flight: null,
 			errors: {
 				date: '',
 				siteId: '',
@@ -61,6 +47,15 @@ var FlightEditView = React.createClass({
 		};
 	},
 
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
+	},
+
 	handleSubmit: function(e) {
 		e.preventDefault();
 		var validationRespond = this.validateForm();
@@ -72,19 +67,36 @@ var FlightEditView = React.createClass({
 			newFlight.gliderId = (newFlight.gliderId === 'other') ? null : newFlight.gliderId;
 			FlightModel.saveFlight(newFlight);
 			this.history.pushState(null, '/flights');
-		};
+		}
 	},
 	
 	handleInputChange: function(inputName, inputValue) {
 		var newFlight =  _.clone(this.state.flight);
 		newFlight[inputName] = inputValue;
-		this.setState({ flight: newFlight }, function() {
+		this.setState({ flight: newFlight }, () => {
 			this.validateForm(true);
 		});
 	},
 	
 	handleDeleteFlight: function() {
 		FlightModel.deleteFlight(this.props.params.flightId);
+	},
+
+	onDataModified: function() {
+		var flight;
+		if (this.props.params.flightId) {
+			flight = FlightModel.getFlightOutput(this.props.params.flightId);
+		} else {
+			flight = FlightModel.getNewFlightOutput();
+		}
+		// TODO if no flight with given id => show error
+		if (flight !== null) {
+			flight.siteId = (flight.siteId === null) ? 'other' : flight.siteId;
+			flight.gliderId = (flight.gliderId === null) ? 'other' : flight.gliderId;
+			flight.hours = Math.floor(flight.airtime / 60);
+			flight.minutes = flight.airtime % 60;
+		}
+		this.setState({ flight: flight });
 	},
 
     validateForm: function(softValidation) {
@@ -96,7 +108,7 @@ var FlightEditView = React.createClass({
         );
         // update errors state
         var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, function(fieldName) {
+        $.each(newErrorState, (fieldName) => {
             newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
@@ -104,9 +116,26 @@ var FlightEditView = React.createClass({
         return validationRespond;
     },
 
+	renderLoader: function() {
+		var deleteButton = (this.props.params.flightId) ? <Button active={ false }>Delete</Button> : '';
+		return (
+			<div>
+				<Link to='/flights'>Back to Flights</Link>
+				<Loader />
+				<div className='button__menu'>
+					<Button active={ false }>Save</Button>
+					{ deleteButton }
+					<Link to={ this.props.params.flightId ? ('/flight/' + this.props.params.flightId) : '/flights' }>
+						<Button>Cancel</Button>
+					</Link>
+				</div>
+			</div>
+		);
+	},
+
     renderSelectOptions: function(initialData) {
 		var options = [];
-		$.each(initialData, function(dataId, dataValue) {
+		$.each(initialData, (dataId, dataValue) => {
 			options.push({ value: dataId, text: dataValue });
 		});
 		options.push({ value: 'other', text: 'other' });
@@ -120,17 +149,21 @@ var FlightEditView = React.createClass({
 					<Button onClick={ this.handleDeleteFlight }>Delete</Button>
 				</Link>
 			);
-		};
+		}
 		return '';
 	},
 	
 	render: function() {
+		if (this.state.flight === null) {
+			return (<div>{ this.renderLoader() }</div>);
+		}
+
 		var sites = SiteModel.getSiteSimpleList();
 		var gliders = GliderModel.getGliderSimpleList();
 		
 		return (
 			<div>
-				<div><Link to='/flights'>Back to Flights</Link></div>
+				<Link to='/flights'>Back to Flights</Link>
 				<form onSubmit={ this.handleSubmit }>
 					<TextInput
 						inputValue={ this.state.flight.date }

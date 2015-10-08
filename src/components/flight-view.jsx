@@ -3,13 +3,14 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var PubSub = require('../models/pubsub');
 var Util = require('../models/util');
 var Map = require('../models/map');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
-var PilotModel = require('../models/pilot');
 var Button = require('./common/button');
 var StaticMap = require('./common/static-map');
+var Loader = require('./common/loader');
 
 
 var FlightView = React.createClass({
@@ -22,8 +23,38 @@ var FlightView = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			flight: FlightModel.getFlightOutput(this.props.params.flightId)
+			flight: null
 		};
+	},
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
+	},
+
+	onDataModified: function() {
+		var flight = FlightModel.getFlightOutput(this.props.params.flightId);
+		// TODO if no flight with given id => show error
+		this.setState({ flight: flight });
+	},
+
+	renderLoader: function() {
+		return (
+			<div>
+				<Link to='/flights'>Back to Flights</Link>
+				<Loader />
+				<div className='button__menu'>
+					<Link to={ '/flight/' + this.props.params.flightId + '/edit' }>
+						<Button>Edit</Button>
+					</Link>
+					<Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
+				</div>
+			</div>
+		);
 	},
 	
 	renderMap: function() {
@@ -37,26 +68,30 @@ var FlightView = React.createClass({
 					zoomLevel={ Map.zoomLevel.site }
 					markers={ siteList } />
 			);
-		};
+		}
 		return '';
 	},
 	
 	render: function() {
-		var altitudeUnits = PilotModel.getAltitudeUnits();
-		
+		if (this.state.flight === null) {
+			return (<div>{ this.renderLoader() }</div>);
+		}
+
 		return (
 			<div>
-				<div><Link to='/flights'>Back to Flights</Link></div>
+				<Link to='/flights'>Back to Flights</Link>
 				<div className='container__title'>
 					<div>{ this.state.flight.date }</div>
 					<div>{ this.state.flight.siteName }</div>
 				</div>
 				<div className='container__subtitle'>
 					<div>
-						Altitude gained: { this.state.flight.altitude + ' ' + altitudeUnits }
+						Altitude gained:
+						{ this.state.flight.altitude + ' ' + this.state.flight.altitudeUnits }
 					</div>
 					<div>
-						Above the launch: { this.state.flight.altitudeAboveLaunch + ' ' + altitudeUnits }
+						Above the launch:
+						{ this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnits }
 					</div>
 					<div>Airtime: { Util.hoursMinutes(this.state.flight.airtime) }</div>
 					<div>Glider: { this.state.flight.gliderName }</div>
@@ -64,7 +99,9 @@ var FlightView = React.createClass({
 					<div>{ this.state.flight.remarks }</div>
 				</div>
 				<div className='button__menu'>
-					<Link to={ '/flight/' + this.props.params.flightId + '/edit' }><Button>Edit</Button></Link>
+					<Link to={ '/flight/' + this.props.params.flightId + '/edit' }>
+						<Button>Edit</Button>
+					</Link>
 					<Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
 				</div>
 				{ this.renderMap() }

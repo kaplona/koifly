@@ -3,21 +3,41 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var PubSub = require('../models/pubsub');
 var Util = require('../models/util');
 var GliderModel = require('../models/glider');
 var Button = require('./common/button');
+var Loader = require('./common/loader');
 
 
 var GliderListView = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			gliders: GliderModel.getGlidersArray()
+			gliders: null
 		};
 	},
-	
-	render: function() {
-		var gliderNodes = this.state.gliders.map(function(glider) {
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
+	},
+
+	onDataModified: function() {
+		var gliders = GliderModel.getGlidersArray();
+		this.setState({ gliders: gliders });
+	},
+
+	renderGliderNodes: function() {
+		if (this.state.gliders === null) {
+			return <Loader />;
+		}
+
+		var gliderNodes = this.state.gliders.map((glider) => {
 			return (
 				<div key={ glider.id }>
 					<div className='container__title'>
@@ -31,12 +51,16 @@ var GliderListView = React.createClass({
 					<Link to={ '/glider/' + glider.id + '/edit' }><Button>Edit</Button></Link>
 				</div>
 			);
-		}.bind(this));
-		
+		});
+
+		return <div>{ gliderNodes }</div>;
+	},
+	
+	render: function() {
 		return (
 			<div>
 				<Link to='/glider/0/edit'><Button>Add Glider</Button></Link>
-				<div>{ gliderNodes }</div>
+				{ this.renderGliderNodes() }
 			</div>
 		);
 	}

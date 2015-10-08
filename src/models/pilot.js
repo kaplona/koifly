@@ -1,19 +1,12 @@
 'use strict';
 
 var $ = require('jquery');
+var DataService = require('../services/dataService');
 var GliderModel = require('./glider');
 
 
 var PilotModel = {
-	pilot: {
-		id: 3567,
-		userName: 'Kaplun',
-		password: 1111,
-		initialFlightNum: 10,
-		initialAirtime: 40,
-		altitudeUnits: 'feet'
-	},
-	
+
 	formValidationConfig: {
 		initialFlightNum: {
 			method: 'number',
@@ -66,58 +59,64 @@ var PilotModel = {
 	},
 	
 	getPilotOutput: function() {
+		if (DataService.data.pilot === null) {
+			return null;
+		}
 		var FlightModel = require('./flight');
-		var flightNumTotal = this.pilot.initialFlightNum + FlightModel.getNumberOfFlights();
-		var airtimeTotal = this.pilot.initialAirtime + FlightModel.getTotalAirtime();
+		var flightNumTotal = DataService.data.pilot.initialFlightNum + FlightModel.getNumberOfFlights();
+		var airtimeTotal = DataService.data.pilot.initialAirtime + FlightModel.getTotalAirtime();
 		
 		return {
-			userName: this.pilot.userName,
+			userName: DataService.data.pilot.userName,
 			flightNumTotal: flightNumTotal,
 			airtimeTotal: airtimeTotal,
 			siteNum: FlightModel.getNumberOfVisitedSites(),
 			gliderNum: GliderModel.getNumberOfGliders(),
-			altitudeUnits: this.pilot.altitudeUnits
+			altitudeUnits: DataService.data.pilot.altitudeUnits
 		};
 	},
 	
 	getPilotEditOutput: function() {
+		if (DataService.data.pilot === null) {
+			return null;
+		}
 		return {
-			userName: this.pilot.userName,
-			initialFlightNum: this.pilot.initialFlightNum,
-			initialAirtime: this.pilot.initialAirtime,
-			altitudeUnits: this.pilot.altitudeUnits
+			userName: DataService.data.pilot.userName,
+			initialFlightNum: DataService.data.pilot.initialFlightNum,
+			initialAirtime: DataService.data.pilot.initialAirtime,
+			altitudeUnits: DataService.data.pilot.altitudeUnits
 		};
 	},
 	
 	savePilotInfo: function(newPilotInfo) {
-		// Set default values to empty fields
 		newPilotInfo = this.setDefaultValues(newPilotInfo);
-		
-		this.pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
-		this.pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
-		this.pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+		// TODO don't change data directly, send it to DataService for server updates
+		DataService.data.pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
+		DataService.data.pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
+		DataService.data.pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+		// TODO don't forget about dateModified
 	},
 	
 	setDefaultValues: function(newPilotInfo) {
-		$.each(this.formValidationConfig, function(fieldName, config) {
+		$.each(this.formValidationConfig, (fieldName, config) => {
 			// If there is default value for the field which val is null or undefined or ''
 			if ((newPilotInfo[fieldName] === null || (newPilotInfo[fieldName] + '').trim() === '') &&
 				 config.rules.defaultVal !== undefined)
 			{
 				// Set it to its default value
 				newPilotInfo[fieldName] = config.rules.defaultVal;
-			};
+			}
 		});
 		return newPilotInfo;
 	},
 	
 	getAltitudeUnits: function() {
-		return this.pilot.altitudeUnits;
+		return DataService.data.pilot.altitudeUnits;
 	},
 	
 	// altitude in meters
 	getAltitudeInPilotUnits: function(altitude) {
-		var increment = this.meterConverter[this.pilot.altitudeUnits];
+		var increment = this.meterConverter[DataService.data.pilot.altitudeUnits];
 		return Math.round(parseFloat(altitude) * increment);
 	},
 	
@@ -130,7 +129,7 @@ var PilotModel = {
 	getAltitudeInMeters: function(val, oldVal, units) {
 		var oldFilteredVal = this.getAltitudeInPilotUnits(oldVal);
 		// If user changed the value or measurement units
-		if (val != oldFilteredVal || units != this.pilot.altitudeUnits) {
+		if (val != oldFilteredVal || units != DataService.data.pilot.altitudeUnits) {
 			// Use the new val
 			return parseFloat(val) / this.meterConverter[units];
 		// If no changes - keep the old value

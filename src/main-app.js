@@ -22,6 +22,7 @@ var GliderListView = require('./components/glider-list-view');
 var GliderEditView = require('./components/glider-edit-view');
 var PilotView = require('./components/pilot-view');
 var PilotEditView = require('./components/pilot-edit-view');
+var noPage = require('./components/page-not-found');
 
 require('./components/koifly.css');
 
@@ -54,6 +55,7 @@ function mainApp() {
         		<Route path='glider/:gliderId/edit' component={ GliderEditView } />
         		<Route path='pilot/edit' component={ PilotEditView } />
         		<Route path='pilot' component={ PilotView } />
+				<Route path='*' component={ noPage }/>
         	</Route>
         </Router>
         ),

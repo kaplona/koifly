@@ -4,10 +4,12 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 var _ = require('underscore');
+var PubSub = require('../models/pubsub');
 var Map = require('../models/map');
 var SiteModel = require('../models/site');
 var StaticMap = require('./common/static-map');
 var Button = require('./common/button');
+var Loader = require('./common/loader');
 
 
 var SiteView = React.createClass({
@@ -20,8 +22,38 @@ var SiteView = React.createClass({
 	
 	getInitialState: function() {
 		return {
-			site: SiteModel.getSiteOutput(this.props.params.siteId)
+			site: null
 		};
+	},
+
+	componentDidMount: function() {
+		PubSub.on('dataModified', this.onDataModified, this);
+		this.onDataModified();
+	},
+
+	componentWillUnmount: function() {
+		PubSub.removeListener('dataModified', this.onDataModified, this);
+	},
+
+	onDataModified: function() {
+		var site = SiteModel.getSiteOutput(this.props.params.siteId);
+		// TODO if no flight with given id => show error
+		this.setState({ site: site });
+	},
+
+	renderLoader: function() {
+		return (
+			<div>
+				<Link to='/sites'>Back to Sites</Link>
+				<Loader />
+				<div className='button__menu'>
+					<Link to={ '/site/' + this.props.params.siteId + '/edit' }>
+						<Button>Edit</Button>
+					</Link>
+					<Link to='/site/0/edit'><Button>Add Site</Button></Link>
+				</div>
+			</div>
+		);
 	},
 
 	renderMap: function() {
@@ -35,11 +67,15 @@ var SiteView = React.createClass({
 					zoomLevel={ Map.zoomLevel.site }
 					markers={ siteList } />
 			);
-		};
+		}
 		return '';
 	},
 	
 	render: function() {
+		if (this.state.site === null) {
+			return (<div>{ this.renderLoader() }</div>);
+		}
+
 		return (
 			<div>
 				<Link to='/sites'>Back to Sites</Link>
