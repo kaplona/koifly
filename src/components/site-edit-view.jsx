@@ -71,7 +71,6 @@ var SiteEditView = React.createClass({
 
 	handleDeleteSite: function() {
 		SiteModel.deleteSite(this.props.params.siteId);
-		// PubSub.publish('delete.site', { siteId: this.props.params.siteId });
 	},
 
 	onDataModified: function() {
@@ -81,8 +80,12 @@ var SiteEditView = React.createClass({
 		} else {
 			site = SiteModel.getNewSiteOutput();
 		}
+
+		if (site === false) {
+			// TODO if no site with given id => show error
+			return;
+		}
 		var markerPosition = (site !== null) ? SiteModel.getLatLngCoordinates(this.props.params.siteId) : null;
-		// TODO if no site with given id => show error
 		this.setState({
 			site: site,
 			markerPosition: markerPosition

@@ -90,10 +90,10 @@ var PilotModel = {
 	
 	savePilotInfo: function(newPilotInfo) {
 		newPilotInfo = this.setDefaultValues(newPilotInfo);
+		newPilotInfo.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
+		newPilotInfo.initialAirtime = parseInt(newPilotInfo.initialAirtime);
 		// TODO don't change data directly, send it to DataService for server updates
-		DataService.data.pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
-		DataService.data.pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
-		DataService.data.pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+		DataService.changePilotInfo(newPilotInfo);
 		// TODO don't forget about dateModified
 	},
 	

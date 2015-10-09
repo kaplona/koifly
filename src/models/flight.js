@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var PubSub = require('./pubsub');
 var DataService = require('../services/dataService');
 var SiteModel = require('./site');
@@ -187,8 +188,7 @@ var FlightModelConstructor = function() {
 	
 	this.saveFlight = function(newFlight) {
 		newFlight = this.setFlightInput(newFlight);
-		// TODO don't change data directly, send it to DataService for server updates
-		DataService.data.flights[newFlight.id] = newFlight;
+		DataService.changeFlights([ newFlight ]);
 	};
 	
 	this.setFlightInput = function(newFlight) {
@@ -198,13 +198,7 @@ var FlightModelConstructor = function() {
 		var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
 		var newAltitude = newFlight.altitude;
 		var units = newFlight.altitudeUnits;
-		// TODO no need to create id, it will be generated on server
-		if (newFlight.id === undefined) {
-			newFlight.id = 'tempId' + Date.now();
-		}
 		newFlight.altitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
-		// TODO creationDateTime ('dateModified') will be set on server
-		newFlight.creationDateTime = Util.today() + ' ' + Util.timeNow();
 		return newFlight;
 	};
 	
@@ -221,30 +215,32 @@ var FlightModelConstructor = function() {
 		return newFlight;
 	};
 	
-	this.deleteFlight = function(id) {
-		// TODO don't change data directly, send it to DataService for server updates
-		delete DataService.data.flights[id];
+	this.deleteFlight = function(flightId) {
+		DataService.changeFlights([ { id: flightId, see: 0 } ]);
 	};
 	
 	// Expected eventData: { siteId: siteId }
 	this.clearSiteId = function(eventData) {
-		console.log('site references deleted');
-		// TODO don't change data directly, send it to DataService for server updates
+		var flightsToChange = [];
 		$.each(DataService.data.flights, (flightId, flight) => {
-			if (flight.siteId == eventData.siteId) {
-				flight.siteId = null;
+			if (flight.siteId === parseInt(eventData.siteId)) {
+				flightsToChange.push(_.clone(flight));
+				flightsToChange[flightsToChange.length - 1].siteId = null;
 			}
 		});
+		DataService.changeFlights(flightsToChange);
 	};
 	
 	// Expected eventData: { gliderId: gliderId }
 	this.clearGliderId = function(eventData) {
-		// TODO don't change data directly, send it to DataService for server updates
+		var flightsToChange = [];
 		$.each(DataService.data.flights, (flightId, flight) => {
-			if (flight.gliderId == eventData.gliderId) {
-				flight.gliderId = null;
+			if (flight.gliderId === parseInt(eventData.gliderId)) {
+				flightsToChange.push(_.clone(flight));
+				flightsToChange[flightsToChange.length - 1].gliderId = null;
 			}
 		});
+		DataService.changeFlights(flightsToChange);
 	};
 
 	/**

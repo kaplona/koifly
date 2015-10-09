@@ -3,7 +3,6 @@
 var $ = require('jquery');
 var PubSub = require('./pubsub');
 var DataService = require('../services/dataService');
-var Util = require('./util');
 
 
 var GliderModel = {
@@ -106,21 +105,14 @@ var GliderModel = {
 	
 	saveGlider: function(newGlider) {
 		newGlider = this.setGliderInput(newGlider);
-		// TODO don't change data directly, send it to DataService for server updates
-		DataService.data.gliders[newGlider.id] = newGlider;
+		DataService.changeGliders([ newGlider ]);
 	},
 	
 	setGliderInput: function(newGlider) {
 		// Set default values to empty fields
 		newGlider = this.setDefaultValues(newGlider);
-		// TODO no need to create id, it will be generated on server
-		if (newGlider.id === undefined) {
-			newGlider.id = 'tempId' + Date.now();
-		}
 		newGlider.initialFlightNum = parseInt(newGlider.initialFlightNum);
 		newGlider.initialAirtime = parseFloat(newGlider.initialAirtime);
-		// TODO creationDateTime ('dateModified') will be set on server
-		newGlider.creationDateTime = Util.today() + ' ' + Util.timeNow();
 		return newGlider;
 	},
 	
@@ -139,8 +131,7 @@ var GliderModel = {
 	
 	deleteGlider: function(gliderId) {
 		PubSub.emit('gliderDeleted', { gliderId: gliderId });
-		// TODO don't change data directly, send it to DataService for server updates
-		delete DataService.data.gliders[gliderId];
+		DataService.changeGliders([ { id: gliderId, see: 0 } ]);
 	},
 	
 	getNumberOfGliders: function() {

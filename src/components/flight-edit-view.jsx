@@ -89,7 +89,11 @@ var FlightEditView = React.createClass({
 		} else {
 			flight = FlightModel.getNewFlightOutput();
 		}
-		// TODO if no flight with given id => show error
+
+		if (flight === false) {
+			// TODO if no flight with given id => show error
+			return;
+		}
 		if (flight !== null) {
 			flight.siteId = (flight.siteId === null) ? 'other' : flight.siteId;
 			flight.gliderId = (flight.gliderId === null) ? 'other' : flight.gliderId;

@@ -3,7 +3,6 @@
 var $ = require('jquery');
 var PubSub = require('./pubsub');
 var DataService = require('../services/dataService');
-var Util = require('./util');
 var PilotModel = require('./pilot');
 
 
@@ -98,8 +97,7 @@ var SiteModel = {
 	
 	saveSite: function(newSite) {
 		newSite = this.setSiteInput(newSite);
-		// TODO don't change data directly, send it to DataService for server updates
-		DataService.data.sites[newSite.id] = newSite;
+		DataService.changeSites([ newSite ]);
 	},
 	
 	setSiteInput: function(newSite) {
@@ -109,14 +107,8 @@ var SiteModel = {
 		var oldAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
 		var newAltitude = newSite.launchAltitude;
 		var units = newSite.altitudeUnits;
-		// TODO no need to create id, it will be generated on server
-		if (newSite.id === undefined) {
-			newSite.id = 'tempId' + Date.now();
-		}
 		newSite.launchAltitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
 		newSite.coordinates = this.formCoordinatesInput(newSite.coordinates);
-		// TODO creationDateTime ('dateModified') will be set on server
-		newSite.creationDateTime = Util.today() + ' ' + Util.timeNow();
 		return newSite;
 	},
 	
@@ -135,8 +127,7 @@ var SiteModel = {
 	
 	deleteSite: function(siteId) {
 		PubSub.emit('siteDeleted', { siteId: siteId });
-		// TODO don't change data directly, send it to DataService for server updates
-		delete DataService.data.sites[siteId];
+		DataService.changeSites([ { id: siteId, see: 0 } ]);
 	},
 	
 	getLatLngCoordinates: function(siteId) {

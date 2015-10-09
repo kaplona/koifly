@@ -70,7 +70,6 @@ var GliderEditView = React.createClass({
 	
 	handleDeleteGlider: function() {
 		GliderModel.deleteGlider(this.props.params.gliderId);
-		// PubSub.publish('delete.glider', { gliderId: this.props.params.gliderId });
 	},
 
 	onDataModified: function() {
@@ -80,7 +79,11 @@ var GliderEditView = React.createClass({
 		} else {
 			glider = GliderModel.getNewGliderOutput();
 		}
-		// TODO if no flight with given id => show error
+
+		if (glider === false) {
+			// TODO if no glider with given id => show error
+			return;
+		}
 		if (glider !== null) {
 			glider.hours = Math.floor(glider.initialAirtime / 60);
 			glider.minutes = glider.initialAirtime % 60;
