@@ -29,34 +29,34 @@ require('./components/koifly.css');
 
 function mainApp() {
 
-	$.ajax({
-		method: 'GET',
-		url: '/test'
-	})
-	.done(function(msg) {
-		console.log('respond: ' + msg);
-	});
+    $.ajax({
+        method: 'GET',
+        url: '/test'
+    })
+    .done(function(msg) {
+        console.log('respond: ' + msg);
+    });
 
     React.render((
         <Router history={ createBrowserHistory() }>
-        	<Route path='/' component={ Koifly }>
-        		<IndexRoute component={ Home } />
-        		<Route path='flights' component={ FlightListView } />
-        		<Route path='flight/0/edit' component={ FlightEditView } />
-        		<Route path='flight/:flightId/edit' component={ FlightEditView } />
-        		<Route path='flight/:flightId' component={ FlightView } />
-        		<Route path='sites/map' component={ SiteListMapView } />
-        		<Route path='sites' component={ SiteListView } />
-        		<Route path='site/0/edit' component={ SiteEditView } />
-        		<Route path='site/:siteId/edit' component={ SiteEditView } />
-        		<Route path='site/:siteId' component={ SiteView } />
-        		<Route path='gliders' component={ GliderListView } />
-        		<Route path='glider/0/edit' component={ GliderEditView } />
-        		<Route path='glider/:gliderId/edit' component={ GliderEditView } />
-        		<Route path='pilot/edit' component={ PilotEditView } />
-        		<Route path='pilot' component={ PilotView } />
-				<Route path='*' component={ noPage }/>
-        	</Route>
+            <Route path='/' component={ Koifly }>
+                <IndexRoute component={ Home } />
+                <Route path='flights' component={ FlightListView } />
+                <Route path='flight/0/edit' component={ FlightEditView } />
+                <Route path='flight/:flightId/edit' component={ FlightEditView } />
+                <Route path='flight/:flightId' component={ FlightView } />
+                <Route path='sites/map' component={ SiteListMapView } />
+                <Route path='sites' component={ SiteListView } />
+                <Route path='site/0/edit' component={ SiteEditView } />
+                <Route path='site/:siteId/edit' component={ SiteEditView } />
+                <Route path='site/:siteId' component={ SiteView } />
+                <Route path='gliders' component={ GliderListView } />
+                <Route path='glider/0/edit' component={ GliderEditView } />
+                <Route path='glider/:gliderId/edit' component={ GliderEditView } />
+                <Route path='pilot/edit' component={ PilotEditView } />
+                <Route path='pilot' component={ PilotView } />
+                <Route path='*' component={ noPage }/>
+            </Route>
         </Router>
         ),
         document.getElementById('app')

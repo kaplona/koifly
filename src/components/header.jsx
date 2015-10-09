@@ -15,9 +15,9 @@ var Header = React.createClass({
                 <Link to='/' className='header__title'>Koifly</Link>
                 <div className='header__menu'>
                     <Link to='/flights' className='header__menu__item'>Flights</Link>
-                	<Link to='/sites' className='header__menu__item'>Sites</Link>
-                	<Link to='/gliders' className='header__menu__item'>Gliders</Link>
-                	<Link to='/pilot' className='header__menu__item'>Pilot</Link>
+                    <Link to='/sites' className='header__menu__item'>Sites</Link>
+                    <Link to='/gliders' className='header__menu__item'>Gliders</Link>
+                    <Link to='/pilot' className='header__menu__item'>Pilot</Link>
                 </div>
             </div>
         );

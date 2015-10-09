@@ -5,15 +5,15 @@ var Loader = require('./common/loader');
 
 
 var Home = React.createClass({
-	
-	render: function() {
-		return (
-			<div>
-				<Loader />
-				<div>Hellow World</div>
-			</div>
-		);
-	}
+
+    render: function() {
+        return (
+            <div>
+                <Loader />
+                <div>Hellow World</div>
+            </div>
+        );
+    }
 });
 
 

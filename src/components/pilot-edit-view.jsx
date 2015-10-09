@@ -17,140 +17,140 @@ var Loader = require('./common/loader');
 
 
 var PilotEditView = React.createClass({
-	
-	mixins: [ History ],
-	
-	getInitialState: function() {
-		return {
-			pilot: null,
-			errors: {
-				initialFlightNum: '',
-				initialAirtime: '',
-				altitudeUnits: '',
-				hours: '',
-				minutes: ''
-			}
-		};
-	},
 
-	componentDidMount: function() {
-		PubSub.on('dataModified', this.onDataModified, this);
-		this.onDataModified();
-	},
+    mixins: [ History ],
 
-	componentWillUnmount: function() {
-		PubSub.removeListener('dataModified', this.onDataModified, this);
-	},
+    getInitialState: function() {
+        return {
+            pilot: null,
+            errors: {
+                initialFlightNum: '',
+                initialAirtime: '',
+                altitudeUnits: '',
+                hours: '',
+                minutes: ''
+            }
+        };
+    },
 
-	handleSubmit: function(e) {
-		e.preventDefault();
-		var validationRespond = this.validateForm();
-		// If no errors
-		if (validationRespond === true) {
-			var newPilotInfo =  _.clone(this.state.pilot);
-			newPilotInfo.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
-			PilotModel.savePilotInfo(newPilotInfo);
-			this.history.pushState(null, '/pilot');
-		}
-	},
+    componentDidMount: function() {
+        PubSub.on('dataModified', this.onDataModified, this);
+        this.onDataModified();
+    },
 
-	handleInputChange: function(inputName, inputValue) {
-		var newPilotInfo =  _.clone(this.state.pilot);
-		newPilotInfo[inputName] = inputValue;
-		this.setState({ pilot: newPilotInfo }, function() {
-			this.validateForm(true);
-		});
-	},
+    componentWillUnmount: function() {
+        PubSub.removeListener('dataModified', this.onDataModified, this);
+    },
 
-	onDataModified: function() {
-		var pilot = PilotModel.getPilotEditOutput();
-		if (pilot !== null) {
-			pilot.hours = Math.floor(pilot.initialAirtime / 60);
-			pilot.minutes = pilot.initialAirtime % 60;
-		}
-		this.setState({ pilot: pilot });
-	},
+    handleSubmit: function(e) {
+        e.preventDefault();
+        var validationRespond = this.validateForm();
+        // If no errors
+        if (validationRespond === true) {
+            var newPilotInfo =  _.clone(this.state.pilot);
+            newPilotInfo.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
+            PilotModel.savePilotInfo(newPilotInfo);
+            this.history.pushState(null, '/pilot');
+        }
+    },
+
+    handleInputChange: function(inputName, inputValue) {
+        var newPilotInfo =  _.clone(this.state.pilot);
+        newPilotInfo[inputName] = inputValue;
+        this.setState({ pilot: newPilotInfo }, function() {
+            this.validateForm(true);
+        });
+    },
+
+    onDataModified: function() {
+        var pilot = PilotModel.getPilotEditOutput();
+        if (pilot !== null) {
+            pilot.hours = Math.floor(pilot.initialAirtime / 60);
+            pilot.minutes = pilot.initialAirtime % 60;
+        }
+        this.setState({ pilot: pilot });
+    },
 
 
-	validateForm: function(softValidation) {
-		var newPilotInfo =  _.clone(this.state.pilot);
-		var validationRespond = Validation.validateForm(
-				PilotModel.getValidationConfig(),
-				newPilotInfo,
-				softValidation
-		);
-		// update errors state
-		var newErrorState =  _.clone(this.state.errors);
-		$.each(newErrorState, function(fieldName) {
-			newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
-		});
-		this.setState({ errors: newErrorState });
+    validateForm: function(softValidation) {
+        var newPilotInfo =  _.clone(this.state.pilot);
+        var validationRespond = Validation.validateForm(
+                PilotModel.getValidationConfig(),
+                newPilotInfo,
+                softValidation
+        );
+        // update errors state
+        var newErrorState =  _.clone(this.state.errors);
+        $.each(newErrorState, function(fieldName) {
+            newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+        });
+        this.setState({ errors: newErrorState });
 
-		return validationRespond;
-	},
+        return validationRespond;
+    },
 
-	renderLoader: function() {
-		return (
-			<div>
-				<Loader />
-				<div className='button__menu'>
-					<Button active={ false }>Save</Button>
-					<Link to='/pilot'><Button>Cancel</Button></Link>
-				</div>
-			</div>
-		);
-	},
-	
-	render: function() {
-		if (this.state.pilot === null) {
-			return (<div>{ this.renderLoader() }</div>);
-		}
+    renderLoader: function() {
+        return (
+            <div>
+                <Loader />
+                <div className='button__menu'>
+                    <Button active={ false }>Save</Button>
+                    <Link to='/pilot'><Button>Cancel</Button></Link>
+                </div>
+            </div>
+        );
+    },
 
-		var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
-		var altitudeUnitsList = rawAltitudeUnitsList.map(function(unitName) {
-			return {
-				value: unitName,
-				text: unitName
-			};
-		});
-		
-		return (
-			<form onSubmit={ this.handleSubmit }>
-				<div className='container__title'>{ this.state.pilot.userName }</div>
-				
-				<div>My achievements before Koifly:</div>
-				
-				<TextInput
-					inputValue={ this.state.pilot.initialFlightNum }
-					labelText='Number of Flights:'
-					errorMessage={ this.state.errors.initialFlightNum }
-					onChange={ this.handleInputChange.bind(this, 'initialFlightNum') } />
-				
-				<TimeInput
-					hours={ this.state.pilot.hours }
-					minutes={ this.state.pilot.minutes }
-					labelText='Airtime:'
-					errorMessageHours={ this.state.errors.hours }
-					errorMessageMinutes={ this.state.errors.minutes }
-					onChange={ this.handleInputChange } />
+    render: function() {
+        if (this.state.pilot === null) {
+            return (<div>{ this.renderLoader() }</div>);
+        }
 
-				<div className='line' />
-				<div>My settings:</div>
+        var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
+        var altitudeUnitsList = rawAltitudeUnitsList.map(function(unitName) {
+            return {
+                value: unitName,
+                text: unitName
+            };
+        });
 
-				<DropDown
-					selectedValue={ this.state.pilot.altitudeUnits }
-					options={ altitudeUnitsList }
-					labelText='Altitude units:'
-					errorMessage={ this.state.errors.altitudeUnits }
-					onChangeFunc={ this.handleInputChange.bind(this, 'altitudeUnits') } />
-				
-				<div className='button__menu'>
-					<Button type='submit'>Save</Button>
-					<Link to='/pilot'><Button>Cancel</Button></Link>
-				</div>
-			</form>
-		);
-	}
+        return (
+            <form onSubmit={ this.handleSubmit }>
+                <div className='container__title'>{ this.state.pilot.userName }</div>
+
+                <div>My achievements before Koifly:</div>
+
+                <TextInput
+                    inputValue={ this.state.pilot.initialFlightNum }
+                    labelText='Number of Flights:'
+                    errorMessage={ this.state.errors.initialFlightNum }
+                    onChange={ this.handleInputChange.bind(this, 'initialFlightNum') } />
+
+                <TimeInput
+                    hours={ this.state.pilot.hours }
+                    minutes={ this.state.pilot.minutes }
+                    labelText='Airtime:'
+                    errorMessageHours={ this.state.errors.hours }
+                    errorMessageMinutes={ this.state.errors.minutes }
+                    onChange={ this.handleInputChange } />
+
+                <div className='line' />
+                <div>My settings:</div>
+
+                <DropDown
+                    selectedValue={ this.state.pilot.altitudeUnits }
+                    options={ altitudeUnitsList }
+                    labelText='Altitude units:'
+                    errorMessage={ this.state.errors.altitudeUnits }
+                    onChangeFunc={ this.handleInputChange.bind(this, 'altitudeUnits') } />
+
+                <div className='button__menu'>
+                    <Button type='submit'>Save</Button>
+                    <Link to='/pilot'><Button>Cancel</Button></Link>
+                </div>
+            </form>
+        );
+    }
 });
 
 
