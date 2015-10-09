@@ -22,7 +22,8 @@ var RemarksInput = React.createClass({
                 <textarea
                     value={ this.props.inputValue }
                     onChange={ this.handleUserInput }
-                    ref='textarea' />
+                    ref='textarea'
+                    />
             </div>
         );
     }

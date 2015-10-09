@@ -32,7 +32,7 @@ var Table = React.createClass({
 
     handleSorting: function(newSortingField) {
         if (this.state.sortingField === newSortingField) {
-            this.setState(function(previousState) {
+            this.setState((previousState) => {
                 return {
                     sortingDirection: !previousState.sortingDirection
                 };
@@ -82,7 +82,7 @@ var Table = React.createClass({
                 <th
                     key={ 'column-' + column.key }
                     onClick={ this.handleSorting.bind(this, column.key) }
-                >
+                    >
                     { column.label }
                 </th>
             );

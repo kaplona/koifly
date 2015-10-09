@@ -68,7 +68,8 @@ var FlightListView = React.createClass({
                     columns={ columns }
                     rows={ rows }
                     initialSortingField='date'
-                    urlPath='/flight/' />
+                    urlPath='/flight/'
+                    />
                 { this.renderLoader() }
                 <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
             </div>

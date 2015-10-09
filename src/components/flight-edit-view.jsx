@@ -173,7 +173,8 @@ var FlightEditView = React.createClass({
                         inputValue={ this.state.flight.date }
                         labelText={ <span>Date<sup>*</sup>:</span> }
                         errorMessage={ this.state.errors.date }
-                        onChange={ this.handleInputChange.bind(this, 'date') } />
+                        onChange={ this.handleInputChange.bind(this, 'date') }
+                        />
 
                     <TimeInput
                         hours={ this.state.flight.hours }
@@ -181,33 +182,38 @@ var FlightEditView = React.createClass({
                         labelText='Airtime:'
                         errorMessageHours={ this.state.errors.hours }
                         errorMessageMinutes={ this.state.errors.minutes }
-                        onChange={ this.handleInputChange } />
+                        onChange={ this.handleInputChange }
+                        />
 
                     <AltitudeInput
                         inputValue={ this.state.flight.altitude }
                         selectedAltitudeUnits={ this.state.flight.altitudeUnits }
                         labelText='Altitude gained:'
                         errorMessage={ this.state.errors.altitude }
-                        onChange={ this.handleInputChange } />
+                        onChange={ this.handleInputChange }
+                        />
 
                     <DropDown
                         selectedValue={ this.state.flight.siteId }
                         options={ this.renderSelectOptions(sites) }
                         labelText='Site:'
                         errorMessage={ this.state.errors.siteId }
-                        onChangeFunc={ this.handleInputChange.bind(this, 'siteId') } />
+                        onChangeFunc={ this.handleInputChange.bind(this, 'siteId') }
+                        />
 
                     <DropDown
                         selectedValue={ this.state.flight.gliderId }
                         options={ this.renderSelectOptions(gliders) }
                         labelText='Gliger:'
                         errorMessage={ this.state.errors.gliderId }
-                        onChangeFunc={ this.handleInputChange.bind(this, 'gliderId') } />
+                        onChangeFunc={ this.handleInputChange.bind(this, 'gliderId') }
+                        />
 
                     <RemarksInput
                         inputValue={ this.state.flight.remarks }
                         labelText='Remarks'
-                        onChange={ this.handleInputChange.bind(this, 'remarks') } />
+                        onChange={ this.handleInputChange.bind(this, 'remarks') }
+                        />
 
                     <div className='button__menu'>
                         <Button type='submit'>Save</Button>

@@ -62,7 +62,8 @@ var SiteListView = React.createClass({
                     columns={ columnsConfig }
                     rows={ this.state.sites }
                     initialSortingField='name'
-                    urlPath='/site/' />
+                    urlPath='/site/'
+                    />
                 { this.renderLoader() }
                 <Link to='/site/0/edit'><Button>Add Site</Button></Link>
             </div>

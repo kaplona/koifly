@@ -36,14 +36,16 @@ var TimeInput = React.createClass({
                     type='text'
                     className={ this.props.errorMessageHours !== '' ? 'error' : '' }
                     onChange={ this.handleUserInput.bind(this, 'hours') }
-                    ref='hours' />
+                    ref='hours'
+                    />
                 <span>h</span>
                 <input
                     value={ this.props.minutes }
                     type='text'
                     className={ this.props.errorMessageMinutes !== '' ? 'error' : '' }
                     onChange={ this.handleUserInput.bind(this, 'minutes') }
-                    ref='minutes' />
+                    ref='minutes'
+                    />
                 <span>min</span>
             </div>
         );

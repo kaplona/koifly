@@ -12,7 +12,9 @@ var SiteModel = {
         name: {
             method: 'unique',
             rules: {
-                getDataArray: function() { return SiteModel.getSitesArray(); },
+                getDataArray: function() {
+                    return SiteModel.getSitesArray();
+                },
                 field: 'Name'
             }
         },
@@ -45,7 +47,9 @@ var SiteModel = {
         altitudeUnits: {
             method: 'selectOption',
             rules: {
-                getArrayOfOptions: function() { return PilotModel.getAltitudeUnitsList(); },
+                getArrayOfOptions: function() {
+                    return PilotModel.getAltitudeUnitsList();
+                },
                 field: 'Altitude Units'
             }
         }

@@ -29,7 +29,9 @@ var PilotModel = {
         altitudeUnits: {
             method: 'selectOption',
             rules: {
-                getArrayOfOptions: function() { return PilotModel.getAltitudeUnitsList(); },
+                getArrayOfOptions: function() {
+                    return PilotModel.getAltitudeUnitsList();
+                },
                 field: 'Glider'
             }
         },
@@ -101,8 +103,8 @@ var PilotModel = {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newPilotInfo[fieldName] === null || (newPilotInfo[fieldName] + '').trim() === '') &&
-                 config.rules.defaultVal !== undefined)
-            {
+                 config.rules.defaultVal !== undefined
+            ) {
                 // Set it to its default value
                 newPilotInfo[fieldName] = config.rules.defaultVal;
             }

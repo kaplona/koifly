@@ -22,7 +22,9 @@ var FlightModelConstructor = function() {
         siteId: {
             method: 'selectOption',
             rules: {
-                getArrayOfOptions: function() { return SiteModel.getSiteIdsList(); },
+                getArrayOfOptions: function() {
+                    return SiteModel.getSiteIdsList();
+                },
                 defaultVal: null,
                 field: 'Site'
             }
@@ -65,7 +67,9 @@ var FlightModelConstructor = function() {
         gliderId: {
             method: 'selectOption',
             rules: {
-                getArrayOfOptions: function() { return GliderModel.getGliderIdsList(); },
+                getArrayOfOptions: function() {
+                    return GliderModel.getGliderIdsList();
+                },
                 defaultVal: null,
                 field: 'Glider'
             }
@@ -80,7 +84,9 @@ var FlightModelConstructor = function() {
         altitudeUnits: {
             method: 'selectOption',
             rules: {
-                getArrayOfOptions: function() { return PilotModel.getAltitudeUnitsList(); },
+                getArrayOfOptions: function() {
+                    return PilotModel.getAltitudeUnitsList();
+                },
                 field: 'Altitude Units'
             }
         }
@@ -206,8 +212,8 @@ var FlightModelConstructor = function() {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or empty string
             if ((newFlight[fieldName] === null || (newFlight[fieldName] + '').trim() === '') &&
-                 config.rules.defaultVal !== undefined)
-            {
+                 config.rules.defaultVal !== undefined
+            ) {
                 // Set it to its default value
                 newFlight[fieldName] = config.rules.defaultVal;
             }
@@ -278,8 +284,8 @@ var FlightModelConstructor = function() {
         var sitesVisited = [];
         $.each(DataService.data.flights, (flightId, flight) => {
             if (flight.siteId !== null &&
-                sitesVisited.indexOf(flight.siteId) === -1)
-            {
+                sitesVisited.indexOf(flight.siteId) === -1
+            ) {
                 sitesVisited.push(flight.siteId);
             }
         });

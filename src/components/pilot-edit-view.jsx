@@ -81,7 +81,7 @@ var PilotEditView = React.createClass({
         );
         // update errors state
         var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, function(fieldName) {
+        $.each(newErrorState, (fieldName) => {
             newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
@@ -107,7 +107,7 @@ var PilotEditView = React.createClass({
         }
 
         var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
-        var altitudeUnitsList = rawAltitudeUnitsList.map(function(unitName) {
+        var altitudeUnitsList = rawAltitudeUnitsList.map((unitName) => {
             return {
                 value: unitName,
                 text: unitName
@@ -124,7 +124,8 @@ var PilotEditView = React.createClass({
                     inputValue={ this.state.pilot.initialFlightNum }
                     labelText='Number of Flights:'
                     errorMessage={ this.state.errors.initialFlightNum }
-                    onChange={ this.handleInputChange.bind(this, 'initialFlightNum') } />
+                    onChange={ this.handleInputChange.bind(this, 'initialFlightNum') }
+                    />
 
                 <TimeInput
                     hours={ this.state.pilot.hours }
@@ -132,7 +133,8 @@ var PilotEditView = React.createClass({
                     labelText='Airtime:'
                     errorMessageHours={ this.state.errors.hours }
                     errorMessageMinutes={ this.state.errors.minutes }
-                    onChange={ this.handleInputChange } />
+                    onChange={ this.handleInputChange }
+                    />
 
                 <div className='line' />
                 <div>My settings:</div>
@@ -142,7 +144,8 @@ var PilotEditView = React.createClass({
                     options={ altitudeUnitsList }
                     labelText='Altitude units:'
                     errorMessage={ this.state.errors.altitudeUnits }
-                    onChangeFunc={ this.handleInputChange.bind(this, 'altitudeUnits') } />
+                    onChangeFunc={ this.handleInputChange.bind(this, 'altitudeUnits') }
+                    />
 
                 <div className='button__menu'>
                     <Button type='submit'>Save</Button>

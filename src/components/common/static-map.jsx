@@ -49,8 +49,8 @@ var StaticMap = React.createClass({
                 infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
                 Map.createInfowindow(markerId, infowindowContent);
                 Map.bindMarkerAndInfowindow(markerId);
-            };
-        };
+            }
+        }
     },
 
     shouldComponentUpdate: function() {

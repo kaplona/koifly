@@ -33,12 +33,12 @@ var AltitudeInput = React.createClass({
 
     render: function() {
         var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
-        var altitudeUnitOptions = rawAltitudeUnitsList.map(function(unitName) {
+        var altitudeUnitOptions = rawAltitudeUnitsList.map((unitName) => {
             return (
                 <option
                     key={ unitName }
                     value={ unitName }
-                >
+                    >
                     { unitName }
                 </option>
             );
@@ -55,12 +55,13 @@ var AltitudeInput = React.createClass({
                     type='text'
                     className={ this.props.errorMessage !== '' ? 'error' : '' }
                     onChange={ this.handleUserInput.bind(this, this.props.fieldName) }
-                    ref={ this.props.fieldName } />
+                    ref={ this.props.fieldName }
+                    />
                 <select
                     value={ this.props.selectedAltitudeUnits }
                     onChange={ this.handleUserInput.bind(this, 'altitudeUnits') }
                     ref='altitudeUnits'
-                >
+                    >
                     { altitudeUnitOptions }
                 </select>
             </div>

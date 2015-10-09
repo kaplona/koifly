@@ -66,7 +66,8 @@ var FlightView = React.createClass({
                 <StaticMap
                     center={ SiteModel.getLatLngCoordinates(siteId) }
                     zoomLevel={ Map.zoomLevel.site }
-                    markers={ siteList } />
+                    markers={ siteList }
+                    />
             );
         }
         return '';

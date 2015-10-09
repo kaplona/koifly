@@ -90,9 +90,9 @@ var InteractiveMap = React.createClass({
             Map.setInfowindowContent(this.props.markerId, infowindowContentHtml);
             Map.openInfowindow(this.props.markerId);
 
-            $('#apply_google_data').on('click', function() {
+            $('#apply_google_data').on('click', () => {
                 this.applyGoogleData(address, infowindowContent.elevation, coordinates);
-            }.bind(this));
+            });
         }
     },
 

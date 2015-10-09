@@ -105,13 +105,13 @@
     // Stylistic Issues
     "array-bracket-spacing": [1, "never", { "singleValue": true }],
     "block-spacing": [1, "always"],
-//    "brace-style": [1, "1tbs"],
+    "brace-style": [1, "1tbs"],
     // http://eslint.org/docs/rules/camelcase
     "comma-spacing": 1,
     "comma-style": 1,
     "computed-property-spacing": [1, "never"],
     "consistent-this": [1, "this"],
-//    "eol-last": 1,
+    "eol-last": 1,
     // http://eslint.org/docs/rules/func-names
     "jsx-quotes": [1, "prefer-single"],
     "key-spacing": [1, {"beforeColon": false, "afterColon": true, "mode": "minimum"}],
@@ -157,7 +157,7 @@
     "no-dupe-class-members": 1,
     "no-this-before-super": 1,
     // http://eslint.org/docs/rules/no-var
-//    "prefer-arrow-callback": 1,
+    "prefer-arrow-callback": 1,
     // http://eslint.org/docs/rules/prefer-const
     "prefer-spread": 1,
     // http://eslint.org/docs/rules/prefer-reflect
@@ -170,7 +170,7 @@
     // Full list: https://github.com/yannickcr/eslint-plugin-react
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
     "react/jsx-boolean-value": 1,
-//    "react/jsx-closing-bracket-location": [1, "props-aligned"],
+    "react/jsx-closing-bracket-location": [1, "props-aligned"],
     "react/jsx-curly-spacing": [1, "always"],
     "react/jsx-max-props-per-line": [1, {"maximum": 3}],
     "react/jsx-no-duplicate-props": [1, {"ignoreCase": true}],

@@ -33,7 +33,7 @@ function mainApp() {
         method: 'GET',
         url: '/test'
     })
-    .done(function(msg) {
+    .done((msg) => {
         console.log('respond: ' + msg);
     });
 

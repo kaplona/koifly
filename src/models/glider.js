@@ -11,7 +11,9 @@ var GliderModel = {
         name: {
             method: 'unique',
             rules: {
-                getDataArray: function() { return GliderModel.getGlidersArray(); },
+                getDataArray: function() {
+                    return GliderModel.getGlidersArray();
+                },
                 field: 'Name'
             }
         },
@@ -120,8 +122,8 @@ var GliderModel = {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newGlider[fieldName] === null || (newGlider[fieldName] + '').trim() === '') &&
-                 config.rules.defaultVal !== undefined)
-            {
+                 config.rules.defaultVal !== undefined
+            ) {
                 // Set it to its default value
                 newGlider[fieldName] = config.rules.defaultVal;
             }

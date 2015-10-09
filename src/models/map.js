@@ -56,10 +56,10 @@ var Map = {
         this.map = new google.maps.Map(htmlContainer, this.mapOptions);
         if (centerCoordinates !== undefined || centerCoordinates !== null) {
             this.map.setCenter(centerCoordinates);
-        };
+        }
         if (zoomLevel !== undefined) {
             this.map.setZoom(zoomLevel);
-        };
+        }
         this.map.setTilt(0); // Disable 45 degree rotation when fully zoomed in
     },
 
@@ -200,27 +200,27 @@ var Map = {
         containerDiv.appendChild(searchButton);
 
         // Add search event to search button
-        google.maps.event.addDomListener(searchButton, 'click', function() {
+        google.maps.event.addDomListener(searchButton, 'click', () => {
             Map.searchAddress(markerId);
         });
         // Trigger search event if Enter key is pressed on search bar
-        google.maps.event.addDomListener(searchBar, 'keypress', function(e) {
+        google.maps.event.addDomListener(searchBar, 'keypress', (e) => {
             if (e.keyCode == 13) {
                 e.preventDefault();
                 Map.searchAddress(markerId);
-            };
+            }
         });
     },
 
     searchAddress: function(markerId) {
         var address = document.getElementById('search_bar').value;
-        this.geocoder.geocode({ 'address': address }, function(results, status) {
+        this.geocoder.geocode({ 'address': address }, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
                 var position = results[0].geometry.location;
                 Map.moveMarker(position, markerId);
             } else {
                 console.log('Geocode was not successful for the following reason: ' + status);
-            };
+            }
         });
     },
 
@@ -238,11 +238,11 @@ var Map = {
                 } else {
                     console.log('No elevation data for given position');
                     this.infowindowContent.elevation = 0;
-                };
+                }
             } else {
                 console.log('Elevation request failed');
                 this.infowindowContent.elevation = 0;
-            };
+            }
             // Map.changeInfowindowContent();
             PubSub.publish('infowindowContentChanged', this.infowindowContent);
         });
@@ -253,7 +253,7 @@ var Map = {
         var positionalRequest = {
             'location': googleMapPosition
         };
-        this.geocoder.geocode(positionalRequest, function(results, status) {
+        this.geocoder.geocode(positionalRequest, (results, status) => {
             if (status == google.maps.GeocoderStatus.OK) {
                 // Retrieve the second result (less detailed compare to the first one)
                 if (results[1]) {
@@ -261,21 +261,21 @@ var Map = {
                 } else {
                     console.log('No address for given position');
                     this.infowindowContent.address = '';
-                };
+                }
             } else {
                 console.log('Address request failed');
                 this.infowindowContent.address = '';
-            };
+            }
             PubSub.publish('infowindowContentChanged', this.infowindowContent);
-        }.bind(this));
+        });
     },
 
     getCoordinates: function(position) {
         var lat, lng;
         // Chech the position formate
         if (position.lat instanceof Function &&
-            position.lng instanceof Function)
-        {
+            position.lng instanceof Function
+        ) {
             // formate returned by map onclick event
             lat = position.lat();
             lng = position.lng();
@@ -283,10 +283,10 @@ var Map = {
             // simple formate { lat: 34.4545454, lng: -120.564523 }
             lat = position.lat;
             lng = position.lng;
-        };
+        }
         // round to 6 digits after floating point
-        var lat = Math.round(lat * 1000000) / 1000000;
-        var lng = Math.round(lng * 1000000) / 1000000;
+        lat = Math.round(lat * 1000000) / 1000000;
+        lng = Math.round(lng * 1000000) / 1000000;
         this.infowindowContent.coordinates = lat + ' ' + lng;
         PubSub.publish('infowindowContentChanged', this.infowindowContent);
     },
@@ -328,14 +328,14 @@ var Map = {
         ];
 
         // Pull needed values from geocoder result
-        for (var i = 0; i < addressElements.length; i++) {
-            for (var j = 0; j < geocoderAddressComponents.length; j++) {
+        for (i = 0; i < addressElements.length; i++) {
+            for (j = 0; j < geocoderAddressComponents.length; j++) {
                 if (geocoderAddressComponents[j].types.indexOf(addressElements[i].googleKey) != -1) {
                     addressElements[i].value = geocoderAddressComponents[j][addressElements[i].valueType];
                     break;
-                };
-            };
-        };
+                }
+            }
+        }
 
         var addressArray = [];
         var formattedAddress = '';
@@ -343,15 +343,15 @@ var Map = {
         for (i = 0; i < addressElements.length; i++) {
             if (addressElements[i].value !== null) {
                 addressArray.push(addressElements[i].value);
-            };
-        };
+            }
+        }
         // Formate values into string
         for (i = 0; i < addressArray.length; i++) {
             formattedAddress += addressArray[i];
             if (i != (addressArray.length - 1)) {
                 formattedAddress += ', ';
-            };
-        };
+            }
+        }
         return formattedAddress;
     }
 };

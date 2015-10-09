@@ -101,7 +101,7 @@ var SiteEditView = React.createClass({
         );
         // update errors state
         var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, function(fieldName) {
+        $.each(newErrorState, (fieldName) => {
             newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
@@ -111,8 +111,8 @@ var SiteEditView = React.createClass({
 
     dropPinByCoordinates: function() {
         if (this.state.site.coordinates.trim() !== '' &&
-            this.state.errors.coordinates === '')
-        {
+            this.state.errors.coordinates === ''
+        ) {
             // Change user input in { lat: 56.56734543, lng: 123.4567543 } form
             var newCoordinates = SiteModel.formCoordinatesInput(this.state.site.coordinates);
             this.setState({ markerPosition: newCoordinates });
@@ -159,7 +159,8 @@ var SiteEditView = React.createClass({
                     location={ this.state.site.location }
                     launchAltitude={ this.state.site.launchAltitude }
                     altitudeUnits={ this.state.site.altitudeUnits }
-                    onDataApply={ this.handleInputChange } />
+                    onDataApply={ this.handleInputChange }
+                    />
             );
         }
 
@@ -188,13 +189,15 @@ var SiteEditView = React.createClass({
                         inputValue={ this.state.site.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }
                         errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange.bind(this, 'name') } />
+                        onChange={ this.handleInputChange.bind(this, 'name') }
+                        />
 
                     <TextInput
                         inputValue={ this.state.site.location }
                         labelText='Location:'
                         errorMessage={ this.state.errors.location }
-                        onChange={ this.handleInputChange.bind(this, 'location') } />
+                        onChange={ this.handleInputChange.bind(this, 'location') }
+                        />
 
                     <AltitudeInput
                         inputValue={ this.state.site.launchAltitude }
@@ -202,14 +205,16 @@ var SiteEditView = React.createClass({
                         labelText='Launch Altitude:'
                         fieldName='launchAltitude'
                         errorMessage={ this.state.errors.launchAltitude }
-                        onChange={ this.handleInputChange } />
+                        onChange={ this.handleInputChange }
+                        />
 
                     <TextInput
                         inputValue={ this.state.site.coordinates }
                         labelText='Coordinates:'
                         errorMessage={ this.state.errors.coordinates }
                         onChange={ this.handleInputChange.bind(this, 'coordinates') }
-                        onBlur={ this.dropPinByCoordinates } />
+                        onBlur={ this.dropPinByCoordinates }
+                        />
 
                     { this.renderMap() }
 

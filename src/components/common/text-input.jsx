@@ -36,7 +36,8 @@ var TextInput = React.createClass({
                     className={ this.props.errorMessage !== '' ? 'error' : '' }
                     onChange={ this.handleUserInput }
                     onBlur={ this.props.onBlur }
-                    ref='input' />
+                    ref='input'
+                    />
             </div>
         );
     }

@@ -67,10 +67,10 @@ var Util = {
             date.substring(8) < 1 ||
             date.substring(8) > 31 ||
             date.substring(4, 5) != '-' ||
-            date.substring(7, 8) != '-')
-        {
+            date.substring(7, 8) != '-'
+        ) {
             return false;
-        };
+        }
 
         return true;
     },
@@ -82,17 +82,17 @@ var Util = {
     isInteger: function(val) {
         if ((val * 1 % 1) !== 0) {
             return false;
-        };
+        }
         return true;
     },
 
     isNumberWithin: function(number, min, max) {
         if (min !== undefined && number < min) {
             return false;
-        };
+        }
         if (max !== undefined && number > max) {
             return false;
-        };
+        }
         return true;
     },
 

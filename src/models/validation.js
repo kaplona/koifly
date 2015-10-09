@@ -22,7 +22,7 @@ var Validation = {
                 // Write error message for this field
                 errors[fieldName] = validationResult;
                 noErrors = false;
-            };
+            }
         });
 
         return noErrors ? true : errors;
@@ -71,7 +71,7 @@ var Validation = {
             if (emptyStatus === true ||
                 (!soft && emptyStatus !== false)) {
                 return emptyStatus;
-            };
+            }
 
             var trimValue = formData[fieldName].trim();
             var dataArray = rules.getDataArray();
@@ -81,11 +81,11 @@ var Validation = {
                 if (dataArray[i][fieldName].toUpperCase() == trimValue.toUpperCase() &&
                         // And user creates a new record or it's not the record user modifies
                         (formData.id === undefined ||
-                         formData.id != dataArray[i].id))
-                {
+                         formData.id != dataArray[i].id)
+                ) {
                     return rules.field + ' must be unique';
-                };
-            };
+                }
+            }
 
             return true;
         },
@@ -96,13 +96,14 @@ var Validation = {
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!soft && emptyStatus !== false)
+            ) {
                 return emptyStatus;
-            };
+            }
 
             if (!Util.isRightDateFormat(formData[fieldName])) {
                 return rules.field + ' must be in yyyy-mm-dd formate';
-            };
+            }
 
             return true;
         },
@@ -113,13 +114,14 @@ var Validation = {
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!soft && emptyStatus !== false)
+            ) {
                 return emptyStatus;
-            };
+            }
 
             if (formData[fieldName] === 'other') {
                 return true;
-            };
+            }
 
             // If selecting from Model objects (by ids)
             // if (rules.getDataArray !== undefined) {
@@ -135,7 +137,7 @@ var Validation = {
                 var arrayOfOptions = rules.getArrayOfOptions();
                 if (arrayOfOptions.indexOf(formData[fieldName].toString()) !== -1) {
                     return true;
-                };
+                }
             // };
 
             return 'Choose from existing ' + rules.field + ' options';
@@ -149,9 +151,10 @@ var Validation = {
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!soft && emptyStatus !== false)
+            ) {
                 return emptyStatus;
-            };
+            }
 
             // If value is a number
             if (Util.isNumber(formData[fieldName])) {
@@ -159,15 +162,15 @@ var Validation = {
                 // Check number quality against each given rule
                 if (rules.round && !Util.isInteger(formData[fieldName])) {
                     errors.push(' round number');
-                };
+                }
                 if (!Util.isNumberWithin(formData[fieldName], rules.min, rules.max)) {
                     if (rules.min !== undefined) {
                         errors.push(' greater than ' + rules.min);
-                    };
+                    }
                     if (rules.max !== undefined) {
                         errors.push(' less than ' + rules.max);
-                    };
-                };
+                    }
+                }
                 // If quality control failed
                 if (errors.length !== 0) {
                     // Compose an error message
@@ -176,14 +179,14 @@ var Validation = {
                         errorMessage += errors[i];
                         if ((i + 1) != errors.length) {
                             errorMessage += ',';
-                        };
-                    };
+                        }
+                    }
                     // Return the error
                     return errorMessage;
-                };
+                }
 
                 return true;
-            };
+            }
             // If value is not a number
             return rules.field + ' must be a number';
         },
@@ -193,9 +196,10 @@ var Validation = {
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!soft && emptyStatus !== false)
+            ) {
                 return emptyStatus;
-            };
+            }
             // I soft validation
             return true;
         },
@@ -209,9 +213,10 @@ var Validation = {
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!soft && emptyStatus !== false)
+            ) {
                 return emptyStatus;
-            };
+            }
 
             // Repplace all degree characters by space
             var coord = formData[fieldName].replace(/°/g, ' ').trim();
@@ -226,9 +231,9 @@ var Validation = {
                     if (Util.isNumberWithin(coordArray[0], rules.minLatitude, rules.maxLatitude) &&
                         Util.isNumberWithin(coordArray[1], rules.minLongitude, rules.maxLongitude)) {
                             return true;
-                    };
-                };
-            };
+                    }
+                }
+            }
             // If validation failed
             return rules.field + ' must be in Decimal Degrees formate';
         }

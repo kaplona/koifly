@@ -21,16 +21,15 @@ var DropDown = React.createClass({
 
     handleUserInput: function() {
         this.props.onChangeFunc(this.refs.selectInput.getDOMNode().value);
-        return;
     },
 
     render: function() {
-        var selectOptions = this.props.options.map(function(option) {
+        var selectOptions = this.props.options.map((option) => {
             return (
                 <option
                     key={ option.value }
                     value={ option.value }
-                >
+                    >
                     { option.text }
                 </option>
             );
@@ -47,7 +46,7 @@ var DropDown = React.createClass({
                     value={ this.props.selectedValue }
                     onChange={ this.handleUserInput }
                     ref='selectInput'
-                >
+                    >
                     { selectOptions }
                 </select>
             </div>

@@ -100,7 +100,7 @@ var GliderEditView = React.createClass({
         );
         // update errors state
         var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, function(fieldName) {
+        $.each(newErrorState, (fieldName) => {
             newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
@@ -149,7 +149,8 @@ var GliderEditView = React.createClass({
                         inputValue={ this.state.glider.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }
                         errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange.bind(this, 'name') } />
+                        onChange={ this.handleInputChange.bind(this, 'name') }
+                        />
 
                     <div>Glider usage before Koifly:</div>
 
@@ -157,7 +158,8 @@ var GliderEditView = React.createClass({
                         inputValue={ this.state.glider.initialFlightNum }
                         labelText='Number of Flights:'
                         errorMessage={ this.state.errors.initialFlightNum }
-                        onChange={ this.handleInputChange.bind(this, 'initialFlightNum') } />
+                        onChange={ this.handleInputChange.bind(this, 'initialFlightNum') }
+                        />
 
                     <TimeInput
                         hours={ this.state.glider.hours }
@@ -165,12 +167,14 @@ var GliderEditView = React.createClass({
                         labelText='Airtime:'
                         errorMessageHours={ this.state.errors.hours }
                         errorMessageMinutes={ this.state.errors.minutes }
-                        onChange={ this.handleInputChange } />
+                        onChange={ this.handleInputChange }
+                        />
 
                     <RemarksInput
                         inputValue={ this.state.glider.remarks }
                         labelText='Remarks'
-                        onChange={ this.handleInputChange.bind(this, 'remarks') } />
+                        onChange={ this.handleInputChange.bind(this, 'remarks') }
+                        />
 
                     <div className='button__menu'>
                         <Button type='submit'>Save</Button>
