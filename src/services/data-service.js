@@ -1,9 +1,9 @@
 'use strict';
 
-//var $ = require('jquery');
+var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('../models/pubsub');
-var Util = require('../models/util');
+var PubSub = require('../utils/pubsub');
+var Util = require('../utils/util');
 
 
 
@@ -146,6 +146,22 @@ var DataService = {
         flights: null,
         sites: null,
         gliders: null
+    },
+
+    loadData: function() {
+        var data = [
+            { first: 'inside', second: 'out' },
+            { first: 'despicable', second: 'me' }
+        ];
+
+        $.ajax({
+                method: 'GET',
+                url: '/test',
+                data: { lastModified: 1111111, data: data }
+            })
+            .done((msg) => {
+                console.log('respond: ' + msg);
+            });
     },
 
     // TODO data should be modifies from server respond

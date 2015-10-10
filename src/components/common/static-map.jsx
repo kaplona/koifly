@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Map = require('../../models/map');
+var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
 

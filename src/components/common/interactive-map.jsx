@@ -3,7 +3,7 @@
 var React = require('react');
 var PubSub = require('pubsub-js');
 var $ = require('jquery');
-var Map = require('../../models/map');
+var Map = require('../../utils/map');
 var PilotModel = require('../../models/pilot');
 
 

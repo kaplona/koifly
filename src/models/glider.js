@@ -1,8 +1,8 @@
 'use strict';
 
 var $ = require('jquery');
-var PubSub = require('./pubsub');
-var DataService = require('../services/dataService');
+var PubSub = require('./../utils/pubsub');
+var DataService = require('../services/data-service');
 
 
 var GliderModel = {

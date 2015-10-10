@@ -2,12 +2,12 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('./pubsub');
-var DataService = require('../services/dataService');
+var PubSub = require('./../utils/pubsub');
+var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
 var PilotModel = require('./pilot');
-var Util = require('./util');
+var Util = require('./../utils/util');
 
 
 var FlightModelConstructor = function() {

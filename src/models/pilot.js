@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
-var DataService = require('../services/dataService');
+var DataService = require('../services/data-service');
 var GliderModel = require('./glider');
 
 

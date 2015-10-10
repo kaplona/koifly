@@ -7,6 +7,8 @@ var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
 
+var DataService = require('./services/data-service');
+
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var $ = require('jquery');
 var Home = require('./components/home');
@@ -29,13 +31,7 @@ require('./components/koifly.css');
 
 function mainApp() {
 
-    $.ajax({
-        method: 'GET',
-        url: '/test'
-    })
-    .done((msg) => {
-        console.log('respond: ' + msg);
-    });
+    DataService.loadData();
 
     React.render((
         <Router history={ createBrowserHistory() }>

@@ -80,10 +80,7 @@ var Util = {
     },
 
     isInteger: function(val) {
-        if ((val * 1 % 1) !== 0) {
-            return false;
-        }
-        return true;
+        return (val * 1 % 1) === 0;
     },
 
     isNumberWithin: function(number, min, max) {

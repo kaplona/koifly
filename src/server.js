@@ -99,7 +99,16 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/test',
         handler: function(request, reply) {
-            reply('Hello World');
+            var respond = '=> ';
+            if (request.query.lastModified !== 0) {
+                for (var i = 0; i < request.query.data.length; i++) {
+                    respond += request.query.data[i].first + ' ' + request.query.data[i].second;
+                    if (i !== (request.query.data.length - 1)) {
+                        respond += ', ';
+                    }
+                }
+            }
+            reply(respond);
         }
     });
 
