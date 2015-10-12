@@ -2,6 +2,7 @@
 
 var React = require('react');
 var ReactRouter = require('react-router');
+var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var PubSub = require('../utils/pubsub');
 var SiteModel = require('../models/site');
@@ -11,6 +12,8 @@ var Loader = require('./common/loader');
 
 
 var SiteListView = React.createClass({
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -25,6 +28,10 @@ var SiteListView = React.createClass({
 
     componentWillUnmount: function() {
         PubSub.removeListener('dataModified', this.onDataModified, this);
+    },
+
+    handleRowClick: function(siteId) {
+        this.history.pushState(null, '/site/' + siteId);
     },
 
     onDataModified: function() {
@@ -62,7 +69,7 @@ var SiteListView = React.createClass({
                     columns={ columnsConfig }
                     rows={ this.state.sites }
                     initialSortingField='name'
-                    urlPath='/site/'
+                    onRowClick={ this.handleRowClick }
                     />
                 { this.renderLoader() }
                 <Link to='/site/0/edit'><Button>Add Site</Button></Link>

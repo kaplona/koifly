@@ -19,13 +19,13 @@ server.connection({
 
 
 var plugins = [
-    {register: Inert}, // enables serving static files (file and directory handlers)
-    {register: Vision} // enables rendering views with custom engines (view handler)
+    { register: Inert }, // enables serving static files (file and directory handlers)
+    { register: Vision } // enables rendering views with custom engines (view handler)
 ];
 // Enable proxying requests to webpack dev server (proxy handler)
 if (process.env.NODE_ENV === 'development') {
     var H2o2 = require('h2o2');
-    plugins.push({register: H2o2});
+    plugins.push({ register: H2o2 });
 }
 
 

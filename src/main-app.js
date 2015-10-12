@@ -10,7 +10,7 @@ var Route = ReactRouter.Route;
 var DataService = require('./services/data-service');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
-var $ = require('jquery');
+//var $ = require('jquery');
 var Home = require('./components/home');
 var Koifly = require('./components/koifly');
 var FlightListView = require('./components/flight-list-view');

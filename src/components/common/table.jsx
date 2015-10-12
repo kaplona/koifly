@@ -16,8 +16,7 @@ var Table = React.createClass({
             defaultSortingDirection: React.PropTypes.bool
         })).isRequired,
         initialSortingField: React.PropTypes.string.isRequired,
-        onRowClick: React.PropTypes.func,
-        urlPath: React.PropTypes.string
+        onRowClick: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -91,15 +90,9 @@ var Table = React.createClass({
         var rowNodes = sortedRows.map((row) => {
             var rowToDisplay = [];
             for (var i = 0; i < this.props.columns.length; i++) {
-                rowToDisplay.push(
-                    <td>
-                        <Link to={ this.props.urlPath + row.id } className='nolink'>
-                            { row[this.props.columns[i].key] }
-                        </Link>
-                    </td>
-                );
+                rowToDisplay.push(<td>{ row[this.props.columns[i].key] }</td>);
             }
-            return <tr key={ 'row-' + row.id }>{ rowToDisplay }</tr>;
+            return <tr key={ 'row-' + row.id } onClick={ this.handleRowClick.bind(this, row.id) }>{ rowToDisplay }</tr>;
         });
 
         return (

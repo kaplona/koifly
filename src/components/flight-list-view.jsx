@@ -2,6 +2,7 @@
 
 var React = require('react');
 var ReactRouter = require('react-router');
+var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var PubSub = require('../utils/pubsub');
 var FlightModel = require('../models/flight');
@@ -11,6 +12,8 @@ var Loader = require('./common/loader');
 
 
 var FlightListView = React.createClass({
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -25,6 +28,10 @@ var FlightListView = React.createClass({
 
     componentWillUnmount: function() {
         PubSub.removeListener('dataModified', this.onDataModified, this);
+    },
+
+    handleRowClick: function(flightId) {
+        this.history.pushState(null, '/flight/' + flightId);
     },
 
     onDataModified: function() {
@@ -68,7 +75,7 @@ var FlightListView = React.createClass({
                     columns={ columns }
                     rows={ rows }
                     initialSortingField='date'
-                    urlPath='/flight/'
+                    onRowClick={ this.handleRowClick }
                     />
                 { this.renderLoader() }
                 <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
