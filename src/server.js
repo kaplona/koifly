@@ -6,6 +6,7 @@ var Hapi = require('hapi');
 var Inert = require('inert');
 var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
+var QueryHandler = require('./server-handlers/query-handler');
 
 
 
@@ -97,18 +98,17 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'GET',
-        path: '/test',
+        path: '/api/data',
         handler: function(request, reply) {
-            var respond = '=> ';
-            if (request.query.lastModified !== 0) {
-                for (var i = 0; i < request.query.data.length; i++) {
-                    respond += request.query.data[i].first + ' ' + request.query.data[i].second;
-                    if (i !== (request.query.data.length - 1)) {
-                        respond += ', ';
-                    }
-                }
-            }
-            reply(respond);
+            QueryHandler(request, reply);
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/data',
+        handler: function(request, reply) {
+            QueryHandler(request, reply);
         }
     });
 

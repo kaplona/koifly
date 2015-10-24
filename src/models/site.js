@@ -1,7 +1,6 @@
 'use strict';
 
 var $ = require('jquery');
-var PubSub = require('./../utils/pubsub');
 var DataService = require('../services/data-service');
 var PilotModel = require('./pilot');
 
@@ -52,6 +51,13 @@ var SiteModel = {
                 },
                 field: 'Altitude Units'
             }
+        },
+        remarks: {
+            method: 'text',
+            rules: {
+                defaultVal: '',
+                field: 'Remarks'
+            }
         }
     },
 
@@ -69,7 +75,8 @@ var SiteModel = {
             return null;
         }
         if (DataService.data.sites[id] === undefined) {
-            return null;
+            // TODO return error 'page not found'
+            return false;
         }
         var coordinates = this.formCoordinatesOutput(DataService.data.sites[id].coordinates);
         var altitude = PilotModel.getAltitudeInPilotUnits(DataService.data.sites[id].launchAltitude);
@@ -82,6 +89,7 @@ var SiteModel = {
             coordinates: coordinates,
             launchAltitude: altitude,
             altitudeUnits: altitudeUnits,
+            remarks: DataService.data.sites[id].remarks,
             locationSort: DataService.data.sites[id].location.toUpperCase()
         };
     },
@@ -95,31 +103,41 @@ var SiteModel = {
             location: '',
             coordinates: '', // !!! default local coordinates
             launchAltitude: 0,
-            altitudeUnits: PilotModel.getAltitudeUnits()
+            altitudeUnits: PilotModel.getAltitudeUnits(),
+            remarks: ''
         };
     },
 
     saveSite: function(newSite) {
         newSite = this.setSiteInput(newSite);
-        DataService.changeSites([ newSite ]);
+        DataService.changeSite(newSite);
     },
 
     setSiteInput: function(newSite) {
         // Set default values to empty fields
         newSite = this.setDefaultValues(newSite);
 
+        var site = {};
+        site.id = newSite.id;
+        site.name = newSite.name;
+        site.location = newSite.location;
+        site.coordinates = this.formCoordinatesInput(newSite.coordinates);
+        site.remarks = newSite.remarks;
+
         var oldAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
         var newAltitude = newSite.launchAltitude;
         var units = newSite.altitudeUnits;
-        newSite.launchAltitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
-        newSite.coordinates = this.formCoordinatesInput(newSite.coordinates);
-        return newSite;
+        site.launchAltitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
+
+        return site;
     },
 
     setDefaultValues: function(newSite) {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
-            if ((newSite[fieldName] === null || (newSite[fieldName] + '').trim() === '') &&
+            if ((newSite[fieldName] === null ||
+                 newSite[fieldName] === undefined ||
+                (newSite[fieldName] + '').trim() === '') &&
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
@@ -130,8 +148,7 @@ var SiteModel = {
     },
 
     deleteSite: function(siteId) {
-        PubSub.emit('siteDeleted', { siteId: siteId });
-        DataService.changeSites([ { id: siteId, see: 0 } ]);
+        DataService.changeSite({ id: siteId, see: 0 });
     },
 
     getLatLngCoordinates: function(siteId) {

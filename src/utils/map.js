@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
-var PubSub = require('pubsub-js');
+var PubSub = require('./pubsub');
 var Util = require('./util');
 // var mapsapi = require('google-maps-api')('AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s');
 // mapsapi().then( function( maps ) {
@@ -243,8 +243,7 @@ var Map = {
                 console.log('Elevation request failed');
                 this.infowindowContent.elevation = 0;
             }
-            // Map.changeInfowindowContent();
-            PubSub.publish('infowindowContentChanged', this.infowindowContent);
+            PubSub.emit('infowindowContentChanged', this.infowindowContent);
         });
     },
 
@@ -266,7 +265,7 @@ var Map = {
                 console.log('Address request failed');
                 this.infowindowContent.address = '';
             }
-            PubSub.publish('infowindowContentChanged', this.infowindowContent);
+            PubSub.emit('infowindowContentChanged', this.infowindowContent);
         });
     },
 
@@ -288,7 +287,7 @@ var Map = {
         lat = Math.round(lat * 1000000) / 1000000;
         lng = Math.round(lng * 1000000) / 1000000;
         this.infowindowContent.coordinates = lat + ' ' + lng;
-        PubSub.publish('infowindowContentChanged', this.infowindowContent);
+        PubSub.emit('infowindowContentChanged', this.infowindowContent);
     },
 
     // Examples of formated address:

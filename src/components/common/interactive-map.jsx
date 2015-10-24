@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var PubSub = require('pubsub-js');
+var PubSub = require('../../utils/pubsub');
 var $ = require('jquery');
 var Map = require('../../utils/map');
 var PilotModel = require('../../models/pilot');
@@ -41,12 +41,12 @@ var InteractiveMap = React.createClass({
             markerPosition: Map.outOfMapCoordinates,
             location: '',
             launchAltitude: '',
-            altitudeUnits: PilotModel.getAltitudeUnits()
+            altitudeUnits: 'meter'
         };
     },
 
     componentWillMount: function() {
-        PubSub.subscribe('infowindowContentChanged', this.changeInfowindowContent);
+        PubSub.on('infowindowContentChanged', this.changeInfowindowContent, this);
     },
 
     componentDidMount: function() {
@@ -70,12 +70,12 @@ var InteractiveMap = React.createClass({
     },
 
     componentWillUnmount: function() {
-        PubSub.unsubscribe(this.changeInfowindowContent);
+        PubSub.removeListener('infowindowContentChanged', this.changeInfowindowContent, this);
         $('#apply_google_data').off('click');
         Map.unmountMap();
     },
 
-    changeInfowindowContent: function(eventName, infowindowContent) {
+    changeInfowindowContent: function(infowindowContent) {
         // If all google map information requests were completed
         if (infowindowContent.address !== undefined &&
             infowindowContent.elevation !== undefined &&

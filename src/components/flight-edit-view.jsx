@@ -230,7 +230,3 @@ var FlightEditView = React.createClass({
 
 
 module.exports = FlightEditView;
-
-
-
-

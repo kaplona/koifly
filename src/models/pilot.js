@@ -2,7 +2,6 @@
 
 var $ = require('jquery');
 var DataService = require('../services/data-service');
-var GliderModel = require('./glider');
 
 
 var PilotModel = {
@@ -64,16 +63,20 @@ var PilotModel = {
         if (DataService.data.pilot === null) {
             return null;
         }
+        // require FlightModel and GliderModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
+        var GliderModel = require('./glider');
         var flightNumTotal = DataService.data.pilot.initialFlightNum + FlightModel.getNumberOfFlights();
         var airtimeTotal = DataService.data.pilot.initialAirtime + FlightModel.getTotalAirtime();
+        var siteNum = FlightModel.getNumberOfVisitedSites();
+        var gliderNum = GliderModel.getNumberOfGliders();
 
         return {
             userName: DataService.data.pilot.userName,
             flightNumTotal: flightNumTotal,
             airtimeTotal: airtimeTotal,
-            siteNum: FlightModel.getNumberOfVisitedSites(),
-            gliderNum: GliderModel.getNumberOfGliders(),
+            siteNum: siteNum,
+            gliderNum: gliderNum,
             altitudeUnits: DataService.data.pilot.altitudeUnits
         };
     },
@@ -92,17 +95,19 @@ var PilotModel = {
 
     savePilotInfo: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
-        newPilotInfo.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
-        newPilotInfo.initialAirtime = parseInt(newPilotInfo.initialAirtime);
-        // TODO don't change data directly, send it to DataService for server updates
-        DataService.changePilotInfo(newPilotInfo);
-        // TODO don't forget about dateModified
+        var pilot = {};
+        pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
+        pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
+        pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+        DataService.changePilotInfo(pilot);
     },
 
     setDefaultValues: function(newPilotInfo) {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
-            if ((newPilotInfo[fieldName] === null || (newPilotInfo[fieldName] + '').trim() === '') &&
+            if ((newPilotInfo[fieldName] === null ||
+                 newPilotInfo[fieldName] === undefined ||
+                (newPilotInfo[fieldName] + '').trim() === '') &&
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value

@@ -38,7 +38,10 @@ var FlightView = React.createClass({
 
     onDataModified: function() {
         var flight = FlightModel.getFlightOutput(this.props.params.flightId);
-        // TODO if no flight with given id => show error
+        if (flight === false) {
+            // TODO if no flight with given id => show error
+            return;
+        }
         this.setState({ flight: flight });
     },
 
@@ -113,6 +116,3 @@ var FlightView = React.createClass({
 
 
 module.exports = FlightView;
-
-
-

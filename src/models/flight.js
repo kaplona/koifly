@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
+//var _ = require('underscore');
 var PubSub = require('./../utils/pubsub');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
@@ -112,9 +112,7 @@ var FlightModelConstructor = function() {
         // If site is not defined for this flight show empty string to user instead
         var siteId = DataService.data.flights[id].siteId;
         var siteName = '';
-        // If site is defined
         if (siteId !== null) {
-            // Find site name to show to user
             siteName = SiteModel.getSiteNameById(siteId);
         }
         // If glider is not defined for this flight show empty string to user instead
@@ -124,13 +122,13 @@ var FlightModelConstructor = function() {
             gliderName = GliderModel.getGliderNameById(gliderId);
         }
 
-
+        var date = DataService.data.flights[id].date.substring(0, 10);
         var altitude = PilotModel.getAltitudeInPilotUnits(DataService.data.flights[id].altitude);
         var altitudeUnits = PilotModel.getAltitudeUnits();
         var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, DataService.data.flights[id].altitude);
         return {
             id: id,
-            date: DataService.data.flights[id].date,
+            date: date,
             siteId: siteId, // ??? last added site or first site in alphabetic order !!! null if no sites yet
             siteName: siteName,
             altitude: altitude,
@@ -194,24 +192,35 @@ var FlightModelConstructor = function() {
 
     this.saveFlight = function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
-        DataService.changeFlights([ newFlight ]);
+        DataService.changeFlight(newFlight);
     };
 
     this.setFlightInput = function(newFlight) {
         // Set default values to empty fields
         newFlight = this.setDefaultValues(newFlight);
 
+        var flight = {};
+        flight.id = newFlight.id;
+        flight.date = newFlight.date;
+        flight.siteId = newFlight.siteId;
+        flight.gliderId = newFlight.gliderId;
+        flight.airtime = newFlight.airtime;
+        flight.remarks = newFlight.remarks;
+
         var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
         var newAltitude = newFlight.altitude;
         var units = newFlight.altitudeUnits;
-        newFlight.altitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
-        return newFlight;
+        flight.altitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
+
+        return flight;
     };
 
     this.setDefaultValues = function(newFlight) {
         $.each(this.formValidationConfig, (fieldName, config) => {
-            // If there is default value for the field which val is null or empty string
-            if ((newFlight[fieldName] === null || (newFlight[fieldName] + '').trim() === '') &&
+            // If there is default value for the field which val is null or undefined or empty string
+            if ((newFlight[fieldName] === null ||
+                 newFlight[fieldName] === undefined ||
+                (newFlight[fieldName] + '').trim() === '') &&
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
@@ -222,32 +231,9 @@ var FlightModelConstructor = function() {
     };
 
     this.deleteFlight = function(flightId) {
-        DataService.changeFlights([ { id: flightId, see: 0 } ]);
+        DataService.changeFlight({ id: flightId, see: 0 });
     };
 
-    // Expected eventData: { siteId: siteId }
-    this.clearSiteId = function(eventData) {
-        var flightsToChange = [];
-        $.each(DataService.data.flights, (flightId, flight) => {
-            if (flight.siteId === parseInt(eventData.siteId)) {
-                flightsToChange.push(_.clone(flight));
-                flightsToChange[flightsToChange.length - 1].siteId = null;
-            }
-        });
-        DataService.changeFlights(flightsToChange);
-    };
-
-    // Expected eventData: { gliderId: gliderId }
-    this.clearGliderId = function(eventData) {
-        var flightsToChange = [];
-        $.each(DataService.data.flights, (flightId, flight) => {
-            if (flight.gliderId === parseInt(eventData.gliderId)) {
-                flightsToChange.push(_.clone(flight));
-                flightsToChange[flightsToChange.length - 1].gliderId = null;
-            }
-        });
-        DataService.changeFlights(flightsToChange);
-    };
 
     /**
      * Gets altitude above launch in pilot's altitude units

@@ -14,7 +14,7 @@ var InteractiveMap = require('./common/interactive-map');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var AltitudeInput = require('./common/altitude-input');
-// var RemarksInput = require('./common/remarks-input');
+var RemarksInput = require('./common/remarks-input');
 var Loader = require('./common/loader');
 
 
@@ -214,6 +214,12 @@ var SiteEditView = React.createClass({
                         errorMessage={ this.state.errors.coordinates }
                         onChange={ this.handleInputChange.bind(this, 'coordinates') }
                         onBlur={ this.dropPinByCoordinates }
+                        />
+
+                    <RemarksInput
+                        inputValue={ this.state.site.remarks }
+                        labelText='Remarks'
+                        onChange={ this.handleInputChange.bind(this, 'remarks') }
                         />
 
                     { this.renderMap() }

@@ -1,7 +1,6 @@
 'use strict';
 
 var $ = require('jquery');
-var PubSub = require('./../utils/pubsub');
 var DataService = require('../services/data-service');
 
 
@@ -76,7 +75,8 @@ var GliderModel = {
             return null;
         }
         if (DataService.data.gliders[id] === undefined) {
-            return null;
+            // TODO return error 'page not found'
+            return false;
         }
         var FlightModel = require('./flight');
         var trueFlightNum = DataService.data.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
@@ -107,21 +107,28 @@ var GliderModel = {
 
     saveGlider: function(newGlider) {
         newGlider = this.setGliderInput(newGlider);
-        DataService.changeGliders([ newGlider ]);
+        DataService.changeGlider(newGlider);
     },
 
     setGliderInput: function(newGlider) {
         // Set default values to empty fields
         newGlider = this.setDefaultValues(newGlider);
-        newGlider.initialFlightNum = parseInt(newGlider.initialFlightNum);
-        newGlider.initialAirtime = parseFloat(newGlider.initialAirtime);
-        return newGlider;
+
+        var glider = {};
+        glider.id = newGlider.id;
+        glider.name = newGlider.name;
+        glider.initialFlightNum = parseInt(newGlider.initialFlightNum);
+        glider.initialAirtime = parseFloat(newGlider.initialAirtime);
+        glider.remarks = newGlider.remarks;
+        return glider;
     },
 
     setDefaultValues: function(newGlider) {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
-            if ((newGlider[fieldName] === null || (newGlider[fieldName] + '').trim() === '') &&
+            if ((newGlider[fieldName] === null ||
+                 newGlider[fieldName] === undefined ||
+                (newGlider[fieldName] + '').trim() === '') &&
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
@@ -132,8 +139,7 @@ var GliderModel = {
     },
 
     deleteGlider: function(gliderId) {
-        PubSub.emit('gliderDeleted', { gliderId: gliderId });
-        DataService.changeGliders([ { id: gliderId, see: 0 } ]);
+        DataService.changeGlider({ id: gliderId, see: 0 });
     },
 
     getNumberOfGliders: function() {

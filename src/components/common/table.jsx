@@ -1,8 +1,6 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
 var _ = require('underscore');
 
 
@@ -108,6 +106,3 @@ var Table = React.createClass({
 
 
 module.exports = Table;
-
-
-

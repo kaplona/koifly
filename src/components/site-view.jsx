@@ -37,7 +37,10 @@ var SiteView = React.createClass({
 
     onDataModified: function() {
         var site = SiteModel.getSiteOutput(this.props.params.siteId);
-        // TODO if no flight with given id => show error
+        if (site === false) {
+            // TODO if no site with given id => show error
+            return;
+        }
         this.setState({ site: site });
     },
 
@@ -90,9 +93,8 @@ var SiteView = React.createClass({
                         { this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnits }
                     </div>
                     <div>Coordinates: { this.state.site.coordinates }</div>
-                    {/* TODO add remarks to sites
                     <div>Remarks:</div>
-                    <div>{ this.state.site.remarks }</div> */}
+                    <div>{ this.state.site.remarks }</div>
                 </div>
                 <div className='button__menu'>
                     <Link to={ '/site/' + this.props.params.siteId + '/edit' }><Button>Edit</Button></Link>
