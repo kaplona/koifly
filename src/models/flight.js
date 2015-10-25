@@ -5,8 +5,8 @@ var $ = require('jquery');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
-var PilotModel = require('./pilot');
 var Util = require('./../utils/util');
+var Altitude = require('./../utils/altitude');
 
 
 var FlightModel = {
@@ -84,7 +84,7 @@ var FlightModel = {
             method: 'selectOption',
             rules: {
                 getArrayOfOptions: function() {
-                    return PilotModel.getAltitudeUnitsList();
+                    return Altitude.getAltitudeUnitsList();
                 },
                 field: 'Altitude Units'
             }
@@ -122,8 +122,8 @@ var FlightModel = {
         }
 
         var date = DataService.data.flights[id].date.substring(0, 10);
-        var altitude = PilotModel.getAltitudeInPilotUnits(DataService.data.flights[id].altitude);
-        var altitudeUnits = PilotModel.getAltitudeUnits();
+        var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.flights[id].altitude);
+        var altitudeUnits = Altitude.getAltitudeUnits();
         var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, DataService.data.flights[id].altitude);
         return {
             id: id,
@@ -156,7 +156,7 @@ var FlightModel = {
             date: Util.today(),
             siteId: lastFlight.siteId, // null if no sites yet otherwise last added site id
             altitude: 0,
-            altitudeUnits: PilotModel.getAltitudeUnits(),
+            altitudeUnits: Altitude.getAltitudeUnits(),
             airtime: 0,
             gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
             remarks: ''
@@ -209,7 +209,7 @@ var FlightModel = {
         var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
         var newAltitude = newFlight.altitude;
         var units = newFlight.altitudeUnits;
-        flight.altitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
+        flight.altitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, units);
 
         return flight;
     },
@@ -243,7 +243,7 @@ var FlightModel = {
     getAltitudeAboveLaunches: function(siteId, flightAltitude) {
         var siteAltitude = (siteId !== null) ? SiteModel.getLaunchAltitudeById(siteId) : 0;
         var altitudeDiff = parseFloat(flightAltitude) - parseFloat(siteAltitude);
-        return PilotModel.getAltitudeInPilotUnits(altitudeDiff);
+        return Altitude.getAltitudeInPilotUnits(altitudeDiff);
     },
 
     getLastFlightDate: function() {

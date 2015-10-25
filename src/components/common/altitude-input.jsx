@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var PilotModel = require('../../models/pilot');
+var Altitude = require('../../utils/altitude');
 
 
 var AltitudeInput = React.createClass({
@@ -32,7 +32,7 @@ var AltitudeInput = React.createClass({
     },
 
     render: function() {
-        var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
+        var rawAltitudeUnitsList = Altitude.getAltitudeUnitsList();
         var altitudeUnitOptions = rawAltitudeUnitsList.map((unitName) => {
             return (
                 <option

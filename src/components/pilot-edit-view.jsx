@@ -9,6 +9,7 @@ var _ = require('underscore');
 var PubSub = require('../utils/pubsub');
 var PilotModel = require('../models/pilot');
 var Validation = require('../utils/validation');
+var Altitude = require('../utils/altitude');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
@@ -106,7 +107,7 @@ var PilotEditView = React.createClass({
             return (<div>{ this.renderLoader() }</div>);
         }
 
-        var rawAltitudeUnitsList = PilotModel.getAltitudeUnitsList();
+        var rawAltitudeUnitsList = Altitude.getAltitudeUnitsList();
         var altitudeUnitsList = rawAltitudeUnitsList.map((unitName) => {
             return {
                 value: unitName,

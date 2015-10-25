@@ -4,7 +4,7 @@ var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var $ = require('jquery');
 var Map = require('../../utils/map');
-var PilotModel = require('../../models/pilot');
+var Altitude = require('../../utils/altitude');
 
 
 var InteractiveMap = React.createClass({
@@ -83,7 +83,7 @@ var InteractiveMap = React.createClass({
         ) {
             // Formate infowindow content
             var address = infowindowContent.address;
-            var altitude = PilotModel.getAltitudeInPilotUnits(parseFloat(infowindowContent.elevation)); // Google map returns elevtion in meters
+            var altitude = Altitude.getAltitudeInPilotUnits(parseFloat(infowindowContent.elevation)); // Google map returns elevtion in meters
             var coordinates = infowindowContent.coordinates;
             var infowindowContentHtml = this.composeInfowindowMessage(address, altitude, coordinates);
 
@@ -133,7 +133,7 @@ var InteractiveMap = React.createClass({
             // Convert elevation into units that user chose in the form
             var altitudeUnits = this.props.altitudeUnits;
             var altitude = parseFloat(elevation);
-            var newLaunchAltitude = PilotModel.getAltitudeInGivenUnits(altitude, altitudeUnits);
+            var newLaunchAltitude = Altitude.getAltitudeInGivenUnits(altitude, altitudeUnits);
             this.props.onDataApply('launchAltitude', newLaunchAltitude);
         }
         // Coordinates transfers anyway
