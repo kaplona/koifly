@@ -2,7 +2,6 @@
 
 var $ = require('jquery');
 //var _ = require('underscore');
-var PubSub = require('./../utils/pubsub');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
@@ -10,9 +9,9 @@ var PilotModel = require('./pilot');
 var Util = require('./../utils/util');
 
 
-var FlightModelConstructor = function() {
+var FlightModel = {
 
-    this.formValidationConfig = {
+    formValidationConfig: {
         date: {
             method: 'dateFormat',
             rules: {
@@ -90,18 +89,18 @@ var FlightModelConstructor = function() {
                 field: 'Altitude Units'
             }
         }
-    };
+    },
 
-    this.getFlightsArray = function() {
+    getFlightsArray: function() {
         if (DataService.data.flights === null) {
             return null;
         }
         var flightOutputs = [];
         $.each(DataService.data.flights, (flightId) => flightOutputs.push(this.getFlightOutput(flightId)));
         return flightOutputs;
-    };
+    },
 
-    this.getFlightOutput = function(id) {
+    getFlightOutput: function(id) {
         if (DataService.data.flights === null) {
             return null;
         }
@@ -139,9 +138,9 @@ var FlightModelConstructor = function() {
             gliderName: gliderName,
             remarks: DataService.data.flights[id].remarks
         };
-    };
+    },
 
-    this.getNewFlightOutput = function() {
+    getNewFlightOutput: function() {
         if (DataService.data.flights === null) {
             return null;
         }
@@ -162,9 +161,9 @@ var FlightModelConstructor = function() {
             gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
             remarks: ''
         };
-    };
+    },
 
-    this.getLastFlight = function() {
+    getLastFlight: function() {
         var noFlightsYet = true;
         var lastFlight = {};
         lastFlight.date = '1900-01-01'; // date to start from
@@ -188,14 +187,14 @@ var FlightModelConstructor = function() {
         });
 
         return noFlightsYet ? null : lastFlight;
-    };
+    },
 
-    this.saveFlight = function(newFlight) {
+    saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
         DataService.changeFlight(newFlight);
-    };
+    },
 
-    this.setFlightInput = function(newFlight) {
+    setFlightInput: function(newFlight) {
         // Set default values to empty fields
         newFlight = this.setDefaultValues(newFlight);
 
@@ -213,9 +212,9 @@ var FlightModelConstructor = function() {
         flight.altitude = PilotModel.getAltitudeInMeters(newAltitude, oldAltitude, units);
 
         return flight;
-    };
+    },
 
-    this.setDefaultValues = function(newFlight) {
+    setDefaultValues: function(newFlight) {
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or empty string
             if ((newFlight[fieldName] === null ||
@@ -228,11 +227,11 @@ var FlightModelConstructor = function() {
             }
         });
         return newFlight;
-    };
+    },
 
-    this.deleteFlight = function(flightId) {
+    deleteFlight: function(flightId) {
         DataService.changeFlight({ id: flightId, see: 0 });
-    };
+    },
 
 
     /**
@@ -241,22 +240,22 @@ var FlightModelConstructor = function() {
      * @param {number} flightAltitude in meters
      * @returns {number} altitude above launch in pilot's altitude units
      */
-    this.getAltitudeAboveLaunches = function(siteId, flightAltitude) {
+    getAltitudeAboveLaunches: function(siteId, flightAltitude) {
         var siteAltitude = (siteId !== null) ? SiteModel.getLaunchAltitudeById(siteId) : 0;
         var altitudeDiff = parseFloat(flightAltitude) - parseFloat(siteAltitude);
         return PilotModel.getAltitudeInPilotUnits(altitudeDiff);
-    };
+    },
 
-    this.getLastFlightDate = function() {
+    getLastFlightDate: function() {
         var lastFlight = this.getLastFlight();
         return (lastFlight !== null) ? lastFlight.date : null;
-    };
+    },
 
-    this.getNumberOfFlights = function() {
+    getNumberOfFlights: function() {
         return Object.keys(DataService.data.flights).length;
-    };
+    },
 
-    this.getNumberOfFlightsOnGlider = function(gliderId) {
+    getNumberOfFlightsOnGlider: function(gliderId) {
         var numberOfFlights = 0;
         $.each(DataService.data.flights, (flightId, flight) => {
             if (flight.gliderId === parseInt(gliderId)) {
@@ -264,9 +263,9 @@ var FlightModelConstructor = function() {
             }
         });
         return numberOfFlights;
-    };
+    },
 
-    this.getNumberOfVisitedSites = function() {
+    getNumberOfVisitedSites: function() {
         var sitesVisited = [];
         $.each(DataService.data.flights, (flightId, flight) => {
             if (flight.siteId !== null &&
@@ -276,17 +275,17 @@ var FlightModelConstructor = function() {
             }
         });
         return sitesVisited.length;
-    };
+    },
 
-    this.getTotalAirtime = function() {
+    getTotalAirtime: function() {
         var airtime = 0;
         $.each(DataService.data.flights, (flightId, flight) => {
             airtime += parseInt(flight.airtime);
         });
         return airtime;
-    };
+    },
 
-    this.getGliderAirtime = function(gliderId) {
+    getGliderAirtime: function(gliderId) {
         var gliderAirtime = 0;
         $.each(DataService.data.flights, (flightId, flight) => {
             if (flight.gliderId == gliderId) {
@@ -294,20 +293,12 @@ var FlightModelConstructor = function() {
             }
         });
         return gliderAirtime;
-    };
+    },
 
-    this.getValidationConfig = function() {
+    getValidationConfig: function() {
         return this.formValidationConfig;
-    };
-
-
-    PubSub.on('siteDeleted', this.clearSiteId, this);
-    PubSub.on('gliderDeleted', this.clearGliderId, this);
+    }
 };
-
-FlightModelConstructor.prototype = Object.create(Object.prototype);
-FlightModelConstructor.prototype.constructor = FlightModelConstructor;
-var FlightModel = new FlightModelConstructor();
 
 
 module.exports = FlightModel;
