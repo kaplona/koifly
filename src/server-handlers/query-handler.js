@@ -17,12 +17,15 @@ function getPilot() {
 }
 
 
-function getAllData(pilot, dateFrom, defaultScope) {
+function getAllData(pilot, dateFrom) {
     // TODO check dateFrom is actual date
-    if (dateFrom === null) {
-        dateFrom = '1900-01-01 00:00:00';
-    }
-    var scope = defaultScope ? 'see' : null;
+    var scope = dateFrom ? null : 'see';
+    dateFrom = dateFrom ? dateFrom : '1900-01-01 00:00:00';
+    // DEV
+    console.log('last modified =>');
+    console.log(dateFrom);
+    console.log('current scope =>');
+    console.log(scope);
 
     pilot = pilot.get({ plain: true });
     var dbData = {
@@ -255,34 +258,20 @@ var QueryHandler = function(request, reply) {
             throw '=> not authorised pilot => END';
         }
         //DEV
-        console.log('pilot info => ');
-        console.log(pilot.get({ plain: true }));
+        console.log('pilot info => ', pilot.get({ plain: true }));
 
         if (request.method === 'get') {
-            // If first data request
-            if (request.query.lastModified === null) {
-                // Get all data from the DB which wasn't deleted
-                return getAllData(pilot, null, true);
-            } else {
-                // Get all data from the DB since lastModified
-                return getAllData(pilot, request.query.lastModified);
-            }
+            return getAllData(pilot, JSON.parse(request.query.lastModified));
         }
 
         if (request.method === 'post') {
-            // DEV
-            console.log('payload =>');
-            console.log(request.payload);
-
             // If data type is not specified
             if (_.indexOf(['flight', 'site', 'glider', 'pilot'], request.payload.dataType) === -1) {
                 throw '=> dataType is not valid => END';
             } else {
                 var data = JSON.parse(request.payload.data);
-
                 //DEV only
-                console.log('raw data => ');
-                console.log(data);
+                console.log('raw data => ', data);
 
                 return saveData(request.payload.dataType, data, pilot).then(() => {
                     // Get all data from the DB since lastModified

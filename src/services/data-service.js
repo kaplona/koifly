@@ -153,7 +153,7 @@ var DataService = {
                 url: '/api/data',
                 context: this, // not sure if it will work
                 dataType: 'json',
-                data: { lastModified: this.lastModified }
+                data: { lastModified: JSON.stringify(this.lastModified) }
             })
             .done((msg) => {
                 // DEV
