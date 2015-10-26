@@ -55,11 +55,6 @@ var PilotModel = {
         }
     },
 
-    //meterConverter: {
-    //    meter: 1,
-    //    feet: 3.28084
-    //},
-
     getPilotOutput: function() {
         if (DataService.data.pilot === null) {
             return null;
@@ -117,40 +112,7 @@ var PilotModel = {
         });
         return newPilotInfo;
     },
-
-    //getAltitudeUnits: function() {
-    //    return DataService.data.pilot.altitudeUnits;
-    //},
-    //
-    //// altitude in meters
-    //getAltitudeInPilotUnits: function(altitude) {
-    //    var increment = this.meterConverter[DataService.data.pilot.altitudeUnits];
-    //    return Math.round(parseFloat(altitude) * increment);
-    //},
-    //
-    //// altitude in meters
-    //getAltitudeInGivenUnits: function(altitude, units) {
-    //    var increment = this.meterConverter[units];
-    //    return Math.round(parseFloat(altitude) * increment);
-    //},
-    //
-    //getAltitudeInMeters: function(val, oldVal, units) {
-    //    var oldFilteredVal = this.getAltitudeInPilotUnits(oldVal);
-    //    // If user changed the value or measurement units
-    //    if (val != oldFilteredVal || units != DataService.data.pilot.altitudeUnits) {
-    //        // Use the new val
-    //        return parseFloat(val) / this.meterConverter[units];
-    //    // If no changes - keep the old value
-    //    // * We need to keep exact the same value in meters in DB
-    //    // * in order to get the same value in feet all the times
-    //    }
-    //    return oldVal;
-    //},
-    //
-    //getAltitudeUnitsList: function() {
-    //    return Object.keys(this.meterConverter);
-    //},
-
+    
     getValidationConfig: function() {
         return this.formValidationConfig;
     }
