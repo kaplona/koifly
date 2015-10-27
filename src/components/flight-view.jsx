@@ -3,11 +3,11 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-var PubSub = require('../utils/pubsub');
 var Util = require('../utils/util');
 var Map = require('../utils/map');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
+var View = require('./common/view');
 var Button = require('./common/button');
 var StaticMap = require('./common/static-map');
 var Loader = require('./common/loader');
@@ -25,15 +25,6 @@ var FlightView = React.createClass({
         return {
             flight: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     onDataModified: function() {
@@ -78,11 +69,15 @@ var FlightView = React.createClass({
 
     render: function() {
         if (this.state.flight === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <div className='container__title'>
                     <div>{ this.state.flight.date }</div>
@@ -109,7 +104,7 @@ var FlightView = React.createClass({
                     <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
                 </div>
                 { this.renderMap() }
-            </div>
+            </View>
         );
     }
 });

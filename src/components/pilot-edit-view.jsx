@@ -6,10 +6,10 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var PilotModel = require('../models/pilot');
 var Validation = require('../utils/validation');
 var Altitude = require('../utils/altitude');
+var View = require('./common/view');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
@@ -32,15 +32,6 @@ var PilotEditView = React.createClass({
                 minutes: ''
             }
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleSubmit: function(e) {
@@ -104,7 +95,11 @@ var PilotEditView = React.createClass({
 
     render: function() {
         if (this.state.pilot === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         var rawAltitudeUnitsList = Altitude.getAltitudeUnitsList();
@@ -116,6 +111,7 @@ var PilotEditView = React.createClass({
         });
 
         return (
+            <View onDataModified={ this.onDataModified }>
             <form onSubmit={ this.handleSubmit }>
                 <div className='container__title'>{ this.state.pilot.userName }</div>
 
@@ -153,12 +149,10 @@ var PilotEditView = React.createClass({
                     <Link to='/pilot'><Button>Cancel</Button></Link>
                 </div>
             </form>
+            </View>
         );
     }
 });
 
 
 module.exports = PilotEditView;
-
-
-

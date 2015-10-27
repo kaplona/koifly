@@ -6,9 +6,9 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var GliderModel = require('../models/glider');
 var Validation = require('../utils/validation');
+var View = require('./common/view');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
@@ -37,15 +37,6 @@ var GliderEditView = React.createClass({
                 minutes: ''
             }
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleSubmit: function(e) {
@@ -138,11 +129,15 @@ var GliderEditView = React.createClass({
 
     render: function() {
         if (this.state.glider === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
@@ -182,7 +177,7 @@ var GliderEditView = React.createClass({
                         <Link to='/gliders'><Button>Cancel</Button></Link>
                     </div>
                 </form>
-            </div>
+            </View>
         );
     }
 });

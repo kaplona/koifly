@@ -6,11 +6,11 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
 var GliderModel = require('../models/glider');
 var Validation = require('../utils/validation');
+var View = require('./common/view');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
@@ -45,15 +45,6 @@ var FlightEditView = React.createClass({
                 minutes: ''
             }
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleSubmit: function(e) {
@@ -159,14 +150,18 @@ var FlightEditView = React.createClass({
 
     render: function() {
         if (this.state.flight === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         var sites = SiteModel.getSiteSimpleList();
         var gliders = GliderModel.getGliderSimpleList();
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
@@ -223,7 +218,7 @@ var FlightEditView = React.createClass({
                         </Link>
                     </div>
                 </form>
-            </div>
+            </View>
         );
     }
 });

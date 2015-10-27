@@ -6,10 +6,10 @@ var History = ReactRouter.History;
 var Link = ReactRouter.Link;
 var $ = require('jquery');
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var Map = require('../utils/map');
 var SiteModel = require('../models/site');
 var Validation = require('../utils/validation');
+var View = require('./common/view');
 var InteractiveMap = require('./common/interactive-map');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
@@ -39,15 +39,6 @@ var SiteEditView = React.createClass({
             },
             markerPosition: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleSubmit: function(e) {
@@ -178,11 +169,15 @@ var SiteEditView = React.createClass({
 
     render: function() {
         if (this.state.site === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
@@ -232,7 +227,7 @@ var SiteEditView = React.createClass({
                         </Link>
                     </div>
                 </form>
-            </div>
+            </View>
         );
     }
 });

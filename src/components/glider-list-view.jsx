@@ -3,9 +3,9 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-var PubSub = require('../utils/pubsub');
 var Util = require('../utils/util');
 var GliderModel = require('../models/glider');
+var View = require('./common/view');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
 
@@ -16,15 +16,6 @@ var GliderListView = React.createClass({
         return {
             gliders: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     onDataModified: function() {
@@ -58,16 +49,13 @@ var GliderListView = React.createClass({
 
     render: function() {
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/glider/0/edit'><Button>Add Glider</Button></Link>
                 { this.renderGliderNodes() }
-            </div>
+            </View>
         );
     }
 });
 
 
 module.exports = GliderListView;
-
-
-

@@ -4,8 +4,8 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var SiteModel = require('../models/site');
+var View = require('./common/view');
 var StaticMap = require('./common/static-map');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
@@ -17,15 +17,6 @@ var SiteListMapView = React.createClass({
         return {
             sites: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     onDataModified: function() {
@@ -40,11 +31,11 @@ var SiteListMapView = React.createClass({
 
     render: function() {
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Site List</Link>
                 { this.renderMap() }
                 <Link to='/site/0/edit'><Button>Add Site</Button></Link>
-            </div>
+            </View>
         );
     }
 });

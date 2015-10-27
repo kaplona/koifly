@@ -4,8 +4,8 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var PubSub = require('../utils/pubsub');
 var SiteModel = require('../models/site');
+var View = require('./common/view');
 var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
@@ -19,15 +19,6 @@ var SiteListView = React.createClass({
         return {
             sites: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleRowClick: function(siteId) {
@@ -63,7 +54,7 @@ var SiteListView = React.createClass({
         ];
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <div><Link to='/sites/map'>Show on Map</Link></div>
                 <Table
                     columns={ columnsConfig }
@@ -73,7 +64,7 @@ var SiteListView = React.createClass({
                     />
                 { this.renderLoader() }
                 <Link to='/site/0/edit'><Button>Add Site</Button></Link>
-            </div>
+            </View>
         );
     }
 });

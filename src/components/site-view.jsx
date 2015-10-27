@@ -4,9 +4,9 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 var _ = require('underscore');
-var PubSub = require('../utils/pubsub');
 var Map = require('../utils/map');
 var SiteModel = require('../models/site');
+var View = require('./common/view');
 var StaticMap = require('./common/static-map');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
@@ -24,15 +24,6 @@ var SiteView = React.createClass({
         return {
             site: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     onDataModified: function() {
@@ -77,11 +68,15 @@ var SiteView = React.createClass({
 
     render: function() {
         if (this.state.site === null) {
-            return (<div>{ this.renderLoader() }</div>);
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    { this.renderLoader() }
+                </View>
+            );
         }
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <div className='container__title'>
                     { this.state.site.name }
@@ -101,7 +96,7 @@ var SiteView = React.createClass({
                     <Link to='/site/0/edit'><Button>Add Site</Button></Link>
                 </div>
                 { this.renderMap() }
-            </div>
+            </View>
         );
     }
 });
@@ -109,6 +104,3 @@ var SiteView = React.createClass({
 
 
 module.exports = SiteView;
-
-
-

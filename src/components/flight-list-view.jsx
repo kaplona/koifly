@@ -4,8 +4,8 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var PubSub = require('../utils/pubsub');
 var FlightModel = require('../models/flight');
+var View = require('./common/view');
 var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
@@ -19,15 +19,6 @@ var FlightListView = React.createClass({
         return {
             flights: null
         };
-    },
-
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
     },
 
     handleRowClick: function(flightId) {
@@ -70,7 +61,7 @@ var FlightListView = React.createClass({
         var rows = (this.state.flights !== null) ? this.state.flights : [];
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Table
                     columns={ columns }
                     rows={ rows }
@@ -79,13 +70,10 @@ var FlightListView = React.createClass({
                     />
                 { this.renderLoader() }
                 <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
-            </div>
+            </View>
         );
     }
 });
 
 
 module.exports = FlightListView;
-
-
-

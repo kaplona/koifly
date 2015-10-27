@@ -3,9 +3,9 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-var PubSub = require('../utils/pubsub');
 var Util = require('../utils/util');
 var PilotModel = require('../models/pilot');
+var View = require('./common/view');
 var Button = require('./common/button');
 var DaysSinceLastFlight = require('./common/days-since-last-flight');
 var Loader = require('./common/loader');
@@ -19,15 +19,6 @@ var PilotView = React.createClass({
         };
     },
 
-    componentDidMount: function() {
-        PubSub.on('dataModified', this.onDataModified, this);
-        this.onDataModified();
-    },
-
-    componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.onDataModified, this);
-    },
-
     onDataModified: function() {
         var pilot = PilotModel.getPilotOutput();
         this.setState({ pilot: pilot });
@@ -35,13 +26,17 @@ var PilotView = React.createClass({
 
     render: function() {
         if (this.state.pilot === null) {
-            return <Loader />;
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    <Loader />
+                </View>
+            );
         }
 
         var airtimeTotal = Util.hoursMinutes(this.state.pilot.airtimeTotal);
 
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <div className='container__title'>{ this.state.pilot.userName }</div>
                 <div className='container__subtitle'>
                     <div>Flights #: { this.state.pilot.flightNumTotal }</div>
@@ -59,7 +54,7 @@ var PilotView = React.createClass({
                 </div>
 
                 <Link to='/pilot/edit'><Button>Edit</Button></Link>
-            </div>
+            </View>
         );
     }
 });
