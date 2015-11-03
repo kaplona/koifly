@@ -2,7 +2,7 @@
 
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
-var Flight = require('./flights');
+var isUnique = require('./is-unique');
 
 
 var Glider = sequelize.define('glider', {
@@ -14,19 +14,27 @@ var Glider = sequelize.define('glider', {
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: { isUnique: isUnique('gliders', 'name') }
     },
     initialFlightNum: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isInt: true,
+            min: 0
+        }
     },
     initialAirtime: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isInt: true,
+            min: 0
+        }
     },
     remarks: {
         type: Sequelize.TEXT,
@@ -35,14 +43,15 @@ var Glider = sequelize.define('glider', {
     see: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: true,
+        validate: { isIn: [ [0, 1, true, false] ] }
     },
     pilotId: {
         type: Sequelize.INTEGER,
         allowNull: false
     }
 }, {
-    timestamps: true, // updatedAt, createdAt
+    timestamps: true, // automatically adds fields updatedAt and createdAt
     scopes: {
         see: {
             where: {
@@ -50,13 +59,6 @@ var Glider = sequelize.define('glider', {
             }
         }
     }
-});
-
-
-Glider.hasMany(Flight, {
-    as: 'Flights',
-    foreignKey: 'gliderId',
-    constraints: false
 });
 
 

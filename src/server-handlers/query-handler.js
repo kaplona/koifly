@@ -120,9 +120,9 @@ function saveData(dataType, data, pilot) {
 
 
 function saveFlight(data, pilotId) {
+    var referenceCheckResult = {};
     if (data.id === undefined) {
         data.pilotId = pilotId;
-
         return Flight.create(data).then((flight) => {
             //DEV
             flight = flight.get({plain: true});
@@ -145,12 +145,12 @@ function saveFlight(data, pilotId) {
             }
 
             // TODO what if error occurs while update, will it be caught
-            return flight.update(data).then((newFlight) => {
-                //DEV
-                newFlight = newFlight.get({plain: true});
-                console.log('insert data => ');
-                console.log(newFlight);
-            });
+            return flight.update(data);
+        }).then((newFlight) => {
+            //DEV
+            newFlight = newFlight.get({plain: true});
+            console.log('insert data => ');
+            console.log(newFlight);
         });
     }
 }
@@ -159,7 +159,6 @@ function saveFlight(data, pilotId) {
 function saveSite(data, pilotId) {
     if (data.id === undefined) {
         data.pilotId = pilotId;
-
         return Site.create(data).then((site) => {
             //DEV
             site = site.get({plain: true});
@@ -168,6 +167,7 @@ function saveSite(data, pilotId) {
         });
     }
 
+    var siteInstance;
     if (data.id !== undefined) {
         return Site.findById(data.id).then((site) => {
             if (site === null) {
@@ -191,7 +191,7 @@ function saveSite(data, pilotId) {
             if (newSite.see === false) {
                 return Flight.update({ siteId: null }, {where: {siteId: newSite.id} });
             }
-        })
+        });
     }
 }
 
@@ -220,21 +220,17 @@ function saveGlider(data, pilotId) {
                 throw '=> you do not have permission to change this record => END';
             }
 
-            return glider.update(data).then((newGlider) => {
-                //DEV
-                newGlider = newGlider.get({plain: true});
-                console.log('insert data => ');
-                console.log(newGlider);
+            // TODO transactions
+            return glider.update(data);
+        }).then((newGlider) => {
+            //DEV
+            newGlider = newGlider.get({plain: true});
+            console.log('insert data => ');
+            console.log(newGlider);
 
-                // TODO transactions
-                if (newGlider.see === false) {
-                    return Flight.findAll({ where: { gliderId: newGlider.id } }).then((flights) => {
-                        _.each(flights, (flight) => {
-                            flight.update({ gliderId: null });
-                        });
-                    });
-                }
-            });
+            if (newGlider.see === false) {
+                return Flight.update({ gliderId: null }, {where: {gliderId: newGlider.id} });
+            }
         });
     }
 }
@@ -258,7 +254,7 @@ var QueryHandler = function(request, reply) {
             throw '=> not authorised pilot => END';
         }
         //DEV
-        console.log('pilot info => ', pilot.get({ plain: true }));
+        // console.log('pilot info => ', pilot.get({ plain: true }));
 
         if (request.method === 'get') {
             return getAllData(pilot, JSON.parse(request.query.lastModified));

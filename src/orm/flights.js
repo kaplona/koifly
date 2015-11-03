@@ -2,6 +2,9 @@
 
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
+var Site = require('./sites');
+var Glider = require('./gliders');
+var isValidId = require('./is-valid-id');
 
 
 var Flight = sequelize.define('flight', {
@@ -19,42 +22,49 @@ var Flight = sequelize.define('flight', {
     siteId: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: null
+        defaultValue: null,
+        validate: { isValidId: isValidId('sites', 'there is no site with this id') }
     },
     altitude: {
         type: Sequelize.FLOAT,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isFloat: true,
+            min: 0
+        }
     },
     airtime: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isInt: true,
+            min: 0
+        }
     },
     gliderId: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: null
+        defaultValue: null,
+        validate: { isValidId: isValidId('gliders', 'there is no glider with this id') }
     },
     remarks: {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    //creationDateTime: Sequelize.STRING, // Unix timestamp
-    //lastModified: Sequelize.STRING, // Unix timestamp
     see: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: true,
+        validate: { isIn: [ [0, 1, true, false] ] }
     },
     pilotId: {
         type: Sequelize.INTEGER,
         allowNull: false
     }
 }, {
-    timestamps: true, // updatedAt, createdAt
+    timestamps: true, // automatically adds fields updatedAt and createdAt
     scopes: {
         see: {
             where: {
@@ -62,6 +72,19 @@ var Flight = sequelize.define('flight', {
             }
         }
     }
+});
+
+
+Site.hasMany(Flight, {
+    as: 'Flights',
+    foreignKey: 'siteId',
+    constraints: false
+});
+
+Glider.hasMany(Flight, {
+    as: 'Flights',
+    foreignKey: 'gliderId',
+    constraints: false
 });
 
 

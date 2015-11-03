@@ -2,7 +2,7 @@
 
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
-var Flight = require('./flights');
+var isUnique = require('./is-unique');
 
 
 var Site = sequelize.define('site', {
@@ -14,7 +14,9 @@ var Site = sequelize.define('site', {
     },
     name: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: { isUnique: isUnique('sites', 'name') }
     },
     location: {
         type: Sequelize.STRING,
@@ -25,19 +27,30 @@ var Site = sequelize.define('site', {
         type: Sequelize.FLOAT,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isFloat: true,
+            min: 0
+        }
     },
     lat: {
         type: Sequelize.FLOAT,
         allowNull: true,
         defaultValue: null,
-        validate: { min: -90, max: 90 }
+        validate: {
+            isFloat: true,
+            min: -90,
+            max: 90
+        }
     },
     lng: {
         type: Sequelize.FLOAT,
         allowNull: true,
         defaultValue: null,
-        validate: { min: -180, max: 180 }
+        validate: {
+            isFloat: true,
+            min: -180,
+            max: 180
+        }
     },
     remarks: {
         type: Sequelize.TEXT,
@@ -46,14 +59,15 @@ var Site = sequelize.define('site', {
     see: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: true,
+        validate: { isIn: [ [0, 1, true, false] ] }
     },
     pilotId: {
         type: Sequelize.INTEGER,
         allowNull: false
     }
 }, {
-    timestamps: true, // updatedAt, createdAt
+    timestamps: true, // automatically adds fields updatedAt and createdAt
     scopes: {
         see: {
             where: {
@@ -63,6 +77,9 @@ var Site = sequelize.define('site', {
     },
     getterMethods: {
         coordinates: function()  {
+            if (this.lat === null && this.lng === null) {
+                return null;
+            }
             return { lat: this.lat, lng: this.lng };
         }
     },
@@ -82,13 +99,6 @@ var Site = sequelize.define('site', {
             }
         }
     }
-});
-
-
-Site.hasMany(Flight, {
-    as: 'Flights',
-    foreignKey: 'siteId',
-    constraints: false
 });
 
 

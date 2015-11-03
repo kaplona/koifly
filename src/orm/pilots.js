@@ -5,6 +5,7 @@ var sequelize = require('./sequelize');
 var Flight = require('./flights');
 var Site = require('./sites');
 var Glider = require('./gliders');
+var isUnique = require('./is-unique');
 
 
 var Pilot = sequelize.define('pilot', {
@@ -16,12 +17,17 @@ var Pilot = sequelize.define('pilot', {
     },
     userName: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: { isUnique: isUnique('pilots', 'userName') }
     },
     email: {
         type: Sequelize.STRING,
         allowNull: false,
-        validate: { isEmail: true }
+        validate: {
+            isEmail: true,
+            isUnique: isUnique('pilots', 'email')
+        }
     },
     password: {
         type: Sequelize.STRING,
@@ -31,21 +37,28 @@ var Pilot = sequelize.define('pilot', {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isInt: true,
+            min: 0
+        }
     },
     initialAirtime: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
-        validate: { min: 0 }
+        validate: {
+            isInt: true,
+            min: 0
+        }
     },
     altitudeUnits: {
         type: Sequelize.ENUM('meter', 'feet'),
         allowNull: false,
-        defaultValue: 'meter'
+        defaultValue: 'meter',
+        validate: { isIn: [ ['meter', 'feet'] ] }
     }
 }, {
-    timestamps: true // updatedAt, createdAt
+    timestamps: true // automatically adds fields updatedAt and createdAt
 });
 
 

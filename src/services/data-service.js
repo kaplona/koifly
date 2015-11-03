@@ -57,15 +57,16 @@ var DataService = {
         }
         if (this.lastModified !== serverData.lastModified) {
             this.lastModified = serverData.lastModified;
-             _.each(serverData, (value, key) => {
-                 if (this.data[key] !== undefined) {
-                     if (key === 'pilot') {
-                         this.setPilotInfo(value);
+             _.each(serverData, (data, dataType) => {
+                 if (this.data[dataType] !== undefined) {
+                     if (dataType === 'pilot') {
+                         this.setPilotInfo(data);
                      } else {
-                         this.setDataItems(value, key);
+                         this.setDataItems(data, dataType);
                      }
                  }
              }, this);
+            console.log('inserted data', this.data);
             PubSub.emit('dataModified');
         }
     },
@@ -87,11 +88,11 @@ var DataService = {
             // TODO error handling
             return;
         }
+        // If loading data the first time => create a data storage object
+        if (this.data[dataType] === null) {
+            this.data[dataType] = {};
+        }
         for (var i = 0; i < newData.length; i++) {
-            // If loading data the first time => create a data storage object
-            if (this.data[dataType] === null) {
-                this.data[dataType] = {};
-            }
             // If item is visible => update or add to the data object
             if (newData[i].see) {
                 this.data[dataType][newData[i].id] = _.clone(newData[i]);

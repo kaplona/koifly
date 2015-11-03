@@ -10,7 +10,6 @@ var Route = ReactRouter.Route;
 var DataService = require('./services/data-service');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
-//var $ = require('jquery');
 var Home = require('./components/home');
 var Koifly = require('./components/koifly');
 var FlightListView = require('./components/flight-list-view');
@@ -26,11 +25,13 @@ var PilotView = require('./components/pilot-view');
 var PilotEditView = require('./components/pilot-edit-view');
 var noPage = require('./components/page-not-found');
 
+//var Test = require('./tests/test');
+
 require('./components/koifly.css');
 
 
 function mainApp() {
-
+    //Test.runTests();
     DataService.loadData();
 
     React.render((

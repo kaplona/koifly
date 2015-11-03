@@ -128,13 +128,13 @@ var FlightModel = {
         return {
             id: id,
             date: date,
-            siteId: siteId, // ??? last added site or first site in alphabetic order !!! null if no sites yet
+            siteId: siteId,
             siteName: siteName,
             altitude: altitude,
             altitudeUnits: altitudeUnits,
             altitudeAboveLaunch: altitudeAboveLaunch,
             airtime: DataService.data.flights[id].airtime,
-            gliderId: gliderId, // ??? last added glider or first glider in alphabetic order !!! null if no sites yet
+            gliderId: gliderId,
             gliderName: gliderName,
             remarks: DataService.data.flights[id].remarks
         };
@@ -146,7 +146,7 @@ var FlightModel = {
         }
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
-            // Take dafault flight properties
+            // Take default flight properties
             lastFlight = {
                 siteId: SiteModel.getLastAddedId(), // null if no data has been added yet
                 gliderId: GliderModel.getLastAddedId() // null if no data has been added yet
@@ -167,7 +167,7 @@ var FlightModel = {
         var noFlightsYet = true;
         var lastFlight = {};
         lastFlight.date = '1900-01-01'; // date to start from
-        lastFlight.creationDateTime = '1900-01-01 00:00:00';
+        lastFlight.createdAt = '1900-01-01 00:00:00';
 
         $.each(DataService.data.flights, (flightId, flight) => {
             // Find the most recent date
@@ -178,7 +178,7 @@ var FlightModel = {
                 noFlightsYet = false;
             // If two flights was in the same day
             } else if (lastFlight.date === flight.date &&
-                       lastFlight.creationDateTime < flight.creationDateTime
+                       lastFlight.createdAt < flight.createdAt
             ) {
                 // Take the last created
                 lastFlight = flight;
