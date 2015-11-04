@@ -9,6 +9,7 @@ var View = require('./common/view');
 var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
+var FirstAdding = require('./common/first-adding');
 
 
 var SiteListView = React.createClass({
@@ -25,6 +26,10 @@ var SiteListView = React.createClass({
         this.history.pushState(null, '/site/' + siteId);
     },
 
+    handleSiteAdding: function() {
+        this.history.pushState(null, '/site/0/edit');
+    },
+
     onDataModified: function() {
         var sites = SiteModel.getSitesArray();
         this.setState({ sites: sites });
@@ -34,7 +39,24 @@ var SiteListView = React.createClass({
         return (this.state.sites === null) ? <Loader /> : '';
     },
 
+    renderNoSitesYet: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <FirstAdding
+                    dataType='sites'
+                    onAdding={ this.handleSiteAdding }
+                    />
+            </View>
+        );
+    },
+
     render: function() {
+        if (this.state.sites instanceof Array &&
+            this.state.sites.length === 0
+        ) {
+            return this.renderNoSitesYet();
+        }
+
         var columnsConfig = [
             {
                 key: 'name',

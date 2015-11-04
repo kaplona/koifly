@@ -9,6 +9,7 @@ var View = require('./common/view');
 var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
+var FirstAdding = require('./common/first-adding');
 
 
 var FlightListView = React.createClass({
@@ -25,6 +26,10 @@ var FlightListView = React.createClass({
         this.history.pushState(null, '/flight/' + flightId);
     },
 
+    handleFlightAdding: function() {
+        this.history.pushState(null, '/flight/0/edit');
+    },
+
     onDataModified: function() {
         var flights = FlightModel.getFlightsArray();
         this.setState({ flights: flights });
@@ -34,7 +39,24 @@ var FlightListView = React.createClass({
         return (this.state.flights === null) ? <Loader /> : '';
     },
 
+    renderNoFlightsYet: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <FirstAdding
+                    dataType='flights'
+                    onAdding={ this.handleFlightAdding }
+                    />
+            </View>
+        );
+    },
+
     render: function() {
+        if (this.state.flights instanceof Array &&
+            this.state.flights.length === 0
+        ) {
+            return this.renderNoFlightsYet();
+        }
+
         var columns = [
             {
                 key: 'date',

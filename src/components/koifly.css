@@ -98,6 +98,12 @@ input, textarea, select {
 
 
 
+.center {
+    margin: 30px auto;
+    font-size: 1.5em;
+    color: #81BCF7;
+    text-align: center;
+}
 
 .map_container {
     width: 100%;

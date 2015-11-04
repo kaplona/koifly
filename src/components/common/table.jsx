@@ -62,14 +62,14 @@ var Table = React.createClass({
     },
 
     render: function() {
-        // Sorting
+        // Sorting (ascending order)
         var sortedRows = _.sortBy(this.props.rows, (row) => {
             // turn string to upper case so as to avoid ABCabc type of sorting
             if (typeof row[this.state.sortingField] === 'string') {
                 return row[this.state.sortingField].toUpperCase();
             }
             return row[this.state.sortingField];
-        }); // sort in ascending order
+        });
         if (!this.state.sortingDirection) {
             sortedRows.reverse(); // convert to descending order
         }
