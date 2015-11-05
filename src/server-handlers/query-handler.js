@@ -13,83 +13,70 @@ sequelize.sync();
 // TODO error classes or list with all error msg
 
 function getPilot() {
+    // TODO retrieve everything except password
     return Pilot.findById(1);
 }
 
 
 function getAllData(pilot, dateFrom) {
-    // TODO check dateFrom is actual date
+    // If no dateFrom => it's first request from the user, so retrieve only active data (where see = true)
     var scope = dateFrom ? null : 'see';
-    dateFrom = dateFrom ? dateFrom : '1900-01-01 00:00:00';
-    // DEV
-    console.log('last modified =>');
-    console.log(dateFrom);
-    console.log('current scope =>');
-    console.log(scope);
 
+    // TODO check dateFrom is actual date
+    // If no dateFrom => take arbitrary early date
+    dateFrom = dateFrom ? dateFrom : '1900-01-01 00:00:00';
+
+    // We already have our first data for user: pilot info
     pilot = pilot.get({ plain: true });
     var dbData = {
         pilot: pilot
     };
+
     var lastModified = [ dateFrom, pilot.updatedAt ];
-    // TODO find just required fields (except pilotId, updatedAt)
-    return Flight.scope(scope).findAll({ where: { pilotId: pilot.id, updatedAt: { $gt: dateFrom } } })
-        .then((flights) => {
-            for (var i = 0; i < flights.length; i++) {
-                flights[i] = flights[i].get({ plain: true });
-                if (flights[i].see === false) {
-                    flights[i] = { id: flights[i].id, see: false }
-                }
-            }
-            dbData.flights = flights;
-            if (!_.isEmpty(flights)) {
-                var lastModifiedFlight = _.max(flights, (flight) => {
-                    return flight.updatedAt;
+    var whereQuery = { pilotId: pilot.id, updatedAt: { $gt: dateFrom } };
+
+    // Promise.all resolves only if every promises in the given list resolves
+    return Promise.all([
+        // parallel asynchronous requests
+        Flight.scope(scope).findAll({ where: whereQuery }),
+        Site.scope(scope).findAll({ where: whereQuery }),
+        Glider.scope(scope).findAll({ where: whereQuery })
+    ]).then((values) => {
+        // Values is the list of each promise's respond
+        for (var i = 0; i < values.length; i++) {
+            values[i] = takeOnlyPlainValues(values[i]);
+
+            // Find the latest updated date in the instance
+            if (!_.isEmpty(values[i])) {
+                var lastModifiedValue = _.max(values[i], (value) => {
+                    return value.updatedAt;
                 });
-                lastModified.push(lastModifiedFlight.updatedAt);
+                lastModified.push(lastModifiedValue.updatedAt);
             }
-        }).catch((e) => {
-            dbData.flights = { error: e };
-        }).then(() => {
-            return Site.scope(scope).findAll({ where: { pilotId: pilot.id, updatedAt: { $gt: dateFrom } } });
-        }).then((sites) => {
-            for (var i = 0; i < sites.length; i++) {
-                sites[i] = sites[i].get({ plain: true });
-                if (sites[i].see === false) {
-                    sites[i] = { id: sites[i].id, see: false }
-                }
-            }
-            dbData.sites = sites;
-            if (!_.isEmpty(sites)) {
-                var lastModifiedSite = _.max(sites, (site) => {
-                    return site.updatedAt;
-                });
-                lastModified.push(lastModifiedSite.updatedAt);
-            }
-        }).catch((e) => {
-            dbData.sites = { error: e };
-        }).then(() => {
-            return Glider.scope(scope).findAll({ where: { pilotId: pilot.id, updatedAt: { $gt: dateFrom } } });
-        }).then((gliders) => {
-            for (var i = 0; i < gliders.length; i++) {
-                gliders[i] = gliders[i].get({ plain: true });
-                if (gliders[i].see === false) {
-                    gliders[i] = { id: gliders[i].id, see: false }
-                }
-            }
-            dbData.gliders = gliders;
-            if (!_.isEmpty(gliders)) {
-                var lastModifiedGlider = _.max(gliders, (glider) => {
-                    return glider.updatedAt;
-                });
-                lastModified.push(lastModifiedGlider.updatedAt);
-            }
-        }).catch((e) => {
-            dbData.gliders = { error: e };
-        }).then(() => {
-            dbData.lastModified = _.max(lastModified);
-            return dbData;
-        });
+        }
+
+        // Values appear in the same order as we requested for them
+        dbData.flights = values[0];
+        dbData.sites = values[1];
+        dbData.gliders = values[2];
+
+        // Take the latest updated date among instances
+        dbData.lastModified = _.max(lastModified);
+
+        return dbData;
+    });
+}
+
+
+function takeOnlyPlainValues(bdInstances) {
+    for (var i = 0; i < bdInstances.length; i++) {
+        bdInstances[i] = bdInstances[i].get({ plain: true });
+        // If instance was deleted => it's the only information user needs to know about it
+        if (bdInstances[i].see === false) {
+            bdInstances[i] = { id: bdInstances[i].id, see: false }
+        }
+    }
+    return bdInstances;
 }
 
 
@@ -104,6 +91,7 @@ function getAllData(pilot, dateFrom) {
 //}
 
 
+// must return a promise
 function saveData(dataType, data, pilot) {
     var pilotId = pilot.getDataValue('id');
     switch (dataType) {
@@ -119,76 +107,50 @@ function saveData(dataType, data, pilot) {
 }
 
 
+// must return a promise
 function saveFlight(data, pilotId) {
-    var referenceCheckResult = {};
     if (data.id === undefined) {
         data.pilotId = pilotId;
-        return Flight.create(data).then((flight) => {
-            //DEV
-            flight = flight.get({plain: true});
-            console.log('insert data => ');
-            console.log(flight);
-        });
+        return Flight.create(data);
     }
 
     if (data.id !== undefined) {
-        // TODO check what will be return if no instance with given id
         return Flight.findById(data.id).then((flight) => {
             if (flight === null) {
                 throw '=> no such record in db';
             }
-            //DEV
-            console.log('=> ' + flight.getDataValue('pilotId') + ' vs ' + pilotId);
 
             if (flight.getDataValue('pilotId') !== pilotId) {
-                throw '=> error: you do not have permission to change this record => END';
+                throw '=> error: you do not have permission to change this record';
             }
 
-            // TODO what if error occurs while update, will it be caught
             return flight.update(data);
-        }).then((newFlight) => {
-            //DEV
-            newFlight = newFlight.get({plain: true});
-            console.log('insert data => ');
-            console.log(newFlight);
         });
     }
 }
 
 
+// must return a promise
 function saveSite(data, pilotId) {
     if (data.id === undefined) {
         data.pilotId = pilotId;
-        return Site.create(data).then((site) => {
-            //DEV
-            site = site.get({plain: true});
-            console.log('insert data => ');
-            console.log(site);
-        });
+        return Site.create(data);
     }
 
-    var siteInstance;
     if (data.id !== undefined) {
         return Site.findById(data.id).then((site) => {
             if (site === null) {
                 throw '=> no such record in db';
             }
-            //DEV
-            console.log('=> ' + site.getDataValue('pilotId') + ' vs ' + pilotId);
 
             if (site.getDataValue('pilotId') !== pilotId) {
-                throw '=> error: you do not have permission to change this record => END';
+                throw '=> error: you do not have permission to change this record';
             }
 
             // TODO transactions
             return site.update(data);
         }).then((newSite) => {
-            //DEV
-            newSite = newSite.get({plain: true});
-            console.log('insert data => ');
-            console.log(newSite);
-
-            if (newSite.see === false) {
+            if (newSite.getDataValue('see') === false) {
                 return Flight.update({ siteId: null }, {where: {siteId: newSite.id} });
             }
         });
@@ -196,16 +158,11 @@ function saveSite(data, pilotId) {
 }
 
 
+// must return a promise
 function saveGlider(data, pilotId) {
     if (data.id === undefined) {
         data.pilotId = pilotId;
-
-        return Glider.create(data).then((glider) => {
-            //DEV
-            glider = glider.get({plain: true});
-            console.log('insert data => ');
-            console.log(glider);
-        });
+        return Glider.create(data);
     }
 
     if (data.id !== undefined) {
@@ -213,22 +170,15 @@ function saveGlider(data, pilotId) {
             if (glider === null) {
                 throw '=> no such record in db';
             }
-            //DEV
-            console.log('=> ' + glider.getDataValue('pilotId') + ' vs ' + pilotId);
 
             if (glider.getDataValue('pilotId') !== pilotId) {
-                throw '=> you do not have permission to change this record => END';
+                throw '=> you do not have permission to change this record';
             }
 
             // TODO transactions
             return glider.update(data);
         }).then((newGlider) => {
-            //DEV
-            newGlider = newGlider.get({plain: true});
-            console.log('insert data => ');
-            console.log(newGlider);
-
-            if (newGlider.see === false) {
+            if (newGlider.getDataValue('see') === false) {
                 return Flight.update({ gliderId: null }, {where: {gliderId: newGlider.id} });
             }
         });
@@ -236,19 +186,15 @@ function saveGlider(data, pilotId) {
 }
 
 
+// must return a promise
 function savePilotInfo(data, pilot) {
-    return pilot.update(data).then((newPilot) => {
-        //DEV
-        newPilot = newPilot.get({plain: true});
-        console.log('insert data => ');
-        console.log(newPilot);
-    });
+    return pilot.update(data);
 }
 
 
 var QueryHandler = function(request, reply) {
-    // Authentification
-    // TODO need to pass coockie or something as a parameter
+    // Authentication
+    // TODO need to pass cookie or something as a parameter
     getPilot().then((pilot) => {
         if (pilot === null) {
             throw '=> not authorised pilot => END';
