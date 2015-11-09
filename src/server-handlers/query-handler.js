@@ -2,6 +2,7 @@
 
 var _ = require('underscore');
 var sequelize = require('../orm/sequelize');
+var KoiflyError = require('../utils/error');
 var Flight = require('../orm/flights');
 var Site = require('../orm/sites');
 var Glider = require('../orm/gliders');
@@ -115,13 +116,9 @@ function saveFlight(data, pilotId) {
     }
 
     if (data.id !== undefined) {
-        return Flight.findById(data.id).then((flight) => {
+        return Flight.findOne({ where: { id: data.id, pilotId: pilotId } }).then((flight) => {
             if (flight === null) {
-                throw '=> no such record in db';
-            }
-
-            if (flight.getDataValue('pilotId') !== pilotId) {
-                throw '=> error: you do not have permission to change this record';
+                throw new KoiflyError.noExistentRecord();
             }
 
             return flight.update(data);
@@ -138,13 +135,9 @@ function saveSite(data, pilotId) {
     }
 
     if (data.id !== undefined) {
-        return Site.findById(data.id).then((site) => {
+        return Site.findOne({ where: { id: data.id, pilotId: pilotId } }).then((site) => {
             if (site === null) {
-                throw '=> no such record in db';
-            }
-
-            if (site.getDataValue('pilotId') !== pilotId) {
-                throw '=> error: you do not have permission to change this record';
+                throw new KoiflyError.noExistentRecord();
             }
 
             // TODO transactions
@@ -166,13 +159,9 @@ function saveGlider(data, pilotId) {
     }
 
     if (data.id !== undefined) {
-        return Glider.findById(data.id).then((glider) => {
+        return Glider.findOne({ where: { id: data.id, pilotId: pilotId } }).then((glider) => {
             if (glider === null) {
-                throw '=> no such record in db';
-            }
-
-            if (glider.getDataValue('pilotId') !== pilotId) {
-                throw '=> you do not have permission to change this record';
+                throw new KoiflyError.noExistentRecord();
             }
 
             // TODO transactions
@@ -197,7 +186,7 @@ var QueryHandler = function(request, reply) {
     // TODO need to pass cookie or something as a parameter
     getPilot().then((pilot) => {
         if (pilot === null) {
-            throw '=> not authorised pilot => END';
+            throw new KoiflyError.authenticationFailure();
         }
         //DEV
         // console.log('pilot info => ', pilot.get({ plain: true }));
@@ -209,24 +198,26 @@ var QueryHandler = function(request, reply) {
         if (request.method === 'post') {
             // If data type is not specified
             if (_.indexOf(['flight', 'site', 'glider', 'pilot'], request.payload.dataType) === -1) {
-                throw '=> dataType is not valid => END';
-            } else {
-                var data = JSON.parse(request.payload.data);
-                //DEV only
-                console.log('raw data => ', data);
-
-                return saveData(request.payload.dataType, data, pilot).then(() => {
-                    // Get all data from the DB since lastModified
-                    return getAllData(pilot, request.payload.lastModified);
-                });
+                throw new KoiflyError.savingFailure('dataType is not valid');
             }
+
+            var data = JSON.parse(request.payload.data);
+            if (!(data instanceof Object)) {
+                throw new KoiflyError.savingFailure('request data is not valid');
+            }
+            //DEV only
+            console.log('raw data => ', data);
+
+            return saveData(request.payload.dataType, data, pilot).then(() => {
+                // Get all data from the DB since lastModified
+                return getAllData(pilot, request.payload.lastModified);
+            });
         }
     }).then((dbData) => {
         reply(JSON.stringify(dbData));
     }).catch((e) => {
         //DEV
-        console.log('error => ');
-        console.log(e);
+        console.log('error => ', e);
 
         reply(JSON.stringify({ error: e }));
     });

@@ -5,10 +5,10 @@ var _ = require('underscore');
 var Util = require('../utils/util');
 
 
-var miniFlight = {
-    date: '2015-09-01',
-    remarks: ''
-};
+//var miniFlight = {
+//    date: '2015-09-01',
+//    remarks: ''
+//};
 
 //var flight = {
 //    id: 1, // test id
@@ -29,10 +29,10 @@ var miniFlight = {
 //    remarks: 'TEST'
 //};
 
-var miniSite = {
-    name: 'newName',
-    remarks: ''
-};
+//var miniSite = {
+//    name: 'newName',
+//    remarks: ''
+//};
 
 //var site = {
 //    id: 1, // test id
@@ -43,10 +43,10 @@ var miniSite = {
 //    remarks: 'TEST'
 //};
 
-var miniGlider = {
-    name: 'newName',
-    remarks: ''
-};
+//var miniGlider = {
+//    name: 'newName',
+//    remarks: ''
+//};
 
 //var glider = {
 //    id: 1, // test id
@@ -56,20 +56,20 @@ var miniGlider = {
 //    remarks: ''
 //};
 
-function modifyData(data, field, value) {
-    data = _.clone(data);
-    data[field] = value;
-    return data;
-}
+//function modifyData(data, field, value) {
+//    data = _.clone(data);
+//    data[field] = value;
+//    return data;
+//}
 
 
 var Test = {
 
     tests: {
         //NEGATIVE_FLIGHT_AIRTIME: { data: modifyData(flight, 'airtime', -10), dataType: 'flight' },
-        //NOT_EXISTING_SITE_ID: { data: modifyData(miniFlight, 'siteId', 10), dataType: 'flight' },
+        //NO_EXISTENT_SITE_ID: { data: modifyData(miniFlight, 'siteId', 10), dataType: 'flight' },
         //DELETED_SITE_ID: { data: modifyData(miniFlight, 'siteId', 3), dataType: 'flight' },
-        //NOT_EXISTING_GLIDE_ID: { data: modifyData(miniFlight, 'gliderId', 10), dataType: 'flight' },
+        //NO_EXISTENT_GLIDE_ID: { data: modifyData(miniFlight, 'gliderId', 10), dataType: 'flight' },
         //DELETED_GLIDER_ID: { data: modifyData(miniFlight, 'gliderId', 3), dataType: 'flight' },
         //DOUBLE_SITE_NAME: { data: modifyData(site, 'name', 'Hope'), dataType: 'site' },
         //DOUBLE_GLIDER_NAME: { data: miniGlider, dataType: 'glider' },
@@ -78,6 +78,8 @@ var Test = {
         //NOT_ROUND_AIRTIME: { data: modifyData(flight, 'airtime', 10.34), dataType: 'flight' },
         //NOT_ROUND_INITIAL_FLIGHT_NUM: { data: modifyData(glider, 'initialFlightNum', 10.34), dataType: 'glider' },
         //EMPTY_STRING_VALUES: { data: emptyFlight, dataType: 'flight' },
+        //NO_EXISTENT_RECORD: { data: { id: 'id', remarks: 'no existent record' }, dataType: 'flight' },
+        OTHER_PILOT_RECORD: { data: { id: 5, remarks: 'changing other pilot record' }, dataType: 'flight' }
         //DEFAULT_FLIGHT_VALUES: { data: modifyData(miniFlight, 'siteId', 1), dataType: 'flight' },
         //DEFAULT_SITE_VALUES: { data: miniSite, dataType: 'site' },
         //DEFAULT_GLIDER_VALUES: { data: miniGlider, dataType: 'glider' }
