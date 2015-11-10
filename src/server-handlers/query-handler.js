@@ -81,17 +81,6 @@ function takeOnlyPlainValues(bdInstances) {
 }
 
 
-//{
-//    name: 'SequelizeValidationError',
-//    message: 'notNull Violation: airtime cannot be null',
-//    errors:
-//    [ { message: 'airtime cannot be null',
-//        type: 'notNull Violation',
-//        path: 'airtime',
-//        value: null } ]
-//}
-
-
 // must return a promise
 function saveData(dataType, data, pilot) {
     var pilotId = pilot.getDataValue('id');
@@ -180,6 +169,33 @@ function savePilotInfo(data, pilot) {
     return pilot.update(data);
 }
 
+//{
+//    name: 'SequelizeValidationError',
+//    message: 'notNull Violation: airtime cannot be null',
+//    errors:
+//    [ { message: 'airtime cannot be null',
+//        type: 'notNull Violation',
+//        path: 'airtime',
+//        value: null } ]
+//}
+//{
+//    fieldName: errorMessage
+//}
+function normalizeError(err) {
+    if (err instanceof KoiflyError.appError) {
+        return err;
+    }
+    if (err.name !== 'SequelizeValidationError') {
+        return new KoiflyError.savingFailure;
+    }
+
+    var validationErrors = {};
+    for (var i = 0; i < err.errors.length; i++) {
+        validationErrors[err.errors[i].path] = err.errors[i].message;
+    }
+    return new KoiflyError.validationFailure(validationErrors);
+}
+
 
 var QueryHandler = function(request, reply) {
     // Authentication
@@ -219,7 +235,7 @@ var QueryHandler = function(request, reply) {
         //DEV
         console.log('error => ', e);
 
-        reply(JSON.stringify({ error: e }));
+        reply(JSON.stringify({ error: normalizeError(e) }));
     });
 };
 
