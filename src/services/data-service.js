@@ -13,7 +13,8 @@ var DataService = {
         pilot: null,
         flights: null,
         sites: null,
-        gliders: null
+        gliders: null,
+        error: null
     },
 
     loadData: function() {
@@ -53,8 +54,13 @@ var DataService = {
     setData: function(serverData) {
         if (serverData.error || !serverData.lastModified) {
             // TODO error handling
+            this.data.error = serverData;
+            PubSub.emit('dataModified');
             return;
         }
+
+        this.data.error = null;
+
         if (this.lastModified !== serverData.lastModified) {
             this.lastModified = serverData.lastModified;
              _.each(serverData, (data, dataType) => {

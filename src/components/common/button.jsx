@@ -19,7 +19,7 @@ var Button = React.createClass({
     },
 
     handleClick: function() {
-        if (this.props.onClick) {
+        if (this.props.onClick && this.props.active) {
             this.props.onClick();
         }
     },

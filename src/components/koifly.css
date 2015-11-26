@@ -118,6 +118,12 @@ input, textarea, select {
     border-color: red;
 }
 
+.error_box {
+    border: 1px dotted red;
+    margin: 5px;
+    padding: 5px;
+}
+
 .error_message {
     color: red;
 }

@@ -186,7 +186,7 @@ function normalizeError(err) {
         return err;
     }
     if (err.name !== 'SequelizeValidationError') {
-        return new KoiflyError.savingFailure;
+        return new KoiflyError.retrievingFailure();
     }
 
     var validationErrors = {};

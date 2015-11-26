@@ -93,7 +93,7 @@ var FlightModel = {
 
     getFlightsArray: function() {
         if (DataService.data.flights === null) {
-            return null;
+            return DataService.data.error;
         }
         var flightOutputs = [];
         $.each(DataService.data.flights, (flightId) => flightOutputs.push(this.getFlightOutput(flightId)));

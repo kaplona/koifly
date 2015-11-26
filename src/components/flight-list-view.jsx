@@ -10,6 +10,7 @@ var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
 var FirstAdding = require('./common/first-adding');
+var ErrorView = require('./common/error-view');
 
 
 var FlightListView = React.createClass({
@@ -18,7 +19,8 @@ var FlightListView = React.createClass({
 
     getInitialState: function() {
         return {
-            flights: null
+            flights: null,
+            error: null
         };
     },
 
@@ -32,7 +34,14 @@ var FlightListView = React.createClass({
 
     onDataModified: function() {
         var flights = FlightModel.getFlightsArray();
-        this.setState({ flights: flights });
+        if (flights !== null && flights.error) {
+            this.setState({ error: flights.error });
+        } else {
+            this.setState({
+                flights: flights,
+                error: null
+            });
+        }
     },
 
     renderLoader: function() {
@@ -50,12 +59,25 @@ var FlightListView = React.createClass({
         );
     },
 
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorView error={ this.state.error } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
+    },
+
     render: function() {
+        if (this.state.error !== null) {
+            return this.renderError();
+        }
+
         if (this.state.flights instanceof Array &&
             this.state.flights.length === 0
         ) {
             return this.renderNoFlightsYet();
         }
+
 
         var columns = [
             {
