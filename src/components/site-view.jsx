@@ -3,6 +3,7 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var History = ReactRouter.History;
 var _ = require('underscore');
 var Map = require('../utils/map');
 var SiteModel = require('../models/site');
@@ -10,6 +11,7 @@ var View = require('./common/view');
 var StaticMap = require('./common/static-map');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
 
 
 var SiteView = React.createClass({
@@ -20,32 +22,58 @@ var SiteView = React.createClass({
         })
     },
 
+    mixins: [ History ],
+
     getInitialState: function() {
         return {
-            site: null
+            site: null,
+            loadingError: null
         };
+    },
+
+    handleSiteEditing: function() {
+        this.history.pushState(null, '/site/' + this.props.params.siteId + '/edit');
+    },
+
+    handleSiteAdding: function() {
+        this.history.pushState(null, '/site/0/edit');
     },
 
     onDataModified: function() {
         var site = SiteModel.getSiteOutput(this.props.params.siteId);
-        if (site === false) {
-            // TODO if no site with given id => show error
-            return;
+        if (site !== null && site.error) {
+            this.setState({ loadingError: site.error });
+        } else {
+            this.setState({
+                site: site,
+                loadingError: null
+            });
         }
-        this.setState({ site: site });
+    },
+
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
     },
 
     renderLoader: function() {
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <Loader />
-                <div className='button__menu'>
-                    <Link to={ '/site/' + this.props.params.siteId + '/edit' }>
-                        <Button>Edit</Button>
-                    </Link>
-                    <Link to='/site/0/edit'><Button>Add Site</Button></Link>
-                </div>
+                { this.renderButtonMenu() }
+            </View>
+        );
+    },
+
+    renderButtonMenu: function() {
+        return (
+            <div className='button__menu'>
+                <Button onClick={ this.handleSiteEditing }>Edit</Button>
+                <Button onClick={ this.handleSiteAdding }>Add Site</Button>
             </div>
         );
     },
@@ -67,12 +95,12 @@ var SiteView = React.createClass({
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.site === null) {
-            return (
-                <View onDataModified={ this.onDataModified }>
-                    { this.renderLoader() }
-                </View>
-            );
+            return this.renderLoader();
         }
 
         return (
@@ -91,10 +119,7 @@ var SiteView = React.createClass({
                     <div>Remarks:</div>
                     <div>{ this.state.site.remarks }</div>
                 </div>
-                <div className='button__menu'>
-                    <Link to={ '/site/' + this.props.params.siteId + '/edit' }><Button>Edit</Button></Link>
-                    <Link to='/site/0/edit'><Button>Add Site</Button></Link>
-                </div>
+                { this.renderButtonMenu() }
                 { this.renderMap() }
             </View>
         );

@@ -56,9 +56,11 @@ var PilotModel = {
     },
 
     getPilotOutput: function() {
-        if (DataService.data.pilot === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         // require FlightModel and GliderModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
         var GliderModel = require('./glider');
@@ -78,9 +80,11 @@ var PilotModel = {
     },
 
     getPilotEditOutput: function() {
-        if (DataService.data.pilot === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         return {
             userName: DataService.data.pilot.userName,
             initialFlightNum: DataService.data.pilot.initialFlightNum,
@@ -89,13 +93,26 @@ var PilotModel = {
         };
     },
 
+    checkForLoadingErrors: function() {
+        // Check for loading errors
+        if (DataService.data.loadingError !== null) {
+            DataService.loadData();
+            return { error: DataService.data.loadingError };
+        // Check if data was loaded
+        } else if (DataService.data.pilot === null) {
+            DataService.loadData();
+            return null;
+        }
+        return false;
+    },
+
     savePilotInfo: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
         var pilot = {};
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
         pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
         pilot.altitudeUnits = newPilotInfo.altitudeUnits;
-        DataService.changePilotInfo(pilot);
+        return DataService.changePilotInfo(pilot);
     },
 
     setDefaultValues: function(newPilotInfo) {

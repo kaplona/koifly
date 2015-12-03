@@ -1,7 +1,7 @@
 'use strict';
 
 
-var ErrorNames = {
+var ErrorTypes = {
     RETRIEVING_FAILURE: 'retrievingFailure',
     NO_EXISTENT_RECORD: 'noExistentRecord',
     SAVING_FAILURE: 'savingFailure',
@@ -11,4 +11,4 @@ var ErrorNames = {
 };
 
 
-module.exports = ErrorNames;
+module.exports = ErrorTypes;

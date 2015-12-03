@@ -9,28 +9,53 @@ var View = require('./common/view');
 var Button = require('./common/button');
 var DaysSinceLastFlight = require('./common/days-since-last-flight');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
 
 
 var PilotView = React.createClass({
 
     getInitialState: function() {
         return {
-            pilot: null
+            pilot: null,
+            loadingError: null
         };
     },
 
     onDataModified: function() {
         var pilot = PilotModel.getPilotOutput();
-        this.setState({ pilot: pilot });
+        if (pilot !== null && pilot.error) {
+            this.setState({ loadingError: pilot.error });
+        } else {
+            this.setState({
+                pilot: pilot,
+                loadingError: null
+            });
+        }
+    },
+
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
+    },
+
+    renderLoader: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <Loader />
+            </View>
+        );
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.pilot === null) {
-            return (
-                <View onDataModified={ this.onDataModified }>
-                    <Loader />
-                </View>
-            );
+            return this.renderLoader();
         }
 
         var airtimeTotal = Util.hoursMinutes(this.state.pilot.airtimeTotal);

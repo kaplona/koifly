@@ -3,14 +3,13 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
-var Link = ReactRouter.Link;
 var FlightModel = require('../models/flight');
 var View = require('./common/view');
 var Table = require('./common/table');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
 var FirstAdding = require('./common/first-adding');
-var ErrorView = require('./common/error-view');
+var ErrorBox = require('./common/error-box');
 
 
 var FlightListView = React.createClass({
@@ -20,7 +19,7 @@ var FlightListView = React.createClass({
     getInitialState: function() {
         return {
             flights: null,
-            error: null
+            loadingError: null
         };
     },
 
@@ -35,17 +34,21 @@ var FlightListView = React.createClass({
     onDataModified: function() {
         var flights = FlightModel.getFlightsArray();
         if (flights !== null && flights.error) {
-            this.setState({ error: flights.error });
+            this.setState({ loadingError: flights.error });
         } else {
             this.setState({
                 flights: flights,
-                error: null
+                loadingError: null
             });
         }
     },
 
-    renderLoader: function() {
-        return (this.state.flights === null) ? <Loader /> : '';
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
     },
 
     renderNoFlightsYet: function() {
@@ -59,16 +62,12 @@ var FlightListView = React.createClass({
         );
     },
 
-    renderError: function() {
-        return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorView error={ this.state.error } onTryAgain={ this.onDataModified }/>
-            </View>
-        );
+    renderLoader: function() {
+        return (this.state.flights === null) ? <Loader /> : '';
     },
 
     render: function() {
-        if (this.state.error !== null) {
+        if (this.state.loadingError !== null) {
             return this.renderError();
         }
 
@@ -113,7 +112,7 @@ var FlightListView = React.createClass({
                     onRowClick={ this.handleRowClick }
                     />
                 { this.renderLoader() }
-                <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
+                <Button onClick={ this.handleFlightAdding }>Add Flight</Button>
             </View>
         );
     }

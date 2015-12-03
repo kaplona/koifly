@@ -8,6 +8,7 @@ var RemarksInput = React.createClass({
     propTypes: {
         inputValue: React.PropTypes.string,
         labelText: React.PropTypes.string,
+        errorMessage: React.PropTypes.string,
         onChange: React.PropTypes.func
     },
 
@@ -19,6 +20,9 @@ var RemarksInput = React.createClass({
         return (
             <div>
                 <label>{ this.props.labelText }</label>
+                <div className='error_message'>
+                    { this.props.errorMessage }
+                </div>
                 <textarea
                     value={ this.props.inputValue }
                     onChange={ this.handleUserInput }

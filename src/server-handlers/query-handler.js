@@ -3,6 +3,7 @@
 var _ = require('underscore');
 var sequelize = require('../orm/sequelize');
 var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 var Flight = require('../orm/flights');
 var Site = require('../orm/sites');
 var Glider = require('../orm/gliders');
@@ -11,7 +12,6 @@ var Pilot = require('../orm/pilots');
 
 sequelize.sync();
 
-// TODO error classes or list with all error msg
 
 function getPilot() {
     // TODO retrieve everything except password
@@ -20,11 +20,13 @@ function getPilot() {
 
 
 function getAllData(pilot, dateFrom) {
-    // If no dateFrom => it's first request from the user, so retrieve only active data (where see = true)
+    // If no dateFrom =>
+    // it's first request from the user
+    // so retrieve only active data (where see = true)
     var scope = dateFrom ? null : 'see';
 
     // TODO check dateFrom is actual date
-    // If no dateFrom => take arbitrary early date
+    // If no dateFrom, so take arbitrary early date
     dateFrom = dateFrom ? dateFrom : '1900-01-01 00:00:00';
 
     // We already have our first data for user: pilot info
@@ -33,6 +35,8 @@ function getAllData(pilot, dateFrom) {
         pilot: pilot
     };
 
+    // Create a list with last modified dates for each data type
+    // Then just send the max date to user
     var lastModified = [ dateFrom, pilot.updatedAt ];
     var whereQuery = { pilotId: pilot.id, updatedAt: { $gt: dateFrom } };
 
@@ -65,19 +69,19 @@ function getAllData(pilot, dateFrom) {
         dbData.lastModified = _.max(lastModified);
 
         return dbData;
+    }).catch (() => {
+        throw new KoiflyError(ErrorTypes.RETRIEVING_FAILURE);
     });
 }
 
 
 function takeOnlyPlainValues(bdInstances) {
-    for (var i = 0; i < bdInstances.length; i++) {
-        bdInstances[i] = bdInstances[i].get({ plain: true });
-        // If instance was deleted => it's the only information user needs to know about it
-        if (bdInstances[i].see === false) {
-            bdInstances[i] = { id: bdInstances[i].id, see: false }
+    return _.map(bdInstances, function(instance) {
+        if (instance.see === false) {
+            return { id: instance.id, see: false };
         }
-    }
-    return bdInstances;
+        return instance.get({ plain: true });
+    });
 }
 
 
@@ -107,7 +111,7 @@ function saveFlight(data, pilotId) {
     if (data.id !== undefined) {
         return Flight.findOne({ where: { id: data.id, pilotId: pilotId } }).then((flight) => {
             if (flight === null) {
-                throw new KoiflyError.noExistentRecord();
+                throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
             }
 
             return flight.update(data);
@@ -126,7 +130,7 @@ function saveSite(data, pilotId) {
     if (data.id !== undefined) {
         return Site.findOne({ where: { id: data.id, pilotId: pilotId } }).then((site) => {
             if (site === null) {
-                throw new KoiflyError.noExistentRecord();
+                throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
             }
 
             // TODO transactions
@@ -150,7 +154,7 @@ function saveGlider(data, pilotId) {
     if (data.id !== undefined) {
         return Glider.findOne({ where: { id: data.id, pilotId: pilotId } }).then((glider) => {
             if (glider === null) {
-                throw new KoiflyError.noExistentRecord();
+                throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
             }
 
             // TODO transactions
@@ -182,18 +186,18 @@ function savePilotInfo(data, pilot) {
 //    fieldName: errorMessage
 //}
 function normalizeError(err) {
-    if (err instanceof KoiflyError.appError) {
+    if (err instanceof KoiflyError) {
         return err;
     }
     if (err.name !== 'SequelizeValidationError') {
-        return new KoiflyError.retrievingFailure();
+        return new KoiflyError(ErrorTypes.RETRIEVING_FAILURE);
     }
 
     var validationErrors = {};
     for (var i = 0; i < err.errors.length; i++) {
         validationErrors[err.errors[i].path] = err.errors[i].message;
     }
-    return new KoiflyError.validationFailure(validationErrors);
+    return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, null, validationErrors);
 }
 
 
@@ -202,7 +206,7 @@ var QueryHandler = function(request, reply) {
     // TODO need to pass cookie or something as a parameter
     getPilot().then((pilot) => {
         if (pilot === null) {
-            throw new KoiflyError.authenticationFailure();
+            throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
         }
         //DEV
         // console.log('pilot info => ', pilot.get({ plain: true }));
@@ -214,12 +218,12 @@ var QueryHandler = function(request, reply) {
         if (request.method === 'post') {
             // If data type is not specified
             if (_.indexOf(['flight', 'site', 'glider', 'pilot'], request.payload.dataType) === -1) {
-                throw new KoiflyError.savingFailure('dataType is not valid');
+                throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'dataType is not valid');
             }
 
             var data = JSON.parse(request.payload.data);
             if (!(data instanceof Object)) {
-                throw new KoiflyError.savingFailure('request data is not valid');
+                throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'request data is not valid');
             }
             //DEV only
             console.log('raw data => ', data);

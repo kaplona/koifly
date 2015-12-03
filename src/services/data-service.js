@@ -2,7 +2,10 @@
 
 var $ = require('jquery');
 var _ = require('underscore');
+var Promise = require('es6-promise').Promise;
 var PubSub = require('../utils/pubsub');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var DataService = {
@@ -14,56 +17,78 @@ var DataService = {
         flights: null,
         sites: null,
         gliders: null,
-        error: null
+        loadingError: null
     },
 
     loadData: function() {
         $.ajax({
                 method: 'GET',
                 url: '/api/data',
-                context: this, // not sure if it will work
+                context: this,
+                timeout: 3000,
                 dataType: 'json',
                 data: { lastModified: JSON.stringify(this.lastModified) }
             })
-            .done((msg) => {
+            .done((serverRespond) => {
                 // DEV
-                console.log('respond:', msg);
+                console.log('respond:', serverRespond);
 
-                this.setData(msg);
+                if (serverRespond.error) {
+                    console.log('set error');
+                    this.setError(serverRespond.error);
+                } else {
+                    console.log('set data');
+                    this.setData(serverRespond);
+                }
+            // If request failed or request time exceeded the timeout
+            }).fail(() => {
+                this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
             });
     },
 
     sendData: function(data, dataType) {
-        data = { lastModified: this.lastModified, data: JSON.stringify(data), dataType: dataType };
-        console.log(data);
-        $.ajax({
-                method: 'POST',
-                url: '/api/data',
-                context: this,  // not sure if it will work
-                dataType: 'json',
-                data: data
-            })
-            .done((msg) => {
-                // DEV
-                console.log('respond:', msg);
+        data = {
+            lastModified: this.lastModified,
+            data: JSON.stringify(data),
+            dataType: dataType
+        };
 
-                this.setData(msg);
-            });
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                    method: 'POST',
+                    url: '/api/data',
+                    timeout: 3000,
+                    dataType: 'json',
+                    data: data
+                })
+                .done((serverRespond) => {
+                    // DEV
+                    console.log('server respond:', serverRespond);
+
+                    if (serverRespond.error) {
+                        reject(serverRespond.error);
+                        return;
+                    }
+
+                    this.setData(serverRespond);
+                    resolve('success');
+                // If request failed or request time exceeded the timeout
+                }).fail(() => {
+                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+                });
+        });
     },
 
-    setData: function(serverData) {
-        if (serverData.error || !serverData.lastModified) {
-            // TODO error handling
-            this.data.error = serverData;
-            PubSub.emit('dataModified');
-            return;
-        }
+    setData: function(serverRespond) {
+        // DEV change '!==' to '<'
+        console.log(this.lastModified, serverRespond.lastModified, this.lastModified < serverRespond.lastModified);
 
-        this.data.error = null;
-
-        if (this.lastModified !== serverData.lastModified) {
-            this.lastModified = serverData.lastModified;
-             _.each(serverData, (data, dataType) => {
+        this.data.loadingError = null;
+        if (this.lastModified === null ||
+            this.lastModified < serverRespond.lastModified
+        ) {
+            this.lastModified = serverRespond.lastModified;
+             _.each(serverRespond, (data, dataType) => {
                  if (this.data[dataType] !== undefined) {
                      if (dataType === 'pilot') {
                          this.setPilotInfo(data);
@@ -72,7 +97,19 @@ var DataService = {
                      }
                  }
              }, this);
-            console.log('inserted data', this.data);
+
+            // DEV
+            console.log('current data', this.data);
+
+            PubSub.emit('dataModified');
+        }
+    },
+
+    setError: function(error) {
+        if (this.data.loadingError === null ||
+            this.data.loadingError.type !== error.type
+        ) {
+            this.data.loadingError = error;
             PubSub.emit('dataModified');
         }
     },
@@ -90,10 +127,6 @@ var DataService = {
     },
 
     setDataItems: function(newData, dataType) {
-        if (newData.error) {
-            // TODO error handling
-            return;
-        }
         // If loading data the first time => create a data storage object
         if (this.data[dataType] === null) {
             this.data[dataType] = {};
@@ -109,24 +142,23 @@ var DataService = {
         }
     },
 
-    // TODO send requests to server
+
     changePilotInfo: function(newPilotInfo) {
-        this.sendData(newPilotInfo, 'pilot');
+        return this.sendData(newPilotInfo, 'pilot');
     },
 
     changeFlight: function(newFlight) {
-        this.sendData(newFlight, 'flight');
+        return this.sendData(newFlight, 'flight');
     },
 
     changeSite: function(newSites) {
-        this.sendData(newSites, 'site');
+        return this.sendData(newSites, 'site');
     },
 
     changeGlider: function(newGlider) {
-        this.sendData(newGlider, 'glider');
+        return this.sendData(newGlider, 'glider');
     }
 };
-
 
 
 module.exports = DataService;

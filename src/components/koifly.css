@@ -221,8 +221,6 @@ input, textarea, select {
 
 /* http://projects.lukehaas.me/css-loaders */
 .loader {
-    margin: 30px auto;
-    font-size: 5px;
     position: relative;
     text-indent: -9999em;
     border: 1.1em solid rgba(129, 188, 247, 0.2);
@@ -258,5 +256,15 @@ input, textarea, select {
             -webkit-transform: rotate(360deg);
             transform: rotate(360deg);
         }
+    }
+
+    .loader--large {
+        margin: 30px auto;
+        font-size: 5px;
+    }
+
+    .loader--mini {
+        margin: 2px auto;
+        font-size: 1px;
     }
 

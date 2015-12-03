@@ -30,6 +30,7 @@
     "babel-plugin-react-transform": "^1.1.1",
     "chalk": "^1.1.1",
     "deep-extend": "^0.4.0",
+    "es6-promise": "^3.0.2",
     "eslint-plugin-react": "^3.5.1",
     "eventemitter3": "^1.1.1",
     "express": "^4.13.3",

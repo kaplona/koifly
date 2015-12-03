@@ -9,19 +9,36 @@ var View = require('./common/view');
 var StaticMap = require('./common/static-map');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
 
 
 var SiteListMapView = React.createClass({
 
     getInitialState: function() {
         return {
-            sites: null
+            sites: null,
+            loadingError: null
         };
     },
 
     onDataModified: function() {
         var sites = SiteModel.getSitesArray();
-        this.setState({ sites: sites });
+        if (sites !== null && sites.error) {
+            this.setState({ loadingError: sites.error });
+        } else {
+            this.setState({
+                sites: sites,
+                loadingError: null
+            });
+        }
+    },
+
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
     },
 
     renderMap: function() {
@@ -30,6 +47,10 @@ var SiteListMapView = React.createClass({
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         return (
             <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Site List</Link>

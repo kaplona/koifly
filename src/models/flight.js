@@ -1,12 +1,13 @@
 'use strict';
 
 var $ = require('jquery');
-//var _ = require('underscore');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
-var Util = require('./../utils/util');
-var Altitude = require('./../utils/altitude');
+var Util = require('../utils/util');
+var Altitude = require('../utils/altitude');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var FlightModel = {
@@ -92,22 +93,24 @@ var FlightModel = {
     },
 
     getFlightsArray: function() {
-        if (DataService.data.flights === null) {
-            return DataService.data.error;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         var flightOutputs = [];
-        $.each(DataService.data.flights, (flightId) => flightOutputs.push(this.getFlightOutput(flightId)));
+        $.each(DataService.data.flights, (flightId) => {
+            flightOutputs.push(this.getFlightOutput(flightId));
+        });
         return flightOutputs;
     },
 
     getFlightOutput: function(id) {
-        if (DataService.data.flights === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors(id);
+        if (loadingError !== false) {
+            return loadingError;
         }
-        if (DataService.data.flights[id] === undefined) {
-            // TODO return error 'page not found'
-            return false;
-        }
+
         // If site is not defined for this flight show empty string to user instead
         var siteId = DataService.data.flights[id].siteId;
         var siteName = '';
@@ -141,9 +144,11 @@ var FlightModel = {
     },
 
     getNewFlightOutput: function() {
-        if (DataService.data.flights === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties
@@ -161,6 +166,22 @@ var FlightModel = {
             gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
             remarks: ''
         };
+    },
+
+    checkForLoadingErrors: function(flightId) {
+        // Check for loading errors
+        if (DataService.data.loadingError !== null) {
+            DataService.loadData();
+            return { error: DataService.data.loadingError };
+        // Check if data was loaded
+        } else if (DataService.data.flights === null) {
+            DataService.loadData();
+            return null;
+        // Check if required id exists
+        } else if (flightId && DataService.data.flights[flightId] === undefined) {
+            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+        }
+        return false;
     },
 
     getLastFlight: function() {
@@ -191,7 +212,7 @@ var FlightModel = {
 
     saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
-        DataService.changeFlight(newFlight);
+        return DataService.changeFlight(newFlight);
     },
 
     setFlightInput: function(newFlight) {
@@ -230,7 +251,7 @@ var FlightModel = {
     },
 
     deleteFlight: function(flightId) {
-        DataService.changeFlight({ id: flightId, see: 0 });
+        return DataService.changeFlight({ id: flightId, see: 0 });
     },
 
 

@@ -14,13 +14,15 @@ var TextInput = require('./common/text-input');
 var TimeInput = require('./common/time-input');
 var RemarksInput = require('./common/remarks-input');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
+var ErrorTypes = require('../utils/error-types');
 
 
 var GliderEditView = React.createClass({
 
     propTypes: {
         params: React.PropTypes.shape({
-            gliderId: React.PropTypes.string // TODO isRequired
+            gliderId: React.PropTypes.string
         })
     },
 
@@ -34,8 +36,11 @@ var GliderEditView = React.createClass({
                 initialFlightNum: '',
                 initialAirtime: '',
                 hours: '',
-                minutes: ''
-            }
+                minutes: '',
+                remarks: ''
+            },
+            loadingError: null,
+            savingInProcess: false
         };
     },
 
@@ -44,10 +49,15 @@ var GliderEditView = React.createClass({
         var validationRespond = this.validateForm();
         // If no errors
         if (validationRespond === true) {
+            this.setState({ savingInProcess: true });
             var newGlider =  _.clone(this.state.glider);
             newGlider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
-            GliderModel.saveGlider(newGlider);
-            this.history.pushState(null, '/gliders');
+            GliderModel.saveGlider(newGlider).then(() => {
+                this.history.pushState(null, '/gliders');
+            }).catch((error) => {
+                this.handleSavingError(error);
+            });
+
         }
     },
 
@@ -60,10 +70,39 @@ var GliderEditView = React.createClass({
     },
 
     handleDeleteGlider: function() {
-        GliderModel.deleteGlider(this.props.params.gliderId);
+        this.setState({ savingInProcess: true });
+        GliderModel.deleteGlider(this.props.params.gliderId).then(() => {
+            this.history.pushState(null, '/gliders');
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
+    },
+
+    handleSavingError: function(error) {
+        var loadingError = null;
+        if (error.type === ErrorTypes.VALIDATION_FAILURE) {
+            this.updateErrorState(error.errors);
+        } else {
+            loadingError = error;
+        }
+        this.setState({
+            loadingError: loadingError,
+            savingInProcess: false
+        });
+    },
+
+    handleCancelEditing: function() {
+        this.history.pushState(null, '/gliders');
     },
 
     onDataModified: function() {
+        // If waiting for server respond
+        // ignore any other data updates
+        if (this.state.savingInProcess) {
+            return;
+        }
+
+        // Fetch glider
         var glider;
         if (this.props.params.gliderId) {
             glider = GliderModel.getGliderOutput(this.props.params.gliderId);
@@ -71,15 +110,42 @@ var GliderEditView = React.createClass({
             glider = GliderModel.getNewGliderOutput();
         }
 
-        if (glider === false) {
-            // TODO if no glider with given id => show error
+        // Check for errors
+        if (glider !== null && glider.error) {
+            // Create an empty site
+            // in order to show to user an empty form
+            // if error occurred
+            var newGlider = this.state.glider;
+            if (newGlider === null) {
+                newGlider = this.createBlanckGlider();
+            }
+            this.setState({
+                site: newGlider,
+                loadingError: glider.error
+            });
             return;
         }
+
+        // Prepare glider output to show to user
         if (glider !== null) {
             glider.hours = Math.floor(glider.initialAirtime / 60);
             glider.minutes = glider.initialAirtime % 60;
         }
-        this.setState({ glider: glider });
+        this.setState({
+            glider: glider,
+            loadingError: null
+        });
+    },
+
+    createBlanckGlider: function() {
+        return {
+            name: '',
+            initialFlightNum: 0,
+            initialAirtime: 0,
+            hours: 0,
+            minutes: 0,
+            remarks: ''
+        };
     },
 
     validateForm: function(softValidation) {
@@ -89,56 +155,80 @@ var GliderEditView = React.createClass({
                 newGlider,
                 softValidation
         );
-        // update errors state
+        this.updateErrorState(validationRespond);
+        return validationRespond;
+    },
+
+    updateErrorState: function(errorList) {
         var newErrorState =  _.clone(this.state.errors);
         $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
+    },
 
-        return validationRespond;
+    renderError: function() {
+        if (this.state.loadingError !== null) {
+            return <ErrorBox error={ this.state.loadingError }/>;
+        }
+        return '';
     },
 
     renderLoader: function() {
         var deleteButton = (this.props.params.gliderId) ? <Button active={ false }>Delete</Button> : '';
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 <Loader />
                 <div className='button__menu'>
                     <Button active={ false }>Save</Button>
                     { deleteButton }
-                    <Link to={ this.props.params.gliderId ? ('/glider/' + this.props.params.gliderId) : '/gliders' }>
-                        <Button>Cancel</Button>
-                    </Link>
+                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
-            </div>
+            </View>
         );
     },
 
     renderDeleteButton: function() {
         if (this.props.params.gliderId) {
+            var buttonText = this.state.savingInProcess ? '...' : 'Delete';
             return (
-                <Link to='/gliders'>
-                    <Button onClick={ this.handleDeleteGlider }>Delete</Button>
-                </Link>
+                <Button
+                    onClick={ this.handleDeleteGlider }
+                    active={ !this.state.savingInProcess }
+                    >
+                    { buttonText }
+                </Button>
             );
         }
         return '';
     },
 
+    renderButtonMenu: function() {
+        var saveButtonText = this.state.savingInProcess ? '...' : 'Save';
+        var cancelButtonText = this.state.savingInProcess ? '...' : 'Cancel';
+        return (
+            <div className='button__menu'>
+                <Button type='submit' active={ !this.state.savingInProcess }>
+                    { saveButtonText }
+                </Button>
+                { this.renderDeleteButton() }
+                <Button active={ !this.state.savingInProcess } onClick={ this.handleCancelEditing }>
+                    { cancelButtonText }
+                </Button>
+            </div>
+        );
+    },
+
     render: function() {
         if (this.state.glider === null) {
-            return (
-                <View onDataModified={ this.onDataModified }>
-                    { this.renderLoader() }
-                </View>
-            );
+            return this.renderLoader();
         }
 
         return (
             <View onDataModified={ this.onDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
+                { this.renderError() }
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
                         inputValue={ this.state.glider.name }
@@ -168,14 +258,11 @@ var GliderEditView = React.createClass({
                     <RemarksInput
                         inputValue={ this.state.glider.remarks }
                         labelText='Remarks'
+                        errorMessage={ this.state.errors.remarks }
                         onChange={ this.handleInputChange.bind(this, 'remarks') }
                         />
 
-                    <div className='button__menu'>
-                        <Button type='submit'>Save</Button>
-                        { this.renderDeleteButton() }
-                        <Link to='/gliders'><Button>Cancel</Button></Link>
-                    </div>
+                    { this.renderButtonMenu() }
                 </form>
             </View>
         );

@@ -1,23 +1,24 @@
 'use strict';
 
 var React = require('react');
-var ErrorNames = require('../../utils/error-names');
+var ErrorTypes = require('../../utils/error-types');
 var RetrieveError = require('./retrieve-error');
 
 
 var ErrorView = React.createClass({
     propTypes: {
-        error: React.PropTypes.object,
+        error: React.PropTypes.shape({
+            type: React.PropTypes.string,
+            message: React.PropTypes.string
+        }).isRequired,
         onTryAgain: React.PropTypes.func
     },
 
     render: function() {
-        if (this.props.error.name === ErrorNames.RETRIEVING_FAILURE) {
+        if (this.props.error.type === ErrorTypes.RETRIEVING_FAILURE &&
+            this.props.onTryAgain
+        ) {
             return <RetrieveError onTryAgain={ this.props.onTryAgain }/>;
-        }
-
-        if (this.props.error.name === ErrorNames.NO_EXISTENT_RECORD) {
-            return <div>{ this.props.error.message }</div>;
         }
 
         return <div className='error_box error_message'>{ this.props.error.message }</div>;

@@ -5,9 +5,9 @@ var Button = require('./button');
 var Loader = require('./loader');
 
 
-var NoDataError = React.createClass({
+var RetrieveError = React.createClass({
     propTypes: {
-        onTryAgain: React.PropTypes.func
+        onTryAgain: React.PropTypes.func.isRequired
     },
 
     getInitialState: function() {
@@ -21,7 +21,7 @@ var NoDataError = React.createClass({
     },
 
     componentDidMount: function() {
-        // start countdown
+        // Start countdown
         this.countdown();
     },
 
@@ -40,9 +40,6 @@ var NoDataError = React.createClass({
             issueWasReported: false,
             tryAgainInProcess: false
         }, this.countdown);
-        //TODO Prevent component from updating
-        // if a data loading request was sent not from this view
-        // and the respond is still RetrieveError
     },
 
     componentWillUnmount: function() {
@@ -122,4 +119,4 @@ var NoDataError = React.createClass({
     }
 });
 
-module.exports = NoDataError;
+module.exports = RetrieveError;

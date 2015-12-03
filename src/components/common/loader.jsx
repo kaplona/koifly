@@ -2,9 +2,15 @@
 
 var React = require('react');
 
+
 var Loader = React.createClass({
+    propTypes: {
+        mini: React.PropTypes.bool
+    },
+
     render: function() {
-        return <div className='loader' />;
+        var loaderClass = this.props.mini ? 'loader loader--mini' : 'loader loader--large';
+        return <div className={ loaderClass } />;
     }
 });
 

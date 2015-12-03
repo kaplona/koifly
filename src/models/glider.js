@@ -2,6 +2,8 @@
 
 var $ = require('jquery');
 var DataService = require('../services/data-service');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var GliderModel = {
@@ -62,22 +64,22 @@ var GliderModel = {
     },
 
     getGlidersArray: function() {
-        if (DataService.data.gliders === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         var gliderOutputs = [];
         $.each(DataService.data.gliders, (gliderId) => gliderOutputs.push(this.getGliderOutput(gliderId)));
         return gliderOutputs;
     },
 
     getGliderOutput: function(id) {
-        if (DataService.data.gliders === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
-        if (DataService.data.gliders[id] === undefined) {
-            // TODO return error 'page not found'
-            return false;
-        }
+
         var FlightModel = require('./flight');
         var trueFlightNum = DataService.data.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
         var trueAirtime = DataService.data.gliders[id].initialAirtime + FlightModel.getGliderAirtime(id);
@@ -94,9 +96,11 @@ var GliderModel = {
     },
 
     getNewGliderOutput: function() {
-        if (DataService.data.gliders === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         return {
             name: '',
             initialFlightNum: 0,
@@ -105,9 +109,25 @@ var GliderModel = {
         };
     },
 
+    checkForLoadingErrors: function(gliderId) {
+        // Check for loading errors
+        if (DataService.data.loadingError !== null) {
+            DataService.loadData();
+            return { error: DataService.data.loadingError };
+        // Check if data was loaded
+        } else if (DataService.data.gliders === null) {
+            DataService.loadData();
+            return null;
+        // Check if required id exists
+        } else if (gliderId && DataService.data.gliders[gliderId] === undefined) {
+            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+        }
+        return false;
+    },
+
     saveGlider: function(newGlider) {
         newGlider = this.setGliderInput(newGlider);
-        DataService.changeGlider(newGlider);
+        return DataService.changeGlider(newGlider);
     },
 
     setGliderInput: function(newGlider) {
@@ -139,7 +159,7 @@ var GliderModel = {
     },
 
     deleteGlider: function(gliderId) {
-        DataService.changeGlider({ id: gliderId, see: 0 });
+        return DataService.changeGlider({ id: gliderId, see: 0 });
     },
 
     getNumberOfGliders: function() {

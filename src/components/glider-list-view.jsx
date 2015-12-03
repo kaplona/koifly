@@ -2,14 +2,15 @@
 
 var React = require('react');
 var ReactRouter = require('react-router');
-var History = ReactRouter.History;
 var Link = ReactRouter.Link;
+var History = ReactRouter.History;
 var Util = require('../utils/util');
 var GliderModel = require('../models/glider');
 var View = require('./common/view');
 var Button = require('./common/button');
 var Loader = require('./common/loader');
 var FirstAdding = require('./common/first-adding');
+var ErrorBox = require('./common/error-box');
 
 
 var GliderListView = React.createClass({
@@ -18,7 +19,8 @@ var GliderListView = React.createClass({
 
     getInitialState: function() {
         return {
-            gliders: null
+            gliders: null,
+            loadingError: null
         };
     },
 
@@ -28,7 +30,22 @@ var GliderListView = React.createClass({
 
     onDataModified: function() {
         var gliders = GliderModel.getGlidersArray();
-        this.setState({ gliders: gliders });
+        if (gliders !== null && gliders.error) {
+            this.setState({ loadingError: gliders.error });
+        } else {
+            this.setState({
+                gliders: gliders,
+                loadingError: null
+            });
+        }
+    },
+
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
     },
 
     renderNoGlidersYet: function() {
@@ -67,6 +84,10 @@ var GliderListView = React.createClass({
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.gliders instanceof Array &&
             this.state.gliders.length === 0
         ) {
@@ -75,7 +96,7 @@ var GliderListView = React.createClass({
 
         return (
             <View onDataModified={ this.onDataModified }>
-                <Link to='/glider/0/edit'><Button>Add Glider</Button></Link>
+                <Button onClick={ this.handleGliderAdding }>Add Glider</Button>
                 { this.renderGliderNodes() }
             </View>
         );

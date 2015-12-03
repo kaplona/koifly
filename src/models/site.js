@@ -3,6 +3,8 @@
 var $ = require('jquery');
 var DataService = require('../services/data-service');
 var Altitude = require('../utils/altitude');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var SiteModel = {
@@ -62,22 +64,22 @@ var SiteModel = {
     },
 
     getSitesArray: function() {
-        if (DataService.data.sites === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         var siteOutputs = [];
         $.each(DataService.data.sites, (siteId) => siteOutputs.push(this.getSiteOutput(siteId)));
         return siteOutputs;
     },
 
     getSiteOutput: function(id) {
-        if (DataService.data.sites === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors(id);
+        if (loadingError !== false) {
+            return loadingError;
         }
-        if (DataService.data.sites[id] === undefined) {
-            // TODO return error 'page not found'
-            return false;
-        }
+
         var coordinates = this.formCoordinatesOutput(DataService.data.sites[id].coordinates);
         var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.sites[id].launchAltitude);
         var altitudeUnits = Altitude.getAltitudeUnits();
@@ -95,9 +97,11 @@ var SiteModel = {
     },
 
     getNewSiteOutput: function() {
-        if (DataService.data.sites === null) {
-            return null;
+        var loadingError = this.checkForLoadingErrors();
+        if (loadingError !== false) {
+            return loadingError;
         }
+
         return {
             name: '',
             location: '',
@@ -108,9 +112,25 @@ var SiteModel = {
         };
     },
 
+    checkForLoadingErrors: function(siteId) {
+        // Check for loading errors
+        if (DataService.data.loadingError !== null) {
+            DataService.loadData();
+            return { error: DataService.data.loadingError };
+        // Check if data was loaded
+        } else if (DataService.data.sites === null) {
+            DataService.loadData();
+            return null;
+        // Check if required id exists
+        } else if (siteId && DataService.data.sites[siteId] === undefined) {
+            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+        }
+        return false;
+    },
+
     saveSite: function(newSite) {
         newSite = this.setSiteInput(newSite);
-        DataService.changeSite(newSite);
+        return DataService.changeSite(newSite);
     },
 
     setSiteInput: function(newSite) {
@@ -148,7 +168,7 @@ var SiteModel = {
     },
 
     deleteSite: function(siteId) {
-        DataService.changeSite({ id: siteId, see: 0 });
+        return DataService.changeSite({ id: siteId, see: 0 });
     },
 
     getLatLngCoordinates: function(siteId) {

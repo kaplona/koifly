@@ -3,6 +3,7 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
+var History = ReactRouter.History;
 var Util = require('../utils/util');
 var Map = require('../utils/map');
 var FlightModel = require('../models/flight');
@@ -11,6 +12,7 @@ var View = require('./common/view');
 var Button = require('./common/button');
 var StaticMap = require('./common/static-map');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
 
 
 var FlightView = React.createClass({
@@ -21,32 +23,58 @@ var FlightView = React.createClass({
         })
     },
 
+    mixins: [ History ],
+
     getInitialState: function() {
         return {
-            flight: null
+            flight: null,
+            loadingError: null
         };
+    },
+
+    handleFlightEditing: function() {
+        this.history.pushState(null, '/flight/' + this.props.params.flightId + '/edit');
+    },
+
+    handleFlightAdding: function() {
+        this.history.pushState(null, '/flight/0/edit');
     },
 
     onDataModified: function() {
         var flight = FlightModel.getFlightOutput(this.props.params.flightId);
-        if (flight === false) {
-            // TODO if no flight with given id => show error
-            return;
+        if (flight !== null && flight.error) {
+            this.setState({ loadingError: flight.error });
+        } else {
+            this.setState({
+                flight: flight,
+                loadingError: null
+            });
         }
-        this.setState({ flight: flight });
+    },
+
+    renderError: function() {
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            </View>
+        );
     },
 
     renderLoader: function() {
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <Loader />
-                <div className='button__menu'>
-                    <Link to={ '/flight/' + this.props.params.flightId + '/edit' }>
-                        <Button>Edit</Button>
-                    </Link>
-                    <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
-                </div>
+                { this.renderButtonMenu() }
+            </View>
+        );
+    },
+
+    renderButtonMenu: function() {
+        return (
+            <div className='button__menu'>
+                <Button onClick={ this.handleFlightEditing }>Edit</Button>
+                <Button onClick={ this.handleFlightAdding }>Add Flight</Button>
             </div>
         );
     },
@@ -68,12 +96,12 @@ var FlightView = React.createClass({
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.flight === null) {
-            return (
-                <View onDataModified={ this.onDataModified }>
-                    { this.renderLoader() }
-                </View>
-            );
+            return this.renderLoader();
         }
 
         return (
@@ -97,12 +125,7 @@ var FlightView = React.createClass({
                     <div>Remarks:</div>
                     <div>{ this.state.flight.remarks }</div>
                 </div>
-                <div className='button__menu'>
-                    <Link to={ '/flight/' + this.props.params.flightId + '/edit' }>
-                        <Button>Edit</Button>
-                    </Link>
-                    <Link to='/flight/0/edit'><Button>Add Flight</Button></Link>
-                </div>
+                { this.renderButtonMenu() }
                 { this.renderMap() }
             </View>
         );

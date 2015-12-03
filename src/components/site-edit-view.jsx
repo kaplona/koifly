@@ -16,6 +16,8 @@ var TextInput = require('./common/text-input');
 var AltitudeInput = require('./common/altitude-input');
 var RemarksInput = require('./common/remarks-input');
 var Loader = require('./common/loader');
+var ErrorBox = require('./common/error-box');
+var ErrorTypes = require('../utils/error-types');
 
 
 var SiteEditView = React.createClass({
@@ -35,9 +37,12 @@ var SiteEditView = React.createClass({
                 name: '',
                 launchAltitude: '',
                 location: '',
-                coordinates: ''
+                coordinates: '',
+                remarks: ''
             },
-            markerPosition: null
+            markerPosition: null,
+            loadingError: null,
+            savingInProcess: false
         };
     },
 
@@ -46,9 +51,14 @@ var SiteEditView = React.createClass({
         var validationRespond = this.validateForm();
         // If no errors
         if (validationRespond === true) {
+            this.setState({ savingInProcess: true });
             var newSite =  _.clone(this.state.site);
-            SiteModel.saveSite(newSite);
-            this.history.pushState(null, '/sites');
+            SiteModel.saveSite(newSite).then(() => {
+                this.history.pushState(null, '/sites');
+            }).catch((error) => {
+                this.handleSavingError(error);
+            });
+
         }
     },
 
@@ -61,10 +71,42 @@ var SiteEditView = React.createClass({
     },
 
     handleDeleteSite: function() {
-        SiteModel.deleteSite(this.props.params.siteId);
+        this.setState({ savingInProcess: true });
+        SiteModel.deleteSite(this.props.params.siteId).then(() => {
+            this.history.pushState(null, '/sites');
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
+    },
+
+    handleSavingError: function(error) {
+        var loadingError = null;
+        if (error.type === ErrorTypes.VALIDATION_FAILURE) {
+            this.updateErrorState(error.errors);
+        } else {
+            loadingError = error;
+        }
+        this.setState({
+            loadingError: loadingError,
+            savingInProcess: false
+        });
+    },
+
+    handleCancelEditing: function() {
+        this.history.pushState(
+            null,
+            this.props.params.siteId ? ('/site/' + this.props.params.siteId) : '/sites'
+        );
     },
 
     onDataModified: function() {
+        // If waiting for server respond
+        // ignore any other data updates
+        if (this.state.savingInProcess) {
+            return;
+        }
+
+        // Fetch site
         var site;
         if (this.props.params.siteId) {
             site = SiteModel.getSiteOutput(this.props.params.siteId);
@@ -72,15 +114,38 @@ var SiteEditView = React.createClass({
             site = SiteModel.getNewSiteOutput();
         }
 
-        if (site === false) {
-            // TODO if no site with given id => show error
+        // Check for errors
+        if (site !== null && site.error) {
+            // Create an empty site
+            // in order to show to user an empty form
+            // if error occurred
+            var newSite = this.state.site;
+            if (newSite === null) {
+                newSite = this.createBlanckSite();
+            }
+            this.setState({
+                site: newSite,
+                loadingError: site.error
+            });
             return;
         }
+
         var markerPosition = (site !== null) ? SiteModel.getLatLngCoordinates(this.props.params.siteId) : null;
         this.setState({
             site: site,
-            markerPosition: markerPosition
+            markerPosition: markerPosition,
+            loadingError: null
         });
+    },
+
+    createBlanckSite: function() {
+        return {
+            name: '',
+            launchAltitude: 0,
+            location: '',
+            coordinates: '',
+            remarks: ''
+        };
     },
 
     validateForm: function(softValidation) {
@@ -90,14 +155,16 @@ var SiteEditView = React.createClass({
                 newSite,
                 softValidation
         );
-        // update errors state
+        this.updateErrorState(validationRespond);
+        return validationRespond;
+    },
+
+    updateErrorState: function(errorList) {
         var newErrorState =  _.clone(this.state.errors);
         $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = validationRespond[fieldName] ? validationRespond[fieldName] : '';
+            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
         });
         this.setState({ errors: newErrorState });
-
-        return validationRespond;
     },
 
     dropPinByCoordinates: function() {
@@ -110,32 +177,57 @@ var SiteEditView = React.createClass({
         }
     },
 
+    renderError: function() {
+        if (this.state.loadingError !== null) {
+            return <ErrorBox error={ this.state.loadingError }/>;
+        }
+        return '';
+    },
+
     renderLoader: function() {
         var deleteButton = (this.props.params.siteId) ? <Button active={ false }>Delete</Button> : '';
         return (
-            <div>
+            <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <Loader />
                 <div className='button__menu'>
                     <Button active={ false }>Save</Button>
                     { deleteButton }
-                    <Link to={ this.props.params.siteId ? ('/site/' + this.props.params.siteId) : '/sites' }>
-                        <Button>Cancel</Button>
-                    </Link>
+                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
-            </div>
+            </View>
         );
     },
 
     renderDeleteButton: function() {
         if (this.props.params.siteId) {
+            var buttonText = this.state.savingInProcess ? '...' : 'Delete';
             return (
-                <Link to='/sites'>
-                    <Button onClick={ this.handleDeleteSite }>Delete</Button>
-                </Link>
+                <Button
+                    onClick={ this.handleDeleteSite }
+                    active={ !this.state.savingInProcess }
+                    >
+                    { buttonText }
+                </Button>
             );
         }
         return '';
+    },
+
+    renderButtonMenu: function() {
+        var saveButtonText = this.state.savingInProcess ? '...' : 'Save';
+        var cancelButtonText = this.state.savingInProcess ? '...' : 'Cancel';
+        return (
+            <div className='button__menu'>
+                <Button type='submit' active={ !this.state.savingInProcess }>
+                    { saveButtonText }
+                </Button>
+                { this.renderDeleteButton() }
+                <Button active={ !this.state.savingInProcess } onClick={ this.handleCancelEditing }>
+                    { cancelButtonText }
+                </Button>
+            </div>
+        );
     },
 
     renderMap: function() {
@@ -169,16 +261,13 @@ var SiteEditView = React.createClass({
 
     render: function() {
         if (this.state.site === null) {
-            return (
-                <View onDataModified={ this.onDataModified }>
-                    { this.renderLoader() }
-                </View>
-            );
+            return this.renderLoader();
         }
 
         return (
             <View onDataModified={ this.onDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
+                { this.renderError() }
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
                         inputValue={ this.state.site.name }
@@ -214,18 +303,12 @@ var SiteEditView = React.createClass({
                     <RemarksInput
                         inputValue={ this.state.site.remarks }
                         labelText='Remarks'
+                        errorMessage={ this.state.errors.remarks }
                         onChange={ this.handleInputChange.bind(this, 'remarks') }
                         />
 
                     { this.renderMap() }
-
-                    <div className='button__menu'>
-                        <Button type='submit'>Save</Button>
-                        { this.renderDeleteButton() }
-                        <Link to={ this.props.params.siteId ? ('/site/' + this.props.params.siteId) : '/sites' }>
-                            <Button>Cancel</Button>
-                        </Link>
-                    </div>
+                    { this.renderButtonMenu() }
                 </form>
             </View>
         );
@@ -234,6 +317,3 @@ var SiteEditView = React.createClass({
 
 
 module.exports = SiteEditView;
-
-
-
