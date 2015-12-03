@@ -192,6 +192,14 @@ var GliderModel = {
         return simpleList;
     },
 
+    getGliderValueTextList: function() {
+        var valueTextList = [];
+        $.each(DataService.data.gliders, (gliderId, glider) => {
+            valueTextList.push({ value: gliderId, text: glider.name });
+        });
+        return valueTextList;
+    },
+
     getGliderIdsList: function() {
         return Object.keys(DataService.data.gliders);
     },

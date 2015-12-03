@@ -2,6 +2,7 @@
 
 var React = require('react');
 var Altitude = require('../../utils/altitude');
+var DropDown = require('./dropdown');
 
 
 var AltitudeInput = React.createClass({
@@ -27,22 +28,15 @@ var AltitudeInput = React.createClass({
         };
     },
 
-    handleUserInput: function(inputName) {
-        this.props.onChange(inputName, this.refs[inputName].getDOMNode().value);
+    handleUserInput: function(inputName, inputValue) {
+        if (inputValue === undefined) {
+            inputValue = this.refs[inputName].getDOMNode().value;
+        }
+        this.props.onChange(inputName, inputValue);
     },
 
     render: function() {
-        var rawAltitudeUnitsList = Altitude.getAltitudeUnitsList();
-        var altitudeUnitOptions = rawAltitudeUnitsList.map((unitName) => {
-            return (
-                <option
-                    key={ unitName }
-                    value={ unitName }
-                    >
-                    { unitName }
-                </option>
-            );
-        });
+        var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
         return (
             <div>
@@ -57,13 +51,15 @@ var AltitudeInput = React.createClass({
                     onChange={ this.handleUserInput.bind(this, this.props.fieldName) }
                     ref={ this.props.fieldName }
                     />
-                <select
-                    value={ this.props.selectedAltitudeUnits }
-                    onChange={ this.handleUserInput.bind(this, 'altitudeUnits') }
-                    ref='altitudeUnits'
-                    >
-                    { altitudeUnitOptions }
-                </select>
+                <div className='inline'>
+                    <DropDown
+                        selectedValue={ this.props.selectedAltitudeUnits }
+                        options={ altitudeUnitsList }
+                        inputName='altitudeUnits'
+                        onChangeFunc={ this.handleUserInput }
+                        errorMessage={ null }
+                        />
+                </div>
             </div>
         );
     }
@@ -71,6 +67,3 @@ var AltitudeInput = React.createClass({
 
 
 module.exports = AltitudeInput;
-
-
-

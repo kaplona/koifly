@@ -9,15 +9,19 @@ var DropDown = React.createClass({
         selectedValue: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.number
-        ]),
+        ]).isRequired,
         options: React.PropTypes.arrayOf(React.PropTypes.shape({
             value: React.PropTypes.string,
             text: React.PropTypes.string
         })).isRequired,
         labelText: React.PropTypes.string,
-        inputName: React.PropTypes.string,
+        inputName: React.PropTypes.string.isRequired,
+        emptyValue: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ]),
         errorMessage: React.PropTypes.string,
-        onChangeFunc: React.PropTypes.func
+        onChangeFunc: React.PropTypes.func.isRequired
     },
 
     handleUserInput: function() {
@@ -25,7 +29,14 @@ var DropDown = React.createClass({
     },
 
     render: function() {
-        var selectOptions = this.props.options.map((option) => {
+        // Add an empty value to options list if needed
+        var selectOptions = this.props.options;
+        if (this.props.emptyValue !== undefined) {
+            selectOptions.unshift({ value: this.props.emptyValue, text: '' });
+        }
+
+        // Make an array of React elements
+        selectOptions = this.props.options.map((option) => {
             return (
                 <option
                     key={ option.value }
@@ -57,6 +68,3 @@ var DropDown = React.createClass({
 
 
 module.exports = DropDown;
-
-
-

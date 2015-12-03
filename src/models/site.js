@@ -228,6 +228,14 @@ var SiteModel = {
         return simpleList;
     },
 
+    getSiteValueTextList: function() {
+        var valueTextList = [];
+        $.each(DataService.data.sites, (siteId, site) => {
+            valueTextList.push({ value: siteId, text: site.name });
+        });
+        return valueTextList;
+    },
+
     getSiteIdsList: function() {
         return Object.keys(DataService.data.sites);
     },

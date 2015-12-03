@@ -4,7 +4,7 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var $ = require('jquery');
+//var $ = require('jquery');
 var _ = require('underscore');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
@@ -226,21 +226,13 @@ var FlightEditView = React.createClass({
         );
     },
 
-    renderSelectOptions: function(initialData) {
-        var options = [ { value: 'other', text: '' } ];
-        $.each(initialData, (dataId, dataValue) => {
-            options.push({ value: dataId, text: dataValue });
-        });
-        return options;
-    },
-
     render: function() {
         if (this.state.flight === null) {
             return this.renderLoader();
         }
 
-        var sites = SiteModel.getSiteSimpleList();
-        var gliders = GliderModel.getGliderSimpleList();
+        var sites = SiteModel.getSiteValueTextList();
+        var gliders = GliderModel.getGliderValueTextList();
 
         return (
             <View onDataModified={ this.onDataModified }>
@@ -272,18 +264,23 @@ var FlightEditView = React.createClass({
                         />
 
                     <DropDown
-                        selectedValue={ this.state.flight.siteId }
-                        options={ this.renderSelectOptions(sites) }
+                        selectedValue={ this.state.flight.siteId === null ? 0 : this.state.flight.siteId }
+                        options={ sites }
                         labelText='Site:'
-                        errorMessage={ this.state.errors.siteId }
                         inputName='siteId'
-                        onChangeFunc={ this.handleInputChange }
+                        emptyValue={ 0 }
+                        errorMessage={ this.state.errors.siteId }
+                        onChangeFunc={ (inputName, inputValue) => {
+                            this.handleInputChange(inputName, inputValue === 0 ? null : inputValue);
+                        } }
                         />
 
                     <DropDown
                         selectedValue={ this.state.flight.gliderId === null ? 0 : this.state.flight.gliderId }
-                        options={ this.renderSelectOptions(gliders) }
+                        options={ gliders }
                         labelText='Glider:'
+                        inputName='gliderId'
+                        emptyValue={ 0 }
                         errorMessage={ this.state.errors.gliderId }
                         onChangeFunc={ (inputName, inputValue) => {
                             this.handleInputChange(inputName, inputValue === 0 ? null : inputValue);

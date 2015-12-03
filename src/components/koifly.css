@@ -58,6 +58,9 @@ input, textarea, select {
     color: #000;
 }
 
+.inline {
+    display: inline-block;
+}
 
 
 

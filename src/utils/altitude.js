@@ -63,6 +63,21 @@ var Altitude = {
      */
     getAltitudeUnitsList: function() {
         return Object.keys(this.meterConverter);
+    },
+
+    /**
+     * Gets all available for using altitude units
+     * in {value: value, text: text} format
+     * for using in dropdown component
+     * @returns {array} list of altitude units objects
+     */
+    getAltitudeUnitsValueTextList: function() {
+        return Object.keys(this.meterConverter).map((unitName) => {
+            return {
+                value: unitName,
+                text: unitName
+            };
+        });
     }
 };
 

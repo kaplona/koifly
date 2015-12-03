@@ -167,13 +167,7 @@ var PilotEditView = React.createClass({
             return this.renderLoader();
         }
 
-        var rawAltitudeUnitsList = Altitude.getAltitudeUnitsList();
-        var altitudeUnitsList = rawAltitudeUnitsList.map((unitName) => {
-            return {
-                value: unitName,
-                text: unitName
-            };
-        });
+        var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
         return (
             <View onDataModified={ this.onDataModified }>
@@ -206,8 +200,9 @@ var PilotEditView = React.createClass({
                         selectedValue={ this.state.pilot.altitudeUnits }
                         options={ altitudeUnitsList }
                         labelText='Altitude units:'
+                        inputName='altitudeUnits'
                         errorMessage={ this.state.errors.altitudeUnits }
-                        onChangeFunc={ this.handleInputChange.bind(this, 'altitudeUnits') }
+                        onChangeFunc={ this.handleInputChange }
                         />
 
                     { this.renderButtonMenu() }
