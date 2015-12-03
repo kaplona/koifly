@@ -4,7 +4,6 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var $ = require('jquery');
 var _ = require('underscore');
 var Map = require('../utils/map');
 var SiteModel = require('../models/site');
@@ -33,13 +32,7 @@ var SiteEditView = React.createClass({
     getInitialState: function() {
         return {
             site: null,
-            errors: {
-                name: '',
-                launchAltitude: '',
-                location: '',
-                coordinates: '',
-                remarks: ''
-            },
+            errors: _.clone(SiteEditView.formFields),
             markerPosition: null,
             loadingError: null,
             savingInProcess: false
@@ -159,11 +152,8 @@ var SiteEditView = React.createClass({
         return validationResponse;
     },
 
-    updateErrorState: function(errorList) {
-        var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
-        });
+    updateErrorState: function(newErrors) {
+        var newErrorState = _.extend({}, SiteEditView.formFields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
@@ -317,6 +307,15 @@ var SiteEditView = React.createClass({
         );
     }
 });
+
+
+SiteEditView.formFields = {
+    name: null,
+    launchAltitude: null,
+    location: null,
+    coordinates: null,
+    remarks: null
+};
 
 
 module.exports = SiteEditView;

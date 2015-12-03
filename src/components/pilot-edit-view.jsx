@@ -4,7 +4,6 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var $ = require('jquery');
 var _ = require('underscore');
 var PilotModel = require('../models/pilot');
 var Validation = require('../utils/validation');
@@ -26,13 +25,7 @@ var PilotEditView = React.createClass({
     getInitialState: function() {
         return {
             pilot: null,
-            errors: {
-                initialFlightNum: '',
-                initialAirtime: '',
-                altitudeUnits: '',
-                hours: '',
-                minutes: ''
-            },
+            errors: _.clone(PilotEditView.formFields),
             loadingError: null,
             savingInProcess: false
         };
@@ -120,11 +113,8 @@ var PilotEditView = React.createClass({
         return validationResponse;
     },
 
-    updateErrorState: function(errorList) {
-        var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
-        });
+    updateErrorState: function(newErrors) {
+        var newErrorState = _.extend({}, PilotEditView.formFields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
@@ -212,6 +202,15 @@ var PilotEditView = React.createClass({
         );
     }
 });
+
+
+PilotEditView.formFields = {
+    initialFlightNum: null,
+    initialAirtime: null,
+    altitudeUnits: null,
+    hours: null,
+    minutes: null
+};
 
 
 module.exports = PilotEditView;

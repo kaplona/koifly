@@ -4,7 +4,6 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-var $ = require('jquery');
 var _ = require('underscore');
 var GliderModel = require('../models/glider');
 var Validation = require('../utils/validation');
@@ -31,14 +30,7 @@ var GliderEditView = React.createClass({
     getInitialState: function() {
         return {
             glider: null,
-            errors: {
-                name: '',
-                initialFlightNum: '',
-                initialAirtime: '',
-                hours: '',
-                minutes: '',
-                remarks: ''
-            },
+            errors: _.clone(GliderEditView.formFields),
             loadingError: null,
             savingInProcess: false
         };
@@ -159,11 +151,8 @@ var GliderEditView = React.createClass({
         return validationResponse;
     },
 
-    updateErrorState: function(errorList) {
-        var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
-        });
+    updateErrorState: function(newErrors) {
+        var newErrorState = _.extend({}, GliderEditView.formFields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
@@ -270,6 +259,16 @@ var GliderEditView = React.createClass({
         );
     }
 });
+
+
+GliderEditView.formFields = {
+    name: null,
+    initialFlightNum: null,
+    initialAirtime: null,
+    hours: null,
+    minutes: null,
+    remarks: null
+};
 
 
 module.exports = GliderEditView;

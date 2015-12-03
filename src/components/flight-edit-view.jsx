@@ -36,7 +36,7 @@ var FlightEditView = React.createClass({
     getInitialState: function() {
         return {
             flight: null,
-            errors: _.clone(FlightEditView.fields),
+            errors: _.clone(FlightEditView.formFields),
             loadingError: null,
             savingInProcess: false
         };
@@ -170,7 +170,7 @@ var FlightEditView = React.createClass({
     },
 
     updateErrorState: function(newErrors) {
-        var newErrorState = _.extend({}, FlightEditView.fields, newErrors);
+        var newErrorState = _.extend({}, FlightEditView.formFields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
@@ -303,7 +303,7 @@ var FlightEditView = React.createClass({
 });
 
 
-FlightEditView.fields = {
+FlightEditView.formFields = {
     date: null,
     siteId: null,
     altitude: null,
