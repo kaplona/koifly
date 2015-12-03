@@ -49,11 +49,11 @@ var Validation = {
     methods: {
 
         isEmpty: function(value, rules) {
-            // If value is empty and no default value is set
+            // If value is empty
             if (value === null || (value + '').trim() === '') {
                 // And no default value is set
                 if (rules.defaultVal === undefined) {
-                    // Through an error
+                    // Throw an error
                     return rules.field + ' cannot be empty';
                 }
                 // If there is default value for the field
@@ -90,7 +90,7 @@ var Validation = {
             return true;
         },
 
-        // Check if value is not empty and yyyy-mm-dd date formate
+        // Check if value is not empty and yyyy-mm-dd date format
         dateFormat: function(formData, fieldName, rules, soft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
@@ -102,7 +102,7 @@ var Validation = {
             }
 
             if (!Util.isRightDateFormat(formData[fieldName])) {
-                return rules.field + ' must be in yyyy-mm-dd formate';
+                return '%s must be in yyyy-mm-dd format'.replace('%s', rules.field);
             }
 
             return true;

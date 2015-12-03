@@ -40,9 +40,9 @@ var PilotEditView = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        var validationRespond = this.validateForm();
+        var validationResponse = this.validateForm();
         // If no errors
-        if (validationRespond === true) {
+        if (validationResponse === true) {
             this.setState({ savingInProcess: true });
             var newPilotInfo =  _.clone(this.state.pilot);
             newPilotInfo.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
@@ -80,7 +80,7 @@ var PilotEditView = React.createClass({
     },
 
     onDataModified: function() {
-        // If waiting for server respond
+        // If waiting for server response
         // ignore any other data updates
         if (this.state.savingInProcess) {
             return;
@@ -111,13 +111,13 @@ var PilotEditView = React.createClass({
 
     validateForm: function(softValidation) {
         var newPilotInfo =  _.clone(this.state.pilot);
-        var validationRespond = Validation.validateForm(
+        var validationResponse = Validation.validateForm(
                 PilotModel.getValidationConfig(),
                 newPilotInfo,
                 softValidation
         );
-        this.updateErrorState(validationRespond);
-        return validationRespond;
+        this.updateErrorState(validationResponse);
+        return validationResponse;
     },
 
     updateErrorState: function(errorList) {

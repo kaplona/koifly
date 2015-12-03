@@ -47,7 +47,7 @@ function getAllData(pilot, dateFrom) {
         Site.scope(scope).findAll({ where: whereQuery }),
         Glider.scope(scope).findAll({ where: whereQuery })
     ]).then((values) => {
-        // Values is the list of each promise's respond
+        // Values is the list of each promise return value
         for (var i = 0; i < values.length; i++) {
             values[i] = takeOnlyPlainValues(values[i]);
 

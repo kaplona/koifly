@@ -36,17 +36,7 @@ var FlightEditView = React.createClass({
     getInitialState: function() {
         return {
             flight: null,
-            errors: {
-                date: '',
-                siteId: '',
-                altitude: '',
-                altitudeUnits: '',
-                airtime: '',
-                gliderId: '',
-                remarks: '',
-                hours: '',
-                minutes: ''
-            },
+            errors: _.clone(FlightEditView.fields),
             loadingError: null,
             savingInProcess: false
         };
@@ -54,9 +44,9 @@ var FlightEditView = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        var validationRespond = this.validateForm();
+        var validationResponse = this.validateForm();
         // If no errors
-        if (validationRespond === true) {
+        if (validationResponse === true) {
             this.setState({ savingInProcess: true });
             // Prepare data for sending to the server
             var newFlight =  _.clone(this.state.flight);
@@ -73,8 +63,7 @@ var FlightEditView = React.createClass({
     },
 
     handleInputChange: function(inputName, inputValue) {
-        var newFlight =  _.clone(this.state.flight);
-        newFlight[inputName] = inputValue;
+        var newFlight = _.extend({}, this.state.flight, { [inputName]: inputValue });
         this.setState({ flight: newFlight }, () => {
             this.validateForm(true);
         });
@@ -110,7 +99,7 @@ var FlightEditView = React.createClass({
     },
 
     onDataModified: function() {
-        // If waiting for server respond
+        // If waiting for server response
         // ignore any other data updates
         if (this.state.savingInProcess) {
             return;
@@ -147,6 +136,7 @@ var FlightEditView = React.createClass({
             flight.hours = Math.floor(flight.airtime / 60);
             flight.minutes = flight.airtime % 60;
         }
+
         this.setState({
             flight: flight,
             loadingError: null
@@ -167,22 +157,20 @@ var FlightEditView = React.createClass({
         };
     },
 
-    validateForm: function(softValidation) {
+    validateForm: function(isSoft) {
+        // Clone state object to enforce immutability
         var newFlight =  _.clone(this.state.flight);
-        var validationRespond = Validation.validateForm(
+        var validationResponse = Validation.validateForm(
             FlightModel.getValidationConfig(),
             newFlight,
-            softValidation
+            isSoft
         );
-        this.updateErrorState(validationRespond);
-        return validationRespond;
+        this.updateErrorState(validationResponse);
+        return validationResponse;
     },
 
-    updateErrorState: function(errorList) {
-        var newErrorState =  _.clone(this.state.errors);
-        $.each(newErrorState, (fieldName) => {
-            newErrorState[fieldName] = errorList[fieldName] ? errorList[fieldName] : '';
-        });
+    updateErrorState: function(newErrors) {
+        var newErrorState = _.extend({}, FlightEditView.fields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
@@ -220,7 +208,6 @@ var FlightEditView = React.createClass({
                 </Button>
             );
         }
-        return '';
     },
 
     renderButtonMenu: function() {
@@ -240,11 +227,10 @@ var FlightEditView = React.createClass({
     },
 
     renderSelectOptions: function(initialData) {
-        var options = [];
+        var options = [ { value: 'other', text: '' } ];
         $.each(initialData, (dataId, dataValue) => {
             options.push({ value: dataId, text: dataValue });
         });
-        options.push({ value: 'other', text: 'other' });
         return options;
     },
 
@@ -290,15 +276,18 @@ var FlightEditView = React.createClass({
                         options={ this.renderSelectOptions(sites) }
                         labelText='Site:'
                         errorMessage={ this.state.errors.siteId }
-                        onChangeFunc={ this.handleInputChange.bind(this, 'siteId') }
+                        inputName='siteId'
+                        onChangeFunc={ this.handleInputChange }
                         />
 
                     <DropDown
-                        selectedValue={ this.state.flight.gliderId }
+                        selectedValue={ this.state.flight.gliderId === null ? 0 : this.state.flight.gliderId }
                         options={ this.renderSelectOptions(gliders) }
-                        labelText='Gliger:'
+                        labelText='Glider:'
                         errorMessage={ this.state.errors.gliderId }
-                        onChangeFunc={ this.handleInputChange.bind(this, 'gliderId') }
+                        onChangeFunc={ (inputName, inputValue) => {
+                            this.handleInputChange(inputName, inputValue === 0 ? null : inputValue);
+                        } }
                         />
 
                     <RemarksInput
@@ -314,6 +303,19 @@ var FlightEditView = React.createClass({
         );
     }
 });
+
+
+FlightEditView.fields = {
+    date: null,
+    siteId: null,
+    altitude: null,
+    altitudeUnits: null,
+    airtime: null,
+    gliderId: null,
+    remarks: null,
+    hours: null,
+    minutes: null
+};
 
 
 module.exports = FlightEditView;

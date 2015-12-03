@@ -46,9 +46,9 @@ var GliderEditView = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        var validationRespond = this.validateForm();
+        var validationResponse = this.validateForm();
         // If no errors
-        if (validationRespond === true) {
+        if (validationResponse === true) {
             this.setState({ savingInProcess: true });
             var newGlider =  _.clone(this.state.glider);
             newGlider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
@@ -96,7 +96,7 @@ var GliderEditView = React.createClass({
     },
 
     onDataModified: function() {
-        // If waiting for server respond
+        // If waiting for server response
         // ignore any other data updates
         if (this.state.savingInProcess) {
             return;
@@ -150,13 +150,13 @@ var GliderEditView = React.createClass({
 
     validateForm: function(softValidation) {
         var newGlider =  _.clone(this.state.glider);
-        var validationRespond = Validation.validateForm(
+        var validationResponse = Validation.validateForm(
                 GliderModel.getValidationConfig(),
                 newGlider,
                 softValidation
         );
-        this.updateErrorState(validationRespond);
-        return validationRespond;
+        this.updateErrorState(validationResponse);
+        return validationResponse;
     },
 
     updateErrorState: function(errorList) {

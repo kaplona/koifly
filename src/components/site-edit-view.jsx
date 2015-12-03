@@ -48,9 +48,9 @@ var SiteEditView = React.createClass({
 
     handleSubmit: function(e) {
         e.preventDefault();
-        var validationRespond = this.validateForm();
+        var validationResponse = this.validateForm();
         // If no errors
-        if (validationRespond === true) {
+        if (validationResponse === true) {
             this.setState({ savingInProcess: true });
             var newSite =  _.clone(this.state.site);
             SiteModel.saveSite(newSite).then(() => {
@@ -100,7 +100,7 @@ var SiteEditView = React.createClass({
     },
 
     onDataModified: function() {
-        // If waiting for server respond
+        // If waiting for server response
         // ignore any other data updates
         if (this.state.savingInProcess) {
             return;
@@ -150,13 +150,13 @@ var SiteEditView = React.createClass({
 
     validateForm: function(softValidation) {
         var newSite =  _.clone(this.state.site);
-        var validationRespond = Validation.validateForm(
+        var validationResponse = Validation.validateForm(
                 SiteModel.getValidationConfig(),
                 newSite,
                 softValidation
         );
-        this.updateErrorState(validationRespond);
-        return validationRespond;
+        this.updateErrorState(validationResponse);
+        return validationResponse;
     },
 
     updateErrorState: function(errorList) {

@@ -29,16 +29,16 @@ var DataService = {
                 dataType: 'json',
                 data: { lastModified: JSON.stringify(this.lastModified) }
             })
-            .done((serverRespond) => {
+            .done((serverResponse) => {
                 // DEV
-                console.log('respond:', serverRespond);
+                console.log('response:', serverResponse);
 
-                if (serverRespond.error) {
+                if (serverResponse.error) {
                     console.log('set error');
-                    this.setError(serverRespond.error);
+                    this.setError(serverResponse.error);
                 } else {
                     console.log('set data');
-                    this.setData(serverRespond);
+                    this.setData(serverResponse);
                 }
             // If request failed or request time exceeded the timeout
             }).fail(() => {
@@ -61,16 +61,16 @@ var DataService = {
                     dataType: 'json',
                     data: data
                 })
-                .done((serverRespond) => {
+                .done((serverResponse) => {
                     // DEV
-                    console.log('server respond:', serverRespond);
+                    console.log('server response:', serverResponse);
 
-                    if (serverRespond.error) {
-                        reject(serverRespond.error);
+                    if (serverResponse.error) {
+                        reject(serverResponse.error);
                         return;
                     }
 
-                    this.setData(serverRespond);
+                    this.setData(serverResponse);
                     resolve('success');
                 // If request failed or request time exceeded the timeout
                 }).fail(() => {
@@ -79,16 +79,16 @@ var DataService = {
         });
     },
 
-    setData: function(serverRespond) {
+    setData: function(serverResponse) {
         // DEV change '!==' to '<'
-        console.log(this.lastModified, serverRespond.lastModified, this.lastModified < serverRespond.lastModified);
+        console.log(this.lastModified, serverResponse.lastModified, this.lastModified < serverResponse.lastModified);
 
         this.data.loadingError = null;
         if (this.lastModified === null ||
-            this.lastModified < serverRespond.lastModified
+            this.lastModified < serverResponse.lastModified
         ) {
-            this.lastModified = serverRespond.lastModified;
-             _.each(serverRespond, (data, dataType) => {
+            this.lastModified = serverResponse.lastModified;
+             _.each(serverResponse, (data, dataType) => {
                  if (this.data[dataType] !== undefined) {
                      if (dataType === 'pilot') {
                          this.setPilotInfo(data);

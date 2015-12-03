@@ -223,6 +223,8 @@ var SiteModel = {
         $.each(DataService.data.sites, (siteId, site) => {
             simpleList[siteId] = site.name;
         });
+
+        //TODO use _.mapValues in lodash https://lodash.com/docs#mapValues
         return simpleList;
     },
 

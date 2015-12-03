@@ -15,12 +15,13 @@ var DropDown = React.createClass({
             text: React.PropTypes.string
         })).isRequired,
         labelText: React.PropTypes.string,
+        inputName: React.PropTypes.string,
         errorMessage: React.PropTypes.string,
         onChangeFunc: React.PropTypes.func
     },
 
     handleUserInput: function() {
-        this.props.onChangeFunc(this.refs.selectInput.getDOMNode().value);
+        this.props.onChangeFunc(this.props.inputName, this.refs.selectInput.getDOMNode().value);
     },
 
     render: function() {
@@ -42,7 +43,7 @@ var DropDown = React.createClass({
                 </div>
                 <label>{ this.props.labelText }</label>
                 <select
-                    className={ this.props.errorMessage !== '' ? 'error' : '' }
+                    className={ this.props.errorMessage !== null ? 'error' : '' }
                     value={ this.props.selectedValue }
                     onChange={ this.handleUserInput }
                     ref='selectInput'
