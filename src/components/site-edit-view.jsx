@@ -272,22 +272,24 @@ var SiteEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.site.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }
+                        inputName='name'
                         errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange.bind(this, 'name') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <TextInput
                         inputValue={ this.state.site.location }
                         labelText='Location:'
+                        inputName='location'
                         errorMessage={ this.state.errors.location }
-                        onChange={ this.handleInputChange.bind(this, 'location') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <AltitudeInput
                         inputValue={ this.state.site.launchAltitude }
-                        selectedAltitudeUnits={ this.state.site.altitudeUnits }
+                        selectedAltitudeUnit={ this.state.site.altitudeUnits }
                         labelText='Launch Altitude:'
-                        fieldName='launchAltitude'
+                        inputName='launchAltitude'
                         errorMessage={ this.state.errors.launchAltitude }
                         onChange={ this.handleInputChange }
                         />
@@ -295,8 +297,9 @@ var SiteEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.site.coordinates }
                         labelText='Coordinates:'
+                        inputName='coordinates'
                         errorMessage={ this.state.errors.coordinates }
-                        onChange={ this.handleInputChange.bind(this, 'coordinates') }
+                        onChange={ this.handleInputChange }
                         onBlur={ this.dropPinByCoordinates }
                         />
 
@@ -304,7 +307,7 @@ var SiteEditView = React.createClass({
                         inputValue={ this.state.site.remarks }
                         labelText='Remarks'
                         errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange.bind(this, 'remarks') }
+                        onChange={ this.handleInputChange }
                         />
 
                     { this.renderMap() }

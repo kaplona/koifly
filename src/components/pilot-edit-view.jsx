@@ -180,8 +180,9 @@ var PilotEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.pilot.initialFlightNum }
                         labelText='Number of Flights:'
+                        inputName='initialFlightNum'
                         errorMessage={ this.state.errors.initialFlightNum }
-                        onChange={ this.handleInputChange.bind(this, 'initialFlightNum') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <TimeInput
@@ -199,7 +200,7 @@ var PilotEditView = React.createClass({
                     <DropDown
                         selectedValue={ this.state.pilot.altitudeUnits }
                         options={ altitudeUnitsList }
-                        labelText='Altitude units:'
+                        labelText='Altitude unit:'
                         inputName='altitudeUnits'
                         errorMessage={ this.state.errors.altitudeUnits }
                         onChangeFunc={ this.handleInputChange }

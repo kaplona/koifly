@@ -12,8 +12,8 @@ var AltitudeInput = React.createClass({
             React.PropTypes.string,
             React.PropTypes.number
         ]),
-        selectedAltitudeUnits: React.PropTypes.string,
-        fieldName: React.PropTypes.string,
+        selectedAltitudeUnit: React.PropTypes.string,
+        inputName: React.PropTypes.string,
         labelText: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.element
@@ -24,15 +24,27 @@ var AltitudeInput = React.createClass({
 
     getDefaultProps: function() {
         return {
-            fieldName: 'altitude'
+            inputName: 'altitude'
         };
     },
 
     handleUserInput: function(inputName, inputValue) {
+        // When function is triggered from embedded component
+        // both parameters are provided
+        // otherwise retrieve input value from the DOM
         if (inputValue === undefined) {
             inputValue = this.refs[inputName].getDOMNode().value;
         }
+
         this.props.onChange(inputName, inputValue);
+    },
+
+    renderErrorMessage: function() {
+        if (this.props.errorMessage) {
+            return (<div className='error_message'>
+                { this.props.errorMessage }
+            </div>);
+        }
     },
 
     render: function() {
@@ -40,20 +52,18 @@ var AltitudeInput = React.createClass({
 
         return (
             <div>
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
+                { this.renderErrorMessage() }
                 <label>{ this.props.labelText }</label>
                 <input
                     value={ this.props.inputValue }
                     type='text'
-                    className={ this.props.errorMessage !== null ? 'error' : '' }
-                    onChange={ this.handleUserInput.bind(this, this.props.fieldName) }
-                    ref={ this.props.fieldName }
+                    className={ (this.props.errorMessage !== null) ? 'error' : '' }
+                    onChange={ () => this.handleUserInput(this.props.inputName) }
+                    ref={ this.props.inputName }
                     />
                 <div className='inline'>
                     <DropDown
-                        selectedValue={ this.props.selectedAltitudeUnits }
+                        selectedValue={ this.props.selectedAltitudeUnit }
                         options={ altitudeUnitsList }
                         inputName='altitudeUnits'
                         onChangeFunc={ this.handleUserInput }

@@ -233,8 +233,9 @@ var GliderEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.glider.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }
+                        inputName='name'
                         errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange.bind(this, 'name') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <div>Glider usage before Koifly:</div>
@@ -242,8 +243,9 @@ var GliderEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.glider.initialFlightNum }
                         labelText='Number of Flights:'
+                        inputName='initialFlightNum'
                         errorMessage={ this.state.errors.initialFlightNum }
-                        onChange={ this.handleInputChange.bind(this, 'initialFlightNum') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <TimeInput
@@ -259,7 +261,7 @@ var GliderEditView = React.createClass({
                         inputValue={ this.state.glider.remarks }
                         labelText='Remarks'
                         errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange.bind(this, 'remarks') }
+                        onChange={ this.handleInputChange }
                         />
 
                     { this.renderButtonMenu() }

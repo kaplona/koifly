@@ -242,8 +242,9 @@ var FlightEditView = React.createClass({
                     <TextInput
                         inputValue={ this.state.flight.date }
                         labelText={ <span>Date<sup>*</sup>:</span> }
+                        inputName='date'
                         errorMessage={ this.state.errors.date }
-                        onChange={ this.handleInputChange.bind(this, 'date') }
+                        onChange={ this.handleInputChange }
                         />
 
                     <TimeInput
@@ -257,7 +258,7 @@ var FlightEditView = React.createClass({
 
                     <AltitudeInput
                         inputValue={ this.state.flight.altitude }
-                        selectedAltitudeUnits={ this.state.flight.altitudeUnits }
+                        selectedAltitudeUnit={ this.state.flight.altitudeUnits }
                         labelText='Altitude gained:'
                         errorMessage={ this.state.errors.altitude }
                         onChange={ this.handleInputChange }
@@ -291,7 +292,7 @@ var FlightEditView = React.createClass({
                         inputValue={ this.state.flight.remarks }
                         labelText='Remarks'
                         errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange.bind(this, 'remarks') }
+                        onChange={ this.handleInputChange }
                         />
 
                     { this.renderButtonMenu() }

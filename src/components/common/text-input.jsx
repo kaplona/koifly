@@ -14,26 +14,41 @@ var TextInput = React.createClass({
             React.PropTypes.string,
             React.PropTypes.element
         ]),
+        inputName: React.PropTypes.string,
         errorMessage: React.PropTypes.string,
         onChange: React.PropTypes.func,
         onBlur: React.PropTypes.func
     },
 
     handleUserInput: function() {
-        this.props.onChange(this.refs.input.getDOMNode().value);
+        this.props.onChange(this.props.inputName, this.refs.input.getDOMNode().value);
+    },
+
+    renderErrorMessage: function() {
+        if (this.props.errorMessage) {
+            return (
+                <div className='error_message'>
+                    { this.props.errorMessage }
+                </div>
+            );
+        }
+    },
+
+    renderLabel: function() {
+        if (this.props.labelText) {
+            return <label>{ this.props.labelText }</label>;
+        }
     },
 
     render: function() {
         return (
             <div>
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
-                <label>{ this.props.labelText }</label>
+                { this.renderErrorMessage() }
+                { this.renderLabel() }
                 <input
                     value={ this.props.inputValue }
                     type='text'
-                    className={ this.props.errorMessage !== null ? 'error' : '' }
+                    className={ (this.props.errorMessage !== null) ? 'error' : '' }
                     onChange={ this.handleUserInput }
                     onBlur={ this.props.onBlur }
                     ref='input'
@@ -45,6 +60,3 @@ var TextInput = React.createClass({
 
 
 module.exports = TextInput;
-
-
-
