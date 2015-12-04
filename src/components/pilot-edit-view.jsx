@@ -3,7 +3,6 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
-var Link = ReactRouter.Link;
 var _ = require('underscore');
 var PilotModel = require('../models/pilot');
 var Validation = require('../utils/validation');
@@ -27,18 +26,23 @@ var PilotEditView = React.createClass({
             pilot: null,
             errors: _.clone(PilotEditView.formFields),
             loadingError: null,
-            savingInProcess: false
+            savingError: null,
+            isSaving: false
         };
     },
 
-    handleSubmit: function(e) {
-        e.preventDefault();
+    handleSubmit: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
         var validationResponse = this.validateForm();
         // If no errors
         if (validationResponse === true) {
-            this.setState({ savingInProcess: true });
+            this.setState({ isSaving: true });
             var newPilotInfo =  _.clone(this.state.pilot);
             newPilotInfo.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
+
             PilotModel.savePilotInfo(newPilotInfo).then(() => {
                 this.history.pushState(null, '/pilot');
             }).catch((error) => {
@@ -60,22 +64,22 @@ var PilotEditView = React.createClass({
     },
 
     handleSavingError: function(error) {
-        var loadingError = null;
+        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_FAILURE) {
             this.updateErrorState(error.errors);
         } else {
-            loadingError = error;
+            newError = error;
         }
         this.setState({
-            loadingError: loadingError,
-            savingInProcess: false
+            savingError: newError,
+            isSaving: false
         });
     },
 
     onDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
-        if (this.state.savingInProcess) {
+        if (this.state.isSaving) {
             return;
         }
 
@@ -84,9 +88,7 @@ var PilotEditView = React.createClass({
 
         // Check for errors
         if (pilot !== null && pilot.error) {
-            this.setState({
-                loadingError: pilot.error
-            });
+            this.setState({ loadingError: pilot.error });
             return;
         }
 
@@ -120,9 +122,25 @@ var PilotEditView = React.createClass({
 
     renderError: function() {
         if (this.state.loadingError !== null) {
-            return <ErrorBox error={ this.state.loadingError }/>;
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    <ErrorBox error={ this.state.loadingError }/>
+                </View>
+            );
         }
-        return '';
+    },
+
+    renderSavingError: function() {
+        if (this.state.savingError) {
+            var isTrying = this.state.isSaving;
+            return (
+                <ErrorBox
+                    error={ this.state.savingError }
+                    onTryAgain={ this.handleSubmit }
+                    isTrying={ isTrying }
+                    />
+            );
+        }
     },
 
     renderLoader: function() {
@@ -131,28 +149,31 @@ var PilotEditView = React.createClass({
                 <Loader />
                 <div className='button__menu'>
                     <Button active={ false }>Save</Button>
-                    <Link to='/pilot'><Button>Cancel</Button></Link>
+                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
             </View>
         );
     },
 
     renderButtonMenu: function() {
-        var saveButtonText = this.state.savingInProcess ? '...' : 'Save';
-        var cancelButtonText = this.state.savingInProcess ? '...' : 'Cancel';
+        var isActive = !this.state.isSaving;
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ !this.state.savingInProcess }>
-                    { saveButtonText }
+                <Button type='submit' active={ isActive }>
+                    { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
-                <Button active={ !this.state.savingInProcess } onClick={ this.handleCancelEditing }>
-                    { cancelButtonText }
+                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                    Cancel
                 </Button>
             </div>
         );
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.pilot === null) {
             return this.renderLoader();
         }
@@ -161,7 +182,7 @@ var PilotEditView = React.createClass({
 
         return (
             <View onDataModified={ this.onDataModified }>
-                { this.renderError() }
+                { this.renderSavingError() }
                 <form onSubmit={ this.handleSubmit }>
                     <div className='container__title'>{ this.state.pilot.userName }</div>
 

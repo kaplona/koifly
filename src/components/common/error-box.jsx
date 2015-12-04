@@ -2,7 +2,8 @@
 
 var React = require('react');
 var ErrorTypes = require('../../utils/error-types');
-var RetrieveError = require('./retrieve-error');
+//var RetrieveError = require('./retrieve-error');
+var Button = require('./button');
 
 
 var ErrorView = React.createClass({
@@ -11,17 +12,33 @@ var ErrorView = React.createClass({
             type: React.PropTypes.string,
             message: React.PropTypes.string
         }).isRequired,
-        onTryAgain: React.PropTypes.func
+        onTryAgain: React.PropTypes.func,
+        isTrying: React.PropTypes.bool
+    },
+
+    renderTryAgainButton: function() {
+        if (this.props.onTryAgain &&
+            this.props.error.type !== ErrorTypes.NO_EXISTENT_RECORD &&
+            this.props.error.type !== ErrorTypes.VALIDATION_FAILURE
+        ) {
+            return (
+                <Button
+                    onClick={ this.props.onTryAgain }
+                    active={ !this.props.isTrying }
+                    >
+                    { this.props.isTrying ? 'Trying ...' : 'Try Again' }
+                </Button>
+            );
+        }
     },
 
     render: function() {
-        if (this.props.error.type === ErrorTypes.RETRIEVING_FAILURE &&
-            this.props.onTryAgain
-        ) {
-            return <RetrieveError onTryAgain={ this.props.onTryAgain }/>;
-        }
-
-        return <div className='error_box error_message'>{ this.props.error.message }</div>;
+        return (
+            <div className='error_box error_message'>
+                { this.props.error.message }
+                { this.renderTryAgainButton() }
+            </div>
+        );
     }
 });
 

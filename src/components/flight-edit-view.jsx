@@ -4,13 +4,11 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var History = ReactRouter.History;
 var Link = ReactRouter.Link;
-//var $ = require('jquery');
 var _ = require('underscore');
 var FlightModel = require('../models/flight');
 var SiteModel = require('../models/site');
 var GliderModel = require('../models/glider');
 var Validation = require('../utils/validation');
-var Util = require('../utils/util');
 var View = require('./common/view');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');
@@ -38,21 +36,25 @@ var FlightEditView = React.createClass({
             flight: null,
             errors: _.clone(FlightEditView.formFields),
             loadingError: null,
-            savingInProcess: false
+            savingError: null,
+            deletingError: null,
+            isSaving: false,
+            isDeleting: false
         };
     },
 
-    handleSubmit: function(e) {
-        e.preventDefault();
+    handleSubmit: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
         var validationResponse = this.validateForm();
         // If no errors
         if (validationResponse === true) {
-            this.setState({ savingInProcess: true });
+            this.setState({ isSaving: true });
             // Prepare data for sending to the server
             var newFlight =  _.clone(this.state.flight);
             newFlight.airtime = parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes);
-            newFlight.siteId = (newFlight.siteId === 'other') ? null : newFlight.siteId;
-            newFlight.gliderId = (newFlight.gliderId === 'other') ? null : newFlight.gliderId;
 
             FlightModel.saveFlight(newFlight).then(() => {
                 this.history.pushState(null, '/flights');
@@ -62,19 +64,19 @@ var FlightEditView = React.createClass({
         }
     },
 
+    handleDeleteFlight: function() {
+        this.setState({ isDeleting: true });
+        FlightModel.deleteFlight(this.props.params.flightId).then(() => {
+            this.history.pushState(null, '/flights');
+        }).catch((error) => {
+            this.handleDeletingError(error);
+        });
+    },
+
     handleInputChange: function(inputName, inputValue) {
         var newFlight = _.extend({}, this.state.flight, { [inputName]: inputValue });
         this.setState({ flight: newFlight }, () => {
             this.validateForm(true);
-        });
-    },
-
-    handleDeleteFlight: function() {
-        this.setState({ savingInProcess: true });
-        FlightModel.deleteFlight(this.props.params.flightId).then(() => {
-            this.history.pushState(null, '/flights');
-        }).catch((error) => {
-            this.handleSavingError(error);
         });
     },
 
@@ -86,22 +88,34 @@ var FlightEditView = React.createClass({
     },
 
     handleSavingError: function(error) {
-        var loadingError = null;
+        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_FAILURE) {
             this.updateErrorState(error.errors);
         } else {
-            loadingError = error;
+            newError = error;
         }
+
         this.setState({
-            loadingError: loadingError,
-            savingInProcess: false
+            savingError: newError,
+            deletingError: null,
+            isSaving: false,
+            isDeleting: false
+        });
+    },
+
+    handleDeletingError: function(error) {
+        this.setState({
+            deletingError: error,
+            savingError: null,
+            isDeleting: false,
+            isSaving: false
         });
     },
 
     onDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
-        if (this.state.savingInProcess) {
+        if (this.state.isSaving || this.state.isDeleting) {
             return;
         }
 
@@ -115,24 +129,12 @@ var FlightEditView = React.createClass({
 
         // Check for errors
         if (flight !== null && flight.error) {
-            // Create an empty flight
-            // in order to show to user an empty form
-            // if error occurred
-            var newFlight = this.state.flight;
-            if (newFlight === null) {
-                newFlight = this.createBlanckFlight();
-            }
-            this.setState({
-                flight: newFlight,
-                loadingError: flight.error
-            });
+            this.setState({ loadingError: flight.error });
             return;
         }
 
         // Prepare flight info for user presentation
         if (flight !== null) {
-            flight.siteId = (flight.siteId === null) ? 'other' : flight.siteId;
-            flight.gliderId = (flight.gliderId === null) ? 'other' : flight.gliderId;
             flight.hours = Math.floor(flight.airtime / 60);
             flight.minutes = flight.airtime % 60;
         }
@@ -141,20 +143,6 @@ var FlightEditView = React.createClass({
             flight: flight,
             loadingError: null
         });
-    },
-
-    createBlanckFlight: function() {
-        return {
-            date: Util.today(),
-            siteId: 'other',
-            altitude: 0,
-            altitudeUnits: 'meter',
-            airtime: 0,
-            gliderId: 'other',
-            remarks: '',
-            hours: 0,
-            minutes: 0
-        };
     },
 
     validateForm: function(isSoft) {
@@ -175,10 +163,40 @@ var FlightEditView = React.createClass({
     },
 
     renderError: function() {
-        if (this.state.loadingError !== null) {
-            return <ErrorBox error={ this.state.loadingError }/>;
+        return (
+            <View onDataModified={ this.onDataModified }>
+                <ErrorBox
+                    error={ this.state.loadingError }
+                    onTryAgain={ this.onDataModified }
+                    />
+            </View>
+        );
+    },
+
+    renderSavingError: function() {
+        if (this.state.savingError) {
+            var isTrying = (this.state.isSaving || this.state.isDeleting);
+            return (
+                <ErrorBox
+                    error={ this.state.savingError }
+                    onTryAgain={ this.handleSubmit }
+                    isTrying={ isTrying }
+                    />
+            );
         }
-        return '';
+    },
+
+    renderDeletingError: function() {
+        if (this.state.deletingError) {
+            var isTrying = (this.state.isSaving || this.state.isDeleting);
+            return (
+                <ErrorBox
+                    error={ this.state.deletingError }
+                    onTryAgain={ this.handleDeleteFlight }
+                    isTrying={ isTrying }
+                    />
+            );
+        }
     },
 
     renderLoader: function() {
@@ -198,35 +216,35 @@ var FlightEditView = React.createClass({
 
     renderDeleteButton: function() {
         if (this.props.params.flightId) {
-            var buttonText = this.state.savingInProcess ? '...' : 'Delete';
+            var isActive = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button
-                    onClick={ this.handleDeleteFlight }
-                    active={ !this.state.savingInProcess }
-                    >
-                    { buttonText }
+                <Button onClick={ this.handleDeleteFlight } active={ isActive }>
+                    { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
                 </Button>
             );
         }
     },
 
     renderButtonMenu: function() {
-        var saveButtonText = this.state.savingInProcess ? '...' : 'Save';
-        var cancelButtonText = this.state.savingInProcess ? '...' : 'Cancel';
+        var isActive = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ !this.state.savingInProcess }>
-                    { saveButtonText }
+                <Button type='submit' active={ isActive }>
+                    { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
                 { this.renderDeleteButton() }
-                <Button active={ !this.state.savingInProcess } onClick={ this.handleCancelEditing }>
-                    { cancelButtonText }
+                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                    Cancel
                 </Button>
             </div>
         );
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.flight === null) {
             return this.renderLoader();
         }
@@ -237,7 +255,8 @@ var FlightEditView = React.createClass({
         return (
             <View onDataModified={ this.onDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
-                { this.renderError() }
+                { this.renderSavingError() }
+                { this.renderDeletingError() }
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
                         inputValue={ this.state.flight.date }

@@ -32,18 +32,25 @@ var GliderEditView = React.createClass({
             glider: null,
             errors: _.clone(GliderEditView.formFields),
             loadingError: null,
-            savingInProcess: false
+            savingError: null,
+            deletingError: null,
+            isSaving: false,
+            isDeleting: false
         };
     },
 
-    handleSubmit: function(e) {
-        e.preventDefault();
+    handleSubmit: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
         var validationResponse = this.validateForm();
         // If no errors
         if (validationResponse === true) {
-            this.setState({ savingInProcess: true });
+            this.setState({ isSaving: true });
             var newGlider =  _.clone(this.state.glider);
             newGlider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
+
             GliderModel.saveGlider(newGlider).then(() => {
                 this.history.pushState(null, '/gliders');
             }).catch((error) => {
@@ -51,6 +58,15 @@ var GliderEditView = React.createClass({
             });
 
         }
+    },
+
+    handleDeleteGlider: function() {
+        this.setState({ isDeleting: true });
+        GliderModel.deleteGlider(this.props.params.gliderId).then(() => {
+            this.history.pushState(null, '/gliders');
+        }).catch((error) => {
+            this.handleDeletingError(error);
+        });
     },
 
     handleInputChange: function(inputName, inputValue) {
@@ -61,36 +77,38 @@ var GliderEditView = React.createClass({
         });
     },
 
-    handleDeleteGlider: function() {
-        this.setState({ savingInProcess: true });
-        GliderModel.deleteGlider(this.props.params.gliderId).then(() => {
-            this.history.pushState(null, '/gliders');
-        }).catch((error) => {
-            this.handleSavingError(error);
-        });
+    handleCancelEditing: function() {
+        this.history.pushState(null, '/gliders');
     },
 
     handleSavingError: function(error) {
-        var loadingError = null;
+        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_FAILURE) {
             this.updateErrorState(error.errors);
         } else {
-            loadingError = error;
+            newError = error;
         }
         this.setState({
-            loadingError: loadingError,
-            savingInProcess: false
+            savingError: newError,
+            deletingError: null,
+            isSaving: false,
+            isDeleting: false
         });
     },
 
-    handleCancelEditing: function() {
-        this.history.pushState(null, '/gliders');
+    handleDeletingError: function(error) {
+        this.setState({
+            deletingError: error,
+            savingError: null,
+            isDeleting: false,
+            isSaving: false
+        });
     },
 
     onDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
-        if (this.state.savingInProcess) {
+        if (this.state.isSaving || this.state.isDeleting) {
             return;
         }
 
@@ -104,17 +122,7 @@ var GliderEditView = React.createClass({
 
         // Check for errors
         if (glider !== null && glider.error) {
-            // Create an empty site
-            // in order to show to user an empty form
-            // if error occurred
-            var newGlider = this.state.glider;
-            if (newGlider === null) {
-                newGlider = this.createBlanckGlider();
-            }
-            this.setState({
-                site: newGlider,
-                loadingError: glider.error
-            });
+            this.setState({ loadingError: glider.error });
             return;
         }
 
@@ -127,17 +135,6 @@ var GliderEditView = React.createClass({
             glider: glider,
             loadingError: null
         });
-    },
-
-    createBlanckGlider: function() {
-        return {
-            name: '',
-            initialFlightNum: 0,
-            initialAirtime: 0,
-            hours: 0,
-            minutes: 0,
-            remarks: ''
-        };
     },
 
     validateForm: function(softValidation) {
@@ -158,9 +155,41 @@ var GliderEditView = React.createClass({
 
     renderError: function() {
         if (this.state.loadingError !== null) {
-            return <ErrorBox error={ this.state.loadingError }/>;
+            return (
+                <View onDataModified={ this.onDataModified }>
+                    <ErrorBox
+                        error={ this.state.loadingError }
+                        onTryAgain={ this.onDataModified }
+                        />
+                </View>
+            );
         }
-        return '';
+    },
+
+    renderSavingError: function() {
+        if (this.state.savingError) {
+            var isTrying = (this.state.isSaving || this.state.isDeleting);
+            return (
+                <ErrorBox
+                    error={ this.state.savingError }
+                    onTryAgain={ this.handleSubmit }
+                    isTrying={ isTrying }
+                    />
+            );
+        }
+    },
+
+    renderDeletingError: function() {
+        if (this.state.deletingError) {
+            var isTrying = (this.state.isSaving || this.state.isDeleting);
+            return (
+                <ErrorBox
+                    error={ this.state.deletingError }
+                    onTryAgain={ this.handleDeleteGlider }
+                    isTrying={ isTrying }
+                    />
+            );
+        }
     },
 
     renderLoader: function() {
@@ -180,13 +209,13 @@ var GliderEditView = React.createClass({
 
     renderDeleteButton: function() {
         if (this.props.params.gliderId) {
-            var buttonText = this.state.savingInProcess ? '...' : 'Delete';
+            var isActive = (!this.state.isSaving && !this.state.isDeleting);
             return (
                 <Button
                     onClick={ this.handleDeleteGlider }
-                    active={ !this.state.savingInProcess }
+                    active={ isActive }
                     >
-                    { buttonText }
+                    { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
                 </Button>
             );
         }
@@ -194,22 +223,25 @@ var GliderEditView = React.createClass({
     },
 
     renderButtonMenu: function() {
-        var saveButtonText = this.state.savingInProcess ? '...' : 'Save';
-        var cancelButtonText = this.state.savingInProcess ? '...' : 'Cancel';
+        var isActive = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ !this.state.savingInProcess }>
-                    { saveButtonText }
+                <Button type='submit' active={ isActive }>
+                    { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
                 { this.renderDeleteButton() }
-                <Button active={ !this.state.savingInProcess } onClick={ this.handleCancelEditing }>
-                    { cancelButtonText }
+                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                    Cancel
                 </Button>
             </div>
         );
     },
 
     render: function() {
+        if (this.state.loadingError !== null) {
+            return this.renderError();
+        }
+
         if (this.state.glider === null) {
             return this.renderLoader();
         }
@@ -217,7 +249,8 @@ var GliderEditView = React.createClass({
         return (
             <View onDataModified={ this.onDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
-                { this.renderError() }
+                { this.renderSavingError() }
+                { this.renderDeletingError() }
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
                         inputValue={ this.state.glider.name }
