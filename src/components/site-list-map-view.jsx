@@ -3,7 +3,6 @@
 var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
-var _ = require('underscore');
 var SiteModel = require('../models/site');
 var View = require('./common/view');
 var StaticMap = require('./common/static-map');
@@ -42,7 +41,7 @@ var SiteListMapView = React.createClass({
     },
 
     renderMap: function() {
-        var siteList = _.clone(this.state.sites);
+        var siteList = this.state.sites;
         return (this.state.sites !== null) ? <StaticMap markers={ siteList } /> : <Loader />;
     },
 

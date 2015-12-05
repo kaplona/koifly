@@ -51,13 +51,12 @@ var SiteEditView = React.createClass({
         // If no errors
         if (validationResponse === true) {
             this.setState({ isSaving: true });
-            var newSite =  _.clone(this.state.site);
-            SiteModel.saveSite(newSite).then(() => {
+
+            SiteModel.saveSite(this.state.site).then(() => {
                 this.history.pushState(null, '/sites');
             }).catch((error) => {
                 this.handleSavingError(error);
             });
-
         }
     },
 
@@ -71,8 +70,7 @@ var SiteEditView = React.createClass({
     },
 
     handleInputChange: function(inputName, inputValue) {
-        var newSite =  _.clone(this.state.site);
-        newSite[inputName] = inputValue;
+        var newSite = _.extend({}, this.state.site, { [inputName]: inputValue });
         this.setState({ site: newSite }, function() {
             this.validateForm(true);
         });
@@ -139,11 +137,10 @@ var SiteEditView = React.createClass({
     },
 
     validateForm: function(isSoft) {
-        var newSite =  _.clone(this.state.site);
         var validationResponse = Validation.validateForm(
-                SiteModel.getValidationConfig(),
-                newSite,
-                isSoft
+            SiteModel.getValidationConfig(),
+            this.state.site,
+            isSoft
         );
         this.updateErrorState(validationResponse);
         return validationResponse;

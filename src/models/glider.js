@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var DataService = require('../services/data-service');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
@@ -134,6 +135,7 @@ var GliderModel = {
         // Set default values to empty fields
         newGlider = this.setDefaultValues(newGlider);
 
+        // Create a glider only with fields which will be send to the server
         var glider = {};
         glider.id = newGlider.id;
         glider.name = newGlider.name;
@@ -144,6 +146,7 @@ var GliderModel = {
     },
 
     setDefaultValues: function(newGlider) {
+        var fieldsToReplace = {};
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newGlider[fieldName] === null ||
@@ -152,10 +155,10 @@ var GliderModel = {
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
-                newGlider[fieldName] = config.rules.defaultVal;
+                fieldsToReplace[fieldName] = config.rules.defaultVal;
             }
         });
-        return newGlider;
+        return _.extend({}, newGlider, fieldsToReplace);
     },
 
     deleteGlider: function(gliderId) {

@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
@@ -219,6 +220,7 @@ var FlightModel = {
         // Set default values to empty fields
         newFlight = this.setDefaultValues(newFlight);
 
+        // Create a flight only with fields which will be send to the server
         var flight = {};
         flight.id = newFlight.id;
         flight.date = newFlight.date;
@@ -236,6 +238,7 @@ var FlightModel = {
     },
 
     setDefaultValues: function(newFlight) {
+        var fieldsToReplace = {};
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or empty string
             if ((newFlight[fieldName] === null ||
@@ -244,10 +247,10 @@ var FlightModel = {
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
-                newFlight[fieldName] = config.rules.defaultVal;
+                fieldsToReplace[fieldName] = config.rules.defaultVal;
             }
         });
-        return newFlight;
+        return _.extend({}, newFlight, fieldsToReplace);
     },
 
     deleteFlight: function(flightId) {

@@ -10,7 +10,6 @@ var Map = {};
 var mapsapi = require('google-maps-api')('AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s');
 mapsapi().then((maps) => {
     // maps is the google.maps object
-    console.log('Map !!!');
     _.extend(Map, {
 
         map: null,

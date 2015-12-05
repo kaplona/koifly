@@ -52,8 +52,7 @@ var PilotEditView = React.createClass({
     },
 
     handleInputChange: function(inputName, inputValue) {
-        var newPilotInfo =  _.clone(this.state.pilot);
-        newPilotInfo[inputName] = inputValue;
+        var newPilotInfo = _.extend({}, this.state.pilot, { [inputName]: inputValue });
         this.setState({ pilot: newPilotInfo }, function() {
             this.validateForm(true);
         });
@@ -105,10 +104,9 @@ var PilotEditView = React.createClass({
 
 
     validateForm: function(isSoft) {
-        var newPilotInfo =  _.clone(this.state.pilot);
         var validationResponse = Validation.validateForm(
-                PilotModel.getValidationConfig(),
-                newPilotInfo,
+            PilotModel.getValidationConfig(),
+            this.state.pilot,
             isSoft
         );
         this.updateErrorState(validationResponse);

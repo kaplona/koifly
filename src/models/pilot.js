@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var DataService = require('../services/data-service');
 var Altitude = require('../utils/altitude');
 
@@ -108,6 +109,8 @@ var PilotModel = {
 
     savePilotInfo: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
+
+        // Create a pilot only with fields which will be send to the server
         var pilot = {};
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
         pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
@@ -116,6 +119,7 @@ var PilotModel = {
     },
 
     setDefaultValues: function(newPilotInfo) {
+        var fieldsToReplace = {};
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newPilotInfo[fieldName] === null ||
@@ -124,10 +128,10 @@ var PilotModel = {
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
-                newPilotInfo[fieldName] = config.rules.defaultVal;
+                fieldsToReplace[fieldName] = config.rules.defaultVal;
             }
         });
-        return newPilotInfo;
+        return _.extend({}, newPilotInfo, fieldsToReplace);
     },
     
     getValidationConfig: function() {

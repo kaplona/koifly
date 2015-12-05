@@ -80,12 +80,10 @@ var SiteView = React.createClass({
 
     renderMap: function() {
         if (this.state.site.coordinates) {
-            var site =  _.clone(this.state.site);
-            var siteList = [];
-            siteList.push(site);
+            var siteList = [ this.state.site ];
             return (
                 <StaticMap
-                    center={ SiteModel.getLatLngCoordinates(site.id) }
+                    center={ SiteModel.getLatLngCoordinates(this.state.site.id) }
                     zoomLevel={ _.isEmpty(Map) ? null : Map.zoomLevel.site }
                     markers={ siteList }
                     />

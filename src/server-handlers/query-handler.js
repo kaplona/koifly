@@ -77,8 +77,14 @@ function getAllData(pilot, dateFrom) {
 
 function takeOnlyPlainValues(bdInstances) {
     return _.map(bdInstances, function(instance) {
+        // If instance was deleted
+        // user doesn't need its content
         if (instance.see === false) {
-            return { id: instance.id, see: false };
+            return {
+                id: instance.id,
+                see: false,
+                updatedAt: instance.updatedAt
+            };
         }
         return instance.get({ plain: true });
     });

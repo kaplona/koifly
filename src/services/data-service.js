@@ -132,9 +132,9 @@ var DataService = {
         for (var i = 0; i < newData.length; i++) {
             // If item is visible => update or add to the data object
             if (newData[i].see) {
-                this.data[dataType][newData[i].id] = _.clone(newData[i]);
+                this.data[dataType][newData[i].id] = newData[i];
             // If item is deleted => remove it from data object
-            } else if (this.data[dataType][newData[i].id] !== undefined) {
+            } else if (this.data[dataType][newData[i].id]) {
                 delete this.data[dataType][newData[i].id];
             }
         }

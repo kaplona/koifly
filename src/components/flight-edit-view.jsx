@@ -147,10 +147,9 @@ var FlightEditView = React.createClass({
 
     validateForm: function(isSoft) {
         // Clone state object to enforce immutability
-        var newFlight =  _.clone(this.state.flight);
         var validationResponse = Validation.validateForm(
             FlightModel.getValidationConfig(),
-            newFlight,
+            this.state.flight,
             isSoft
         );
         this.updateErrorState(validationResponse);

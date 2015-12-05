@@ -70,8 +70,7 @@ var GliderEditView = React.createClass({
     },
 
     handleInputChange: function(inputName, inputValue) {
-        var newGlider =  _.clone(this.state.glider);
-        newGlider[inputName] = inputValue;
+        var newGlider = _.extend({}, this.state.glider, { [inputName]: inputValue });
         this.setState({ glider: newGlider }, function() {
             this.validateForm(true);
         });
@@ -138,11 +137,10 @@ var GliderEditView = React.createClass({
     },
 
     validateForm: function(isSoft) {
-        var newGlider =  _.clone(this.state.glider);
         var validationResponse = Validation.validateForm(
-                GliderModel.getValidationConfig(),
-                newGlider,
-                isSoft
+            GliderModel.getValidationConfig(),
+            this.state.glider,
+            isSoft
         );
         this.updateErrorState(validationResponse);
         return validationResponse;

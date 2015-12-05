@@ -1,6 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
+var _ = require('underscore');
 var DataService = require('../services/data-service');
 var Altitude = require('../utils/altitude');
 var KoiflyError = require('../utils/error');
@@ -137,6 +138,7 @@ var SiteModel = {
         // Set default values to empty fields
         newSite = this.setDefaultValues(newSite);
 
+        // Create a site only with fields which will be send to the server
         var site = {};
         site.id = newSite.id;
         site.name = newSite.name;
@@ -153,6 +155,7 @@ var SiteModel = {
     },
 
     setDefaultValues: function(newSite) {
+        var fieldsToReplace = {};
         $.each(this.formValidationConfig, (fieldName, config) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newSite[fieldName] === null ||
@@ -161,10 +164,10 @@ var SiteModel = {
                  config.rules.defaultVal !== undefined
             ) {
                 // Set it to its default value
-                newSite[fieldName] = config.rules.defaultVal;
+                fieldsToReplace[fieldName] = config.rules.defaultVal;
             }
         });
-        return newSite;
+        return _.extend({}, newSite, fieldsToReplace);
     },
 
     deleteSite: function(siteId) {
