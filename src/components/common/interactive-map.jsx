@@ -3,6 +3,7 @@
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var $ = require('jquery');
+var _ = require('underscore');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -36,9 +37,9 @@ var InteractiveMap = React.createClass({
     getDefaultProps: function() {
         return {
             markerId: 'new',
-            center: Map.center.region, // !!! current location or last added site
-            zoomLevel: Map.zoomLevel.region,
-            markerPosition: Map.outOfMapCoordinates,
+            center: _.isEmpty(Map) ? null : Map.center.region, // TODO current location or last added site
+            zoomLevel: _.isEmpty(Map) ? null : Map.zoomLevel.region,
+            markerPosition: _.isEmpty(Map) ? null : Map.outOfMapCoordinates,
             location: '',
             launchAltitude: '',
             altitudeUnit: 'meter'
@@ -50,20 +51,21 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
-        var mapContainer = this.refs.map.getDOMNode();
-
-        Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
-        Map.createMarker(this.props.markerId, this.props.markerPosition, true);
-        Map.addMarkerMoveEventListner(this.props.markerId);
-        Map.createInfowindow(this.props.markerId, '');
-        Map.bindMarkerAndInfowindow(this.props.markerId);
-        if (this.props.markerPosition !== null) {
-            Map.requestPositionInfo(this.props.markerPosition);
+        if (!_.isEmpty(Map)) {
+            var mapContainer = this.refs.map.getDOMNode();
+            Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+            Map.createMarker(this.props.markerId, this.props.markerPosition, true);
+            Map.addMarkerMoveEventListner(this.props.markerId);
+            Map.createInfowindow(this.props.markerId, '');
+            Map.bindMarkerAndInfowindow(this.props.markerId);
+            if (this.props.markerPosition !== null) {
+                Map.requestPositionInfo(this.props.markerPosition);
+            }
         }
     },
 
     shouldComponentUpdate: function(nextProps) {
-        if (nextProps.markerPosition !== this.props.markerPosition) {
+        if (!_.isEmpty(Map) && (nextProps.markerPosition !== this.props.markerPosition)) {
             Map.moveMarker(nextProps.markerPosition, this.props.markerId);
         }
         return false;
@@ -72,7 +74,9 @@ var InteractiveMap = React.createClass({
     componentWillUnmount: function() {
         PubSub.removeListener('infowindowContentChanged', this.changeInfowindowContent, this);
         $('#apply_google_data').off('click');
-        Map.unmountMap();
+        if (!_.isEmpty(Map)) {
+            Map.unmountMap();
+        }
     },
 
     changeInfowindowContent: function(infowindowContent) {
@@ -81,9 +85,13 @@ var InteractiveMap = React.createClass({
             infowindowContent.elevation !== undefined &&
             infowindowContent.coordinates !== undefined
         ) {
-            // Formate infowindow content
+            // Format infowindow content
             var address = infowindowContent.address;
-            var altitude = Altitude.getAltitudeInPilotUnits(parseFloat(infowindowContent.elevation)); // Google map returns elevtion in meters
+            var altitude = infowindowContent.elevation;
+            if (altitude !== 'unknown elevation') {
+                // Convert to user altitude unit as Google map returns elevation in meters
+                altitude = Altitude.getAltitudeInPilotUnits(parseFloat(altitude));
+            }
             var coordinates = infowindowContent.coordinates;
             var infowindowContentHtml = this.composeInfowindowMessage(address, altitude, coordinates);
 
@@ -99,21 +107,30 @@ var InteractiveMap = React.createClass({
     composeInfowindowMessage: function(location, altitude, coordinates) {
         // Mark checkbox as checked if related form field is empty
         // Checked values will then be tranfered to the fields
-        var checkbox = {
+        var checkboxParameters = {
             location: this.props.location ? '' : 'checked',
             launchAltitude: this.props.launchAltitude ? '' : 'checked'
         };
+        // Disable checkbox if no google results for it
+        if (location === 'unknown address') {
+            checkboxParameters.location = 'disabled';
+        }
+        if (altitude === 'unknown elevation') {
+            checkboxParameters.launchAltitude = 'disabled';
+        }
+
+        var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + this.props.altitudeUnit) : '';
 
         return '<div>' +
                     '<div>' +
-                        '<input id="location_checkbox" type="checkbox" ' + checkbox.location +
+                        '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
                             ' style="display:inline;width:12px;">' +
                         location +
                     '</div>' +
                     '<div>' +
-                        '<input id="launchAltitude_checkbox" type="checkbox" ' + checkbox.launchAltitude +
+                        '<input id="launchAltitude_checkbox" type="checkbox" ' + checkboxParameters.launchAltitude +
                             ' style="display:inline;width:12px;">' +
-                        altitude + ' ' + this.props.altitudeUnit +
+                        altitude + altitudeUnit +
                     '</div>' +
                     '<div>' +
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
@@ -124,7 +141,7 @@ var InteractiveMap = React.createClass({
     },
 
     applyGoogleData: function(location, elevation, coordinates) {
-        // If tranfering adress
+        // If transferring address
         if ($('#location_checkbox').prop('checked')) {
             this.props.onDataApply('location', location);
         }
@@ -141,12 +158,11 @@ var InteractiveMap = React.createClass({
     },
 
     render: function() {
-        return <div className='map_container' ref='map' />;
+        if (!_.isEmpty(Map)) {
+            return <div className='map_container' ref='map'/>;
+        }
     }
 });
 
 
 module.exports = InteractiveMap;
-
-
-

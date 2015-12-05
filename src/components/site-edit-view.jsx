@@ -252,7 +252,7 @@ var SiteEditView = React.createClass({
                 <InteractiveMap
                     markerId={ markerId }
                     center={ this.state.markerPosition }
-                    zoomLevel={ Map.zoomLevel.site }
+                    zoomLevel={ _.isEmpty(Map) ? null : Map.zoomLevel.site }
                     markerPosition={ this.state.markerPosition }
                     location={ this.state.site.location }
                     launchAltitude={ this.state.site.launchAltitude }

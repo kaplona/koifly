@@ -32,9 +32,6 @@ var FlightListView = React.createClass({
     },
 
     handleDataModified: function() {
-        // DEV
-        console.log('modifying flights...');
-
         var flights = FlightModel.getFlightsArray();
         if (flights !== null && flights.error) {
             this.setState({ loadingError: flights.error });
@@ -70,9 +67,6 @@ var FlightListView = React.createClass({
     },
 
     render: function() {
-        // DEV
-        console.log('rendering...');
-
         if (this.state.loadingError !== null) {
             return this.renderError();
         }

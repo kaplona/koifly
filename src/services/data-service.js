@@ -21,9 +21,6 @@ var DataService = {
     },
 
     loadData: function() {
-        //DEV
-        console.log('loading...');
-
         $.ajax({
                 method: 'GET',
                 url: '/api/data',
@@ -43,8 +40,6 @@ var DataService = {
                 }
             // If request failed or request time exceeded the timeout
             }).fail(() => {
-                // DEV
-                console.log('loading error');
                 this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
             });
     },

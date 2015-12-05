@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var _ = require('underscore');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
@@ -31,24 +32,26 @@ var StaticMap = React.createClass({
 
     getDefaultProps: function() {
         return {
-            center: Map.center.region, // !!! current location or last added site
-            zoomLevel: Map.zoomLevel.region,
+            center: _.isEmpty(Map) ? null : Map.center.region, // TODO current location or last added site
+            zoomLevel: _.isEmpty(Map) ? null : Map.zoomLevel.region,
             markers: []
         };
     },
 
     componentDidMount: function() {
-        var markerId, markerPosition, infowindowContent;
-        var mapContainer = this.refs.map.getDOMNode();
-        Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
-        for (var i = 0; i < this.props.markers.length; i++) {
-            if (this.props.markers[i].coordinates) {
-                markerId = this.props.markers[i].id;
-                markerPosition = SiteModel.getLatLngCoordinates(markerId);
-                Map.createMarker(markerId, markerPosition, false);
-                infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
-                Map.createInfowindow(markerId, infowindowContent);
-                Map.bindMarkerAndInfowindow(markerId);
+        if (!_.isEmpty(Map)) {
+            var markerId, markerPosition, infowindowContent;
+            var mapContainer = this.refs.map.getDOMNode();
+            Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+            for (var i = 0; i < this.props.markers.length; i++) {
+                if (this.props.markers[i].coordinates) {
+                    markerId = this.props.markers[i].id;
+                    markerPosition = SiteModel.getLatLngCoordinates(markerId);
+                    Map.createMarker(markerId, markerPosition, false);
+                    infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
+                    Map.createInfowindow(markerId, infowindowContent);
+                    Map.bindMarkerAndInfowindow(markerId);
+                }
             }
         }
     },
@@ -58,7 +61,9 @@ var StaticMap = React.createClass({
     },
 
     componentWillUnmount: function() {
-        Map.unmountMap();
+        if (!_.isEmpty(Map)) {
+            Map.unmountMap();
+        }
     },
 
     composeInfowindowMessage: function(site) {
@@ -71,12 +76,10 @@ var StaticMap = React.createClass({
     },
 
     render: function() {
-        return <div className='map_container' ref='map' />;
+        if (!_.isEmpty(Map)) {
+            return <div className='map_container' ref='map'/>;
+        }
     }
 });
 
 module.exports = StaticMap;
-
-
-
-
