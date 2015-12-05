@@ -76,7 +76,7 @@ var PilotEditView = React.createClass({
         });
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
         if (this.state.isSaving) {
@@ -104,12 +104,12 @@ var PilotEditView = React.createClass({
     },
 
 
-    validateForm: function(softValidation) {
+    validateForm: function(isSoft) {
         var newPilotInfo =  _.clone(this.state.pilot);
         var validationResponse = Validation.validateForm(
                 PilotModel.getValidationConfig(),
                 newPilotInfo,
-                softValidation
+            isSoft
         );
         this.updateErrorState(validationResponse);
         return validationResponse;
@@ -123,8 +123,11 @@ var PilotEditView = React.createClass({
     renderError: function() {
         if (this.state.loadingError !== null) {
             return (
-                <View onDataModified={ this.onDataModified }>
-                    <ErrorBox error={ this.state.loadingError }/>
+                <View onDataModified={ this.handleDataModified }>
+                    <ErrorBox
+                        error={ this.state.loadingError }
+                        onTryAgain={ this.handleDataModified }
+                        />
                 </View>
             );
         }
@@ -145,7 +148,7 @@ var PilotEditView = React.createClass({
 
     renderLoader: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Loader />
                 <div className='button__menu'>
                     <Button active={ false }>Save</Button>
@@ -181,7 +184,7 @@ var PilotEditView = React.createClass({
         var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 { this.renderSavingError() }
                 <form onSubmit={ this.handleSubmit }>
                     <div className='container__title'>{ this.state.pilot.userName }</div>
@@ -209,11 +212,11 @@ var PilotEditView = React.createClass({
                     <div>My settings:</div>
 
                     <DropDown
-                        selectedValue={ this.state.pilot.altitudeUnits }
+                        selectedValue={ this.state.pilot.altitudeUnit }
                         options={ altitudeUnitsList }
                         labelText='Altitude unit:'
-                        inputName='altitudeUnits'
-                        errorMessage={ this.state.errors.altitudeUnits }
+                        inputName='altitudeUnit'
+                        errorMessage={ this.state.errors.altitudeUnit }
                         onChangeFunc={ this.handleInputChange }
                         />
 
@@ -228,7 +231,7 @@ var PilotEditView = React.createClass({
 PilotEditView.formFields = {
     initialFlightNum: null,
     initialAirtime: null,
-    altitudeUnits: null,
+    altitudeUnit: null,
     hours: null,
     minutes: null
 };

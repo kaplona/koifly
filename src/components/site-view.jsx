@@ -39,7 +39,7 @@ var SiteView = React.createClass({
         this.history.pushState(null, '/site/0/edit');
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var site = SiteModel.getSiteOutput(this.props.params.siteId);
         if (site !== null && site.error) {
             this.setState({ loadingError: site.error });
@@ -53,15 +53,15 @@ var SiteView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
 
     renderLoader: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <Loader />
                 { this.renderButtonMenu() }
@@ -104,7 +104,7 @@ var SiteView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <div className='container__title'>
                     { this.state.site.name }
@@ -113,7 +113,7 @@ var SiteView = React.createClass({
                     <div>Location: { this.state.site.location }</div>
                     <div>
                         Launch Altitude:
-                        { this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnits }
+                        { this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
                     </div>
                     <div>Coordinates: { this.state.site.coordinates }</div>
                     <div>Remarks:</div>

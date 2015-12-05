@@ -105,7 +105,7 @@ var GliderEditView = React.createClass({
         });
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
         if (this.state.isSaving || this.state.isDeleting) {
@@ -137,12 +137,12 @@ var GliderEditView = React.createClass({
         });
     },
 
-    validateForm: function(softValidation) {
+    validateForm: function(isSoft) {
         var newGlider =  _.clone(this.state.glider);
         var validationResponse = Validation.validateForm(
                 GliderModel.getValidationConfig(),
                 newGlider,
-                softValidation
+                isSoft
         );
         this.updateErrorState(validationResponse);
         return validationResponse;
@@ -156,10 +156,10 @@ var GliderEditView = React.createClass({
     renderError: function() {
         if (this.state.loadingError !== null) {
             return (
-                <View onDataModified={ this.onDataModified }>
+                <View onDataModified={ this.handleDataModified }>
                     <ErrorBox
                         error={ this.state.loadingError }
-                        onTryAgain={ this.onDataModified }
+                        onTryAgain={ this.handleDataModified }
                         />
                 </View>
             );
@@ -195,7 +195,7 @@ var GliderEditView = React.createClass({
     renderLoader: function() {
         var deleteButton = (this.props.params.gliderId) ? <Button active={ false }>Delete</Button> : '';
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 <Loader />
                 <div className='button__menu'>
@@ -247,7 +247,7 @@ var GliderEditView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }

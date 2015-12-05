@@ -26,7 +26,7 @@ var PilotModel = {
                 field: 'Initial Airtime'
             }
         },
-        altitudeUnits: {
+        altitudeUnit: {
             method: 'selectOption',
             rules: {
                 getArrayOfOptions: function() {
@@ -75,7 +75,7 @@ var PilotModel = {
             airtimeTotal: airtimeTotal,
             siteNum: siteNum,
             gliderNum: gliderNum,
-            altitudeUnits: DataService.data.pilot.altitudeUnits
+            altitudeUnit: DataService.data.pilot.altitudeUnit
         };
     },
 
@@ -89,7 +89,7 @@ var PilotModel = {
             userName: DataService.data.pilot.userName,
             initialFlightNum: DataService.data.pilot.initialFlightNum,
             initialAirtime: DataService.data.pilot.initialAirtime,
-            altitudeUnits: DataService.data.pilot.altitudeUnits
+            altitudeUnit: DataService.data.pilot.altitudeUnit
         };
     },
 
@@ -111,7 +111,7 @@ var PilotModel = {
         var pilot = {};
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
         pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
-        pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+        pilot.altitudeUnit = newPilotInfo.altitudeUnit;
         return DataService.changePilotInfo(pilot);
     },
 

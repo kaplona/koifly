@@ -45,7 +45,7 @@ var SiteModel = {
                 field: 'Launch Altitude'
             }
         },
-        altitudeUnits: {
+        altitudeUnit: {
             method: 'selectOption',
             rules: {
                 getArrayOfOptions: function() {
@@ -82,7 +82,7 @@ var SiteModel = {
 
         var coordinates = this.formCoordinatesOutput(DataService.data.sites[id].coordinates);
         var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.sites[id].launchAltitude);
-        var altitudeUnits = Altitude.getAltitudeUnits();
+        var altitudeUnit = Altitude.getUserAltitudeUnit();
 
         return {
             id: id,
@@ -90,7 +90,7 @@ var SiteModel = {
             location: DataService.data.sites[id].location,
             coordinates: coordinates,
             launchAltitude: altitude,
-            altitudeUnits: altitudeUnits,
+            altitudeUnit: altitudeUnit,
             remarks: DataService.data.sites[id].remarks,
             locationSort: DataService.data.sites[id].location.toUpperCase()
         };
@@ -107,7 +107,7 @@ var SiteModel = {
             location: '',
             coordinates: '', // !!! default local coordinates
             launchAltitude: 0,
-            altitudeUnits: Altitude.getAltitudeUnits(),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: ''
         };
     },
@@ -146,8 +146,8 @@ var SiteModel = {
 
         var oldAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
         var newAltitude = newSite.launchAltitude;
-        var units = newSite.altitudeUnits;
-        site.launchAltitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, units);
+        var newAltitudeUnit = newSite.altitudeUnit;
+        site.launchAltitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, newAltitudeUnit);
 
         return site;
     },

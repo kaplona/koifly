@@ -74,7 +74,7 @@ var Test = {
         DOUBLE_SITE_NAME: { data: { id: 4, name: 'US spot' }, dataType: 'site' },
         DOUBLE_GLIDER_NAME: { data: { id: 4, name: 'Sport 2' }, dataType: 'glider' },
         SEE_NOT_BOOL: { data: { id: 4, see: 10 }, dataType: 'flight' },
-        NOT_VALID_ALTITUDE_UNITS: { data: { 'altitudeUnits': 'otherUnits' }, dataType: 'pilot' },
+        NOT_VALID_ALTITUDE_UNITS: { data: { altitudeUnit: 'otherUnit' }, dataType: 'pilot' },
         NOT_ROUND_AIRTIME: { data: { id: 4, airtime: 10.34 }, dataType: 'flight' },
         NOT_ROUND_INITIAL_FLIGHT_NUM: { data: { id: 4, initialFlightNum: 10.34 }, dataType: 'glider' },
         EMPTY_STRING_VALUES: { data: emptyFlight, dataType: 'flight' },

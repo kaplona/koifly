@@ -6,7 +6,7 @@ var Util = require('./util');
 
 var Validation = {
 
-    validateForm: function(validationConfig, formData, softValidation) {
+    validateForm: function(validationConfig, formData, isSoft) {
         var errors = {};
         var noErrors = true;
 
@@ -15,7 +15,7 @@ var Validation = {
             // Call validation method for this field
             var methodName = config.method;
             var rules = config.rules;
-            var validationResult = this.methods[methodName](formData, fieldName, rules, softValidation);
+            var validationResult = this.methods[methodName](formData, fieldName, rules, isSoft);
 
             // If validation failed
             if (validationResult != true) {
@@ -64,12 +64,12 @@ var Validation = {
         },
 
         // Check if value is not empty and unique for the given dataType
-        unique: function(formData, fieldName, rules, soft) {
+        unique: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)) {
+                (!isSoft && emptyStatus !== false)) {
                 return emptyStatus;
             }
 
@@ -91,12 +91,12 @@ var Validation = {
         },
 
         // Check if value is not empty and yyyy-mm-dd date format
-        dateFormat: function(formData, fieldName, rules, soft) {
+        dateFormat: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)
+                (!isSoft && emptyStatus !== false)
             ) {
                 return emptyStatus;
             }
@@ -109,12 +109,12 @@ var Validation = {
         },
 
         // Check if value is one of select options
-        selectOption: function(formData, fieldName, rules, soft) {
+        selectOption: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)
+                (!isSoft && emptyStatus !== false)
             ) {
                 return emptyStatus;
             }
@@ -146,12 +146,12 @@ var Validation = {
         // Check if the vlue is a number
         // additional quality checks:
         // round number, number within min and max
-        number: function(formData, fieldName, rules, soft) {
+        number: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)
+                (!isSoft && emptyStatus !== false)
             ) {
                 return emptyStatus;
             }
@@ -191,12 +191,12 @@ var Validation = {
             return rules.field + ' must be a number';
         },
 
-        text: function(formData, fieldName, rules, soft) {
+        text: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)
+                (!isSoft && emptyStatus !== false)
             ) {
                 return emptyStatus;
             }
@@ -208,12 +208,12 @@ var Validation = {
         // 38.8897°, -77.0089°
         // 45.455678 56.452332
         // -15.0054 , -178.67
-        coordinates: function(formData, fieldName, rules, soft) {
+        coordinates: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
             if (emptyStatus === true ||
-                (!soft && emptyStatus !== false)
+                (!isSoft && emptyStatus !== false)
             ) {
                 return emptyStatus;
             }
@@ -241,8 +241,3 @@ var Validation = {
 };
 
 module.exports = Validation;
-
-
-
-
-

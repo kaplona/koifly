@@ -21,7 +21,7 @@ var PilotView = React.createClass({
         };
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var pilot = PilotModel.getPilotOutput();
         if (pilot !== null && pilot.error) {
             this.setState({ loadingError: pilot.error });
@@ -35,15 +35,15 @@ var PilotView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
 
     renderLoader: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Loader />
             </View>
         );
@@ -61,7 +61,7 @@ var PilotView = React.createClass({
         var airtimeTotal = Util.hoursMinutes(this.state.pilot.airtimeTotal);
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <div className='container__title'>{ this.state.pilot.userName }</div>
                 <div className='container__subtitle'>
                     <div>Flights #: { this.state.pilot.flightNumTotal }</div>
@@ -75,7 +75,7 @@ var PilotView = React.createClass({
 
                 <div className='container__title'>Settings</div>
                 <div className='container__subtitle'>
-                    Altitude units: { this.state.pilot.altitudeUnits }
+                    Altitude units: { this.state.pilot.altitudeUnit }
                 </div>
 
                 <Link to='/pilot/edit'><Button>Edit</Button></Link>

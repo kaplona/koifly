@@ -29,7 +29,7 @@ var InteractiveMap = React.createClass({
             React.PropTypes.number,
             React.PropTypes.string
         ]),
-        altitudeUnits: React.PropTypes.string,
+        altitudeUnit: React.PropTypes.string,
         onDataApply: React.PropTypes.func.isRequired
     },
 
@@ -41,7 +41,7 @@ var InteractiveMap = React.createClass({
             markerPosition: Map.outOfMapCoordinates,
             location: '',
             launchAltitude: '',
-            altitudeUnits: 'meter'
+            altitudeUnit: 'meter'
         };
     },
 
@@ -113,7 +113,7 @@ var InteractiveMap = React.createClass({
                     '<div>' +
                         '<input id="launchAltitude_checkbox" type="checkbox" ' + checkbox.launchAltitude +
                             ' style="display:inline;width:12px;">' +
-                        altitude + ' ' + this.props.altitudeUnits +
+                        altitude + ' ' + this.props.altitudeUnit +
                     '</div>' +
                     '<div>' +
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
@@ -131,9 +131,9 @@ var InteractiveMap = React.createClass({
         // If transfering elevation
         if ($('#launchAltitude_checkbox').prop('checked')) {
             // Convert elevation into units that user chose in the form
-            var altitudeUnits = this.props.altitudeUnits;
+            var altitudeUnit = this.props.altitudeUnit;
             var altitude = parseFloat(elevation);
-            var newLaunchAltitude = Altitude.getAltitudeInGivenUnits(altitude, altitudeUnits);
+            var newLaunchAltitude = Altitude.getAltitudeInGivenUnits(altitude, altitudeUnit);
             this.props.onDataApply('launchAltitude', newLaunchAltitude);
         }
         // Coordinates transfers anyway

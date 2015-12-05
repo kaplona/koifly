@@ -65,7 +65,7 @@ var AltitudeInput = React.createClass({
                     <DropDown
                         selectedValue={ this.props.selectedAltitudeUnit }
                         options={ altitudeUnitsList }
-                        inputName='altitudeUnits'
+                        inputName='altitudeUnit'
                         onChangeFunc={ this.handleUserInput }
                         errorMessage={ null }
                         />

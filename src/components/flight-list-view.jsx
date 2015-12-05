@@ -31,7 +31,10 @@ var FlightListView = React.createClass({
         this.history.pushState(null, '/flight/0/edit');
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
+        // DEV
+        console.log('modifying flights...');
+
         var flights = FlightModel.getFlightsArray();
         if (flights !== null && flights.error) {
             this.setState({ loadingError: flights.error });
@@ -45,15 +48,15 @@ var FlightListView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
 
     renderNoFlightsYet: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <FirstAdding
                     dataType='flights'
                     onAdding={ this.handleFlightAdding }
@@ -67,6 +70,9 @@ var FlightListView = React.createClass({
     },
 
     render: function() {
+        // DEV
+        console.log('rendering...');
+
         if (this.state.loadingError !== null) {
             return this.renderError();
         }
@@ -104,7 +110,7 @@ var FlightListView = React.createClass({
         var rows = (this.state.flights !== null) ? this.state.flights : [];
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Table
                     columns={ columns }
                     rows={ rows }

@@ -21,6 +21,9 @@ var DataService = {
     },
 
     loadData: function() {
+        //DEV
+        console.log('loading...');
+
         $.ajax({
                 method: 'GET',
                 url: '/api/data',
@@ -34,14 +37,14 @@ var DataService = {
                 console.log('response:', serverResponse);
 
                 if (serverResponse.error) {
-                    console.log('set error');
                     this.setError(serverResponse.error);
                 } else {
-                    console.log('set data');
                     this.setData(serverResponse);
                 }
             // If request failed or request time exceeded the timeout
             }).fail(() => {
+                // DEV
+                console.log('loading error');
                 this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
             });
     },
@@ -123,7 +126,7 @@ var DataService = {
         }
         this.data.pilot.initialFlightNum = newPilotInfo.initialFlightNum;
         this.data.pilot.initialAirtime = newPilotInfo.initialAirtime;
-        this.data.pilot.altitudeUnits = newPilotInfo.altitudeUnits;
+        this.data.pilot.altitudeUnit = newPilotInfo.altitudeUnit;
     },
 
     setDataItems: function(newData, dataType) {

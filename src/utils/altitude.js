@@ -13,8 +13,8 @@ var Altitude = {
      * Gets name of current user's altitude units
      * @returns {string} name of current user's altitude units
      */
-    getAltitudeUnits: function() {
-        return DataService.data.pilot.altitudeUnits;
+    getUserAltitudeUnit: function() {
+        return DataService.data.pilot.altitudeUnit;
     },
 
     /**
@@ -23,7 +23,7 @@ var Altitude = {
      * @returns {number} altitude in pilot's altitude units
      */
     getAltitudeInPilotUnits: function(altitude) {
-        var increment = this.meterConverter[DataService.data.pilot.altitudeUnits];
+        var increment = this.meterConverter[DataService.data.pilot.altitudeUnit];
         return Math.round(parseFloat(altitude) * increment);
     },
 
@@ -51,7 +51,7 @@ var Altitude = {
      */
     getAltitudeInMeters: function(val, oldVal, units) {
         var oldFilteredVal = this.getAltitudeInPilotUnits(oldVal);
-        if (val != oldFilteredVal || units != DataService.data.pilot.altitudeUnits) {
+        if (val != oldFilteredVal || units != DataService.data.pilot.altitudeUnit) {
             return parseFloat(val) / this.meterConverter[units];
         }
         return oldVal;

@@ -81,7 +81,7 @@ var FlightModel = {
                 field: 'Remarks'
             }
         },
-        altitudeUnits: {
+        altitudeUnit: {
             method: 'selectOption',
             rules: {
                 getArrayOfOptions: function() {
@@ -126,7 +126,7 @@ var FlightModel = {
 
         var date = DataService.data.flights[id].date.substring(0, 10);
         var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.flights[id].altitude);
-        var altitudeUnits = Altitude.getAltitudeUnits();
+        var altitudeUnit = Altitude.getUserAltitudeUnit();
         var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, DataService.data.flights[id].altitude);
         return {
             id: id,
@@ -134,7 +134,7 @@ var FlightModel = {
             siteId: siteId,
             siteName: siteName,
             altitude: altitude,
-            altitudeUnits: altitudeUnits,
+            altitudeUnit: altitudeUnit,
             altitudeAboveLaunch: altitudeAboveLaunch,
             airtime: DataService.data.flights[id].airtime,
             gliderId: gliderId,
@@ -161,7 +161,7 @@ var FlightModel = {
             date: Util.today(),
             siteId: lastFlight.siteId, // null if no sites yet otherwise last added site id
             altitude: 0,
-            altitudeUnits: Altitude.getAltitudeUnits(),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
             airtime: 0,
             gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
             remarks: ''
@@ -229,8 +229,8 @@ var FlightModel = {
 
         var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
         var newAltitude = newFlight.altitude;
-        var units = newFlight.altitudeUnits;
-        flight.altitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, units);
+        var newAltitudeUnit = newFlight.altitudeUnit;
+        flight.altitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, newAltitudeUnit);
 
         return flight;
     },

@@ -21,7 +21,7 @@ var SiteListMapView = React.createClass({
         };
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var sites = SiteModel.getSitesArray();
         if (sites !== null && sites.error) {
             this.setState({ loadingError: sites.error });
@@ -35,8 +35,8 @@ var SiteListMapView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
@@ -52,7 +52,7 @@ var SiteListMapView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Site List</Link>
                 { this.renderMap() }
                 <Link to='/site/0/edit'><Button>Add Site</Button></Link>

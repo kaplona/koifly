@@ -24,7 +24,7 @@ var StaticMap = React.createClass({
                 React.PropTypes.number,
                 React.PropTypes.string
             ]),
-            altitudeUnits: React.PropTypes.string,
+            altitudeUnit: React.PropTypes.string,
             coordinates: React.PropTypes.string
         }))
     },
@@ -65,7 +65,7 @@ var StaticMap = React.createClass({
         return '<div>' +
                 '<div><a href="/site/' + site.id + '">' + site.name + '</a></div>' +
                 '<div>' + site.location + '</div>' +
-                '<div>' + site.launchAltitude + ' ' + site.altitudeUnits + '</div>' +
+                '<div>' + site.launchAltitude + ' ' + site.altitudeUnit + '</div>' +
                 '<div>' + site.coordinates + '</div>' +
                 '</div>';
     },

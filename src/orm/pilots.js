@@ -51,7 +51,7 @@ var Pilot = sequelize.define('pilot', {
             min: 0
         }
     },
-    altitudeUnits: {
+    altitudeUnit: {
         type: Sequelize.ENUM('meter', 'feet'),
         allowNull: false,
         defaultValue: 'meter',

@@ -112,7 +112,7 @@ var FlightEditView = React.createClass({
         });
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
         if (this.state.isSaving || this.state.isDeleting) {
@@ -164,10 +164,10 @@ var FlightEditView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <ErrorBox
                     error={ this.state.loadingError }
-                    onTryAgain={ this.onDataModified }
+                    onTryAgain={ this.handleDataModified }
                     />
             </View>
         );
@@ -202,7 +202,7 @@ var FlightEditView = React.createClass({
     renderLoader: function() {
         var deleteButton = (this.props.params.flightId) ? <Button active={ false }>Delete</Button> : '';
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <Loader />
                 <div className='button__menu'>
@@ -253,7 +253,7 @@ var FlightEditView = React.createClass({
         var gliders = GliderModel.getGliderValueTextList();
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
@@ -277,7 +277,7 @@ var FlightEditView = React.createClass({
 
                     <AltitudeInput
                         inputValue={ this.state.flight.altitude }
-                        selectedAltitudeUnit={ this.state.flight.altitudeUnits }
+                        selectedAltitudeUnit={ this.state.flight.altitudeUnit }
                         labelText='Altitude gained:'
                         errorMessage={ this.state.errors.altitude }
                         onChange={ this.handleInputChange }
@@ -326,7 +326,7 @@ FlightEditView.formFields = {
     date: null,
     siteId: null,
     altitude: null,
-    altitudeUnits: null,
+    altitudeUnit: null,
     airtime: null,
     gliderId: null,
     remarks: null,

@@ -40,7 +40,7 @@ var FlightView = React.createClass({
         this.history.pushState(null, '/flight/0/edit');
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var flight = FlightModel.getFlightOutput(this.props.params.flightId);
         if (flight !== null && flight.error) {
             this.setState({ loadingError: flight.error });
@@ -54,15 +54,15 @@ var FlightView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
 
     renderLoader: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <Loader />
                 { this.renderButtonMenu() }
@@ -105,7 +105,7 @@ var FlightView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <div className='container__title'>
                     <div>{ this.state.flight.date }</div>
@@ -114,11 +114,11 @@ var FlightView = React.createClass({
                 <div className='container__subtitle'>
                     <div>
                         Altitude gained:
-                        { this.state.flight.altitude + ' ' + this.state.flight.altitudeUnits }
+                        { this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
                     </div>
                     <div>
                         Above the launch:
-                        { this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnits }
+                        { this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
                     </div>
                     <div>Airtime: { Util.hoursMinutes(this.state.flight.airtime) }</div>
                     <div>Glider: { this.state.flight.gliderName }</div>

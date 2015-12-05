@@ -109,7 +109,7 @@ var SiteEditView = React.createClass({
         });
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         // If waiting for server response
         // ignore any other data updates
         if (this.state.isSaving || this.state.isDeleting) {
@@ -138,12 +138,12 @@ var SiteEditView = React.createClass({
         });
     },
 
-    validateForm: function(softValidation) {
+    validateForm: function(isSoft) {
         var newSite =  _.clone(this.state.site);
         var validationResponse = Validation.validateForm(
                 SiteModel.getValidationConfig(),
                 newSite,
-                softValidation
+                isSoft
         );
         this.updateErrorState(validationResponse);
         return validationResponse;
@@ -167,10 +167,10 @@ var SiteEditView = React.createClass({
     renderError: function() {
         if (this.state.loadingError !== null) {
             return (
-                <View onDataModified={ this.onDataModified }>
+                <View onDataModified={ this.handleDataModified }>
                     <ErrorBox
                         error={ this.state.loadingError }
-                        onTryAgain={ this.onDataModified }
+                        onTryAgain={ this.handleDataModified }
                         />
                 </View>
             );
@@ -207,7 +207,7 @@ var SiteEditView = React.createClass({
     renderLoader: function() {
         var deleteButton = (this.props.params.siteId) ? <Button active={ false }>Delete</Button> : '';
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <Loader />
                 <div className='button__menu'>
@@ -256,7 +256,7 @@ var SiteEditView = React.createClass({
                     markerPosition={ this.state.markerPosition }
                     location={ this.state.site.location }
                     launchAltitude={ this.state.site.launchAltitude }
-                    altitudeUnits={ this.state.site.altitudeUnits }
+                    altitudeUnit={ this.state.site.altitudeUnit }
                     onDataApply={ this.handleInputChange }
                     />
             );
@@ -268,7 +268,7 @@ var SiteEditView = React.createClass({
                 markerPosition={ this.state.markerPosition }
                 location={ this.state.site.location }
                 launchAltitude={ this.state.site.launchAltitude }
-                altitudeUnits={ this.state.site.altitudeUnits }
+                altitudeUnit={ this.state.site.altitudeUnit }
                 onDataApply={ this.handleInputChange }
                 />
         );
@@ -284,7 +284,7 @@ var SiteEditView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
@@ -307,7 +307,7 @@ var SiteEditView = React.createClass({
 
                     <AltitudeInput
                         inputValue={ this.state.site.launchAltitude }
-                        selectedAltitudeUnit={ this.state.site.altitudeUnits }
+                        selectedAltitudeUnit={ this.state.site.altitudeUnit }
                         labelText='Launch Altitude:'
                         inputName='launchAltitude'
                         errorMessage={ this.state.errors.launchAltitude }

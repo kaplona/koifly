@@ -28,7 +28,7 @@ var GliderListView = React.createClass({
         this.history.pushState(null, '/glider/0/edit');
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var gliders = GliderModel.getGlidersArray();
         if (gliders !== null && gliders.error) {
             this.setState({ loadingError: gliders.error });
@@ -42,15 +42,15 @@ var GliderListView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
 
     renderNoGlidersYet: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <FirstAdding
                     dataType='gliders'
                     onAdding={ this.handleGliderAdding }
@@ -95,7 +95,7 @@ var GliderListView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <Button onClick={ this.handleGliderAdding }>Add Glider</Button>
                 { this.renderGliderNodes() }
             </View>

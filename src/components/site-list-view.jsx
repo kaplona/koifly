@@ -32,7 +32,7 @@ var SiteListView = React.createClass({
         this.history.pushState(null, '/site/0/edit');
     },
 
-    onDataModified: function() {
+    handleDataModified: function() {
         var sites = SiteModel.getSitesArray();
         if (sites !== null && sites.error) {
             this.setState({ loadingError: sites.error });
@@ -46,8 +46,8 @@ var SiteListView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.onDataModified }/>
+            <View onDataModified={ this.handleDataModified }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );
     },
@@ -58,7 +58,7 @@ var SiteListView = React.createClass({
 
     renderNoSitesYet: function() {
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <FirstAdding
                     dataType='sites'
                     onAdding={ this.handleSiteAdding }
@@ -97,7 +97,7 @@ var SiteListView = React.createClass({
         ];
 
         return (
-            <View onDataModified={ this.onDataModified }>
+            <View onDataModified={ this.handleDataModified }>
                 <div><Link to='/sites/map'>Show on Map</Link></div>
                 <Table
                     columns={ columnsConfig }
