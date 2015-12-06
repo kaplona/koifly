@@ -260,6 +260,7 @@ var FlightEditView = React.createClass({
                         hours={ this.state.flight.hours }
                         minutes={ this.state.flight.minutes }
                         labelText='Airtime:'
+                        errorMessage={ this.state.errors.airtime }
                         errorMessageHours={ this.state.errors.hours }
                         errorMessageMinutes={ this.state.errors.minutes }
                         onChange={ this.handleInputChange }

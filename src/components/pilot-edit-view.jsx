@@ -194,6 +194,7 @@ var PilotEditView = React.createClass({
                         hours={ this.state.pilot.hours }
                         minutes={ this.state.pilot.minutes }
                         labelText='Airtime:'
+                        errorMessage={ this.state.errors.initialAirtime }
                         errorMessageHours={ this.state.errors.hours }
                         errorMessageMinutes={ this.state.errors.minutes }
                         onChange={ this.handleInputChange }

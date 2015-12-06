@@ -265,6 +265,7 @@ var GliderEditView = React.createClass({
                         hours={ this.state.glider.hours }
                         minutes={ this.state.glider.minutes }
                         labelText='Airtime:'
+                        errorMessage={ this.state.errors.initialAirtime }
                         errorMessageHours={ this.state.errors.hours }
                         errorMessageMinutes={ this.state.errors.minutes }
                         onChange={ this.handleInputChange }
