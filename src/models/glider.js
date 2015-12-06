@@ -75,7 +75,7 @@ var GliderModel = {
         return gliderOutputs;
     },
 
-    getGliderOutput: function(id) {
+    getGliderOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
@@ -85,32 +85,48 @@ var GliderModel = {
         var FlightModel = require('./flight');
 
         // Get required glider from Data Service helper
-        var glider = DataService.data.gliders[id];
+        var glider = DataService.data.gliders[gliderId];
 
-        var trueFlightNum = glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
-        var trueAirtime = glider.initialAirtime + FlightModel.getGliderAirtime(id);
-        var hours = Math.floor(glider.initialAirtime / 60);
-        var minutes = glider.initialAirtime % 60;
+        var trueFlightNum = glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(gliderId);
+        var trueAirtime = glider.initialAirtime + FlightModel.getGliderAirtime(gliderId);
 
         return {
-            id: id,
+            id: gliderId,
             name: glider.name,
-            initialFlightNum: glider.initialFlightNum,
-            initialAirtime: glider.initialAirtime,
-            hours: hours,
-            minutes: minutes,
             remarks: glider.remarks,
             trueFlightNum: trueFlightNum,
             trueAirtime: trueAirtime
         };
     },
 
-    getNewGliderOutput: function() {
+    getGliderEditOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
+        if (gliderId === undefined) {
+            return this.getNewGliderOutput();
+        }
+
+        // Get required glider from Data Service helper
+        var glider = DataService.data.gliders[gliderId];
+
+        var hours = Math.floor(glider.initialAirtime / 60);
+        var minutes = glider.initialAirtime % 60;
+
+        return {
+            id: gliderId,
+            name: glider.name,
+            initialFlightNum: glider.initialFlightNum,
+            initialAirtime: glider.initialAirtime,
+            hours: hours,
+            minutes: minutes,
+            remarks: glider.remarks
+        };
+    },
+
+    getNewGliderOutput: function() {
         return {
             name: '',
             initialFlightNum: 0,

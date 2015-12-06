@@ -117,12 +117,7 @@ var FlightEditView = React.createClass({
         }
 
         // Fetch flight
-        var flight;
-        if (this.props.params.flightId) {
-            flight = FlightModel.getFlightOutput(this.props.params.flightId);
-        } else {
-            flight = FlightModel.getNewFlightOutput();
-        }
+        var flight = FlightModel.getFlightEditOutput(this.props.params.flightId);
 
         // Check for errors
         if (flight !== null && flight.error) {

@@ -115,12 +115,7 @@ var SiteEditView = React.createClass({
         }
 
         // Fetch site
-        var site;
-        if (this.props.params.siteId) {
-            site = SiteModel.getSiteOutput(this.props.params.siteId);
-        } else {
-            site = SiteModel.getNewSiteOutput();
-        }
+        var site = SiteModel.getSiteOutput(this.props.params.siteId);
 
         // Check for errors
         if (site !== null && site.error) {

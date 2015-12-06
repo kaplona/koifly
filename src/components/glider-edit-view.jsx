@@ -110,12 +110,7 @@ var GliderEditView = React.createClass({
         }
 
         // Fetch glider
-        var glider;
-        if (this.props.params.gliderId) {
-            glider = GliderModel.getGliderOutput(this.props.params.gliderId);
-        } else {
-            glider = GliderModel.getNewGliderOutput();
-        }
+        var glider = GliderModel.getGliderEditOutput(this.props.params.gliderId);
 
         // Check for errors
         if (glider !== null && glider.error) {

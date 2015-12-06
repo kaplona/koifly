@@ -106,47 +106,70 @@ var FlightModel = {
         return flightOutputs;
     },
 
-    getFlightOutput: function(id) {
-        var loadingError = this.checkForLoadingErrors(id);
+    getFlightOutput: function(flightId) {
+        var loadingError = this.checkForLoadingErrors(flightId);
         if (loadingError !== false) {
             return loadingError;
         }
 
         // Get required flight from Data Service helper
-        var flight = DataService.data.flights[id];
+        var flight = DataService.data.flights[flightId];
 
+        var date = flight.date.substring(0, 10);
         var siteName = SiteModel.getSiteNameById(flight.siteId); // null if site doesn't exist
         var gliderName = GliderModel.getGliderNameById(flight.gliderId); // null if glider doesn't exist
-        var date = flight.date.substring(0, 10);
         var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
-        var altitudeUnit = Altitude.getUserAltitudeUnit();
         var altitudeAboveLaunch = this.getAltitudeAboveLaunches(flight.siteId, flight.altitude);
-        var hours = Math.floor(flight.airtime / 60);
-        var minutes = flight.airtime % 60;
+        var altitudeUnit = Altitude.getUserAltitudeUnit();
 
         return {
-            id: id,
+            id: flightId,
             date: date,
             siteId: flight.siteId,
             siteName: siteName,
-            altitude: altitude,
-            altitudeUnit: altitudeUnit,
-            altitudeAboveLaunch: altitudeAboveLaunch,
-            airtime: flight.airtime,
-            hours: hours,
-            minutes: minutes,
-            gliderId: flight.gliderId,
             gliderName: gliderName,
+            altitude: altitude,
+            altitudeAboveLaunch: altitudeAboveLaunch,
+            altitudeUnit: altitudeUnit,
+            airtime: flight.airtime,
             remarks: flight.remarks
         };
     },
 
-    getNewFlightOutput: function() {
+    getFlightEditOutput: function(flightId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
+        if (flightId === undefined) {
+            return this.getNewFlightOutput();
+        }
+
+        // Get required flight from Data Service helper
+        var flight = DataService.data.flights[flightId];
+
+        var date = flight.date.substring(0, 10);
+        var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
+        var altitudeUnit = Altitude.getUserAltitudeUnit();
+        var hours = Math.floor(flight.airtime / 60);
+        var minutes = flight.airtime % 60;
+
+        return {
+            id: flightId,
+            date: date,
+            siteId: flight.siteId,
+            altitude: altitude,
+            altitudeUnit: altitudeUnit,
+            airtime: flight.airtime,
+            hours: hours,
+            minutes: minutes,
+            gliderId: flight.gliderId,
+            remarks: flight.remarks
+        };
+    },
+
+    getNewFlightOutput: function() {
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties

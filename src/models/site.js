@@ -75,38 +75,53 @@ var SiteModel = {
         return siteOutputs;
     },
 
-    getSiteOutput: function(id) {
-        var loadingError = this.checkForLoadingErrors(id);
+    getSiteOutput: function(siteId) {
+        var loadingError = this.checkForLoadingErrors(siteId);
         if (loadingError !== false) {
             return loadingError;
         }
 
-        var coordinates = this.formCoordinatesOutput(DataService.data.sites[id].coordinates);
-        var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.sites[id].launchAltitude);
+        if (siteId === undefined) {
+            return this.getNewSiteOutput();
+        }
+
+        // Get required site from Data Service helper
+        var site = DataService.data.sites[siteId];
+
+        var coordinates = this.formCoordinatesOutput(site.coordinates);
+        var altitude = Altitude.getAltitudeInPilotUnits(site.launchAltitude);
         var altitudeUnit = Altitude.getUserAltitudeUnit();
 
         return {
-            id: id,
-            name: DataService.data.sites[id].name,
-            location: DataService.data.sites[id].location,
+            id: siteId,
+            name: site.name,
+            location: site.location,
             coordinates: coordinates,
             launchAltitude: altitude,
             altitudeUnit: altitudeUnit,
-            remarks: DataService.data.sites[id].remarks,
-            locationSort: DataService.data.sites[id].location.toUpperCase()
+            remarks: site.remarks,
+            locationSort: site.location.toUpperCase()
         };
     },
 
-    getNewSiteOutput: function() {
-        var loadingError = this.checkForLoadingErrors();
-        if (loadingError !== false) {
-            return loadingError;
-        }
+    //getSiteEditOutput: function(siteId) {
+    //    var loadingError = this.checkForLoadingErrors();
+    //    if (loadingError !== false) {
+    //        return loadingError;
+    //    }
+    //
+    //    if (siteId === undefined) {
+    //        return this.getNewSiteOutput();
+    //    }
+    //
+    //    return this.getSiteOutput(siteId)
+    //},
 
+    getNewSiteOutput: function() {
         return {
             name: '',
             location: '',
-            coordinates: '', // !!! default local coordinates
+            coordinates: '', // TODO default local coordinates
             launchAltitude: 0,
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: ''
