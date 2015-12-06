@@ -274,26 +274,26 @@ var FlightEditView = React.createClass({
                         />
 
                     <DropDown
-                        selectedValue={ this.state.flight.siteId === null ? 0 : this.state.flight.siteId }
+                        selectedValue={ this.state.flight.siteId === null ? '0' : this.state.flight.siteId }
                         options={ sites }
                         labelText='Site:'
                         inputName='siteId'
                         emptyValue={ 0 }
                         errorMessage={ this.state.errors.siteId }
                         onChangeFunc={ (inputName, inputValue) => {
-                            this.handleInputChange(inputName, inputValue === 0 ? null : inputValue);
+                            this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
                         } }
                         />
 
                     <DropDown
-                        selectedValue={ this.state.flight.gliderId === null ? 0 : this.state.flight.gliderId }
+                        selectedValue={ this.state.flight.gliderId === null ? '0' : this.state.flight.gliderId }
                         options={ gliders }
                         labelText='Glider:'
                         inputName='gliderId'
                         emptyValue={ 0 }
                         errorMessage={ this.state.errors.gliderId }
                         onChangeFunc={ (inputName, inputValue) => {
-                            this.handleInputChange(inputName, inputValue === 0 ? null : inputValue);
+                            this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
                         } }
                         />
 

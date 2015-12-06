@@ -65,18 +65,22 @@ var PilotModel = {
         // require FlightModel and GliderModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
         var GliderModel = require('./glider');
-        var flightNumTotal = DataService.data.pilot.initialFlightNum + FlightModel.getNumberOfFlights();
-        var airtimeTotal = DataService.data.pilot.initialAirtime + FlightModel.getTotalAirtime();
+
+        // Get pilot info from Data Service helper
+        var pilot = DataService.data.pilot;
+
+        var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
+        var airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
         var siteNum = FlightModel.getNumberOfVisitedSites();
         var gliderNum = GliderModel.getNumberOfGliders();
 
         return {
-            userName: DataService.data.pilot.userName,
+            userName: pilot.userName,
             flightNumTotal: flightNumTotal,
             airtimeTotal: airtimeTotal,
             siteNum: siteNum,
             gliderNum: gliderNum,
-            altitudeUnit: DataService.data.pilot.altitudeUnit
+            altitudeUnit: pilot.altitudeUnit
         };
     },
 
@@ -86,7 +90,7 @@ var PilotModel = {
             return loadingError;
         }
 
-        // Get required flight from Data Service helper
+        // Get pilot info from Data Service helper
         var pilot = DataService.data.pilot;
 
         var hours = Math.floor(pilot.initialAirtime / 60);

@@ -200,7 +200,7 @@ var SiteModel = {
     },
 
     getSiteNameById: function(id) {
-        return DataService.data.sites[id].name;
+        return DataService.data.sites[id] ? DataService.data.sites[id].name : null;
     },
 
     // Return last added site id or null if no data has been added yet

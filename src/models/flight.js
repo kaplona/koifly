@@ -115,30 +115,19 @@ var FlightModel = {
         // Get required flight from Data Service helper
         var flight = DataService.data.flights[id];
 
-        // If site is not defined for this flight show empty string to user instead
-        var siteId = flight.siteId;
-        var siteName = '';
-        if (siteId !== null) {
-            siteName = SiteModel.getSiteNameById(siteId);
-        }
-        // If glider is not defined for this flight show empty string to user instead
-        var gliderId = flight.gliderId;
-        var gliderName = '';
-        if (gliderId !== null) {
-            gliderName = GliderModel.getGliderNameById(gliderId);
-        }
-
+        var siteName = SiteModel.getSiteNameById(flight.siteId); // null if site doesn't exist
+        var gliderName = GliderModel.getGliderNameById(flight.gliderId); // null if glider doesn't exist
         var date = flight.date.substring(0, 10);
         var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
         var altitudeUnit = Altitude.getUserAltitudeUnit();
-        var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, flight.altitude);
+        var altitudeAboveLaunch = this.getAltitudeAboveLaunches(flight.siteId, flight.altitude);
         var hours = Math.floor(flight.airtime / 60);
         var minutes = flight.airtime % 60;
 
         return {
             id: id,
             date: date,
-            siteId: siteId,
+            siteId: flight.siteId,
             siteName: siteName,
             altitude: altitude,
             altitudeUnit: altitudeUnit,
@@ -146,7 +135,7 @@ var FlightModel = {
             airtime: flight.airtime,
             hours: hours,
             minutes: minutes,
-            gliderId: gliderId,
+            gliderId: flight.gliderId,
             gliderName: gliderName,
             remarks: flight.remarks
         };
@@ -223,6 +212,8 @@ var FlightModel = {
 
     saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
+        //DEV
+        console.log(newFlight);
         return DataService.changeFlight(newFlight);
     },
 

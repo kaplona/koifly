@@ -88,9 +88,18 @@ var Table = React.createClass({
         var rowNodes = sortedRows.map((row) => {
             var rowToDisplay = [];
             for (var i = 0; i < this.props.columns.length; i++) {
-                rowToDisplay.push(<td>{ row[this.props.columns[i].key] }</td>);
+                var columnKey = this.props.columns[i].key;
+                rowToDisplay.push(
+                    <td>
+                        { (row[columnKey] !== null) ? row[columnKey] : '-' }
+                    </td>
+                );
             }
-            return <tr key={ 'row-' + row.id } onClick={ this.handleRowClick.bind(this, row.id) }>{ rowToDisplay }</tr>;
+            return (
+                <tr key={ 'row-' + row.id } onClick={ this.handleRowClick.bind(this, row.id) }>
+                    { rowToDisplay }
+                </tr>
+            );
         });
 
         return (

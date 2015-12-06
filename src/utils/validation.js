@@ -119,7 +119,8 @@ var Validation = {
                 return emptyStatus;
             }
 
-            if (formData[fieldName] === 'other') {
+            // DEV
+            if (formData[fieldName] == 0) {
                 return true;
             }
 

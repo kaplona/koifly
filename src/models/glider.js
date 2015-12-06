@@ -81,10 +81,12 @@ var GliderModel = {
             return loadingError;
         }
 
+        // require FlightModel here so as to avoid circle requirements
+        var FlightModel = require('./flight');
+
         // Get required glider from Data Service helper
         var glider = DataService.data.gliders[id];
 
-        var FlightModel = require('./flight');
         var trueFlightNum = glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
         var trueAirtime = glider.initialAirtime + FlightModel.getGliderAirtime(id);
         var hours = Math.floor(glider.initialAirtime / 60);
@@ -179,7 +181,7 @@ var GliderModel = {
     },
 
     getGliderNameById: function(id) {
-        return DataService.data.gliders[id].name;
+        return DataService.data.gliders[id] ? DataService.data.gliders[id].name : null;
     },
 
     // Return last added glider id or null if no data has been added yet
