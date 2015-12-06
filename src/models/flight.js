@@ -112,23 +112,29 @@ var FlightModel = {
             return loadingError;
         }
 
+        // Get required flight from Data Service helper
+        var flight = DataService.data.flights[id];
+
         // If site is not defined for this flight show empty string to user instead
-        var siteId = DataService.data.flights[id].siteId;
+        var siteId = flight.siteId;
         var siteName = '';
         if (siteId !== null) {
             siteName = SiteModel.getSiteNameById(siteId);
         }
         // If glider is not defined for this flight show empty string to user instead
-        var gliderId = DataService.data.flights[id].gliderId;
+        var gliderId = flight.gliderId;
         var gliderName = '';
         if (gliderId !== null) {
             gliderName = GliderModel.getGliderNameById(gliderId);
         }
 
-        var date = DataService.data.flights[id].date.substring(0, 10);
-        var altitude = Altitude.getAltitudeInPilotUnits(DataService.data.flights[id].altitude);
+        var date = flight.date.substring(0, 10);
+        var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
         var altitudeUnit = Altitude.getUserAltitudeUnit();
-        var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, DataService.data.flights[id].altitude);
+        var altitudeAboveLaunch = this.getAltitudeAboveLaunches(siteId, flight.altitude);
+        var hours = Math.floor(flight.airtime / 60);
+        var minutes = flight.airtime % 60;
+
         return {
             id: id,
             date: date,
@@ -137,10 +143,12 @@ var FlightModel = {
             altitude: altitude,
             altitudeUnit: altitudeUnit,
             altitudeAboveLaunch: altitudeAboveLaunch,
-            airtime: DataService.data.flights[id].airtime,
+            airtime: flight.airtime,
+            hours: hours,
+            minutes: minutes,
             gliderId: gliderId,
             gliderName: gliderName,
-            remarks: DataService.data.flights[id].remarks
+            remarks: flight.remarks
         };
     },
 
@@ -164,6 +172,8 @@ var FlightModel = {
             altitude: 0,
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             airtime: 0,
+            hours: 0,
+            minutes: 0,
             gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
             remarks: ''
         };
@@ -226,7 +236,7 @@ var FlightModel = {
         flight.date = newFlight.date;
         flight.siteId = newFlight.siteId;
         flight.gliderId = newFlight.gliderId;
-        flight.airtime = newFlight.airtime;
+        flight.airtime = parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes);
         flight.remarks = newFlight.remarks;
 
         var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;

@@ -86,11 +86,19 @@ var PilotModel = {
             return loadingError;
         }
 
+        // Get required flight from Data Service helper
+        var pilot = DataService.data.pilot;
+
+        var hours = Math.floor(pilot.initialAirtime / 60);
+        var minutes = pilot.initialAirtime % 60;
+
         return {
-            userName: DataService.data.pilot.userName,
-            initialFlightNum: DataService.data.pilot.initialFlightNum,
-            initialAirtime: DataService.data.pilot.initialAirtime,
-            altitudeUnit: DataService.data.pilot.altitudeUnit
+            userName: pilot.userName,
+            initialFlightNum: pilot.initialFlightNum,
+            initialAirtime: pilot.initialAirtime,
+            altitudeUnit: pilot.altitudeUnit,
+            hours: hours,
+            minutes: minutes
         };
     },
 
@@ -113,7 +121,7 @@ var PilotModel = {
         // Create a pilot only with fields which will be send to the server
         var pilot = {};
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
-        pilot.initialAirtime = parseInt(newPilotInfo.initialAirtime);
+        pilot.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
         pilot.altitudeUnit = newPilotInfo.altitudeUnit;
         return DataService.changePilotInfo(pilot);
     },

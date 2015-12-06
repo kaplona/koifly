@@ -48,10 +48,8 @@ var GliderEditView = React.createClass({
         // If no errors
         if (validationResponse === true) {
             this.setState({ isSaving: true });
-            var newGlider =  _.clone(this.state.glider);
-            newGlider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
 
-            GliderModel.saveGlider(newGlider).then(() => {
+            GliderModel.saveGlider(this.state.glider).then(() => {
                 this.history.pushState(null, '/gliders');
             }).catch((error) => {
                 this.handleSavingError(error);
@@ -125,11 +123,6 @@ var GliderEditView = React.createClass({
             return;
         }
 
-        // Prepare glider output to show to user
-        if (glider !== null) {
-            glider.hours = Math.floor(glider.initialAirtime / 60);
-            glider.minutes = glider.initialAirtime % 60;
-        }
         this.setState({
             glider: glider,
             loadingError: null

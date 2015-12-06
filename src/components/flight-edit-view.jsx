@@ -52,11 +52,8 @@ var FlightEditView = React.createClass({
         // If no errors
         if (validationResponse === true) {
             this.setState({ isSaving: true });
-            // Prepare data for sending to the server
-            var newFlight =  _.clone(this.state.flight);
-            newFlight.airtime = parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes);
 
-            FlightModel.saveFlight(newFlight).then(() => {
+            FlightModel.saveFlight(this.state.flight).then(() => {
                 this.history.pushState(null, '/flights');
             }).catch((error) => {
                 this.handleSavingError(error);
@@ -131,12 +128,6 @@ var FlightEditView = React.createClass({
         if (flight !== null && flight.error) {
             this.setState({ loadingError: flight.error });
             return;
-        }
-
-        // Prepare flight info for user presentation
-        if (flight !== null) {
-            flight.hours = Math.floor(flight.airtime / 60);
-            flight.minutes = flight.airtime % 60;
         }
 
         this.setState({

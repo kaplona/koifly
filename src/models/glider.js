@@ -81,16 +81,23 @@ var GliderModel = {
             return loadingError;
         }
 
+        // Get required glider from Data Service helper
+        var glider = DataService.data.gliders[id];
+
         var FlightModel = require('./flight');
-        var trueFlightNum = DataService.data.gliders[id].initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
-        var trueAirtime = DataService.data.gliders[id].initialAirtime + FlightModel.getGliderAirtime(id);
+        var trueFlightNum = glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(id);
+        var trueAirtime = glider.initialAirtime + FlightModel.getGliderAirtime(id);
+        var hours = Math.floor(glider.initialAirtime / 60);
+        var minutes = glider.initialAirtime % 60;
 
         return {
             id: id,
-            name: DataService.data.gliders[id].name,
-            initialFlightNum: DataService.data.gliders[id].initialFlightNum,
-            initialAirtime: DataService.data.gliders[id].initialAirtime,
-            remarks: DataService.data.gliders[id].remarks,
+            name: glider.name,
+            initialFlightNum: glider.initialFlightNum,
+            initialAirtime: glider.initialAirtime,
+            hours: hours,
+            minutes: minutes,
+            remarks: glider.remarks,
             trueFlightNum: trueFlightNum,
             trueAirtime: trueAirtime
         };
@@ -106,6 +113,8 @@ var GliderModel = {
             name: '',
             initialFlightNum: 0,
             initialAirtime: 0,
+            hours: 0,
+            minutes: 0,
             remarks: ''
         };
     },
@@ -140,7 +149,7 @@ var GliderModel = {
         glider.id = newGlider.id;
         glider.name = newGlider.name;
         glider.initialFlightNum = parseInt(newGlider.initialFlightNum);
-        glider.initialAirtime = parseFloat(newGlider.initialAirtime);
+        glider.initialAirtime = parseInt(newGlider.hours) * 60 + parseInt(newGlider.minutes);
         glider.remarks = newGlider.remarks;
         return glider;
     },

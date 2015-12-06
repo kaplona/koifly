@@ -40,10 +40,8 @@ var PilotEditView = React.createClass({
         // If no errors
         if (validationResponse === true) {
             this.setState({ isSaving: true });
-            var newPilotInfo =  _.clone(this.state.pilot);
-            newPilotInfo.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
 
-            PilotModel.savePilotInfo(newPilotInfo).then(() => {
+            PilotModel.savePilotInfo(this.state.pilot).then(() => {
                 this.history.pushState(null, '/pilot');
             }).catch((error) => {
                 this.handleSavingError(error);
@@ -89,11 +87,6 @@ var PilotEditView = React.createClass({
         if (pilot !== null && pilot.error) {
             this.setState({ loadingError: pilot.error });
             return;
-        }
-
-        if (pilot !== null) {
-            pilot.hours = Math.floor(pilot.initialAirtime / 60);
-            pilot.minutes = pilot.initialAirtime % 60;
         }
 
         this.setState({
