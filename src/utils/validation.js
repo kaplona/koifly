@@ -29,20 +29,7 @@ var Validation = {
     },
 
 
-    // Validate one field value
-    // Returns true or error message
-    // Params:
-    //         validationConfig: { rules: ... , method: ... }
-    //         formValues: { fieldName: fieldValue, ...other needed info }
-    validateField: function(validationConfig, formValues, fieldName) {
-        // Call validation method for the given field
-        var methodName = validationConfig[fieldName].method;
-        var rules = validationConfig[fieldName].rules;
-        return this.methods[methodName](formValues, fieldName, rules, true);
-    },
-
-
-    // Vallidation methods return an object with next fields:
+    // Validation methods return an object with next fields:
     // status (true or false) depends on either validation check succeded or failed
     // value - the modified value if validation succeded
     // errorMessage - message to show to user in case of failure
@@ -63,35 +50,9 @@ var Validation = {
             return false;
         },
 
-        // Check if value is not empty and unique for the given dataType
-        unique: function(formData, fieldName, rules, isSoft) {
-
-            var emptyStatus = this.isEmpty(formData[fieldName], rules);
-            // If empty return error message if shouldn't be empty, 'true' otherwise
-            if (emptyStatus === true ||
-                (!isSoft && emptyStatus !== false)) {
-                return emptyStatus;
-            }
-
-            var trimValue = formData[fieldName].trim();
-            var dataArray = rules.getDataArray();
-            // For each object in Model
-            for (var i = 0; i < dataArray.length; i++) {
-                // If there is the same value as user wants to save
-                if (dataArray[i][fieldName].toUpperCase() == trimValue.toUpperCase() &&
-                        // And user creates a new record or it's not the record user modifies
-                        (formData.id === undefined ||
-                         formData.id != dataArray[i].id)
-                ) {
-                    return rules.field + ' must be unique';
-                }
-            }
-
-            return true;
-        },
 
         // Check if value is not empty and yyyy-mm-dd date format
-        dateFormat: function(formData, fieldName, rules, isSoft) {
+        date: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
             // If empty return error message if shouldn't be empty, 'true' otherwise
@@ -108,41 +69,6 @@ var Validation = {
             return true;
         },
 
-        // Check if value is one of select options
-        selectOption: function(formData, fieldName, rules, isSoft) {
-
-            var emptyStatus = this.isEmpty(formData[fieldName], rules);
-            // If empty return error message if shouldn't be empty, 'true' otherwise
-            if (emptyStatus === true ||
-                (!isSoft && emptyStatus !== false)
-            ) {
-                return emptyStatus;
-            }
-
-            // DEV
-            if (formData[fieldName] == 0) {
-                return true;
-            }
-
-            // If selecting from Model objects (by ids)
-            // if (rules.getDataArray !== undefined) {
-            //     var dataArray = rules.getDataArray();
-            //     for (var i = 0; i < dataArray.length; i++) {
-            //         if (dataArray[i].id == formData[fieldName]) {
-            //             return true;
-            //         };
-            //     };
-            // };
-            // If selecting from array of options
-            // if (rules.getArrayOfOptions !== undefined) {
-                var arrayOfOptions = rules.getArrayOfOptions();
-                if (arrayOfOptions.indexOf(formData[fieldName].toString()) !== -1) {
-                    return true;
-                }
-            // };
-
-            return 'Choose from existing ' + rules.field + ' options';
-        },
 
         // Check if the vlue is a number
         // additional quality checks:
@@ -192,6 +118,7 @@ var Validation = {
             return rules.field + ' must be a number';
         },
 
+
         text: function(formData, fieldName, rules, isSoft) {
 
             var emptyStatus = this.isEmpty(formData[fieldName], rules);
@@ -204,6 +131,7 @@ var Validation = {
             // I soft validation
             return true;
         },
+
 
         // Examples acceptable values:
         // 38.8897°, -77.0089°

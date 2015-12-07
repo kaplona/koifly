@@ -3,7 +3,6 @@
 var $ = require('jquery');
 var _ = require('underscore');
 var DataService = require('../services/data-service');
-var Altitude = require('../utils/altitude');
 
 
 var PilotModel = {
@@ -25,15 +24,6 @@ var PilotModel = {
                 round: true,
                 defaultVal: 0,
                 field: 'Initial Airtime'
-            }
-        },
-        altitudeUnit: {
-            method: 'selectOption',
-            rules: {
-                getArrayOfOptions: function() {
-                    return Altitude.getAltitudeUnitsList();
-                },
-                field: 'Glider'
             }
         },
         hours:  {

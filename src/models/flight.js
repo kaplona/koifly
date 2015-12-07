@@ -15,19 +15,10 @@ var FlightModel = {
 
     formValidationConfig: {
         date: {
-            method: 'dateFormat',
+            isRequired: true, // TODO
+            method: 'date',
             rules: {
                 field: 'Date'
-            }
-        },
-        siteId: {
-            method: 'selectOption',
-            rules: {
-                getArrayOfOptions: function() {
-                    return SiteModel.getSiteIdsList();
-                },
-                defaultVal: null,
-                field: 'Site'
             }
         },
         altitude: {
@@ -65,30 +56,11 @@ var FlightModel = {
                 field: 'Airtime'
             }
         },
-        gliderId: {
-            method: 'selectOption',
-            rules: {
-                getArrayOfOptions: function() {
-                    return GliderModel.getGliderIdsList();
-                },
-                defaultVal: null,
-                field: 'Glider'
-            }
-        },
         remarks: {
             method: 'text',
             rules: {
                 defaultVal: '',
                 field: 'Remarks'
-            }
-        },
-        altitudeUnit: {
-            method: 'selectOption',
-            rules: {
-                getArrayOfOptions: function() {
-                    return Altitude.getAltitudeUnitsList();
-                },
-                field: 'Altitude Units'
             }
         }
     },

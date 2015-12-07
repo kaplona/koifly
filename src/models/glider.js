@@ -11,13 +11,7 @@ var GliderModel = {
 
     formValidationConfig: {
         name: {
-            method: 'unique',
-            rules: {
-                getDataArray: function() {
-                    return GliderModel.getGlidersArray();
-                },
-                field: 'Name'
-            }
+            isRequired: true // TODO
         },
         initialFlightNum: {
             method: 'number',

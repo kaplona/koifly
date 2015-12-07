@@ -67,7 +67,6 @@ var AltitudeInput = React.createClass({
                         options={ altitudeUnitsList }
                         inputName='altitudeUnit'
                         onChangeFunc={ this.handleUserInput }
-                        errorMessage={ null }
                         />
                 </div>
             </div>

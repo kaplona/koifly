@@ -68,7 +68,7 @@ var DropDown = React.createClass({
                 { this.renderErrorMessage() }
                 { this.renderLabel() }
                 <select
-                    className={ (this.props.errorMessage !== null) ? 'error' : '' }
+                    className={ (this.props.errorMessage) ? 'error' : '' }
                     value={ this.props.selectedValue }
                     onChange={ this.handleUserInput }
                     ref='selectInput'

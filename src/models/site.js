@@ -12,13 +12,7 @@ var SiteModel = {
 
     formValidationConfig: {
         name: {
-            method: 'unique',
-            rules: {
-                getDataArray: function() {
-                    return SiteModel.getSitesArray();
-                },
-                field: 'Name'
-            }
+            isRequired: true // TODO
         },
         location: {
             method: 'text',
@@ -44,15 +38,6 @@ var SiteModel = {
                 min: 0,
                 defaultVal: 0,
                 field: 'Launch Altitude'
-            }
-        },
-        altitudeUnit: {
-            method: 'selectOption',
-            rules: {
-                getArrayOfOptions: function() {
-                    return Altitude.getAltitudeUnitsList();
-                },
-                field: 'Altitude Units'
             }
         },
         remarks: {

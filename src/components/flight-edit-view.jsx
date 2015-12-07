@@ -312,7 +312,6 @@ FlightEditView.formFields = {
     date: null,
     siteId: null,
     altitude: null,
-    altitudeUnit: null,
     airtime: null,
     gliderId: null,
     remarks: null,
