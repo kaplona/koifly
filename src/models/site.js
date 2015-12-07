@@ -12,12 +12,19 @@ var SiteModel = {
 
     formValidationConfig: {
         name: {
-            isRequired: true // TODO
+            isRequired: true,
+            method: 'text',
+            rules: {
+                defaultVal: '',
+                maxLength: 10,
+                field: 'Site name'
+            }
         },
         location: {
             method: 'text',
             rules: {
                 defaultVal: '',
+                maxLength: 1000,
                 field: 'Location'
             }
         },
@@ -44,6 +51,7 @@ var SiteModel = {
             method: 'text',
             rules: {
                 defaultVal: '',
+                maxLength: 10000,
                 field: 'Remarks'
             }
         }

@@ -11,7 +11,13 @@ var GliderModel = {
 
     formValidationConfig: {
         name: {
-            isRequired: true // TODO
+            isRequired: true,
+            method: 'text',
+            rules: {
+                defaultVal: '',
+                maxLength: 100,
+                field: 'Glider name'
+            }
         },
         initialFlightNum: {
             method: 'number',
@@ -53,6 +59,7 @@ var GliderModel = {
             method: 'text',
             rules: {
                 defaultVal: '',
+                maxLength: 10000,
                 field: 'Remarks'
             }
         }

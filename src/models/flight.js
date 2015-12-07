@@ -60,6 +60,7 @@ var FlightModel = {
             method: 'text',
             rules: {
                 defaultVal: '',
+                maxLength: 10000,
                 field: 'Remarks'
             }
         }
