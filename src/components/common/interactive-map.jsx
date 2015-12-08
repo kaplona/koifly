@@ -148,11 +148,11 @@ var InteractiveMap = React.createClass({
 
     applyGoogleData: function(location, elevation, coordinates) {
         // If transferring address
-        if ($('#location_checkbox').prop('checked')) {
+        if (document.getElementById('location_checkbox').checked) {
             this.props.onDataApply('location', location);
         }
         // If transfering elevation
-        if ($('#launchAltitude_checkbox').prop('checked')) {
+        if (document.getElementById('launchAltitude_checkbox').checked) {
             // Convert elevation into units that user chose in the form
             var altitudeUnit = this.props.altitudeUnit;
             var altitude = parseFloat(elevation);
