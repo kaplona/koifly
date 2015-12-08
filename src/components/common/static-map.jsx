@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var _ = require('lodash');
+var PubSub = require('../../utils/pubsub');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
@@ -32,30 +32,17 @@ var StaticMap = React.createClass({
 
     getDefaultProps: function() {
         return {
-            center: _.isEmpty(Map) ? null : Map.center.region, // TODO current location or last added site
-            zoomLevel: _.isEmpty(Map) ? null : Map.zoomLevel.region,
+            center: Map.center.region, // TODO current location or last added site
+            zoomLevel: Map.zoomLevel.region,
             markers: []
         };
     },
 
     componentDidMount: function() {
-        // DEV
-        console.log(this.props);
-
-        if (!_.isEmpty(Map)) {
-            var markerId, markerPosition, infowindowContent;
-            var mapContainer = this.refs.map.getDOMNode();
-            Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
-            for (var i = 0; i < this.props.markers.length; i++) {
-                if (this.props.markers[i].coordinates) {
-                    markerId = this.props.markers[i].id;
-                    markerPosition = SiteModel.getLatLngCoordinates(markerId);
-                    Map.createMarker(markerId, markerPosition, false);
-                    infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
-                    Map.createInfowindow(markerId, infowindowContent);
-                    Map.bindMarkerAndInfowindow(markerId);
-                }
-            }
+        if (Map.isLoaded) {
+            this.createMap();
+        } else {
+            PubSub.on('mapLoaded', this.createMap, this);
         }
     },
 
@@ -64,8 +51,25 @@ var StaticMap = React.createClass({
     },
 
     componentWillUnmount: function() {
-        if (!_.isEmpty(Map)) {
+        PubSub.removeListener('mapLoaded', this.createMap, this);
+        if (Map.isLoaded) {
             Map.unmountMap();
+        }
+    },
+
+    createMap: function() {
+        var markerId, markerPosition, infowindowContent;
+        var mapContainer = this.refs.map.getDOMNode();
+        Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+        for (var i = 0; i < this.props.markers.length; i++) {
+            if (this.props.markers[i].coordinates) {
+                markerId = this.props.markers[i].id;
+                markerPosition = SiteModel.getLatLngCoordinates(markerId);
+                Map.createMarker(markerId, markerPosition, false);
+                infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
+                Map.createInfowindow(markerId, infowindowContent);
+                Map.bindMarkerAndInfowindow(markerId);
+            }
         }
     },
 
@@ -79,9 +83,7 @@ var StaticMap = React.createClass({
     },
 
     render: function() {
-        if (!_.isEmpty(Map)) {
-            return <div className='map_container' ref='map'/>;
-        }
+        return <div className='map_container' ref='map'/>;
     }
 });
 

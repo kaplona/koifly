@@ -4,7 +4,6 @@ var React = require('react');
 var ReactRouter = require('react-router');
 var Link = ReactRouter.Link;
 var History = ReactRouter.History;
-var _ = require('lodash');
 var Map = require('../utils/map');
 var SiteModel = require('../models/site');
 var View = require('./common/view');
@@ -84,12 +83,11 @@ var SiteView = React.createClass({
             return (
                 <StaticMap
                     center={ SiteModel.getLatLngCoordinates(this.state.site.id) }
-                    zoomLevel={ _.isEmpty(Map) ? null : Map.zoomLevel.site }
+                    zoomLevel={ Map.zoomLevel.site }
                     markers={ siteList }
                     />
             );
         }
-        return '';
     },
 
     render: function() {

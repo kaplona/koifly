@@ -205,7 +205,6 @@ var GliderEditView = React.createClass({
                 </Button>
             );
         }
-        return '';
     },
 
     renderButtonMenu: function() {

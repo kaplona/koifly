@@ -4,30 +4,37 @@ var _ = require('lodash');
 var PubSub = require('./pubsub');
 var Util = require('./util');
 
-var Map = {};
+var Map = {
+    map: null,
+    elevator: null,
+    geocoder: null,
+    siteMarkers: {},
+    siteInfowindows: {},
+    infowindowWidth: 150,
+    infowindowContent: {},
+    outOfMapCoordinates: { lat: 90, lng: 0 },
+    zoomLevel: {
+        world: 4,
+        region: 7,
+        site: 10
+    },
+    center: {
+        world: { lat: 48.693829, lng: -98.893716 }, // USA
+        region: { lat: 49.2827291, lng: -123.1207375 } // Vancouver
+    },
+    isLoaded: false
+};
 
+
+// Load google maps api
+// On success extend basic Map object with map interactive functionality
+// Emit event that map was loaded
 var mapsapi = require('google-maps-api')('AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s');
 mapsapi().then((maps) => {
     // maps is the google.maps object
     _.extend(Map, {
 
-        map: null,
-        elevator: null,
-        geocoder: null,
-        siteMarkers: {},
-        siteInfowindows: {},
-        infowindowWidth: 150,
-        infowindowContent: {},
-        outOfMapCoordinates: { lat: 90, lng: 0 },
-        zoomLevel: {
-            world: 4,
-            region: 7,
-            site: 10
-        },
-        center: {
-            world: { lat: 48.693829, lng: -98.893716 }, // USA
-            region: { lat: 49.2827291, lng: -123.1207375 } // Vancouver
-        },
+        isLoaded: true,
 
         mapOptions: {
             center: { lat: 48.693829, lng: -98.893716 }, // USA
@@ -354,6 +361,8 @@ mapsapi().then((maps) => {
             return formattedAddress;
         }
     });
+
+    PubSub.emit('mapLoaded');
 });
 
 

@@ -42,7 +42,7 @@ var SiteListMapView = React.createClass({
 
     renderMap: function() {
         var siteList = this.state.sites;
-        return (this.state.sites !== null) ? <StaticMap markers={ siteList } /> : <Loader />;
+        return (siteList !== null) ? <StaticMap markers={ siteList } /> : <Loader />;
     },
 
     render: function() {

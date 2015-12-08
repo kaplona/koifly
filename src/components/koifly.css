@@ -111,6 +111,7 @@ input, textarea, select {
 .map_container {
     width: 100%;
     height: 400px;
+    background-color: #DFDCD7;
 }
 
 .data {

@@ -167,7 +167,6 @@ var SiteEditView = React.createClass({
                 </View>
             );
         }
-        return '';
     },
 
     renderSavingError: function() {
@@ -244,7 +243,7 @@ var SiteEditView = React.createClass({
                 <InteractiveMap
                     markerId={ markerId }
                     center={ this.state.markerPosition }
-                    zoomLevel={ _.isEmpty(Map) ? null : Map.zoomLevel.site }
+                    zoomLevel={ Map.zoomLevel.site }
                     markerPosition={ this.state.markerPosition }
                     location={ this.state.site.location }
                     launchAltitude={ this.state.site.launchAltitude }

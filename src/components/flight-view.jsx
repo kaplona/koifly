@@ -81,18 +81,20 @@ var FlightView = React.createClass({
 
     renderMap: function() {
         var siteId = this.state.flight.siteId;
-        if (siteId !== null) {
-            var siteList = [];
-            siteList.push(SiteModel.getSiteOutput(this.state.flight.siteId));
-            return (
-                <StaticMap
-                    center={ SiteModel.getLatLngCoordinates(siteId) }
-                    zoomLevel={ Map.zoomLevel.site }
-                    markers={ siteList }
-                    />
-            );
+        var siteCoordinates = SiteModel.getLatLngCoordinates(siteId);
+        if (siteCoordinates === null) {
+            return null;
         }
-        return '';
+
+        var site = SiteModel.getSiteOutput(siteId);
+        var siteList = [ site ];
+        return (
+            <StaticMap
+                center={ siteCoordinates }
+                zoomLevel={ Map.zoomLevel.site }
+                markers={ siteList }
+                />
+        );
     },
 
     render: function() {

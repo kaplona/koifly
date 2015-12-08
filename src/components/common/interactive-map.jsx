@@ -3,7 +3,6 @@
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var $ = require('jquery');
-var _ = require('lodash');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -37,9 +36,9 @@ var InteractiveMap = React.createClass({
     getDefaultProps: function() {
         return {
             markerId: 'new',
-            center: _.isEmpty(Map) ? null : Map.center.region, // TODO current location or last added site
-            zoomLevel: _.isEmpty(Map) ? null : Map.zoomLevel.region,
-            markerPosition: _.isEmpty(Map) ? null : Map.outOfMapCoordinates,
+            center: Map.center.region, // TODO current location or last added site
+            zoomLevel: Map.zoomLevel.region,
+            markerPosition: Map.outOfMapCoordinates,
             location: '',
             launchAltitude: '',
             altitudeUnit: 'meter'
@@ -51,24 +50,15 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
-        // DEV
-        console.log(this.props);
-
-        if (!_.isEmpty(Map)) {
-            var mapContainer = this.refs.map.getDOMNode();
-            Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
-            Map.createMarker(this.props.markerId, this.props.markerPosition, true);
-            Map.addMarkerMoveEventListner(this.props.markerId);
-            Map.createInfowindow(this.props.markerId, '');
-            Map.bindMarkerAndInfowindow(this.props.markerId);
-            if (this.props.markerPosition !== null) {
-                Map.requestPositionInfo(this.props.markerPosition);
-            }
+        if (Map.isLoaded) {
+            this.createMap();
+        } else {
+            PubSub.on('mapLoaded', this.createMap, this);
         }
     },
 
     shouldComponentUpdate: function(nextProps) {
-        if (!_.isEmpty(Map) && (nextProps.markerPosition !== this.props.markerPosition)) {
+        if (Map.isLoaded && (nextProps.markerPosition !== this.props.markerPosition)) {
             Map.moveMarker(nextProps.markerPosition, this.props.markerId);
         }
         return false;
@@ -76,9 +66,22 @@ var InteractiveMap = React.createClass({
 
     componentWillUnmount: function() {
         PubSub.removeListener('infowindowContentChanged', this.changeInfowindowContent, this);
+        PubSub.removeListener('mapLoaded', this.createMap, this);
         $('#apply_google_data').off('click');
-        if (!_.isEmpty(Map)) {
+        if (Map.isLoaded) {
             Map.unmountMap();
+        }
+    },
+
+    createMap: function() {
+        var mapContainer = this.refs.map.getDOMNode();
+        Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+        Map.createMarker(this.props.markerId, this.props.markerPosition, true);
+        Map.addMarkerMoveEventListner(this.props.markerId);
+        Map.createInfowindow(this.props.markerId, '');
+        Map.bindMarkerAndInfowindow(this.props.markerId);
+        if (this.props.markerPosition !== null) {
+            Map.requestPositionInfo(this.props.markerPosition);
         }
     },
 
@@ -161,9 +164,7 @@ var InteractiveMap = React.createClass({
     },
 
     render: function() {
-        if (!_.isEmpty(Map)) {
-            return <div className='map_container' ref='map'/>;
-        }
+        return <div className='map_container' ref='map'/>;
     }
 });
 
