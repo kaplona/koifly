@@ -215,14 +215,6 @@ var GliderModel = {
         return lastGlider.id;
     },
 
-    getGliderSimpleList: function() {
-        var simpleList = {};
-        $.each(DataService.data.gliders, (gliderId, glider) => {
-            simpleList[gliderId] = glider.name;
-        });
-        return simpleList;
-    },
-
     getGliderValueTextList: function() {
         var valueTextList = [];
         $.each(DataService.data.gliders, (gliderId, glider) => {

@@ -229,16 +229,6 @@ var SiteModel = {
         return DataService.data.sites[id].launchAltitude;
     },
 
-    getSiteSimpleList: function() {
-        var simpleList = {};
-        $.each(DataService.data.sites, (siteId, site) => {
-            simpleList[siteId] = site.name;
-        });
-
-        //TODO use _.mapValues in lodash https://lodash.com/docs#mapValues
-        return simpleList;
-    },
-
     getSiteValueTextList: function() {
         var valueTextList = [];
         $.each(DataService.data.sites, (siteId, site) => {
