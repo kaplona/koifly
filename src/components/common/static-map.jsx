@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var _ = require('underscore');
+var _ = require('lodash');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
@@ -39,6 +39,9 @@ var StaticMap = React.createClass({
     },
 
     componentDidMount: function() {
+        // DEV
+        console.log(this.props);
+
         if (!_.isEmpty(Map)) {
             var markerId, markerPosition, infowindowContent;
             var mapContainer = this.refs.map.getDOMNode();

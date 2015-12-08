@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var Util = require('../utils/util');
 
 
@@ -88,7 +88,7 @@ var Test = {
     runTests: function() {
         _.each(this.tests, (test, testName) => {
             this.sendData(test.data, test.dataType, testName);
-        }, this);
+        });
     },
 
     sendData: function(data, dataType, testName) {

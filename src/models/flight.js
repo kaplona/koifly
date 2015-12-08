@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
@@ -72,11 +71,9 @@ var FlightModel = {
             return loadingError;
         }
 
-        var flightOutputs = [];
-        $.each(DataService.data.flights, (flightId) => {
-            flightOutputs.push(this.getFlightOutput(flightId));
+        return _.map(DataService.data.flights, (flight, flightId) => {
+            return this.getFlightOutput(flightId);
         });
-        return flightOutputs;
     },
 
     getFlightOutput: function(flightId) {
@@ -186,7 +183,7 @@ var FlightModel = {
         lastFlight.date = '1900-01-01'; // date to start from
         lastFlight.createdAt = '1900-01-01 00:00:00';
 
-        $.each(DataService.data.flights, (flightId, flight) => {
+        _.each(DataService.data.flights, (flight) => {
             // Find the most recent date
             if (lastFlight.date < flight.date) {
                 // Save this flight
@@ -208,8 +205,6 @@ var FlightModel = {
 
     saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
-        //DEV
-        console.log(newFlight);
         return DataService.changeFlight(newFlight);
     },
 
@@ -236,7 +231,7 @@ var FlightModel = {
 
     setDefaultValues: function(newFlight) {
         var fieldsToReplace = {};
-        $.each(this.formValidationConfig, (fieldName, config) => {
+        _.each(this.formValidationConfig, (config, fieldName) => {
             // If there is default value for the field which val is null or undefined or empty string
             if ((newFlight[fieldName] === null ||
                  newFlight[fieldName] === undefined ||
@@ -277,9 +272,10 @@ var FlightModel = {
     },
 
     getNumberOfFlightsOnGlider: function(gliderId) {
+        gliderId = parseInt(gliderId);
         var numberOfFlights = 0;
-        $.each(DataService.data.flights, (flightId, flight) => {
-            if (flight.gliderId === parseInt(gliderId)) {
+        _.each(DataService.data.flights, (flight) => {
+            if (flight.gliderId === gliderId) {
                 numberOfFlights++;
             }
         });
@@ -288,7 +284,7 @@ var FlightModel = {
 
     getNumberOfVisitedSites: function() {
         var sitesVisited = [];
-        $.each(DataService.data.flights, (flightId, flight) => {
+        _.each(DataService.data.flights, (flight) => {
             if (flight.siteId !== null &&
                 sitesVisited.indexOf(flight.siteId) === -1
             ) {
@@ -299,21 +295,16 @@ var FlightModel = {
     },
 
     getTotalAirtime: function() {
-        var airtime = 0;
-        $.each(DataService.data.flights, (flightId, flight) => {
-            airtime += parseInt(flight.airtime);
-        });
-        return airtime;
+        return _.sum(DataService.data.flights, 'airtime');
     },
 
     getGliderAirtime: function(gliderId) {
-        var gliderAirtime = 0;
-        $.each(DataService.data.flights, (flightId, flight) => {
-            if (flight.gliderId == gliderId) {
-                gliderAirtime += parseFloat(flight.airtime);
+        gliderId = parseInt(gliderId);
+        return _.sum(DataService.data.flights, (flight) => {
+            if (flight.gliderId === gliderId) {
+                return flight.airtime;
             }
         });
-        return gliderAirtime;
     },
 
     getValidationConfig: function() {

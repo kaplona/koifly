@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var Util = require('./util');
 
 
@@ -11,7 +10,7 @@ var Validation = {
         var errors = {};
 
         // For each field of given form
-        $.each(validationConfig, (fieldName, config) => {
+        _.each(validationConfig, (config, fieldName) => {
             var validationResult = true;
 
             // Check if field value is empty

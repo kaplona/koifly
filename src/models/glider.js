@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var DataService = require('../services/data-service');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
@@ -71,9 +70,9 @@ var GliderModel = {
             return loadingError;
         }
 
-        var gliderOutputs = [];
-        $.each(DataService.data.gliders, (gliderId) => gliderOutputs.push(this.getGliderOutput(gliderId)));
-        return gliderOutputs;
+        return _.map(DataService.data.gliders, (glider, gliderId) => {
+            return this.getGliderOutput(gliderId);
+        });
     },
 
     getGliderOutput: function(gliderId) {
@@ -175,7 +174,7 @@ var GliderModel = {
 
     setDefaultValues: function(newGlider) {
         var fieldsToReplace = {};
-        $.each(this.formValidationConfig, (fieldName, config) => {
+        _.each(this.formValidationConfig, (config, fieldName) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newGlider[fieldName] === null ||
                  newGlider[fieldName] === undefined ||
@@ -203,24 +202,19 @@ var GliderModel = {
 
     // Return last added glider id or null if no data has been added yet
     getLastAddedId: function() {
-        var lastGlider = {
-            id: null,
-            creationDateTime: '1900-01-01 00:00:00'
-        };
-        $.each(DataService.data.gliders, (gliderId, glider) => {
-            if (lastGlider.creationDateTime < glider.creationDateTime) {
-                lastGlider = glider;
-            }
+        if (_.isEmpty(DataService.data.gliders)) {
+            return null;
+        }
+
+        return _.min(DataService.data.gliders, (glider) => {
+            return glider.createdAt;
         });
-        return lastGlider.id;
     },
 
     getGliderValueTextList: function() {
-        var valueTextList = [];
-        $.each(DataService.data.gliders, (gliderId, glider) => {
-            valueTextList.push({ value: gliderId, text: glider.name });
+        return _.map(DataService.data.gliders, (glider, gliderId) => {
+            return { value: gliderId, text: glider.name };
         });
-        return valueTextList;
     },
 
     getGliderIdsList: function() {

@@ -3,7 +3,7 @@
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -51,6 +51,9 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
+        // DEV
+        console.log(this.props);
+
         if (!_.isEmpty(Map)) {
             var mapContainer = this.refs.map.getDOMNode();
             Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);

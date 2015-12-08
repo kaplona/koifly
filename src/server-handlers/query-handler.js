@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('underscore');
+var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');

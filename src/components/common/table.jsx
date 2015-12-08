@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var _ = require('underscore');
+var _ = require('lodash');
 
 
 var Table = React.createClass({
@@ -62,30 +62,27 @@ var Table = React.createClass({
     },
 
     render: function() {
-        // Sorting (ascending order)
-        var sortedRows = _.sortBy(this.props.rows, (row) => {
+        var sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
+        var sortedRows = _.sortByOrder(this.props.rows, [ (row) => {
             // turn string to upper case so as to avoid ABCabc type of sorting
             if (typeof row[this.state.sortingField] === 'string') {
                 return row[this.state.sortingField].toUpperCase();
             }
             return row[this.state.sortingField];
-        });
-        if (!this.state.sortingDirection) {
-            sortedRows.reverse(); // convert to descending order
-        }
+        } ], [ sortingOrder ]);
 
-        var headerNodes = this.props.columns.map((column) => {
+        var headerNodes = _.map(this.props.columns, (column) => {
             return (
                 <th
                     key={ 'column-' + column.key }
-                    onClick={ this.handleSorting.bind(this, column.key) }
+                    onClick={ () => this.handleSorting(column.key) }
                     >
                     { column.label }
                 </th>
             );
         });
 
-        var rowNodes = sortedRows.map((row) => {
+        var rowNodes = _.map(sortedRows, (row) => {
             var rowToDisplay = [];
             for (var i = 0; i < this.props.columns.length; i++) {
                 var columnKey = this.props.columns[i].key;
@@ -96,7 +93,10 @@ var Table = React.createClass({
                 );
             }
             return (
-                <tr key={ 'row-' + row.id } onClick={ this.handleRowClick.bind(this, row.id) }>
+                <tr
+                    key={ 'row-' + row.id }
+                    onClick={ () => this.handleRowClick(row.id) }
+                    >
                     { rowToDisplay }
                 </tr>
             );

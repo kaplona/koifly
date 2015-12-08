@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var PubSub = require('./pubsub');
 var Util = require('./util');
 
@@ -112,7 +111,7 @@ mapsapi().then((maps) => {
         },
 
         clearMarkers: function() {
-            $.each(this.siteMarkers, (markerId) => {
+            _.each(this.siteMarkers, (marker, markerId) => {
                 this.clearMarker(markerId);
             });
         },
@@ -139,7 +138,7 @@ mapsapi().then((maps) => {
         },
 
         closeAllInfowindows: function() {
-            $.each(this.siteInfowindows, (infowindowId) => {
+            _.each(this.siteInfowindows, (infowindow, infowindowId) => {
                 this.closeInfowindow(infowindowId);
             });
         },
@@ -163,7 +162,7 @@ mapsapi().then((maps) => {
         },
 
         clearInfowindows: function() {
-            $.each(this.siteInfowindows, (infowindowId) => {
+            _.each(this.siteInfowindows, (infowindow, infowindowId) => {
                 this.clearInfowindow(infowindowId);
             });
         },

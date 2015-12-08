@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var DataService = require('../services/data-service');
 
 
@@ -122,7 +121,7 @@ var PilotModel = {
 
     setDefaultValues: function(newPilotInfo) {
         var fieldsToReplace = {};
-        $.each(this.formValidationConfig, (fieldName, config) => {
+        _.each(this.formValidationConfig, (config, fieldName) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newPilotInfo[fieldName] === null ||
                  newPilotInfo[fieldName] === undefined ||

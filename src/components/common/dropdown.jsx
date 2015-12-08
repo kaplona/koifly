@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 
 
 var DropDown = React.createClass({
@@ -52,7 +53,7 @@ var DropDown = React.createClass({
         }
 
         // Make an array of React elements
-        selectOptions = this.props.options.map((option) => {
+        selectOptions = _.map(this.props.options, (option) => {
             return (
                 <option
                     key={ option.value }

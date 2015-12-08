@@ -1,7 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var DataService = require('../services/data-service');
 var Altitude = require('../utils/altitude');
 var KoiflyError = require('../utils/error');
@@ -63,9 +62,9 @@ var SiteModel = {
             return loadingError;
         }
 
-        var siteOutputs = [];
-        $.each(DataService.data.sites, (siteId) => siteOutputs.push(this.getSiteOutput(siteId)));
-        return siteOutputs;
+        return _.map(DataService.data.sites, (site, siteId) => {
+            return this.getSiteOutput(siteId);
+        });
     },
 
     getSiteOutput: function(siteId) {
@@ -96,19 +95,6 @@ var SiteModel = {
             locationSort: site.location.toUpperCase()
         };
     },
-
-    //getSiteEditOutput: function(siteId) {
-    //    var loadingError = this.checkForLoadingErrors();
-    //    if (loadingError !== false) {
-    //        return loadingError;
-    //    }
-    //
-    //    if (siteId === undefined) {
-    //        return this.getNewSiteOutput();
-    //    }
-    //
-    //    return this.getSiteOutput(siteId)
-    //},
 
     getNewSiteOutput: function() {
         return {
@@ -164,7 +150,7 @@ var SiteModel = {
 
     setDefaultValues: function(newSite) {
         var fieldsToReplace = {};
-        $.each(this.formValidationConfig, (fieldName, config) => {
+        _.each(this.formValidationConfig, (config, fieldName) => {
             // If there is default value for the field which val is null or undefined or ''
             if ((newSite[fieldName] === null ||
                  newSite[fieldName] === undefined ||
@@ -213,16 +199,13 @@ var SiteModel = {
 
     // Return last added site id or null if no data has been added yet
     getLastAddedId: function() {
-        var lastSite = {
-            id: null,
-            creationDateTime: '1900-01-01 00:00:00'
-        };
-        $.each(DataService.data.sites, (siteId, site) => {
-            if (lastSite.creationDateTime < site.creationDateTime) {
-                lastSite = site;
-            }
+        if (_.isEmpty(DataService.data.sites)) {
+            return null;
+        }
+
+        return _.min(DataService.data.sites, (site) => {
+            return site.createdAt;
         });
-        return lastSite.id;
     },
 
     getLaunchAltitudeById: function(id) {
@@ -230,11 +213,9 @@ var SiteModel = {
     },
 
     getSiteValueTextList: function() {
-        var valueTextList = [];
-        $.each(DataService.data.sites, (siteId, site) => {
-            valueTextList.push({ value: siteId, text: site.name });
+        return _.map(DataService.data.sites, (site, siteId) => {
+            return { value: siteId, text: site.name };
         });
-        return valueTextList;
     },
 
     getSiteIdsList: function() {

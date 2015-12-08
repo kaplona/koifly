@@ -1,7 +1,7 @@
 'use strict';
 
 var $ = require('jquery');
-var _ = require('underscore');
+var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
 var PubSub = require('../utils/pubsub');
 var KoiflyError = require('../utils/error');
@@ -94,7 +94,7 @@ var DataService = {
                          this.setDataItems(data, dataType);
                      }
                  }
-             }, this);
+             });
 
             // DEV
             console.log('current data', this.data);
