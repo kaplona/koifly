@@ -46,14 +46,18 @@ var DropDown = React.createClass({
     },
 
     render: function() {
+        // Sort options in ascending order
+        var selectOptions = _.sortBy(this.props.options, (option) => {
+            return option.text.toUpperCase();
+        });
+
         // Add an empty value to options list if needed
-        var selectOptions = this.props.options;
         if (this.props.emptyValue !== undefined) {
             selectOptions.unshift({ value: this.props.emptyValue, text: '' });
         }
 
         // Make an array of React elements
-        selectOptions = _.map(this.props.options, (option) => {
+        selectOptions = _.map(selectOptions, (option) => {
             return (
                 <option
                     key={ option.value }
