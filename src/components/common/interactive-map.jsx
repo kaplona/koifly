@@ -2,7 +2,6 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
-var $ = require('jquery');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -67,7 +66,6 @@ var InteractiveMap = React.createClass({
     componentWillUnmount: function() {
         PubSub.removeListener('infowindowContentChanged', this.changeInfowindowContent, this);
         PubSub.removeListener('mapLoaded', this.createMap, this);
-        $('#apply_google_data').off('click');
         if (Map.isLoaded) {
             Map.unmountMap();
         }
@@ -104,7 +102,7 @@ var InteractiveMap = React.createClass({
             Map.setInfowindowContent(this.props.markerId, infowindowContentHtml);
             Map.openInfowindow(this.props.markerId);
 
-            $('#apply_google_data').on('click', () => {
+            document.getElementById('apply_google_data').addEventListener('click', () => {
                 this.applyGoogleData(address, infowindowContent.elevation, coordinates);
             });
         }
