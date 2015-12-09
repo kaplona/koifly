@@ -15,7 +15,7 @@ var SiteModel = {
             method: 'text',
             rules: {
                 defaultVal: '',
-                maxLength: 10,
+                maxLength: 100,
                 field: 'Site name'
             }
         },

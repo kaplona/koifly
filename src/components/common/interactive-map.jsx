@@ -125,7 +125,7 @@ var InteractiveMap = React.createClass({
             checkboxParameters.launchAltitude = 'disabled';
         }
 
-        var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + this.props.altitudeUnit) : '';
+        var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
 
         return '<div>' +
                     '<div>' +
@@ -164,7 +164,7 @@ var InteractiveMap = React.createClass({
     },
 
     render: function() {
-        return <div className='map_container' ref='map'/>;
+        return <div className='map_container' ref='map' />;
     }
 });
 
