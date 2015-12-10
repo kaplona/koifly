@@ -1,6 +1,5 @@
 'use strict';
 
-var $ = require('jquery');
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
 var PubSub = require('../utils/pubsub');
@@ -20,67 +19,78 @@ var DataService = {
         loadingError: null
     },
 
-    loadData: function() {
-        $.ajax({
-                method: 'GET',
-                url: '/api/data',
-                context: this,
-                timeout: 3000,
-                dataType: 'json',
-                data: { lastModified: JSON.stringify(this.lastModified) }
-            })
-            .done((serverResponse) => {
-                // DEV
-                console.log('response:', serverResponse);
 
-                if (serverResponse.error) {
-                    this.setError(serverResponse.error);
-                } else {
-                    this.setData(serverResponse);
-                }
-            // If request failed or request time exceeded the timeout
-            }).fail(() => {
-                this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
+    loadData: function() {
+        var url = '/api/data';
+        var params = 'lastModified=' + JSON.stringify(this.lastModified);
+        var ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.timeout = 3000;
+
+        ajaxRequest.addEventListener('load', () => {
+            var serverResponse = JSON.parse(ajaxRequest.responseText);
+
+            // DEV
+            console.log('server get response: ', serverResponse);
+
+            if (serverResponse.error) {
+                this.setError(serverResponse.error);
+            } else {
+                this.setData(serverResponse);
+            }
+        });
+
+        ajaxRequest.addEventListener('error', () => {
+            this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+        });
+        ajaxRequest.addEventListener('timeout', () => {
+            this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+        });
+
+        ajaxRequest.open('GET', url + '?' + params);
+        ajaxRequest.send();
     },
+
 
     sendData: function(data, dataType) {
         data = {
             lastModified: this.lastModified,
-            data: JSON.stringify(data),
+            data: data,
             dataType: dataType
         };
 
         return new Promise((resolve, reject) => {
-            $.ajax({
-                    method: 'POST',
-                    url: '/api/data',
-                    timeout: 3000,
-                    dataType: 'json',
-                    data: data
-                })
-                .done((serverResponse) => {
-                    // DEV
-                    console.log('server response:', serverResponse);
+            var ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.timeout = 3000;
 
-                    if (serverResponse.error) {
-                        reject(serverResponse.error);
-                        return;
-                    }
+            ajaxRequest.addEventListener('load', () => {
+                var serverResponse = JSON.parse(ajaxRequest.responseText);
 
-                    this.setData(serverResponse);
-                    resolve('success');
-                // If request failed or request time exceeded the timeout
-                }).fail(() => {
-                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-                });
+                // DEV
+                console.log('server post response:', serverResponse);
+
+                if (serverResponse.error) {
+                    reject(serverResponse.error);
+                    return;
+                }
+
+                this.setData(serverResponse);
+                resolve('success');
+            });
+
+            ajaxRequest.addEventListener('error', () => {
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+            ajaxRequest.addEventListener('timeout', () => {
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+
+            ajaxRequest.open('post', '/api/data');
+            ajaxRequest.send(JSON.stringify(data));
         });
     },
 
-    setData: function(serverResponse) {
-        // DEV change '!==' to '<'
-        console.log(this.lastModified, serverResponse.lastModified, this.lastModified < serverResponse.lastModified);
 
+    setData: function(serverResponse) {
         this.data.loadingError = null;
         if (this.lastModified === null ||
             this.lastModified < serverResponse.lastModified

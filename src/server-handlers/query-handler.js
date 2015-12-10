@@ -179,6 +179,7 @@ function savePilotInfo(data, pilot) {
     return pilot.update(data);
 }
 
+//Example of sequelize error:
 //{
 //    name: 'SequelizeValidationError',
 //    message: 'notNull Violation: airtime cannot be null',
@@ -187,9 +188,6 @@ function savePilotInfo(data, pilot) {
 //        type: 'notNull Violation',
 //        path: 'airtime',
 //        value: null } ]
-//}
-//{
-//    fieldName: errorMessage
 //}
 function normalizeError(err) {
     if (err instanceof KoiflyError) {
@@ -215,37 +213,38 @@ var QueryHandler = function(request, reply) {
             throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
         }
         //DEV
-        // console.log('pilot info => ', pilot.get({ plain: true }));
+        //console.log('pilot info => ', pilot.get({ plain: true }));
 
         if (request.method === 'get') {
+            // Get all data from the DB since lastModified
             return getAllData(pilot, JSON.parse(request.query.lastModified));
         }
 
         if (request.method === 'post') {
-            // If data type is not specified
-            if (_.indexOf(['flight', 'site', 'glider', 'pilot'], request.payload.dataType) === -1) {
+            var requestPayload = JSON.parse(request.payload);
+
+            // If data type is not specified throw error
+            if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
                 throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'dataType is not valid');
             }
 
-            var data = JSON.parse(request.payload.data);
-            if (!(data instanceof Object)) {
+            // If data is not an Object throw error
+            if (!(requestPayload.data instanceof Object)) {
                 throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'request data is not valid');
             }
-            //DEV only
-            console.log('raw data => ', data);
 
-            return saveData(request.payload.dataType, data, pilot).then(() => {
+            return saveData(requestPayload.dataType, requestPayload.data, pilot).then(() => {
                 // Get all data from the DB since lastModified
-                return getAllData(pilot, request.payload.lastModified);
+                return getAllData(pilot, requestPayload.lastModified);
             });
         }
     }).then((dbData) => {
         reply(JSON.stringify(dbData));
-    }).catch((e) => {
+    }).catch((err) => {
         //DEV
-        console.log('error => ', e);
+        console.log('error => ', err);
 
-        reply(JSON.stringify({ error: normalizeError(e) }));
+        reply(JSON.stringify({ error: normalizeError(err) }));
     });
 };
 

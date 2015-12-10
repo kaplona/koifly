@@ -1,8 +1,6 @@
 'use strict';
 
-var $ = require('jquery');
 var _ = require('lodash');
-var Util = require('../utils/util');
 
 
 //var miniFlight = {
@@ -65,6 +63,8 @@ var emptyFlight = {
 
 var Test = {
 
+    lastModified: '2015-12-08T21:41:20.000Z',
+
     tests: {
         NEGATIVE_FLIGHT_AIRTIME: { data: { id: 4, airtime: -10 }, dataType: 'flight' },
         NO_EXISTENT_SITE_ID: { data: { id: 4, siteId: 10 }, dataType: 'flight' },
@@ -93,23 +93,27 @@ var Test = {
 
     sendData: function(data, dataType, testName) {
         data = {
-            lastModified: Util.timeNow(),
-            data: JSON.stringify(data),
+            lastModified: this.lastModified,
+            data: data,
             dataType: dataType
         };
 
-        $.ajax({
-                method: 'POST',
-                url: '/api/data',
-                context: this,
-                dataType: 'json',
-                data: data
-            })
-            .done((msg) => {
-                console.log(testName + ' =>', msg);
-                //testHandler(msg, testName);
-            });
+        var ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.responseType = 'json'; // EI 10
+        ajaxRequest.timeout = 3000;
+        ajaxRequest.addEventListener('load', () => this.printResponse(testName, ajaxRequest.response)); // EI 10
+        ajaxRequest.addEventListener('error', () => this.printResponse(testName, ajaxRequest.response));
+        ajaxRequest.addEventListener('timeout', () => this.printResponse(testName, ajaxRequest.response));
+        ajaxRequest.open('post', '/api/data');
+        ajaxRequest.send(JSON.stringify(data));
     },
+
+    printResponse: function(testName, serverResponse) {
+        //console.log('test response: ', JSON.parse(this.responseText));
+        console.log(testName, ' => ', serverResponse);
+        //testHandler(testName, serverResponse);
+    },
+
 
     minValueFailed: function(msg, testName) {
         if (msg.name === 'SequelizeValidationError' &&
