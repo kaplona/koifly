@@ -17,7 +17,7 @@ var Pilot = sequelize.define('pilot', {
     },
     userName: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
         validate: { isUnique: isUnique('pilots', 'userName') }
     },

@@ -7,6 +7,7 @@ var Inert = require('inert');
 var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
 var QueryHandler = require('./server-handlers/query-handler');
+var SignInHandler = require('./server-handlers/sign-in-handler');
 
 
 
@@ -111,6 +112,15 @@ server.register(plugins, (err) => {
             QueryHandler(request, reply);
         }
     });
+
+    server.route({
+        method: 'POST',
+        path: '/api/signin',
+        handler: function(request, reply) {
+            SignInHandler(request, reply);
+        }
+    });
+
 
     // Dev sandbox
     if (process.env.NODE_ENV === 'development') {

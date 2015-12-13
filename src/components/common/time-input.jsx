@@ -43,7 +43,7 @@ var TimeInput = React.createClass({
                 <input
                     value={ this.props.hours }
                     type='text'
-                    className={ (this.props.errorMessageHours !== null) ? 'error' : '' }
+                    className={ (this.props.errorMessageHours) ? 'error' : '' }
                     onChange={ () => this.handleUserInput('hours') }
                     ref='hours'
                     />
@@ -51,7 +51,7 @@ var TimeInput = React.createClass({
                 <input
                     value={ this.props.minutes }
                     type='text'
-                    className={ this.props.errorMessageMinutes !== null ? 'error' : '' }
+                    className={ (this.props.errorMessageMinutes) ? 'error' : '' }
                     onChange={ () => this.handleUserInput('minutes') }
                     ref='minutes'
                     />
@@ -63,6 +63,3 @@ var TimeInput = React.createClass({
 
 
 module.exports = TimeInput;
-
-
-

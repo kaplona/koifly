@@ -3,7 +3,7 @@
 var React = require('react');
 
 
-var TextInput = React.createClass({
+var PasswordInput = React.createClass({
 
     propTypes: {
         inputValue: React.PropTypes.oneOfType([
@@ -16,8 +16,7 @@ var TextInput = React.createClass({
         ]),
         inputName: React.PropTypes.string,
         errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func,
-        onBlur: React.PropTypes.func
+        onChange: React.PropTypes.func
     },
 
     handleUserInput: function() {
@@ -47,10 +46,9 @@ var TextInput = React.createClass({
                 { this.renderLabel() }
                 <input
                     value={ this.props.inputValue }
-                    type='text'
+                    type='password'
                     className={ (this.props.errorMessage) ? 'error' : '' }
                     onChange={ this.handleUserInput }
-                    onBlur={ this.props.onBlur }
                     ref='input'
                     />
             </div>
@@ -59,4 +57,4 @@ var TextInput = React.createClass({
 });
 
 
-module.exports = TextInput;
+module.exports = PasswordInput;

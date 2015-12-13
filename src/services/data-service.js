@@ -7,6 +7,9 @@ var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 
 
+var timeout = 3000;
+
+
 var DataService = {
 
     lastModified: null,
@@ -24,7 +27,7 @@ var DataService = {
         var url = '/api/data';
         var params = 'lastModified=' + JSON.stringify(this.lastModified);
         var ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.timeout = 3000;
+        ajaxRequest.timeout = timeout;
 
         ajaxRequest.addEventListener('load', () => {
             var serverResponse = JSON.parse(ajaxRequest.responseText);
@@ -60,7 +63,7 @@ var DataService = {
 
         return new Promise((resolve, reject) => {
             var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.timeout = 3000;
+            ajaxRequest.timeout = timeout;
 
             ajaxRequest.addEventListener('load', () => {
                 var serverResponse = JSON.parse(ajaxRequest.responseText);
@@ -86,6 +89,37 @@ var DataService = {
 
             ajaxRequest.open('post', '/api/data');
             ajaxRequest.send(JSON.stringify(data));
+        });
+    },
+
+
+    createPilot: function(newPilot) {
+        return new Promise((resolve, reject) => {
+            var ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.timeout = timeout;
+
+            ajaxRequest.addEventListener('load', () => {
+                // DEV
+                console.log('sign in response:', ajaxRequest.responseText);
+
+                if (ajaxRequest.responseText && JSON.parse(ajaxRequest.responseText).error) {
+                    reject(JSON.parse(ajaxRequest.responseText).error);
+                    return;
+                }
+                resolve('success');
+            });
+
+            ajaxRequest.addEventListener('error', () => {
+                console.log('ajax error');
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+            ajaxRequest.addEventListener('timeout', () => {
+                console.log('timeout error');
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+
+            ajaxRequest.open('post', '/api/signin');
+            ajaxRequest.send(JSON.stringify(newPilot));
         });
     },
 

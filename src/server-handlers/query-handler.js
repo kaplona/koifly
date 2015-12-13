@@ -4,6 +4,7 @@ var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
+var NormalizeError = require('../utils/error-normalize');
 var Flight = require('../orm/flights');
 var Site = require('../orm/sites');
 var Glider = require('../orm/gliders');
@@ -179,30 +180,6 @@ function savePilotInfo(data, pilot) {
     return pilot.update(data);
 }
 
-//Example of sequelize error:
-//{
-//    name: 'SequelizeValidationError',
-//    message: 'notNull Violation: airtime cannot be null',
-//    errors:
-//    [ { message: 'airtime cannot be null',
-//        type: 'notNull Violation',
-//        path: 'airtime',
-//        value: null } ]
-//}
-function normalizeError(err) {
-    if (err instanceof KoiflyError) {
-        return err;
-    }
-    if (err.name !== 'SequelizeValidationError') {
-        return new KoiflyError(ErrorTypes.RETRIEVING_FAILURE);
-    }
-
-    var validationErrors = {};
-    for (var i = 0; i < err.errors.length; i++) {
-        validationErrors[err.errors[i].path] = err.errors[i].message;
-    }
-    return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, null, validationErrors);
-}
 
 
 var QueryHandler = function(request, reply) {
@@ -244,7 +221,7 @@ var QueryHandler = function(request, reply) {
         //DEV
         console.log('error => ', err);
 
-        reply(JSON.stringify({ error: normalizeError(err) }));
+        reply(JSON.stringify({ error: NormalizeError(err) }));
     });
 };
 

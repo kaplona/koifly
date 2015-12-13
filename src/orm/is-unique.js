@@ -8,11 +8,12 @@ var isUnique = function(modelFileName, fieldName) {
     return function(value, next) {
         if (value) {
             var Model = require('./' + modelFileName);
+            var scope = (modelFileName === 'pilots') ? null : 'see';
             // assuming that 'id' is primary key
             var query = { id: { $ne: this.id } };
             query[fieldName] = value;
 
-            Model.scope('see').findOne({
+            Model.scope(scope).findOne({
                 where: query,
                 atributes: ['id']
             }).then((instance) => {

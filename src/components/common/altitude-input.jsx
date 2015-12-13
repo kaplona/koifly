@@ -57,7 +57,7 @@ var AltitudeInput = React.createClass({
                 <input
                     value={ this.props.inputValue }
                     type='text'
-                    className={ (this.props.errorMessage !== null) ? 'error' : '' }
+                    className={ (this.props.errorMessage) ? 'error' : '' }
                     onChange={ () => this.handleUserInput(this.props.inputName) }
                     ref={ this.props.inputName }
                     />
