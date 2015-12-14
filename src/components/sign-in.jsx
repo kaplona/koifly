@@ -8,7 +8,8 @@ var Button = require('./common/button');
 var TextInput = require('./common/text-input');
 var PasswordInput = require('./common/password-input');
 var ErrorBox = require('./common/error-box');
-//var ErrorTypes = require('../utils/error-types');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var SignIn = React.createClass({
@@ -47,6 +48,8 @@ var SignIn = React.createClass({
             }).catch((error) => {
                 this.handleSavingError(error);
             });
+        } else {
+            this.handleSavingError(validationResponse);
         }
     },
 
@@ -63,9 +66,17 @@ var SignIn = React.createClass({
     },
 
     validateForm: function() {
-        return (this.state.email !== null && this.state.email.trim() !== '' &&
-                this.state.password !== null && this.state.password.trim() !== '' &&
-                this.state.password === this.state.passwordConfirm);
+        if (this.state.email === null || this.state.email.trim() === '' ||
+            this.state.password === null && this.state.password.trim() === ''
+        ) {
+            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
+        }
+
+        if (this.state.password !== this.state.passwordConfirm) {
+            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'password and confirmed password must be the same');
+        }
+
+        return true;
     },
 
     renderError: function() {

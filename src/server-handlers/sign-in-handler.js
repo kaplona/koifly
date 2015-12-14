@@ -1,5 +1,6 @@
 'use strict';
 
+var Bcrypt = require('bcrypt');
 var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var NormalizeError = require('../utils/error-normalize');
@@ -12,13 +13,27 @@ sequelize.sync();
 var SignInHandler = function(request, reply) {
     var newPilot = JSON.parse(request.payload);
 
-    Pilot.create(newPilot).then((pilot) => {
-        reply();
-    }).catch((err) => {
-        //DEV
-        console.log('error => ', err);
+    // TODO hash password
+    Bcrypt.hash(newPilot.password, 10, (err, hash) => {
+        // DEV
+        console.log('bcrypt error => ', err);
+        console.log('bcrypt hash=> ', hash);
 
-        reply(JSON.stringify({ error: NormalizeError(err) }));
+        if (hash) {
+            newPilot.password = hash;
+            Pilot.create(newPilot).then((pilot) => {
+                reply();
+            }).catch((err) => {
+                //DEV
+                console.log('error => ', err);
+
+                reply(JSON.stringify({ error: NormalizeError(err) }));
+            });
+        }
+
+        if (err) {
+            reply(JSON.stringify({ error: NormalizeError(err) }));
+        }
     });
 };
 
