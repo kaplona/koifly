@@ -7,7 +7,7 @@ var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
 
-var DataService = require('./services/data-service');
+//var DataService = require('./services/data-service');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var Home = require('./components/home');
@@ -24,6 +24,7 @@ var GliderEditView = require('./components/glider-edit-view');
 var PilotView = require('./components/pilot-view');
 var PilotEditView = require('./components/pilot-edit-view');
 var SignIn = require('./components/sign-in');
+var LogIn = require('./components/log-in');
 var noPage = require('./components/page-not-found');
 
 //var Test = require('./tests/test');
@@ -33,7 +34,7 @@ require('./components/koifly.css');
 
 function mainApp() {
     //Test.runTests();
-    DataService.loadData();
+    //DataService.loadData();
 
     React.render((
         <Router history={ createBrowserHistory() }>
@@ -54,6 +55,7 @@ function mainApp() {
                 <Route path='pilot/edit' component={ PilotEditView } />
                 <Route path='pilot' component={ PilotView } />
                 <Route path='signin' component={ SignIn } />
+                <Route path='login' component={ LogIn } />
                 <Route path='*' component={ noPage }/>
             </Route>
         </Router>

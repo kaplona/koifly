@@ -16,7 +16,7 @@ var defaultMessage = function(errorType) {
         case ErrorTypes.VALIDATION_FAILURE:
             return 'validation failed';
         case ErrorTypes.AUTHENTICATION_FAILURE:
-            return 'please, log in first';
+            return 'email or password is incorrect';
         default:
             return 'error occurred';
     }

@@ -8,7 +8,7 @@ var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
-
+var LogInHandler = require('./server-handlers/log-in-handler');
 
 
 var server = new Hapi.Server();
@@ -118,6 +118,14 @@ server.register(plugins, (err) => {
         path: '/api/signin',
         handler: function(request, reply) {
             SignInHandler(request, reply);
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/login',
+        handler: function(request, reply) {
+            LogInHandler(request, reply);
         }
     });
 

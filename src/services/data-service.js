@@ -123,6 +123,40 @@ var DataService = {
         });
     },
 
+    logInPilot: function(newPilot) {
+        return new Promise((resolve, reject) => {
+            var ajaxRequest = new XMLHttpRequest();
+            ajaxRequest.timeout = timeout;
+
+            ajaxRequest.addEventListener('load', () => {
+                var serverResponse = JSON.parse(ajaxRequest.responseText);
+
+                // DEV
+                console.log('log in response:', ajaxRequest.responseText);
+
+                if (serverResponse.error) {
+                    reject(serverResponse.error);
+                    return;
+                }
+
+                this.setData(serverResponse);
+                resolve('success');
+            });
+
+            ajaxRequest.addEventListener('error', () => {
+                console.log('ajax error');
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+            ajaxRequest.addEventListener('timeout', () => {
+                console.log('timeout error');
+                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+            });
+
+            ajaxRequest.open('post', '/api/login');
+            ajaxRequest.send(JSON.stringify(newPilot));
+        });
+    },
+
 
     setData: function(serverResponse) {
         this.data.loadingError = null;
