@@ -118,6 +118,17 @@ var GliderEditView = React.createClass({
             return;
         }
 
+        // If there is user input in the form
+        // erase processing errors
+        // need this for handling successful authentication
+        if (this.state.glider !== null) {
+            this.setState({
+                savingError: null,
+                deletingError: null
+            });
+            return;
+        }
+
         this.setState({
             glider: glider,
             loadingError: null
@@ -140,16 +151,11 @@ var GliderEditView = React.createClass({
     },
 
     renderError: function() {
-        if (this.state.loadingError !== null) {
-            return (
-                <View onDataModified={ this.handleDataModified }>
-                    <ErrorBox
-                        error={ this.state.loadingError }
-                        onTryAgain={ this.handleDataModified }
-                        />
-                </View>
-            );
-        }
+        return (
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+            </View>
+        );
     },
 
     renderSavingError: function() {
@@ -231,8 +237,10 @@ var GliderEditView = React.createClass({
             return this.renderLoader();
         }
 
+        var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
+
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ processingError }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }

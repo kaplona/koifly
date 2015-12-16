@@ -88,6 +88,13 @@ var PilotEditView = React.createClass({
             this.setState({ loadingError: pilot.error });
             return;
         }
+        // If there is user input in the form
+        // erase saving error
+        // need this for handling successful authentication
+        if (this.state.pilot !== null) {
+            this.setState({ savingError: null });
+            return;
+        }
 
         this.setState({
             pilot: pilot,
@@ -112,16 +119,11 @@ var PilotEditView = React.createClass({
     },
 
     renderError: function() {
-        if (this.state.loadingError !== null) {
-            return (
-                <View onDataModified={ this.handleDataModified }>
-                    <ErrorBox
-                        error={ this.state.loadingError }
-                        onTryAgain={ this.handleDataModified }
-                        />
-                </View>
-            );
-        }
+        return (
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+            </View>
+        );
     },
 
     renderSavingError: function() {
@@ -172,10 +174,11 @@ var PilotEditView = React.createClass({
             return this.renderLoader();
         }
 
+        var processingError = this.state.savingError ? this.state.savingError : null;
         var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ processingError }>
                 { this.renderSavingError() }
                 <form onSubmit={ this.handleSubmit }>
                     <div className='container__title'>{ this.state.pilot.userName }</div>

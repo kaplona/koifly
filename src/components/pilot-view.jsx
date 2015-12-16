@@ -35,7 +35,7 @@ var PilotView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
             </View>
         );

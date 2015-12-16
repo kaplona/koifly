@@ -123,6 +123,17 @@ var SiteEditView = React.createClass({
             return;
         }
 
+        // If there is user input in the form
+        // erase processing errors
+        // need this for handling successful authentication
+        if (this.state.site !== null) {
+            this.setState({
+                savingError: null,
+                deletingError: null
+            });
+            return;
+        }
+
         var markerPosition = (site !== null) ? SiteModel.getLatLngCoordinates(this.props.params.siteId) : null;
         this.setState({
             site: site,
@@ -157,16 +168,11 @@ var SiteEditView = React.createClass({
     },
 
     renderError: function() {
-        if (this.state.loadingError !== null) {
-            return (
-                <View onDataModified={ this.handleDataModified }>
-                    <ErrorBox
-                        error={ this.state.loadingError }
-                        onTryAgain={ this.handleDataModified }
-                        />
-                </View>
-            );
-        }
+        return (
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+            </View>
+        );
     },
 
     renderSavingError: function() {
@@ -274,8 +280,10 @@ var SiteEditView = React.createClass({
             return this.renderLoader();
         }
 
+        var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
+
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ processingError }>
                 <Link to='/sites'>Back to Sites</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
