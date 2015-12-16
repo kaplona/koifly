@@ -13,18 +13,20 @@ var SignInHandler = function(request, reply) {
     var newPilot = JSON.parse(request.payload);
 
     Bcrypt.hash(newPilot.password, 10, (err, hash) => {
-        // DEV
-        console.log('bcrypt error => ', err);
-        console.log('bcrypt hash=> ', hash);
 
         if (hash) {
             newPilot.password = hash;
             Pilot.create(newPilot).then((pilot) => {
+                // TODO send email verification
+                // Set cookie
+                var cookie = {
+                    userId: pilot.getDataValue('id'),
+                    hash: pilot.getDataValue('password')
+                };
+                request.auth.session.set(cookie);
+
                 reply();
             }).catch((err) => {
-                //DEV
-                console.log('error => ', err);
-
                 reply(JSON.stringify({ error: NormalizeError(err) }));
             });
         }

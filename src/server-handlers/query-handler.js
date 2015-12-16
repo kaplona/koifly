@@ -15,10 +15,10 @@ var Pilot = require('../orm/pilots');
 sequelize.sync();
 
 
-function getPilot() {
-    // TODO retrieve everything except password
-    return Pilot.findById(1);
-}
+//function getPilot() {
+//    // TODO retrieve everything except password
+//    return Pilot.findById(1);
+//}
 
 
 // must return a promise
@@ -112,12 +112,14 @@ function savePilotInfo(data, pilot) {
 
 
 var QueryHandler = function(request, reply) {
-    // Authentication
-    // TODO need to pass cookie or something as a parameter
-    getPilot().then((pilot) => {
-        if (pilot === null) {
-            throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
-        }
+    // DEV
+    console.log('=> query handler');
+
+    var pilotId = request.auth.credentials ? request.auth.credentials.userId : 4;
+    Pilot.findById(pilotId).then((pilot) => {
+        //if (pilot === null) {
+        //    throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
+        //}
         //DEV
         //console.log('pilot info => ', pilot.get({ plain: true }));
 
@@ -127,6 +129,11 @@ var QueryHandler = function(request, reply) {
         }
 
         if (request.method === 'post') {
+            // DEV
+            if (!request.auth.isAuthenticated) {
+                throw request.auth.error;
+            }
+
             var requestPayload = JSON.parse(request.payload);
 
             // If data type is not specified throw error

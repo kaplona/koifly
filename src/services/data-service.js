@@ -173,12 +173,11 @@ var DataService = {
                      }
                  }
              });
-
-            // DEV
-            console.log('current data', this.data);
-
-            PubSub.emit('dataModified');
         }
+        // DEV
+        console.log('current data', this.data);
+
+        PubSub.emit('dataModified');
     },
 
     setError: function(error) {

@@ -4,7 +4,9 @@ var Constants = {
     database: 'koifly',
     mysqlUser: 'koifly',
     mysqlPassword: 'of+OUDCgjZU',
-    mysqlHost: 'localhost'
+    mysqlHost: 'localhost',
+
+    cookiePassword: 'kcwhGD2YDD3TVKQCYJtv'
 };
 
 

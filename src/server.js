@@ -5,10 +5,13 @@ var path = require('path');
 var Hapi = require('hapi');
 var Inert = require('inert');
 var Vision = require('vision');
+var AuthCookie = require('hapi-auth-cookie');
 var HapiReactViews = require('hapi-react-views');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
+var CheckCookie = require('./server-handlers/check-cookie');
+var Constants = require('./utils/constants');
 
 
 var server = new Hapi.Server();
@@ -22,7 +25,8 @@ server.connection({
 
 var plugins = [
     { register: Inert }, // enables serving static files (file and directory handlers)
-    { register: Vision } // enables rendering views with custom engines (view handler)
+    { register: Vision }, // enables rendering views with custom engines (view handler)
+    { register: AuthCookie } // cookie authentication scheme
 ];
 // Enable proxying requests to webpack dev server (proxy handler)
 if (process.env.NODE_ENV === 'development') {
@@ -38,6 +42,19 @@ server.register(plugins, (err) => {
         console.error(err);
         return;
     }
+
+    // Register cookie authentication scheme
+    server.auth.strategy('session', 'cookie', {
+        cookie: 'koifly',
+        password: Constants.cookiePassword,
+        ttl: (1000*60*60*24*30),
+        clearInvalid: true,
+        redirectTo: false,
+        keepAlive: true,
+        isSecure: false, // cookie allows to be transmitted over insecure connection
+        isHttpOnly: false,
+        validateFunc: CheckCookie
+    });
 
     // Set up server side react views using Vision
     server.views({
@@ -108,6 +125,12 @@ server.register(plugins, (err) => {
     server.route({
         method: 'POST',
         path: '/api/data',
+        config: {
+            auth: {
+                mode: 'try',
+                strategy: 'session'
+            }
+        },
         handler: function(request, reply) {
             QueryHandler(request, reply);
         }

@@ -81,6 +81,7 @@ var LogInForm = React.createClass({
         return (
             <div>
                 { this.renderError() }
+                <div className='container__subtitle'>Please, Log in</div>
                 <form onSubmit={ this.handleSubmit }>
                     <TextInput
                         inputValue={ this.state.email }

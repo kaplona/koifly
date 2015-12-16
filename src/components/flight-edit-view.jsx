@@ -125,6 +125,17 @@ var FlightEditView = React.createClass({
             return;
         }
 
+        // If there is user input in the form
+        // erase errors
+        if (this.state.flight !== null) {
+            this.setState({
+                loadingError: null,
+                savingError: null,
+                deletingError: null
+            });
+            return;
+        }
+
         this.setState({
             flight: flight,
             loadingError: null
@@ -149,7 +160,7 @@ var FlightEditView = React.createClass({
 
     renderError: function() {
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
                 <ErrorBox
                     error={ this.state.loadingError }
                     onTryAgain={ this.handleDataModified }
@@ -234,11 +245,12 @@ var FlightEditView = React.createClass({
             return this.renderLoader();
         }
 
+        var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
         var sites = SiteModel.getSiteValueTextList();
         var gliders = GliderModel.getGliderValueTextList();
 
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onDataModified={ this.handleDataModified } error={ processingError }>
                 <Link to='/flights'>Back to Flights</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }

@@ -22,7 +22,13 @@ var LogInHandler = function(request, reply) {
 
         Bcrypt.compare(credentials.password, pilot.password, (err, res) => {
             if (res === true) {
-                // TODO cookie
+                // Set cookie
+                var cookie = {
+                    userId: pilot.getDataValue('id'),
+                    hash: pilot.getDataValue('password')
+                };
+                request.auth.session.set(cookie);
+
                 GetAllData(pilot, null).then((dbData) => {
                     reply(JSON.stringify(dbData));
                 }).catch((error) => {

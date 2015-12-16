@@ -20,6 +20,11 @@ var NormalizeError = function(err) {
     if (err instanceof KoiflyError) {
         return err;
     }
+
+    if (err.output && err.output.payload.error === 'Unauthorized') {
+        return new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
+    }
+
     if (err.name !== 'SequelizeValidationError') {
         return new KoiflyError(ErrorTypes.RETRIEVING_FAILURE);
     }

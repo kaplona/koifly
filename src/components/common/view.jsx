@@ -2,10 +2,14 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
+var LogInForm = require('./log-in-form');
+var ErrorTypes = require('../../utils/error-types');
+
 
 var View = React.createClass({
     propTypes: {
-        onDataModified: React.PropTypes.func
+        onDataModified: React.PropTypes.func,
+        error: React.PropTypes.object
     },
 
     componentDidMount: function() {
@@ -22,6 +26,10 @@ var View = React.createClass({
     },
 
     render: function() {
+        if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_FAILURE) {
+            return <LogInForm />;
+        }
+
         return (
             <div>
                 { this.props.children }
