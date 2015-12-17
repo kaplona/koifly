@@ -30,6 +30,16 @@ var DataService = {
         ajaxRequest.timeout = timeout;
 
         ajaxRequest.addEventListener('load', () => {
+            if (ajaxRequest.status === 401) {
+                this.setError(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE));
+                return;
+            }
+
+            if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
+                this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+                return;
+            }
+
             var serverResponse = JSON.parse(ajaxRequest.responseText);
 
             // DEV
@@ -37,9 +47,10 @@ var DataService = {
 
             if (serverResponse.error) {
                 this.setError(serverResponse.error);
-            } else {
-                this.setData(serverResponse);
+                return;
             }
+
+            this.setData(serverResponse);
         });
 
         ajaxRequest.addEventListener('error', () => {
@@ -55,13 +66,20 @@ var DataService = {
 
 
     logOut: function() {
-        _.each(this.data, (value, key) => {
-            this.data[key] = null;
-        });
-
-        PubSub.emit('dataModified');
-
         var ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.addEventListener('load', () => {
+            if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
+                window.alert('Server error. Could not log out.');
+                return;
+            }
+            this.clearData();
+        });
+        ajaxRequest.addEventListener('error', () => {
+            window.alert('Server error. Could not log out.');
+        });
+        ajaxRequest.addEventListener('timeout', () => {
+            window.alert('Server error. Could not log out.');
+        });
         ajaxRequest.open('post', '/api/logout');
         ajaxRequest.send();
     },
@@ -79,6 +97,16 @@ var DataService = {
             ajaxRequest.timeout = timeout;
 
             ajaxRequest.addEventListener('load', () => {
+                if (ajaxRequest.status === 401) {
+                    reject(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE));
+                    return;
+                }
+
+                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
+                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+                    return;
+                }
+
                 var serverResponse = JSON.parse(ajaxRequest.responseText);
 
                 // DEV
@@ -112,13 +140,21 @@ var DataService = {
             ajaxRequest.timeout = timeout;
 
             ajaxRequest.addEventListener('load', () => {
+                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
+                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+                    return;
+                }
+
                 // DEV
                 console.log('sign in response:', ajaxRequest.responseText);
 
+                // there is no responseText on successful request
                 if (ajaxRequest.responseText && JSON.parse(ajaxRequest.responseText).error) {
                     reject(JSON.parse(ajaxRequest.responseText).error);
                     return;
                 }
+
+                this.setEmptyData();
                 resolve('success');
             });
 
@@ -142,6 +178,11 @@ var DataService = {
             ajaxRequest.timeout = timeout;
 
             ajaxRequest.addEventListener('load', () => {
+                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
+                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+                    return;
+                }
+
                 var serverResponse = JSON.parse(ajaxRequest.responseText);
 
                 // DEV
@@ -170,6 +211,22 @@ var DataService = {
         });
     },
 
+
+    setEmptyData: function() {
+        _.each(this.data, (value, key) => {
+            if (key !== 'loadingError') {
+                this.data[key] = {};
+            }
+        });
+        PubSub.emit('dataModified');
+    },
+
+    clearData: function() {
+        _.each(this.data, (value, key) => {
+            this.data[key] = null;
+        });
+        PubSub.emit('dataModified');
+    },
 
     setData: function(serverResponse) {
         this.data.loadingError = null;

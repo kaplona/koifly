@@ -117,6 +117,7 @@ server.register(plugins, (err) => {
     server.route({
         method: 'GET',
         path: '/api/data',
+        config: { auth: 'session' },
         handler: function(request, reply) {
             QueryHandler(request, reply);
         }
@@ -125,12 +126,7 @@ server.register(plugins, (err) => {
     server.route({
         method: 'POST',
         path: '/api/data',
-        config: {
-            auth: {
-                mode: 'try',
-                strategy: 'session'
-            }
-        },
+        config: { auth: 'session' },
         handler: function(request, reply) {
             QueryHandler(request, reply);
         }
@@ -156,7 +152,6 @@ server.register(plugins, (err) => {
         method: 'POST',
         path: '/api/logout',
         handler: function(request, reply) {
-            console.log('=> log out');
             request.auth.session.clear();
             reply();
         }

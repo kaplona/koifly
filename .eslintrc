@@ -52,7 +52,7 @@
     "dot-notation": 1,
     "dot-location": [1, "property"],
 //    "eqeqeq": 2,
-    "no-alert": 1,
+//    "no-alert": 1,
     "no-caller": 2,
     "no-div-regex": 2,
     "no-else-return": 1,
