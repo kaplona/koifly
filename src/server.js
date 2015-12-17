@@ -152,6 +152,16 @@ server.register(plugins, (err) => {
         }
     });
 
+    server.route({
+        method: 'POST',
+        path: '/api/logout',
+        handler: function(request, reply) {
+            console.log('=> log out');
+            request.auth.session.clear();
+            reply();
+        }
+    });
+
 
     // Dev sandbox
     if (process.env.NODE_ENV === 'development') {

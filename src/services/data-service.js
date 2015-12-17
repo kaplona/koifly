@@ -54,6 +54,19 @@ var DataService = {
     },
 
 
+    logOut: function() {
+        _.each(this.data, (value, key) => {
+            this.data[key] = null;
+        });
+
+        PubSub.emit('dataModified');
+
+        var ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.open('post', '/api/logout');
+        ajaxRequest.send();
+    },
+
+
     sendData: function(data, dataType) {
         data = {
             lastModified: this.lastModified,
