@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
+var Link = require('react-router').Link;
 var SiteModel = require('../models/site');
 var View = require('./common/view');
 var StaticMap = require('./common/static-map');

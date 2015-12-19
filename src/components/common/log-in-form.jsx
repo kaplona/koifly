@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Link = require('react-router').Link;
 var PilotModel = require('../../models/pilot');
 var Button = require('./button');
 var TextInput = require('./text-input');
@@ -100,6 +101,10 @@ var LogInForm = React.createClass({
                     <Button type='submit' active={ !this.state.isSending }>
                         { this.state.isSending ? 'Sending...' : 'Log in' }
                     </Button>
+
+                    <div>
+                        Don't have an account yet? <Link to='/signin'>Sign in</Link>
+                    </div>
                 </form>
             </div>
         );

@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
+var Link = require('react-router').Link;
 var Util = require('../utils/util');
 var PilotModel = require('../models/pilot');
 var View = require('./common/view');

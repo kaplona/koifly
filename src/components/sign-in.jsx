@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
+var History = require('react-router').History;
 var PilotModel = require('../models/pilot');
 var Button = require('./common/button');
 var TextInput = require('./common/text-input');

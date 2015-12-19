@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
+var Link = require('react-router').Link;
 var PubSub = require('../utils/pubsub');
 var DataService = require('../services/data-service');
 var ErrorTypes = require('../utils/error-types');
