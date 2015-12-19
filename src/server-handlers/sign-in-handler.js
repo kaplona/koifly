@@ -25,7 +25,7 @@ var SignInHandler = function(request, reply) {
                 };
                 request.auth.session.set(cookie);
 
-                reply();
+                reply(JSON.stringify('success'));
             }).catch((err) => {
                 reply(JSON.stringify({ error: NormalizeError(err) }));
             });

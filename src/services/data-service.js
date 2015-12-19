@@ -1,13 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+var ajaxService = require('./ajax-service');
 var Promise = require('es6-promise').Promise;
 var PubSub = require('../utils/pubsub');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
-
-
-var timeout = 3000;
 
 
 var DataService = {
@@ -24,64 +20,23 @@ var DataService = {
 
 
     loadData: function() {
-        var url = '/api/data';
-        var params = 'lastModified=' + JSON.stringify(this.lastModified);
-        var ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.timeout = timeout;
-
-        ajaxRequest.addEventListener('load', () => {
-            if (ajaxRequest.status === 401) {
-                this.setError(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE));
-                return;
-            }
-
-            if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-                this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-                return;
-            }
-
-            var serverResponse = JSON.parse(ajaxRequest.responseText);
-
-            // DEV
-            console.log('server get response: ', serverResponse);
-
-            if (serverResponse.error) {
-                this.setError(serverResponse.error);
-                return;
-            }
-
-            this.setData(serverResponse);
+        ajaxService({
+            url: '/api/data',
+            method: 'get',
+            params: { lastModified: this.lastModified },
+            onSuccess: (serverResponse) => this.setData(serverResponse),
+            onFailure: (serverResponse) => this.setError(serverResponse)
         });
-
-        ajaxRequest.addEventListener('error', () => {
-            this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-        });
-        ajaxRequest.addEventListener('timeout', () => {
-            this.setError(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-        });
-
-        ajaxRequest.open('GET', url + '?' + params);
-        ajaxRequest.send();
     },
 
 
     logOut: function() {
-        var ajaxRequest = new XMLHttpRequest();
-        ajaxRequest.addEventListener('load', () => {
-            if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-                window.alert('Server error. Could not log out.');
-                return;
-            }
-            this.clearData();
+        ajaxService({
+            url: '/api/logout',
+            method: 'post',
+            onSuccess: () => this.clearData(),
+            onFailure: () => window.alert('Server error. Could not log out.')
         });
-        ajaxRequest.addEventListener('error', () => {
-            window.alert('Server error. Could not log out.');
-        });
-        ajaxRequest.addEventListener('timeout', () => {
-            window.alert('Server error. Could not log out.');
-        });
-        ajaxRequest.open('post', '/api/logout');
-        ajaxRequest.send();
     },
 
 
@@ -93,121 +48,47 @@ var DataService = {
         };
 
         return new Promise((resolve, reject) => {
-            var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.timeout = timeout;
-
-            ajaxRequest.addEventListener('load', () => {
-                if (ajaxRequest.status === 401) {
-                    reject(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE));
-                    return;
-                }
-
-                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-                    return;
-                }
-
-                var serverResponse = JSON.parse(ajaxRequest.responseText);
-
-                // DEV
-                console.log('server post response:', serverResponse);
-
-                if (serverResponse.error) {
-                    reject(serverResponse.error);
-                    return;
-                }
-
-                this.setData(serverResponse);
-                resolve('success');
+            ajaxService({
+                url: '/api/data',
+                method: 'post',
+                data: data,
+                onSuccess: (serverResponse) => {
+                    this.setData(serverResponse);
+                    resolve('success');
+                },
+                onFailure: reject
             });
-
-            ajaxRequest.addEventListener('error', () => {
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-            ajaxRequest.addEventListener('timeout', () => {
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-
-            ajaxRequest.open('post', '/api/data');
-            ajaxRequest.send(JSON.stringify(data));
         });
     },
 
 
     createPilot: function(newPilot) {
         return new Promise((resolve, reject) => {
-            var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.timeout = timeout;
-
-            ajaxRequest.addEventListener('load', () => {
-                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-                    return;
-                }
-
-                // DEV
-                console.log('sign in response:', ajaxRequest.responseText);
-
-                // there is no responseText on successful request
-                if (ajaxRequest.responseText && JSON.parse(ajaxRequest.responseText).error) {
-                    reject(JSON.parse(ajaxRequest.responseText).error);
-                    return;
-                }
-
-                this.setEmptyData();
-                resolve('success');
+            ajaxService({
+                url: '/api/signin',
+                method: 'post',
+                data: newPilot,
+                onSuccess: () => {
+                    this.setEmptyData();
+                    resolve('success');
+                },
+                onFailure: reject
             });
-
-            ajaxRequest.addEventListener('error', () => {
-                console.log('ajax error');
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-            ajaxRequest.addEventListener('timeout', () => {
-                console.log('timeout error');
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-
-            ajaxRequest.open('post', '/api/signin');
-            ajaxRequest.send(JSON.stringify(newPilot));
         });
     },
 
     logInPilot: function(newPilot) {
         return new Promise((resolve, reject) => {
-            var ajaxRequest = new XMLHttpRequest();
-            ajaxRequest.timeout = timeout;
-
-            ajaxRequest.addEventListener('load', () => {
-                if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-                    reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-                    return;
-                }
-
-                var serverResponse = JSON.parse(ajaxRequest.responseText);
-
-                // DEV
-                console.log('log in response:', ajaxRequest.responseText);
-
-                if (serverResponse.error) {
-                    reject(serverResponse.error);
-                    return;
-                }
-
-                this.setData(serverResponse);
-                resolve('success');
+            ajaxService({
+                url: '/api/login',
+                method: 'post',
+                data: newPilot,
+                onSuccess: (serverResponse) => {
+                    this.setData(serverResponse);
+                    resolve('success');
+                },
+                onFailure: reject
             });
-
-            ajaxRequest.addEventListener('error', () => {
-                console.log('ajax error');
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-            ajaxRequest.addEventListener('timeout', () => {
-                console.log('timeout error');
-                reject(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
-            });
-
-            ajaxRequest.open('post', '/api/login');
-            ajaxRequest.send(JSON.stringify(newPilot));
         });
     },
 
@@ -222,6 +103,9 @@ var DataService = {
     },
 
     clearData: function() {
+        // DEV
+        console.log('clearing next data: ', this.data);
+
         _.each(this.data, (value, key) => {
             this.data[key] = null;
         });

@@ -153,7 +153,7 @@ server.register(plugins, (err) => {
         path: '/api/logout',
         handler: function(request, reply) {
             request.auth.session.clear();
-            reply();
+            reply(JSON.stringify('success'));
         }
     });
 

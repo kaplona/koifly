@@ -112,16 +112,7 @@ function savePilotInfo(data, pilot) {
 
 
 var QueryHandler = function(request, reply) {
-    // DEV
-    console.log('=> query handler');
-
-    var pilotId = request.auth.credentials ? request.auth.credentials.userId : 4;
-    Pilot.findById(pilotId).then((pilot) => {
-        //if (pilot === null) {
-        //    throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
-        //}
-        //DEV
-        //console.log('pilot info => ', pilot.get({ plain: true }));
+    Pilot.findById(request.auth.credentials.userId).then((pilot) => {
 
         if (request.method === 'get') {
             // Get all data from the DB since lastModified
@@ -129,11 +120,6 @@ var QueryHandler = function(request, reply) {
         }
 
         if (request.method === 'post') {
-            // DEV
-            if (!request.auth.isAuthenticated) {
-                throw request.auth.error;
-            }
-
             var requestPayload = JSON.parse(request.payload);
 
             // If data type is not specified throw error
