@@ -3,21 +3,11 @@
 var _ = require('lodash');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
+var SanitizePilotInfo = require('./sanitize-pilot-info');
 var Flight = require('../orm/flights');
 var Site = require('../orm/sites');
 var Glider = require('../orm/gliders');
 
-
-function sanitizePilotInfo(pilot) {
-    return {
-        id: pilot.getDataValue('id'),
-        username: pilot.getDataValue('username'),
-        initialFlightNum: pilot.getDataValue('initialFlightNum'),
-        initialAirtime: pilot.getDataValue('initialAirtime'),
-        altitudeUnit: pilot.getDataValue('altitudeUnit'),
-        updatedAt: pilot.getDataValue('updatedAt')
-    };
-}
 
 
 function takeOnlyPlainValues(bdInstances) {
@@ -47,7 +37,7 @@ var GetAllData = function(pilot, dateFrom) {
     dateFrom = dateFrom ? dateFrom : '1900-01-01 00:00:00';
 
     // We already have our first data for user: pilot info
-    pilot = sanitizePilotInfo(pilot);
+    pilot = SanitizePilotInfo(pilot);
     var dbData = {
         pilot: pilot
     };

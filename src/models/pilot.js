@@ -7,6 +7,14 @@ var DataService = require('../services/data-service');
 var PilotModel = {
 
     formValidationConfig: {
+        userName: {
+            method: 'text',
+            rules: {
+                defaultVal: '',
+                maxLength: 100,
+                field: 'Pilot name'
+            }
+        },
         initialFlightNum: {
             method: 'number',
             rules: {
@@ -113,6 +121,7 @@ var PilotModel = {
 
         // Create a pilot only with fields which will be send to the server
         var pilot = {};
+        pilot.userName = newPilotInfo.userName;
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
         pilot.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
         pilot.altitudeUnit = newPilotInfo.altitudeUnit;

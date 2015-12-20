@@ -180,8 +180,16 @@ var PilotEditView = React.createClass({
             <View onDataModified={ this.handleDataModified } error={ processingError }>
                 { this.renderSavingError() }
                 <form onSubmit={ this.handleSubmit }>
-                    <div className='container__title'>{ this.state.pilot.userName }</div>
 
+                    <TextInput
+                        inputValue={ this.state.pilot.userName }
+                        labelText='Name:'
+                        inputName='userName'
+                        errorMessage={ this.state.errors.userName }
+                        onChange={ this.handleInputChange }
+                        />
+
+                    <div className='line' />
                     <div>My achievements before Koifly:</div>
 
                     <TextInput
@@ -223,6 +231,7 @@ var PilotEditView = React.createClass({
 
 
 PilotEditView.formFields = {
+    userName: null,
     initialFlightNum: null,
     initialAirtime: null,
     altitudeUnit: null,

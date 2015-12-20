@@ -3,6 +3,7 @@
 var Bcrypt = require('bcrypt');
 var sequelize = require('../orm/sequelize');
 var NormalizeError = require('../utils/error-normalize');
+var SanitizePilotInfo = require('./sanitize-pilot-info');
 var Pilot = require('../orm/pilots');
 
 
@@ -25,7 +26,7 @@ var SignInHandler = function(request, reply) {
                 };
                 request.auth.session.set(cookie);
 
-                reply(JSON.stringify('success'));
+                reply(JSON.stringify(SanitizePilotInfo(pilot)));
             }).catch((err) => {
                 reply(JSON.stringify({ error: NormalizeError(err) }));
             });

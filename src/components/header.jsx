@@ -25,6 +25,8 @@ var Header = React.createClass({
     handleDataModified: function() {
         if (DataService.data.pilot && DataService.data.error !== ErrorTypes.AUTHENTICATION_FAILURE) {
             this.setState({ isLogged: true });
+        } else {
+            this.setState({ isLogged: false });
         }
     },
 

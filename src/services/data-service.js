@@ -68,7 +68,8 @@ var DataService = {
                 url: '/api/signin',
                 method: 'post',
                 data: newPilot,
-                onSuccess: () => {
+                onSuccess: (newPilotInfo) => {
+                    this.setPilotInfo(newPilotInfo);
                     this.setEmptyData();
                     resolve('success');
                 },
@@ -95,7 +96,7 @@ var DataService = {
 
     setEmptyData: function() {
         _.each(this.data, (value, key) => {
-            if (key !== 'loadingError') {
+            if (key !== 'loadingError' && key !== 'pilot') {
                 this.data[key] = {};
             }
         });
@@ -147,9 +148,9 @@ var DataService = {
         // If loading data the first time => create a data storage object
         if (this.data.pilot === null) {
             this.data.pilot = {};
-            this.data.pilot.userName = newPilotInfo.userName;
-            this.data.pilot.email = newPilotInfo.email;
+            this.data.pilot.id = newPilotInfo.id;
         }
+        this.data.pilot.userName = newPilotInfo.userName;
         this.data.pilot.initialFlightNum = newPilotInfo.initialFlightNum;
         this.data.pilot.initialAirtime = newPilotInfo.initialAirtime;
         this.data.pilot.altitudeUnit = newPilotInfo.altitudeUnit;
