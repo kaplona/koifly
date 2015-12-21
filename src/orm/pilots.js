@@ -56,6 +56,21 @@ var Pilot = sequelize.define('pilot', {
         allowNull: false,
         defaultValue: 'meter',
         validate: { isIn: [ ['meter', 'feet'] ] }
+    },
+    token: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null
+    },
+    tokenExpirationTime: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: null
+    },
+    activated: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 }, {
     timestamps: true // automatically adds fields updatedAt and createdAt

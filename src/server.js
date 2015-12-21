@@ -5,8 +5,9 @@ var path = require('path');
 var Hapi = require('hapi');
 var Inert = require('inert');
 var Vision = require('vision');
-var AuthCookie = require('hapi-auth-cookie');
 var HapiReactViews = require('hapi-react-views');
+var AuthCookie = require('hapi-auth-cookie');
+var VerifyEmailToken = require('./server-handlers/verify-email');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
@@ -111,6 +112,18 @@ server.register(plugins, (err) => {
         path: '/{path*}',
         handler: {
             view: 'app' // app.jsx in /views
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/email/{token}',
+        handler: function(request, reply) {
+            VerifyEmailToken(request.params.token).then(() => {
+                reply.redirect('/verified');
+            }).catch(() => {
+                reply.redirect('/invalid-token');
+            });
         }
     });
 

@@ -7,7 +7,8 @@ var ErrorTypes = {
     SAVING_FAILURE: 'savingFailure',
     CONNECTION_FAILURE: 'connectionFailure',
     VALIDATION_FAILURE: 'validationFailure',
-    AUTHENTICATION_FAILURE: 'authenticationFailure'
+    AUTHENTICATION_FAILURE: 'authenticationFailure',
+    INVALID_TOKEN: 'invalidToken'
 };
 
 

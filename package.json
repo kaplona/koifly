@@ -43,6 +43,7 @@
     "inert": "^3.0.1",
     "lodash": "^3.10.1",
     "mysql": "^2.9.0",
+    "nodemailer": "^1.10.0",
     "react": "^0.13.3",
     "react-router": "^1.0.0-rc1",
     "react-transform-hmr": "^1.0.1",

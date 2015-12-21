@@ -17,6 +17,8 @@ var defaultMessage = function(errorType) {
             return 'validation failed';
         case ErrorTypes.AUTHENTICATION_FAILURE:
             return 'email or password is incorrect';
+        case ErrorTypes.INVALID_TOKEN:
+            return 'verification token is invalid or expired';
         default:
             return 'error occurred';
     }
