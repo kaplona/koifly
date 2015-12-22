@@ -120,7 +120,12 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/email/{token}',
         handler: function(request, reply) {
-            VerifyEmailToken(request.params.token).then(() => {
+            VerifyEmailToken(request.params.token).then((pilot) => {
+                var cookie = {
+                    userId: pilot.getDataValue('id'),
+                    hash: pilot.getDataValue('password')
+                };
+                request.auth.session.set(cookie);
                 reply.redirect('/verified');
             }).catch(() => {
                 reply.redirect('/invalid-token');
@@ -173,10 +178,18 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'GET',
-        path: '/api/send-token',
+        path: '/api/resend-token',
         config: { auth: 'session' },
         handler: function(request, reply) {
-            SendToken({ id: request.auth.credentials.userId }, reply);
+            SendToken({ id: request.auth.credentials.userId }, '/email', reply);
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/send-token',
+        handler: function(request, reply) {
+            SendToken({ email: JSON.parse(request.query.email)}, '/email', reply);
         }
     });
 

@@ -159,6 +159,10 @@ var PilotModel = {
         pilot.password = newPilot.password;
         return DataService.logInPilot(pilot);
     },
+
+    logInPilotByMail: function(email) {
+        return DataService.oneTimeLogIn(email);
+    },
     
     getValidationConfig: function() {
         return this.formValidationConfig;

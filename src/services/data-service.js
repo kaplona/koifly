@@ -93,10 +93,22 @@ var DataService = {
         });
     },
 
-    sendVerificationEmail: function() {
+    oneTimeLogIn: function(email) {
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: '/api/send-token',
+                method: 'get',
+                params: { email: email },
+                onSuccess: resolve,
+                onFailure: reject
+            });
+        });
+    },
+
+    sendVerificationEmail: function() {
+        return new Promise((resolve, reject) => {
+            ajaxService({
+                url: '/api/resend-token',
                 method: 'get',
                 onSuccess: resolve,
                 onFailure: reject

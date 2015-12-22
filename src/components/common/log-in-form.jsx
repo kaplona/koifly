@@ -6,6 +6,7 @@ var PilotModel = require('../../models/pilot');
 var Button = require('./button');
 var TextInput = require('./text-input');
 var PasswordInput = require('./password-input');
+var Notice = require('./notice');
 var ErrorBox = require('./error-box');
 var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
@@ -21,7 +22,8 @@ var LogInForm = React.createClass({
             email: null,
             password: null,
             error: null,
-            isSending: false
+            isSending: false,
+            isEmailSent: false
         };
     },
 
@@ -62,6 +64,30 @@ var LogInForm = React.createClass({
         });
     },
 
+    handleEmailLogIn: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        if (this.state.email === null || this.state.email.trim() === '') {
+            return this.handleSavingError(new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'Enter your email address'));
+        }
+
+        this.setState({
+            isSending: true,
+            error: null
+        });
+
+        PilotModel.logInPilotByMail(this.state.email).then(() => {
+            this.setState({
+                isSending: false,
+                isEmailSent: true
+            });
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
+    },
+
     validateForm: function() {
         if (this.state.email === null || this.state.email.trim() === '' ||
             this.state.password === null && this.state.password.trim() === ''
@@ -70,6 +96,12 @@ var LogInForm = React.createClass({
         }
 
         return true;
+    },
+
+    renderNotice: function() {
+        if (this.state.isEmailSent) {
+            return <Notice text='Email with verification link was successfully sent to you' />;
+        }
     },
 
     renderError: function() {
@@ -81,6 +113,7 @@ var LogInForm = React.createClass({
     render: function() {
         return (
             <div>
+                { this.renderNotice() }
                 { this.renderError() }
                 <div className='container__subtitle'>Please, Log in</div>
                 <form onSubmit={ this.handleSubmit }>
@@ -101,6 +134,11 @@ var LogInForm = React.createClass({
                     <Button type='submit' active={ !this.state.isSending }>
                         { this.state.isSending ? 'Sending...' : 'Log in' }
                     </Button>
+
+                    <div>
+                        Or you can one time log in just with
+                        <a href='#' onClick={ this.handleEmailLogIn }> your email</a>
+                    </div>
 
                     <div>
                         Don't have an account yet? <Link to='/signin'>Sign in</Link>

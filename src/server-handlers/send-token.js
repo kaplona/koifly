@@ -3,6 +3,8 @@
 var sequelize = require('../orm/sequelize');
 var NodeMailer = require('nodemailer');
 var GenerateToken = require('./generate-token');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 var Pilot = require('../orm/pilots');
 var Constants = require('../utils/constants');
@@ -11,11 +13,15 @@ var Constants = require('../utils/constants');
 sequelize.sync();
 
 
-// options is an object with id or email property
-var SendToken = function(options, reply) {
+// pilotInfo is an object with id or email property
+var SendToken = function(pilotInfo, redirect, reply) {
     var token = GenerateToken();
 
-    Pilot.findOne({ where: options }).then((pilot) => {
+    Pilot.findOne({ where: pilotInfo }).then((pilot) => {
+        if (pilot === null) {
+            throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD, 'there is no pilot with provided id or email');
+        }
+
         var newPilotInfo = {
             token: token,
             tokenExpirationTime: Date.now() + (1000 * 60 * 60) // an hour starting from now
@@ -32,7 +38,7 @@ var SendToken = function(options, reply) {
             }
         });
 
-        var link = 'http://localhost:3000/email/' + token;
+        var link = 'http://localhost:3000' + redirect + '/' + token;
         var message = {
             from: 'info@koifly.com',
             to: pilot.email,
@@ -48,6 +54,8 @@ var SendToken = function(options, reply) {
                 reply(JSON.stringify('success'));
             }
         });
+    }).catch((error) => {
+        reply(JSON.stringify({ error: NormalizeError(error)}));
     });
 };
 
