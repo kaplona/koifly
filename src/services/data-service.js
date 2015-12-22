@@ -93,6 +93,17 @@ var DataService = {
         });
     },
 
+    sendVerificationEmail: function() {
+        return new Promise((resolve, reject) => {
+            ajaxService({
+                url: '/api/send-token',
+                method: 'get',
+                onSuccess: resolve,
+                onFailure: reject
+            });
+        });
+    },
+
 
     setEmptyData: function() {
         _.each(this.data, (value, key) => {
@@ -154,6 +165,7 @@ var DataService = {
         this.data.pilot.initialFlightNum = newPilotInfo.initialFlightNum;
         this.data.pilot.initialAirtime = newPilotInfo.initialAirtime;
         this.data.pilot.altitudeUnit = newPilotInfo.altitudeUnit;
+        this.data.pilot.activated = newPilotInfo.activated;
     },
 
     setDataItems: function(newData, dataType) {

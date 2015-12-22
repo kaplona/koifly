@@ -2,7 +2,6 @@
 
 var React = require('react');
 var ErrorTypes = require('../../utils/error-types');
-//var RetrieveError = require('./retrieve-error');
 var Button = require('./button');
 
 

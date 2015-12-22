@@ -120,6 +120,10 @@ var QueryHandler = function(request, reply) {
         }
 
         if (request.method === 'post') {
+            if (!pilot.activated) {
+                throw new KoiflyError(ErrorTypes.NOT_ACTIVATED_USER);
+            }
+
             var requestPayload = JSON.parse(request.payload);
 
             // If data type is not specified throw error

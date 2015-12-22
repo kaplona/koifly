@@ -162,6 +162,13 @@ var PilotModel = {
     
     getValidationConfig: function() {
         return this.formValidationConfig;
+    },
+
+    getActivationStatus: function() {
+        if (DataService.data.pilot === null) {
+            return null;
+        }
+        return DataService.data.pilot.activated;
     }
 };
 

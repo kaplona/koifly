@@ -8,7 +8,8 @@ var SanitizePilotInfo = function(pilot) {
         initialFlightNum: pilot.getDataValue('initialFlightNum'),
         initialAirtime: pilot.getDataValue('initialAirtime'),
         altitudeUnit: pilot.getDataValue('altitudeUnit'),
-        updatedAt: pilot.getDataValue('updatedAt')
+        updatedAt: pilot.getDataValue('updatedAt'),
+        activated: pilot.activated
     };
 };
 

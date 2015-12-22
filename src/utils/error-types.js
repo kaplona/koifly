@@ -8,7 +8,8 @@ var ErrorTypes = {
     CONNECTION_FAILURE: 'connectionFailure',
     VALIDATION_FAILURE: 'validationFailure',
     AUTHENTICATION_FAILURE: 'authenticationFailure',
-    INVALID_TOKEN: 'invalidToken'
+    INVALID_TOKEN: 'invalidToken',
+    NOT_ACTIVATED_USER: 'notActivatedUser'
 };
 
 

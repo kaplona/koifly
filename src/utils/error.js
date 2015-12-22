@@ -19,6 +19,8 @@ var defaultMessage = function(errorType) {
             return 'email or password is incorrect';
         case ErrorTypes.INVALID_TOKEN:
             return 'verification token is invalid or expired';
+        case ErrorTypes.NOT_ACTIVATED_USER:
+            return 'You did not confirm your email address. Please, follow the activation link in the email we sent you.';
         default:
             return 'error occurred';
     }

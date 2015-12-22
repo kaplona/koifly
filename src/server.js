@@ -12,6 +12,7 @@ var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
 var CheckCookie = require('./server-handlers/check-cookie');
+var SendToken = require('./server-handlers/send-token');
 var Constants = require('./utils/constants');
 
 
@@ -167,6 +168,15 @@ server.register(plugins, (err) => {
         handler: function(request, reply) {
             request.auth.session.clear();
             reply(JSON.stringify('success'));
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/send-token',
+        config: { auth: 'session' },
+        handler: function(request, reply) {
+            SendToken({ id: request.auth.credentials.userId }, reply);
         }
     });
 

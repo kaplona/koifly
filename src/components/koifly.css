@@ -118,6 +118,10 @@ input, textarea, select {
     color: #146D94;
 }
 
+.notice {
+    background-color: #FFFCCB;
+}
+
 .error {
     border-color: red;
 }
