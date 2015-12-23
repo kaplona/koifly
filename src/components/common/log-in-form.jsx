@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Link = require('react-router').Link;
-var PilotModel = require('../../models/pilot');
+var DataService = require('../../services/data-service');
 var Button = require('./button');
 var TextInput = require('./text-input');
 var PasswordInput = require('./password-input');
@@ -40,7 +40,12 @@ var LogInForm = React.createClass({
                 error: null
             });
 
-            PilotModel.logInPilot(this.state).then(() => {
+            var pilotCredentials = {
+                email: this.state.email,
+                password: this.state.password
+            };
+
+            DataService.logInPilot(pilotCredentials).then(() => {
                 if (this.props.onLogIn) {
                     this.props.onLogIn();
                 }
@@ -50,18 +55,6 @@ var LogInForm = React.createClass({
         } else {
             this.handleSavingError(validationResponse);
         }
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
-    handleSavingError: function(error) {
-        // TODO error message verbiage
-        this.setState({
-            error: error,
-            isSending: false
-        });
     },
 
     handleEmailLogIn: function(event) {
@@ -78,13 +71,49 @@ var LogInForm = React.createClass({
             error: null
         });
 
-        PilotModel.logInPilotByMail(this.state.email).then(() => {
+        DataService.oneTimeLogIn(this.state.email).then(() => {
             this.setState({
                 isSending: false,
                 isEmailSent: true
             });
         }).catch((error) => {
             this.handleSavingError(error);
+        });
+    },
+
+    handleResetPass: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        if (this.state.email === null || this.state.email.trim() === '') {
+            return this.handleSavingError(new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'Enter your email address'));
+        }
+
+        this.setState({
+            isSending: true,
+            error: null
+        });
+
+        DataService.initiateResetPass(this.state.email).then(() => {
+            this.setState({
+                isSending: false,
+                isEmailSent: true
+            });
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
+    },
+
+    handleInputChange: function(inputName, inputValue) {
+        this.setState({ [inputName]: inputValue });
+    },
+
+    handleSavingError: function(error) {
+        // TODO error message verbiage
+        this.setState({
+            error: error,
+            isSending: false
         });
     },
 
@@ -134,6 +163,11 @@ var LogInForm = React.createClass({
                     <Button type='submit' active={ !this.state.isSending }>
                         { this.state.isSending ? 'Sending...' : 'Log in' }
                     </Button>
+
+                    <div>
+                        Forgot your password?
+                        <a href='#' onClick={ this.handleResetPass }> Reset password</a>
+                    </div>
 
                     <div>
                         Or you can one time log in just with

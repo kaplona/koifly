@@ -143,26 +143,6 @@ var PilotModel = {
         });
         return _.extend({}, newPilotInfo, fieldsToReplace);
     },
-
-    createPilot: function(newPilot) {
-        // Create a pilot only with fields which will be send to the server
-        var pilot = {};
-        pilot.email = newPilot.email;
-        pilot.password = newPilot.password;
-        return DataService.createPilot(pilot);
-    },
-
-    logInPilot: function(newPilot) {
-        // Create a pilot only with fields which will be send to the server
-        var pilot = {};
-        pilot.email = newPilot.email;
-        pilot.password = newPilot.password;
-        return DataService.logInPilot(pilot);
-    },
-
-    logInPilotByMail: function(email) {
-        return DataService.oneTimeLogIn(email);
-    },
     
     getValidationConfig: function() {
         return this.formValidationConfig;

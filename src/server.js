@@ -11,6 +11,8 @@ var VerifyEmailToken = require('./server-handlers/verify-email');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
+var ResetPassHandler= require('./server-handlers/reset-pass-handler');
+var SetCookie = require('./server-handlers/set-cookie');
 var CheckCookie = require('./server-handlers/check-cookie');
 var SendToken = require('./server-handlers/send-token');
 var Constants = require('./utils/constants');
@@ -121,11 +123,7 @@ server.register(plugins, (err) => {
         path: '/email/{token}',
         handler: function(request, reply) {
             VerifyEmailToken(request.params.token).then((pilot) => {
-                var cookie = {
-                    userId: pilot.getDataValue('id'),
-                    hash: pilot.getDataValue('password')
-                };
-                request.auth.session.set(cookie);
+                SetCookie(request, pilot.getDataValue('id'), pilot.getDataValue('password'));
                 reply.redirect('/verified');
             }).catch(() => {
                 reply.redirect('/invalid-token');
@@ -190,6 +188,22 @@ server.register(plugins, (err) => {
         path: '/api/send-token',
         handler: function(request, reply) {
             SendToken({ email: JSON.parse(request.query.email)}, '/email', reply);
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/reset-pass',
+        handler: function(request, reply) {
+            SendToken({ email: JSON.parse(request.query.email)}, '/reset-pass', reply);
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/reset-pass',
+        handler: function(request, reply) {
+            ResetPassHandler(request, reply);
         }
     });
 

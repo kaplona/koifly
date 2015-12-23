@@ -17,7 +17,7 @@ var AjaxService = function(options) {
 
     if (options.params && options.method === 'get') {
         options.url += '?';
-        _.map(options.params, (value, key) => {
+        _.each(options.params, (value, key) => {
             options.url += key + '=' + JSON.stringify(value) + '&';
         });
         options.url = options.url.slice(0, -1);

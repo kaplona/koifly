@@ -93,24 +93,40 @@ var DataService = {
         });
     },
 
-    oneTimeLogIn: function(email) {
+    sendVerificationEmail: function(path, params) {
+        path = path ? path : '/api/resend-token';
         return new Promise((resolve, reject) => {
             ajaxService({
-                url: '/api/send-token',
+                url: path,
                 method: 'get',
-                params: { email: email },
+                params: params,
                 onSuccess: resolve,
                 onFailure: reject
             });
         });
     },
 
-    sendVerificationEmail: function() {
+    oneTimeLogIn: function(email) {
+        return this.sendVerificationEmail('/api/send-token', { email: email });
+    },
+
+    initiateResetPass: function(email) {
+        return this.sendVerificationEmail('/api/reset-pass', { email: email });
+    },
+
+    resetPass: function(newPassword, token) {
         return new Promise((resolve, reject) => {
             ajaxService({
-                url: '/api/resend-token',
-                method: 'get',
-                onSuccess: resolve,
+                url: '/api/reset-pass',
+                method: 'post',
+                data: {
+                    password: newPassword,
+                    token: token
+                },
+                onSuccess: (serverResponse) => {
+                    this.setData(serverResponse);
+                    resolve('success');
+                },
                 onFailure: reject
             });
         });
