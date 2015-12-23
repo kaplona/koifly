@@ -143,12 +143,10 @@ var DataService = {
     },
 
     clearData: function() {
-        // DEV
-        console.log('clearing next data: ', this.data);
-
         _.each(this.data, (value, key) => {
             this.data[key] = null;
         });
+        this.lastModified = null;
         PubSub.emit('dataModified');
     },
 
