@@ -1,12 +1,13 @@
 'use strict';
 
 var React = require('react');
+var Notice = require('./common/notice');
 
 
 var InvalidToken = React.createClass({
 
     render: function() {
-        return <div>Link token is invalid or expired</div>;
+        return <Notice text='Link token is invalid or expired' type='error' />;
     }
 });
 

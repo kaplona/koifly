@@ -7,15 +7,16 @@ var Inert = require('inert');
 var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
 var AuthCookie = require('hapi-auth-cookie');
-var VerifyEmailToken = require('./server-handlers/verify-email');
+var SetCookie = require('./server-handlers/helpers/set-cookie');
+var CheckCookie = require('./server-handlers/check-cookie');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
 var ChangePassHandler = require('./server-handlers/change-pass-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
-var SetCookie = require('./server-handlers/set-cookie');
-var CheckCookie = require('./server-handlers/check-cookie');
-var SendToken = require('./server-handlers/send-token');
+var VerifyEmailToken = require('./server-handlers/helpers/verify-email');
+var SendToken = require('./server-handlers/helpers/send-token');
+var EmailMessages = require('./server-handlers/helpers/email-messages');
 var Constants = require('./utils/constants');
 
 
@@ -121,19 +122,6 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'GET',
-        path: '/email/{token}',
-        handler: function(request, reply) {
-            VerifyEmailToken(request.params.token).then((pilot) => {
-                SetCookie(request, pilot.getDataValue('id'), pilot.getDataValue('password'));
-                reply.redirect('/verified');
-            }).catch(() => {
-                reply.redirect('/invalid-token');
-            });
-        }
-    });
-
-    server.route({
-        method: 'GET',
         path: '/api/data',
         config: { auth: 'session' },
         handler: function(request, reply) {
@@ -186,18 +174,33 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'GET',
-        path: '/api/resend-token',
-        config: { auth: 'session' },
+        path: '/email/{token}',
         handler: function(request, reply) {
-            SendToken({ id: request.auth.credentials.userId }, '/email', reply);
+            VerifyEmailToken(request.params.token).then((user) => {
+                SetCookie(request, user.id, user.password);
+                reply.redirect('/verified');
+            }).catch(() => {
+                reply.redirect('/invalid-token');
+            });
         }
     });
 
     server.route({
         method: 'GET',
-        path: '/api/send-token',
+        path: '/api/resend-token',
+        config: { auth: 'session' },
         handler: function(request, reply) {
-            SendToken({ email: JSON.parse(request.query.email)}, '/email', reply);
+            var userCredentials = { id: request.auth.credentials.userId };
+            SendToken(reply, userCredentials, EmailMessages.EMAIL_VERIFICATION, '/email');
+        }
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/api/one-time-login',
+        handler: function(request, reply) {
+            var userCredentials = { email: JSON.parse(request.query.email) };
+            SendToken(reply, userCredentials, EmailMessages.ONE_TIME_LOGIN, '/email');
         }
     });
 
@@ -205,7 +208,8 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/reset-pass',
         handler: function(request, reply) {
-            SendToken({ email: JSON.parse(request.query.email)}, '/reset-pass', reply);
+            var userCredentials = { email: JSON.parse(request.query.email) };
+            SendToken(reply, userCredentials, EmailMessages.PASSWORD_RESET, '/reset-pass');
         }
     });
 

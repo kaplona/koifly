@@ -1,12 +1,12 @@
 'use strict';
 
 var _ = require('lodash');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var KoiflyError = require('../../utils/error');
+var ErrorTypes = require('../../utils/error-types');
 var SanitizePilotInfo = require('./sanitize-pilot-info');
-var Flight = require('../orm/flights');
-var Site = require('../orm/sites');
-var Glider = require('../orm/gliders');
+var Flight = require('../../orm/flights');
+var Site = require('../../orm/sites');
+var Glider = require('../../orm/gliders');
 
 
 

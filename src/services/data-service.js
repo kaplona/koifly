@@ -119,7 +119,7 @@ var DataService = {
     },
 
     oneTimeLogIn: function(email) {
-        return this.sendVerificationEmail('/api/send-token', { email: email });
+        return this.sendVerificationEmail('/api/one-time-login', { email: email });
     },
 
     initiateResetPass: function(email) {

@@ -1,12 +1,12 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 var DataService = require('../services/data-service');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var Button = require('./common/button');
 var PasswordInput = require('./common/password-input');
+var Notice = require('./common/notice');
 var ErrorBox = require('./common/error-box');
 
 
@@ -18,14 +18,13 @@ var ResetPass = React.createClass({
         })
     },
 
-    mixins: [ History ],
-
     getInitialState: function() {
         return {
             password: null,
             passwordConfirm: null,
             error: null,
-            isSaving: false
+            isSaving: false,
+            successNotice: false
         };
     },
 
@@ -43,7 +42,7 @@ var ResetPass = React.createClass({
             });
 
             DataService.resetPass(this.state.password, this.props.params.token).then(() => {
-                this.history.pushState(null, '/pilot');
+                this.setState({ successNotice: true });
             }).catch((error) => {
                 this.handleSavingError(error);
             });
@@ -82,6 +81,10 @@ var ResetPass = React.createClass({
     },
 
     render: function() {
+        if (this.state.successNotice) {
+            return <Notice text='Your password was successfully reset' type='success' />;
+        }
+
         return (
             <div>
                 { this.renderError() }

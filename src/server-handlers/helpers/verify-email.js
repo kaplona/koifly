@@ -1,15 +1,15 @@
 'use strict';
 
-var sequelize = require('../orm/sequelize');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
-var Pilot = require('../orm/pilots');
+var sequelize = require('../../orm/sequelize');
+var KoiflyError = require('../../utils/error');
+var ErrorTypes = require('../../utils/error-types');
+var Pilot = require('../../orm/pilots');
 
 
 sequelize.sync();
 
 
-var VerifyEmail = function(token) {
+var VerifyEmailToken = function(token) {
     // Find pilot by token
     var whereQuery = {
         token: token,
@@ -22,6 +22,7 @@ var VerifyEmail = function(token) {
             throw new KoiflyError(ErrorTypes.INVALID_TOKEN);
         }
         // Mark pilot as activated
+        // Clear token info
         return pilot.update({
             token: null,
             tokenExpirationTime: null,
@@ -31,4 +32,4 @@ var VerifyEmail = function(token) {
 };
 
 
-module.exports = VerifyEmail;
+module.exports = VerifyEmailToken;

@@ -33,7 +33,7 @@ var ErrorView = React.createClass({
 
     render: function() {
         return (
-            <div className='error_box error_message'>
+            <div className='notice notice--error'>
                 { this.props.error.message }
                 { this.renderTryAgainButton() }
             </div>

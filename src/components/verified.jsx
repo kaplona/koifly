@@ -1,12 +1,13 @@
 'use strict';
 
 var React = require('react');
+var Notice = require('./common/notice');
 
 
 var EmailVerified = React.createClass({
 
     render: function() {
-        return <div>Thank you, your email was successfully verified</div>;
+        return <Notice text='Thank you, your email was successfully verified' type='success' />;
     }
 });
 

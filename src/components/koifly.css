@@ -121,7 +121,8 @@ input, textarea, select {
 .notice {
     width: 100%;
     min-height: 30px;
-    padding: 3px;
+    padding: 5px;
+    margin-bottom: 5px;
     background-color: #FFFCCB;
 }
 
@@ -129,14 +130,12 @@ input, textarea, select {
         background-color: #CDFFD2;
     }
 
+    .notice--error {
+        background-color: #FFCDCD;
+    }
+
 .error {
     border-color: red;
-}
-
-.error_box {
-    border: 1px dotted red;
-    margin: 5px;
-    padding: 5px;
 }
 
 .error_message {

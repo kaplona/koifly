@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var Promise = require('es6-promise').Promise;
 var NodeMailer = require('nodemailer');
-var Constants = require('../utils/constants');
+var Constants = require('../../utils/constants');
 
 
 var SendEmail = function(email, message, path) {
