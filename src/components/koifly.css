@@ -119,8 +119,15 @@ input, textarea, select {
 }
 
 .notice {
+    width: 100%;
+    min-height: 30px;
+    padding: 3px;
     background-color: #FFFCCB;
 }
+
+    .notice--success {
+        background-color: #CDFFD2;
+    }
 
 .error {
     border-color: red;

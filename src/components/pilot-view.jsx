@@ -74,7 +74,8 @@ var PilotView = React.createClass({
 
                 <div className='container__title'>Settings</div>
                 <div className='container__subtitle'>
-                    Altitude units: { this.state.pilot.altitudeUnit }
+                    <div>Altitude units: { this.state.pilot.altitudeUnit }</div>
+                    <div>Password: <Link to='/pilot/edit/change-pass'>Change Password</Link></div>
                 </div>
 
                 <Link to='/pilot/edit'><Button>Edit</Button></Link>

@@ -1,6 +1,8 @@
 'use strict';
 
 var Constants = {
+    domain: 'http://localhost:3000',
+
     database: 'koifly',
     mysqlUser: 'koifly',
     mysqlPassword: 'of+OUDCgjZU',

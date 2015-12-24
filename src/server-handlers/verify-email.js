@@ -3,7 +3,6 @@
 var sequelize = require('../orm/sequelize');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
-var NormalizeError = require('../utils/error-normalize');
 var Pilot = require('../orm/pilots');
 
 

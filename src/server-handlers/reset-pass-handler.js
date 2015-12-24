@@ -11,6 +11,10 @@ var ResetPassHandler = function(request, reply) {
     VerifyEmailToken(payload.token).then((pilot) => {
         Bcrypt.hash(payload.password, 10, (error, hash) => {
             if (hash) {
+                // DEV
+                console.log('=> new pass =>', payload.password);
+                console.log('=> new hash =>', hash);
+
                 pilot.update({password: hash}).then((pilot) => {
                     // Set cookie
                     var cookie = {

@@ -35,26 +35,25 @@ var SignIn = React.createClass({
         }
 
         var validationResponse = this.validateForm();
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({
-                isSaving: true,
-                error: null
-            });
-
-            var pilotCredentials = {
-                email: this.state.email,
-                password: this.state.password
-            };
-
-            DataService.createPilot(pilotCredentials).then(() => {
-                this.history.pushState(null, '/pilot');
-            }).catch((error) => {
-                this.handleSavingError(error);
-            });
-        } else {
-            this.handleSavingError(validationResponse);
+        if (validationResponse !== true) {
+            return this.handleSavingError(validationResponse);
         }
+
+        this.setState({
+            isSaving: true,
+            error: null
+        });
+
+        var pilotCredentials = {
+            email: this.state.email,
+            password: this.state.password
+        };
+
+        DataService.createPilot(pilotCredentials).then(() => {
+            this.history.pushState(null, '/pilot');
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
     },
 
     handleInputChange: function(inputName, inputValue) {

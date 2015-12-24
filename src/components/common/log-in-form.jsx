@@ -33,28 +33,26 @@ var LogInForm = React.createClass({
         }
 
         var validationResponse = this.validateForm();
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({
-                isSending: true,
-                error: null
-            });
-
-            var pilotCredentials = {
-                email: this.state.email,
-                password: this.state.password
-            };
-
-            DataService.logInPilot(pilotCredentials).then(() => {
-                if (this.props.onLogIn) {
-                    this.props.onLogIn();
-                }
-            }).catch((error) => {
-                this.handleSavingError(error);
-            });
-        } else {
-            this.handleSavingError(validationResponse);
+        if (validationResponse !== true) {
+            return this.handleSavingError(validationResponse);
         }
+
+        this.setState({
+            isSending: true,
+            error: null
+        });
+
+        var pilotCredentials = {
+            email: this.state.email,
+            password: this.state.password
+        };
+        DataService.logInPilot(pilotCredentials).then(() => {
+            if (this.props.onLogIn) {
+                this.props.onLogIn();
+            }
+        }).catch((error) => {
+            this.handleSavingError(error);
+        });
     },
 
     handleEmailLogIn: function(event) {
@@ -72,30 +70,6 @@ var LogInForm = React.createClass({
         });
 
         DataService.oneTimeLogIn(this.state.email).then(() => {
-            this.setState({
-                isSending: false,
-                isEmailSent: true
-            });
-        }).catch((error) => {
-            this.handleSavingError(error);
-        });
-    },
-
-    handleResetPass: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        if (this.state.email === null || this.state.email.trim() === '') {
-            return this.handleSavingError(new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'Enter your email address'));
-        }
-
-        this.setState({
-            isSending: true,
-            error: null
-        });
-
-        DataService.initiateResetPass(this.state.email).then(() => {
             this.setState({
                 isSending: false,
                 isEmailSent: true
@@ -165,8 +139,7 @@ var LogInForm = React.createClass({
                     </Button>
 
                     <div>
-                        Forgot your password?
-                        <a href='#' onClick={ this.handleResetPass }> Reset password</a>
+                        Forgot your password? <Link to='/reset-pass'>Reset password</Link>
                     </div>
 
                     <div>

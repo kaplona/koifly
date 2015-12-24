@@ -15,12 +15,6 @@ var Pilot = require('../orm/pilots');
 sequelize.sync();
 
 
-//function getPilot() {
-//    // TODO retrieve everything except password
-//    return Pilot.findById(1);
-//}
-
-
 // must return a promise
 function saveData(dataType, data, pilot) {
     var pilotId = pilot.getDataValue('id');

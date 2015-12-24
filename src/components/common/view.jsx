@@ -33,7 +33,9 @@ var View = React.createClass({
 
     handleDataModified: function() {
         this.setState({ isUserActivated: PilotModel.getActivationStatus() });
-        this.props.onDataModified();
+        if (this.props.onDataModified) {
+            this.props.onDataModified();
+        }
     },
 
     handleEmailVerification: function() {

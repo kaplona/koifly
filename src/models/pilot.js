@@ -143,6 +143,14 @@ var PilotModel = {
         });
         return _.extend({}, newPilotInfo, fieldsToReplace);
     },
+
+    changePass: function(newPilotInfo) {
+        var passwords = {
+            oldPassword: newPilotInfo.password,
+            newPassword: newPilotInfo.newPassword
+        };
+        return DataService.changePass(passwords);
+    },
     
     getValidationConfig: function() {
         return this.formValidationConfig;

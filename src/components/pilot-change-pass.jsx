@@ -1,31 +1,27 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
-var DataService = require('../services/data-service');
+var Link = require('react-router').Link;
+var PilotModel = require('../models/pilot');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
-var Button = require('./common/button');
+var View = require('./common/view');
 var PasswordInput = require('./common/password-input');
+var Button = require('./common/button');
 var ErrorBox = require('./common/error-box');
+var Notice = require('./common/notice');
 
 
-var ResetPass = React.createClass({
-
-    propTypes: {
-        params: React.PropTypes.shape({
-            token: React.PropTypes.string.isRequired
-        })
-    },
-
-    mixins: [ History ],
+var PilotChangePass = React.createClass({
 
     getInitialState: function() {
         return {
             password: null,
+            newPassword: null,
             passwordConfirm: null,
             error: null,
-            isSaving: false
+            isSaving: false,
+            successNotice: false
         };
     },
 
@@ -42,8 +38,8 @@ var ResetPass = React.createClass({
                 error: null
             });
 
-            DataService.resetPass(this.state.password, this.props.params.token).then(() => {
-                this.history.pushState(null, '/pilot');
+            PilotModel.changePass(this.state).then(() => {
+                this.setState({ successNotice: true });
             }).catch((error) => {
                 this.handleSavingError(error);
             });
@@ -64,12 +60,14 @@ var ResetPass = React.createClass({
     },
 
     validateForm: function() {
-        if (this.state.password === null && this.state.password.trim() === '') {
+        if (this.state.password === null && this.state.password.trim() === '' ||
+            this.state.newPassword === null && this.state.newPassword.trim() === ''
+        ) {
             return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
         }
 
-        if (this.state.password !== this.state.passwordConfirm) {
-            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'password and confirmed password must be the same');
+        if (this.state.newPassword !== this.state.passwordConfirm) {
+            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'New password and confirmed password must be the same');
         }
 
         return true;
@@ -81,15 +79,27 @@ var ResetPass = React.createClass({
         }
     },
 
+
     render: function() {
+        if (this.state.successNotice) {
+            return <Notice text='Your password was successfully changed' type='success' />;
+        }
+
         return (
-            <div>
+            <View error={ this.state.error }>
                 { this.renderError() }
                 <form onSubmit={ this.handleSubmit }>
                     <PasswordInput
                         inputValue={ this.state.password }
-                        labelText='New Password:'
+                        labelText='Old Password:'
                         inputName='password'
+                        onChange={ this.handleInputChange }
+                        />
+
+                    <PasswordInput
+                        inputValue={ this.state.newPassword }
+                        labelText='New Password:'
+                        inputName='newPassword'
                         onChange={ this.handleInputChange }
                         />
 
@@ -103,11 +113,15 @@ var ResetPass = React.createClass({
                     <Button type='submit' active={ !this.state.isSaving }>
                         { this.state.isSaving ? 'Saving ...' : 'Save' }
                     </Button>
+
+                    <div>
+                        Forgot your password? <Link to='/reset-pass'>Reset password</Link>
+                    </div>
                 </form>
-            </div>
+            </View>
         );
     }
 });
 
 
-module.exports = ResetPass;
+module.exports = PilotChangePass;

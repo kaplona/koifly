@@ -11,6 +11,7 @@ var VerifyEmailToken = require('./server-handlers/verify-email');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignInHandler = require('./server-handlers/sign-in-handler');
 var LogInHandler = require('./server-handlers/log-in-handler');
+var ChangePassHandler = require('./server-handlers/change-pass-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
 var SetCookie = require('./server-handlers/set-cookie');
 var CheckCookie = require('./server-handlers/check-cookie');
@@ -171,6 +172,15 @@ server.register(plugins, (err) => {
         handler: function(request, reply) {
             request.auth.session.clear();
             reply(JSON.stringify('success'));
+        }
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/change-pass',
+        config: { auth: 'session' },
+        handler: function(request, reply) {
+            ChangePassHandler(request, reply);
         }
     });
 

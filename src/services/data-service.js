@@ -93,6 +93,18 @@ var DataService = {
         });
     },
 
+    changePass: function(passwords) {
+        return new Promise((resolve, reject) => {
+            ajaxService({
+                url: '/api/change-pass',
+                method: 'post',
+                data: passwords,
+                onSuccess: resolve,
+                onFailure: reject
+            });
+        });
+    },
+
     sendVerificationEmail: function(path, params) {
         path = path ? path : '/api/resend-token';
         return new Promise((resolve, reject) => {
