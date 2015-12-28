@@ -2,6 +2,7 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
+var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -130,16 +131,16 @@ var InteractiveMap = React.createClass({
                     '<div>' +
                         '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
                             ' style="display:inline;width:12px;">' +
-                        location +
+                        Util.escapeHtml(location) +
                     '</div>' +
                     '<div>' +
                         '<input id="launchAltitude_checkbox" type="checkbox" ' + checkboxParameters.launchAltitude +
                             ' style="display:inline;width:12px;">' +
-                        altitude + altitudeUnit +
+                        Util.escapeHtml(altitude + ' ' + altitudeUnit) +
                     '</div>' +
                     '<div>' +
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
-                        coordinates +
+                        Util.escapeHtml(coordinates) +
                     '</div>' +
                     '<button id="apply_google_data" type="button">Apply</button>' +
                '</div>';

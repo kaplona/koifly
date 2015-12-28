@@ -2,6 +2,7 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
+var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
@@ -73,13 +74,18 @@ var StaticMap = React.createClass({
         }
     },
 
-    // TODO HTMLescape
     composeInfowindowMessage: function(site) {
         return '<div>' +
-                '<div><a href="/site/' + site.id + '">' + site.name + '</a></div>' +
-                '<div>' + site.location + '</div>' +
-                '<div>' + site.launchAltitude + ' ' + site.altitudeUnit + '</div>' +
-                '<div>' + site.coordinates + '</div>' +
+                    '<div>' +
+                        '<a href="/site/' + Util.escapeHtml(site.id) + '">' +
+                            Util.escapeHtml(site.name) +
+                        '</a>' +
+                    '</div>' +
+                    '<div>' + Util.escapeHtml(site.location) + '</div>' +
+                    '<div>' +
+                        Util.escapeHtml(site.launchAltitude) + ' ' + Util.escapeHtml(site.altitudeUnit) +
+                    '</div>' +
+                    '<div>' + Util.escapeHtml(site.coordinates) + '</div>' +
                 '</div>';
     },
 

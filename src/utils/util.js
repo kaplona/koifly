@@ -59,20 +59,17 @@ var Util = {
     },
 
     isRightDateFormat: function(date) {
-        if (date.length != 10 ||
-            date.substring(0, 4) < 1900 ||
-            date.substring(0, 4) > 2099 ||
-            date.substring(5, 7) < 1 ||
-            date.substring(5, 7) > 12 ||
-            date.substring(8) < 1 ||
-            date.substring(8) > 31 ||
-            date.substring(4, 5) != '-' ||
-            date.substring(7, 8) != '-'
-        ) {
-            return false;
-        }
-
-        return true;
+        return (
+            date.length === 10 &&
+            date.substring(0, 4) > 1900 &&
+            date.substring(0, 4) < 2099 &&
+            date.substring(5, 7) > 1 &&
+            date.substring(5, 7) < 12 &&
+            date.substring(8) > 1 &&
+            date.substring(8) < 31 &&
+            date.substring(4, 5) === '-' &&
+            date.substring(7, 8) === '-'
+        );
     },
 
     isNumber: function(val) {
@@ -97,6 +94,16 @@ var Util = {
         var hours = Math.floor(timeInMinutes / 60);
         var minutes = timeInMinutes % 60;
         return hours + ' h ' + minutes + ' min';
+    },
+
+    escapeHtml: function(unescaped) {
+        return unescaped
+            .toString()
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
     }
 };
 
