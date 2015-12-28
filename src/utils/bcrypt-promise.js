@@ -22,15 +22,11 @@ var BcryptPromise = {
     compare: function(newPassword, hash) {
         return new Promise((resolve, reject) => {
             Bcrypt.compare(newPassword, hash, (err, res) => {
-                //if (res && !err) {
-                //    resolve();
-                //    return;
-                //}
-                //reject(err);
-                if (err) {
-                    reject(err);
+                if (res && !err) {
+                    resolve();
+                    return;
                 }
-                resolve(res);
+                reject(err);
             });
         });
     }

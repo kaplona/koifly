@@ -15,6 +15,7 @@ var Constants = require('../../utils/constants');
  */
 var SendEmail = function(emailAddress, message, path) {
     return new Promise((resolve, reject) => {
+        // createTransport uses smtpTransport as default
         var transporter = NodeMailer.createTransport({
             service:'Mailgun',
             auth: {

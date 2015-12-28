@@ -32,11 +32,10 @@ var LoginHandler = function(request, reply) {
         pilot = pilotRecord;
         // Compare password provided by user with the one we have in DB
         return BcryptPromise.compare(credentials.password, pilot.password);
-    }).then((isEqual) => {
-        if (!isEqual) {
-            throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
-        }
-
+    }).catch((error) => {
+        error = error ? error : new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
+        throw error;
+    }).then(() => {
         SetCookie(request, pilot.id, pilot.password);
 
         // Log in was successful

@@ -24,10 +24,10 @@ var ChangePassHandler = function(request, reply) {
         pilot = pilotRecord;
         // Compare password provided by user with the one we have in DB
         return BcryptPromise.compare(payload.oldPassword, pilot.password);
-    }).then((isEqual) => {
-        if (!isEqual) {
-            throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'You entered wrong password');
-        }
+    }).catch((error) => {
+        error = error ? error : new KoiflyError(ErrorTypes.SAVING_FAILURE, 'You entered wrong password');
+        throw error;
+    }).then(() => {
         return BcryptPromise.hash(payload.newPassword);
     }).then((hash) => {
         // Change password hash in DB
