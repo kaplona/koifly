@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var SendToken = require('./helpers/send-token');
 var EmailMessages = require('./helpers/email-messages');
 var KoiflyError = require('../utils/error');
@@ -8,7 +9,7 @@ var ErrorTypes = require('../utils/error-types');
 
 var InitiateResetPassHandler = function(request, reply) {
     // Checks query for required fields
-    if (!request.query.email || !(JSON.parse(request.query.email) instanceof String)) {
+    if (!request.query.email || !_.isString(JSON.parse(request.query.email))) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }

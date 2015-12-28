@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var Pilot = require('../orm/pilots');
 var BcryptPromise = require('../utils/bcrypt-promise');
@@ -10,6 +11,7 @@ var EmailMessages = require('./helpers/email-messages');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
+var Constants = require('../utils/constants');
 
 
 sequelize.sync();
@@ -29,7 +31,7 @@ var ChangePassHandler = function(request, reply) {
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
-    if (!(payload.oldPassword instanceof String) || !(payload.newPassword instanceof String)) {
+    if (!_.isString(payload.oldPassword) || !_.isString(payload.newPassword)) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }
@@ -59,8 +61,8 @@ var ChangePassHandler = function(request, reply) {
         // Send email notification to user
         // so he has opportunity to reset password
         // if it wasn't he who change the pass at the first place
-        var path = '/reset-pass/' + token;
-        SendMail(pilot.email, EmailMessages.PASSWORD_CHANGE, path);
+        var url = Constants.domain + '/reset-pass/' + token;
+        SendMail(pilot.email, EmailMessages.PASSWORD_CHANGE, { url: url });
 
         reply(JSON.stringify('success'));
     }).catch((error) => {

@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 var PubSub = require('../../utils/pubsub');
-var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 
@@ -77,15 +77,15 @@ var StaticMap = React.createClass({
     composeInfowindowMessage: function(site) {
         return '<div>' +
                     '<div>' +
-                        '<a href="/site/' + Util.escapeHtml(site.id) + '">' +
-                            Util.escapeHtml(site.name) +
+                        '<a href="/site/' + _.escape(site.id) + '">' +
+                            _.escape(site.name) +
                         '</a>' +
                     '</div>' +
-                    '<div>' + Util.escapeHtml(site.location) + '</div>' +
+                    '<div>' + _.escape(site.location) + '</div>' +
                     '<div>' +
-                        Util.escapeHtml(site.launchAltitude) + ' ' + Util.escapeHtml(site.altitudeUnit) +
+                        _.escape(site.launchAltitude + ' ' + site.altitudeUnit) +
                     '</div>' +
-                    '<div>' + Util.escapeHtml(site.coordinates) + '</div>' +
+                    '<div>' + _.escape(site.coordinates) + '</div>' +
                 '</div>';
     },
 

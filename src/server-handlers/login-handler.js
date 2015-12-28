@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var SetCookie = require('./helpers/set-cookie');
@@ -25,7 +26,7 @@ var LoginHandler = function(request, reply) {
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
-    if (!(payload.email instanceof String) || !(payload.password instanceof String)) {
+    if (!_.isString(payload.email) || !_.isString(payload.password)) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }

@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var VerifyEmailToken = require('./helpers/verify-email');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var SetCookie = require('./helpers/set-cookie');
@@ -14,7 +15,7 @@ var ResetPassHandler = function(request, reply) {
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
-    if (!(payload.token instanceof String) || !(payload.password instanceof String)) {
+    if (!_.isString(payload.token) || !_.isString(payload.password)) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }

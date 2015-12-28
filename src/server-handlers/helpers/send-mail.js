@@ -10,10 +10,10 @@ var Constants = require('../../utils/constants');
  *
  * @param {string} emailAddress
  * @param {object} message - email message options: from, subject, text, html
- * @param {string} path - if provided this path will be added to email text as a link (usually it's link with a token)
+ * @param {object} templateData - if provided this path will be added to email text as a link (usually it's link with a token)
  * @returns {Promise} - is email was send or error occurred
  */
-var SendEmail = function(emailAddress, message, path) {
+var SendMail = function(emailAddress, message, templateData) {
     return new Promise((resolve, reject) => {
         // createTransport uses smtpTransport as default
         var transporter = NodeMailer.createTransport({
@@ -26,11 +26,14 @@ var SendEmail = function(emailAddress, message, path) {
 
         message = _.extend({}, message, { to: emailAddress });
 
-        if (path) {
-            path = Constants.domain + path;
-            message.text = message.text.replace('%s', path);
-            message.html = message.html.replace('%s', path).replace('%s', path);
+        if (templateData) {
+            _.each(templateData, (value, key) => {
+                var rex = new RegExp('%' + key, 'g');
+                message.text = message.text.replace(rex, value);
+                message.html = message.html.replace(rex, value);
+            });
         }
+        console.log('=> email message => ', message.html);
 
         transporter.sendMail(message, (error) => {
             if (error) {
@@ -43,4 +46,4 @@ var SendEmail = function(emailAddress, message, path) {
 };
 
 
-module.exports = SendEmail;
+module.exports = SendMail;

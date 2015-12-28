@@ -7,6 +7,7 @@ var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
 var NormalizeError = require('../../utils/error-normalize');
 var Pilot = require('../../orm/pilots');
+var Constants = require('../../utils/constants');
 
 
 sequelize.sync();
@@ -29,8 +30,8 @@ var SendToken = function(reply, pilotInfo, emailMessage, path) {
         };
         return pilot.update(newPilotInfo);
     }).then((pilot) => {
-        path = path + '/' + token;
-        return SendMail(pilot.email, emailMessage, path);
+        var url = Constants.domain + path + '/' + token;
+        return SendMail(pilot.email, emailMessage, { url: url });
     }).then(() => {
         reply(JSON.stringify('success'));
     }).catch((error) => {

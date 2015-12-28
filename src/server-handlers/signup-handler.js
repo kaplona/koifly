@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var GenerateToken = require('./helpers/generate-token');
@@ -11,6 +12,7 @@ var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 var SanitizePilotInfo = require('./helpers/sanitize-pilot-info');
 var Pilot = require('../orm/pilots');
+var Constants = require('../utils/constants');
 
 
 sequelize.sync();
@@ -30,7 +32,7 @@ var SignupHandler = function(request, reply) {
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
-    if (!(payload.email instanceof String) || !(payload.password instanceof String)) {
+    if (!_.isString(payload.email) || !_.isString(payload.password)) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }
@@ -49,8 +51,8 @@ var SignupHandler = function(request, reply) {
         SetCookie(request, pilot.id, pilot.password);
 
         // Send user email with verification token
-        var path = '/email/' + token;
-        SendMail(pilot.email, EmailMessages.EMAIL_VERIFICATION, path);
+        var url = Constants.domain + '/email/' + token;
+        SendMail(pilot.email, EmailMessages.EMAIL_VERIFICATION, { url: url });
 
         // Reply with pilot info since it's the only user's data yet
         reply(SanitizePilotInfo(pilot));

@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 var PubSub = require('../../utils/pubsub');
-var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var Altitude = require('../../utils/altitude');
 
@@ -131,16 +131,16 @@ var InteractiveMap = React.createClass({
                     '<div>' +
                         '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
                             ' style="display:inline;width:12px;">' +
-                        Util.escapeHtml(location) +
+                        _.escape(location) +
                     '</div>' +
                     '<div>' +
                         '<input id="launchAltitude_checkbox" type="checkbox" ' + checkboxParameters.launchAltitude +
                             ' style="display:inline;width:12px;">' +
-                        Util.escapeHtml(altitude + ' ' + altitudeUnit) +
+                        _.escape(altitude + ' ' + altitudeUnit) +
                     '</div>' +
                     '<div>' +
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
-                        Util.escapeHtml(coordinates) +
+                        _.escape(coordinates) +
                     '</div>' +
                     '<button id="apply_google_data" type="button">Apply</button>' +
                '</div>';

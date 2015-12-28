@@ -94,16 +94,6 @@ var Util = {
         var hours = Math.floor(timeInMinutes / 60);
         var minutes = timeInMinutes % 60;
         return hours + ' h ' + minutes + ' min';
-    },
-
-    escapeHtml: function(unescaped) {
-        return unescaped
-            .toString()
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
     }
 };
 
