@@ -24,6 +24,7 @@ var LoginHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
     var credentials = JSON.parse(request.payload);
 
+    // email is stored in lower case in DB, so as to perform case insensitivity
     Pilot.findOne({ where: { email: credentials.email.toLowerCase() } }).then((pilotRecord) => {
         if (!pilotRecord || pilotRecord.email !== credentials.email.toLowerCase()) {
             throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);

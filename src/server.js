@@ -199,6 +199,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/one-time-login',
         handler: function(request, reply) {
+            // email is stored in lower case in DB, so as to perform case insensitivity
             var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
             SendToken(reply, userCredentials, EmailMessages.ONE_TIME_LOGIN, '/email');
         }
@@ -208,6 +209,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/reset-pass',
         handler: function(request, reply) {
+            // email is stored in lower case in DB, so as to perform case insensitivity
             var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
             SendToken(reply, userCredentials, EmailMessages.PASSWORD_RESET, '/reset-pass');
         }
