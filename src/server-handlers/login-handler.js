@@ -18,11 +18,17 @@ sequelize.sync();
  * compares hash of given password with the one in DB
  * if success set cookie and reply to client with all pilot's data
  * @param {object} request
- * @param {object} reply
+ * @param {function} reply
  */
 var LoginHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
     var payload = JSON.parse(request.payload);
+
+    // Checks payload for required fields
+    if (!(payload.email instanceof String) || !(payload.password instanceof String)) {
+        reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
+        return;
+    }
 
     // email is stored in lower case in DB, so as to perform case insensitivity
     Pilot.findOne({ where: { email: payload.email.toLowerCase() } }).then((pilotRecord) => {
@@ -44,9 +50,9 @@ var LoginHandler = function(request, reply) {
         // this saves amount of data sending between server and client
         return GetAllData(pilot, payload.lastModified);
     }).then((dbData) => {
-        reply(JSON.stringify(dbData));
+        reply(dbData);
     }).catch((error) => {
-        reply(JSON.stringify({ error: NormalizeError(error) }));
+        reply({ error: NormalizeError(error) });
     });
 };
 

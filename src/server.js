@@ -12,7 +12,9 @@ var CheckCookie = require('./server-handlers/check-cookie');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignupHandler = require('./server-handlers/signup-handler');
 var LoginHandler = require('./server-handlers/login-handler');
+var OneTimeLoginHandler = require('./server-handlers/one-time-login-handler');
 var ChangePassHandler = require('./server-handlers/change-pass-handler');
+var InitiateResetPassHandler = require('./server-handlers/initiate-reset-pass-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
 var VerifyEmailToken = require('./server-handlers/helpers/verify-email');
 var SendToken = require('./server-handlers/helpers/send-token');
@@ -199,9 +201,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/one-time-login',
         handler: function(request, reply) {
-            // email is stored in lower case in DB, so as to perform case insensitivity
-            var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
-            SendToken(reply, userCredentials, EmailMessages.ONE_TIME_LOGIN, '/email');
+            OneTimeLoginHandler(request, reply);
         }
     });
 
@@ -209,9 +209,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/reset-pass',
         handler: function(request, reply) {
-            // email is stored in lower case in DB, so as to perform case insensitivity
-            var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
-            SendToken(reply, userCredentials, EmailMessages.PASSWORD_RESET, '/reset-pass');
+            InitiateResetPassHandler(request, reply);
         }
     });
 

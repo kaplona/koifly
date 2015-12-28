@@ -6,6 +6,8 @@ var GenerateToken = require('./helpers/generate-token');
 var SendMail = require('./helpers/send-mail');
 var EmailMessages = require('./helpers/email-messages');
 var SetCookie = require('./helpers/set-cookie');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 var SanitizePilotInfo = require('./helpers/sanitize-pilot-info');
 var Pilot = require('../orm/pilots');
@@ -21,11 +23,17 @@ sequelize.sync();
  * send email with verification link to new user's email,
  * replies with only pilot info since new user doesn't have any other data yet
  * @param {object} request
- * @param {object} reply
+ * @param {function} reply
  */
 var SignupHandler = function(request, reply) {
     var token = GenerateToken(); // for email verification
     var payload = JSON.parse(request.payload);
+
+    // Checks payload for required fields
+    if (!(payload.email instanceof String) || !(payload.password instanceof String)) {
+        reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
+        return;
+    }
 
     BcryptPromise.hash(payload.password).then((hash) => {
         var newPilot = {
@@ -45,9 +53,9 @@ var SignupHandler = function(request, reply) {
         SendMail(pilot.email, EmailMessages.EMAIL_VERIFICATION, path);
 
         // Reply with pilot info since it's the only user's data yet
-        reply(JSON.stringify(SanitizePilotInfo(pilot)));
+        reply(SanitizePilotInfo(pilot));
     }).catch((err) => {
-        reply(JSON.stringify({ error: NormalizeError(err) }));
+        reply({ error: NormalizeError(err) });
     });
 };
 

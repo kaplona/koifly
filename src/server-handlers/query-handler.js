@@ -107,7 +107,6 @@ function savePilotInfo(data, pilot) {
 
 var QueryHandler = function(request, reply) {
     Pilot.findById(request.auth.credentials.userId).then((pilot) => {
-
         if (request.method === 'get') {
             // Get all data from the DB since lastModified
             return GetAllData(pilot, JSON.parse(request.query.lastModified));
@@ -122,12 +121,12 @@ var QueryHandler = function(request, reply) {
 
             // If data type is not specified throw error
             if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
-                throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'dataType is not valid');
+                throw new KoiflyError(ErrorTypes.SAVING_FAILURE);
             }
 
             // If data is not an Object throw error
             if (!(requestPayload.data instanceof Object)) {
-                throw new KoiflyError(ErrorTypes.SAVING_FAILURE, 'request data is not valid');
+                throw new KoiflyError(ErrorTypes.SAVING_FAILURE);
             }
 
             return saveData(requestPayload.dataType, requestPayload.data, pilot).then(() => {
@@ -136,12 +135,12 @@ var QueryHandler = function(request, reply) {
             });
         }
     }).then((dbData) => {
-        reply(JSON.stringify(dbData));
+        reply(dbData);
     }).catch((err) => {
         //DEV
         console.log('error => ', err);
 
-        reply(JSON.stringify({ error: NormalizeError(err) }));
+        reply({ error: NormalizeError(err) });
     });
 };
 

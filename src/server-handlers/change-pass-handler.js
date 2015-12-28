@@ -15,10 +15,24 @@ var NormalizeError = require('../utils/error-normalize');
 sequelize.sync();
 
 
+/**
+ * Searches for user corresponding the cookie
+ * compares old password given by user with the one in DB
+ * saves hash of new password, token info and sends email with notification that password has been changed
+ * set cookie with new credentials
+ * @param {object} request
+ * @param {function} reply
+ */
 var ChangePassHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
     var token = GenerateToken(); // for email notification
     var payload = JSON.parse(request.payload);
+
+    // Checks payload for required fields
+    if (!(payload.oldPassword instanceof String) || !(payload.newPassword instanceof String)) {
+        reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
+        return;
+    }
 
     Pilot.findById(request.auth.credentials.userId).then((pilotRecord) => {
         pilot = pilotRecord;
@@ -50,7 +64,7 @@ var ChangePassHandler = function(request, reply) {
 
         reply(JSON.stringify('success'));
     }).catch((error) => {
-        reply(JSON.stringify({error: NormalizeError(error)}));
+        reply({error: NormalizeError(error)});
     });
 };
 

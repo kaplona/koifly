@@ -34,7 +34,7 @@ var SendToken = function(reply, pilotInfo, emailMessage, path) {
     }).then(() => {
         reply(JSON.stringify('success'));
     }).catch((error) => {
-        reply(JSON.stringify({ error: NormalizeError(error)}));
+        reply({ error: NormalizeError(error)});
     });
 };
 

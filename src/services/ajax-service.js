@@ -29,8 +29,8 @@ var AjaxService = function(options) {
             return;
         }
 
-        if (ajaxRequest.status >= 400 && ajaxRequest.status < 500) {
-            options.onFailure(new KoiflyError(ErrorTypes.CONNECTION_FAILURE));
+        if (ajaxRequest.status >= 400 && ajaxRequest.status < 600) {
+            options.onFailure(new KoiflyError(ErrorTypes.RETRIEVING_FAILURE));
             return;
         }
 
