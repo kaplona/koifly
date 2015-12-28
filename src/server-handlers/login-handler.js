@@ -22,25 +22,27 @@ sequelize.sync();
  */
 var LoginHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
-    var credentials = JSON.parse(request.payload);
+    var payload = JSON.parse(request.payload);
 
     // email is stored in lower case in DB, so as to perform case insensitivity
-    Pilot.findOne({ where: { email: credentials.email.toLowerCase() } }).then((pilotRecord) => {
-        if (!pilotRecord || pilotRecord.email !== credentials.email.toLowerCase()) {
-            throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
+    Pilot.findOne({ where: { email: payload.email.toLowerCase() } }).then((pilotRecord) => {
+        if (!pilotRecord || pilotRecord.email !== payload.email.toLowerCase()) {
+            throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE, 'There is no user with this email');
         }
         pilot = pilotRecord;
         // Compare password provided by user with the one we have in DB
-        return BcryptPromise.compare(credentials.password, pilot.password);
+        return BcryptPromise.compare(payload.password, pilot.password);
     }).catch((error) => {
-        error = error ? error : new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
+        error = error ? error : new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE, 'You entered wrong password');
         throw error;
     }).then(() => {
         SetCookie(request, pilot.id, pilot.password);
 
         // Log in was successful
-        // Reply with all user's data
-        return GetAllData(pilot, null);
+        // Reply with all user's data starting from the latest date user has on the front end
+        // e.g. if user was logged out due to expiring cookie but still has data in js
+        // this saves amount of data sending between server and client
+        return GetAllData(pilot, payload.lastModified);
     }).then((dbData) => {
         reply(JSON.stringify(dbData));
     }).catch((error) => {

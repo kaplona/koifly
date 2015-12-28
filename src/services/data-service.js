@@ -80,10 +80,13 @@ var DataService = {
 
     loginPilot: function(newPilot) {
         return new Promise((resolve, reject) => {
+            // We are sending lastModified date along with user's credentials
+            // in case if user was logged out due to expiring cookie and still has data in js
+            // this saves amount of data sending between server and client
             ajaxService({
                 url: '/api/login',
                 method: 'post',
-                data: newPilot,
+                data: _.extend({}, newPilot, { lastModified: this.lastModified }),
                 onSuccess: (serverResponse) => {
                     this.setData(serverResponse);
                     resolve('success');
