@@ -73,6 +73,7 @@ var StaticMap = React.createClass({
         }
     },
 
+    // TODO HTMLescape
     composeInfowindowMessage: function(site) {
         return '<div>' +
                 '<div><a href="/site/' + site.id + '">' + site.name + '</a></div>' +

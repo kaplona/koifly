@@ -125,6 +125,7 @@ var InteractiveMap = React.createClass({
 
         var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
 
+        // TODO HTMLescape
         return '<div>' +
                     '<div>' +
                         '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +

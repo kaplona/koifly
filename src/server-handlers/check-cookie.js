@@ -6,13 +6,20 @@ var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 
 
+/**
+ *
+ * @param {object} request
+ * @param {object} session
+ * @param {function} callback - accepts (Error|null error, bool isSuccess)
+ */
 var CheckCookie = function(request, session, callback) {
     // DEV
     console.log('=> cookie check');
 
 
     if (session.userId === undefined) {
-        return callback(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE), false);
+        callback(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE), false);
+        return;
     }
 
     var whereQuery = {
@@ -20,11 +27,13 @@ var CheckCookie = function(request, session, callback) {
         password: session.hash
     };
     Pilot.findOne({ where: whereQuery }).then((pilot) => {
-        if (pilot === null) {
-            return callback(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE), false);
+        if (pilot && pilot.id === session.userId) {
+            callback(null, true); // All OK!
+            return;
         }
 
-        callback(null, true);
+        callback(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE), false);
+
     }).catch((error) => {
         callback(NormalizeError(error), false);
     });

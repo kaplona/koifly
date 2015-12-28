@@ -35,9 +35,9 @@ var Header = React.createClass({
     },
 
     render: function() {
-        var logInText = this.state.isLogged ? 'Log Out' : 'Log In';
-        var logInLink = this.state.isLogged ? '/' : '/login';
-        var logInHandler = this.state.isLogged ? this.handleLogOut : null;
+        var loginText = this.state.isLogged ? 'Log Out' : 'Log In';
+        var loginLink = this.state.isLogged ? '/' : '/login';
+        var loginHandler = this.state.isLogged ? this.handleLogOut : null;
 
         return (
             <div className='header'>
@@ -49,11 +49,11 @@ var Header = React.createClass({
                     <Link to='/gliders' className='header__menu__item'>Gliders</Link>
                     <Link to='/pilot' className='header__menu__item'>Pilot</Link>
                     <Link
-                        to={ logInLink }
-                        onClick={ logInHandler }
+                        to={ loginLink }
+                        onClick={ loginHandler }
                         className='header__menu__item'
                         >
-                        { logInText }
+                        { loginText }
                     </Link>
                 </div>
             </div>

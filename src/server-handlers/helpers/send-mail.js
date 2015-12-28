@@ -6,17 +6,24 @@ var NodeMailer = require('nodemailer');
 var Constants = require('../../utils/constants');
 
 
-var SendEmail = function(email, message, path) {
+/**
+ *
+ * @param {string} emailAddress
+ * @param {object} message - email message options: from, subject, text, html
+ * @param {string} path - if provided this path will be added to email text as a link (usually it's link with a token)
+ * @returns {Promise} - is email was send or error occurred
+ */
+var SendEmail = function(emailAddress, message, path) {
     return new Promise((resolve, reject) => {
         var transporter = NodeMailer.createTransport({
             service:'Mailgun',
             auth: {
-                user: Constants.mailGunLogin,
-                pass: Constants.mailGunPass
+                user: Constants.mailgunLogin,
+                pass: Constants.mailgunPass
             }
         });
 
-        message = _.extend({}, message, { to: email });
+        message = _.extend({}, message, { to: emailAddress });
 
         if (path) {
             path = Constants.domain + path;

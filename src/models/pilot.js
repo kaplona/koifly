@@ -160,7 +160,7 @@ var PilotModel = {
         if (DataService.data.pilot === null) {
             return null;
         }
-        return DataService.data.pilot.activated;
+        return DataService.data.pilot.isActivated;
     }
 };
 

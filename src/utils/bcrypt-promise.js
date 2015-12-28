@@ -9,13 +9,12 @@ var BcryptPromise = {
 
     hash: function(password) {
         return new Promise((resolve, reject) => {
-            Bcrypt.hash(password, Constants.bcryptRound, (err, hash) => {
-                if (hash) {
+            Bcrypt.hash(password, Constants.bcryptRounds, (err, hash) => {
+                if (hash && !err) {
                     resolve(hash);
+                    return;
                 }
-                if (err) {
-                    reject(err);
-                }
+                reject(err);
             });
         });
     },
@@ -23,6 +22,11 @@ var BcryptPromise = {
     compare: function(newPassword, hash) {
         return new Promise((resolve, reject) => {
             Bcrypt.compare(newPassword, hash, (err, res) => {
+                //if (res && !err) {
+                //    resolve();
+                //    return;
+                //}
+                //reject(err);
                 if (err) {
                     reject(err);
                 }

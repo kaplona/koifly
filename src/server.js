@@ -10,8 +10,8 @@ var AuthCookie = require('hapi-auth-cookie');
 var SetCookie = require('./server-handlers/helpers/set-cookie');
 var CheckCookie = require('./server-handlers/check-cookie');
 var QueryHandler = require('./server-handlers/query-handler');
-var SignInHandler = require('./server-handlers/sign-in-handler');
-var LogInHandler = require('./server-handlers/log-in-handler');
+var SignupHandler = require('./server-handlers/signup-handler');
+var LoginHandler = require('./server-handlers/login-handler');
 var ChangePassHandler = require('./server-handlers/change-pass-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
 var VerifyEmailToken = require('./server-handlers/helpers/verify-email');
@@ -53,12 +53,12 @@ server.register(plugins, (err) => {
     server.auth.strategy('session', 'cookie', {
         cookie: 'koifly',
         password: Constants.cookiePassword,
-        ttl: (1000*60*60*24*30),
+        ttl: 1000 * 60 * 60 * 24 * 30, // one month
         clearInvalid: true,
         redirectTo: false,
-        keepAlive: true,
+        keepAlive: true, // reset expiry date every time
         isSecure: false, // cookie allows to be transmitted over insecure connection
-        isHttpOnly: false,
+        isHttpOnly: true, // auth cookie is unavailable to js
         validateFunc: CheckCookie
     });
 
@@ -140,9 +140,9 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'POST',
-        path: '/api/signin',
+        path: '/api/signup',
         handler: function(request, reply) {
-            SignInHandler(request, reply);
+            SignupHandler(request, reply);
         }
     });
 
@@ -150,7 +150,7 @@ server.register(plugins, (err) => {
         method: 'POST',
         path: '/api/login',
         handler: function(request, reply) {
-            LogInHandler(request, reply);
+            LoginHandler(request, reply);
         }
     });
 
@@ -199,7 +199,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/one-time-login',
         handler: function(request, reply) {
-            var userCredentials = { email: JSON.parse(request.query.email) };
+            var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
             SendToken(reply, userCredentials, EmailMessages.ONE_TIME_LOGIN, '/email');
         }
     });
@@ -208,7 +208,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/api/reset-pass',
         handler: function(request, reply) {
-            var userCredentials = { email: JSON.parse(request.query.email) };
+            var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
             SendToken(reply, userCredentials, EmailMessages.PASSWORD_RESET, '/reset-pass');
         }
     });

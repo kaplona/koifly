@@ -24,8 +24,8 @@ var GliderEditView = require('./components/glider-edit-view');
 var PilotView = require('./components/pilot-view');
 var PilotEditView = require('./components/pilot-edit-view');
 var PilotChangePass = require('./components/pilot-change-pass');
-var SignIn = require('./components/sign-in');
-var LogIn = require('./components/log-in');
+var Signup = require('./components/signup');
+var Login = require('./components/login');
 var InitiateResetPass = require('./components/initiate-reset-pass');
 var ResetPass = require('./components/reset-pass');
 var noPage = require('./components/page-not-found');
@@ -60,8 +60,8 @@ function mainApp() {
                 <Route path='pilot/edit/change-pass' component={ PilotChangePass } />
                 <Route path='pilot/edit' component={ PilotEditView } />
                 <Route path='pilot' component={ PilotView } />
-                <Route path='signin' component={ SignIn } />
-                <Route path='login' component={ LogIn } />
+                <Route path='signup' component={ Signup } />
+                <Route path='login' component={ Login } />
                 <Route path='reset-pass/:token' component={ ResetPass } />
                 <Route path='reset-pass' component={ InitiateResetPass } />
                 <Route path='verified' component={ EmailVerified } />

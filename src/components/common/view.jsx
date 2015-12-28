@@ -4,7 +4,7 @@ var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var DataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
-var LogInForm = require('./log-in-form');
+var LoginForm = require('./login-form');
 var Notice = require('./notice');
 var ErrorTypes = require('../../utils/error-types');
 
@@ -65,7 +65,7 @@ var View = React.createClass({
 
     render: function() {
         if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_FAILURE) {
-            return <LogInForm />;
+            return <LoginForm />;
         }
 
         return (

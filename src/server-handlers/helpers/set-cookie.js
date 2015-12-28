@@ -1,9 +1,9 @@
 'use strict';
 
 
-var SetCookie = function(request, id, passwordHash) {
+var SetCookie = function(request, userId, passwordHash) {
     var cookie = {
-        userId: id,
+        userId: userId,
         hash: passwordHash
     };
     request.auth.session.set(cookie);

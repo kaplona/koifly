@@ -13,12 +13,19 @@ var Pilot = require('../orm/pilots');
 sequelize.sync();
 
 
-var LogInHandler = function(request, reply) {
+/**
+ * Searches for a pilot DB record with given email,
+ * compares hash of given password with the one in DB
+ * if success set cookie and reply to client with all pilot's data
+ * @param {object} request
+ * @param {object} reply
+ */
+var LoginHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
     var credentials = JSON.parse(request.payload);
 
-    Pilot.findOne({ where: { email: credentials.email } }).then((pilotRecord) => {
-        if (pilotRecord === null) {
+    Pilot.findOne({ where: { email: credentials.email.toLowerCase() } }).then((pilotRecord) => {
+        if (!pilotRecord || pilotRecord.email !== credentials.email.toLowerCase()) {
             throw new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE);
         }
         pilot = pilotRecord;
@@ -42,4 +49,4 @@ var LogInHandler = function(request, reply) {
 };
 
 
-module.exports = LogInHandler;
+module.exports = LoginHandler;

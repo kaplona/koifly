@@ -12,9 +12,9 @@ var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
 
 
-var LogInForm = React.createClass({
+var LoginForm = React.createClass({
     propTypes: {
-        onLogIn: React.PropTypes.func
+        onLogin: React.PropTypes.func
     },
 
     getInitialState: function() {
@@ -46,16 +46,16 @@ var LogInForm = React.createClass({
             email: this.state.email,
             password: this.state.password
         };
-        DataService.logInPilot(pilotCredentials).then(() => {
-            if (this.props.onLogIn) {
-                this.props.onLogIn();
+        DataService.loginPilot(pilotCredentials).then(() => {
+            if (this.props.onLogin) {
+                this.props.onLogin();
             }
         }).catch((error) => {
             this.handleSavingError(error);
         });
     },
 
-    handleEmailLogIn: function(event) {
+    handleEmailLogin: function(event) {
         if (event) {
             event.preventDefault();
         }
@@ -69,7 +69,7 @@ var LogInForm = React.createClass({
             error: null
         });
 
-        DataService.oneTimeLogIn(this.state.email).then(() => {
+        DataService.oneTimeLogin(this.state.email).then(() => {
             this.setState({
                 isSending: false,
                 isEmailSent: true
@@ -144,11 +144,11 @@ var LogInForm = React.createClass({
 
                     <div>
                         Or you can one time log in just with
-                        <a href='#' onClick={ this.handleEmailLogIn }> your email</a>
+                        <a href='#' onClick={ this.handleEmailLogin }> your email</a>
                     </div>
 
                     <div>
-                        Don't have an account yet? <Link to='/signin'>Sign in</Link>
+                        Don't have an account yet? <Link to='/signup'>Sign up</Link>
                     </div>
                 </form>
             </div>
@@ -157,4 +157,4 @@ var LogInForm = React.createClass({
 });
 
 
-module.exports = LogInForm;
+module.exports = LoginForm;

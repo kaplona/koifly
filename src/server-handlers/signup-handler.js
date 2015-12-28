@@ -14,16 +14,26 @@ var Pilot = require('../orm/pilots');
 sequelize.sync();
 
 
-var SignInHandler = function(request, reply) {
+/**
+ * Creates a new user/pilot in DB with given email and hash of given password,
+ * set cookie,
+ * generates random token, saves it in DB,
+ * send email with verification link to new user's email,
+ * replies with only pilot info since new user doesn't have any other data yet
+ * @param {object} request
+ * @param {object} reply
+ */
+var SignupHandler = function(request, reply) {
     var token = GenerateToken(); // for email verification
     var payload = JSON.parse(request.payload);
 
     BcryptPromise.hash(payload.password).then((hash) => {
         var newPilot = {
+            email: payload.email,
             password: hash,
             token: token,
             tokenExpirationTime: Date.now() + (1000 * 60 * 60 * 24 * 7), // a week starting from now
-            activated: false
+            isActivated: false
         };
         return Pilot.create(newPilot);
     }).then((pilot) => {
@@ -42,4 +52,4 @@ var SignInHandler = function(request, reply) {
 };
 
 
-module.exports = SignInHandler;
+module.exports = SignupHandler;

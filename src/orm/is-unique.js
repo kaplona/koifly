@@ -11,7 +11,8 @@ var isUnique = function(modelFileName, fieldName) {
             var scope = (modelFileName === 'pilots') ? null : 'see';
             // assuming that 'id' is primary key
             var query = { id: { $ne: this.id } };
-            query[fieldName] = value;
+            // emails are stored in lower case in DB
+            query[fieldName] = (fieldName === 'email') ? value.toLowerCase() : value;
 
             Model.scope(scope).findOne({
                 where: query,

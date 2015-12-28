@@ -24,6 +24,9 @@ var Pilot = sequelize.define('pilot', {
     email: {
         type: Sequelize.STRING,
         allowNull: false,
+        set: function(value) {
+            this.setDataValue('email', value.toLowerCase());
+        },
         validate: {
             isEmail: true,
             isUnique: isUnique('pilots', 'email')
@@ -67,7 +70,7 @@ var Pilot = sequelize.define('pilot', {
         allowNull: true,
         defaultValue: null
     },
-    activated: {
+    isActivated: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
         defaultValue: true

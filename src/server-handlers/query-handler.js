@@ -114,7 +114,7 @@ var QueryHandler = function(request, reply) {
         }
 
         if (request.method === 'post') {
-            if (!pilot.activated) {
+            if (!pilot.isActivated) {
                 throw new KoiflyError(ErrorTypes.NOT_ACTIVATED_USER);
             }
 

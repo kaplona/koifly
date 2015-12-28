@@ -11,7 +11,7 @@ var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 
 
-var SignIn = React.createClass({
+var Signup = React.createClass({
 
     mixins: [ History ],
 
@@ -124,4 +124,4 @@ var SignIn = React.createClass({
 });
 
 
-module.exports = SignIn;
+module.exports = Signup;

@@ -18,6 +18,7 @@ var SendToken = function(reply, pilotInfo, emailMessage, path) {
     var token = GenerateToken();
 
     Pilot.findOne({ where: pilotInfo }).then((pilot) => {
+        // TODO (!pilot || pilot.id !== userId)
         if (pilot === null) {
             throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD, 'there is no pilot with provided email');
         }

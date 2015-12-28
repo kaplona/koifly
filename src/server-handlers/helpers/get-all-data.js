@@ -9,7 +9,12 @@ var Site = require('../../orm/sites');
 var Glider = require('../../orm/gliders');
 
 
-
+/**
+ *
+ * @param {array} bdInstances
+ * @returns {array} array of DB records with plain values
+ * or in case of deleted instance just its id and deleted date
+ */
 function takeOnlyPlainValues(bdInstances) {
     return _.map(bdInstances, function(instance) {
         // If instance was deleted
@@ -26,6 +31,14 @@ function takeOnlyPlainValues(bdInstances) {
 }
 
 
+/**
+ *
+ * @param {object} pilot - sequelize DB pilot object
+ * @param {string} dateFrom - DB will be searched for every recorded which was modified after this date
+ * @returns {Promise.<object>} - object with next fields: pilot, flights, sites, gliders, lastModified
+ * lastModified - is the date of last modification in DB
+ * @constructor
+ */
 var GetAllData = function(pilot, dateFrom) {
     // If no dateFrom =>
     // it's first request from the user

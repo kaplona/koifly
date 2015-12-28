@@ -9,6 +9,13 @@ var Pilot = require('../../orm/pilots');
 sequelize.sync();
 
 
+/**
+ * Looks for a pilot in DB with given token
+ * if success clears token info and returns this pilot instance
+ * @param {string} token
+ * @returns {Promise.<pilot>} - sequelize instance of pilot record
+ * @constructor
+ */
 var VerifyEmailToken = function(token) {
     // Find pilot by token
     var whereQuery = {
@@ -18,6 +25,7 @@ var VerifyEmailToken = function(token) {
         }
     };
     return Pilot.findOne({ where: whereQuery }).then((pilot) => {
+        // TODO (!pilot || pilot.id !== userId)
         if (pilot === null) {
             throw new KoiflyError(ErrorTypes.INVALID_TOKEN);
         }
@@ -26,7 +34,7 @@ var VerifyEmailToken = function(token) {
         return pilot.update({
             token: null,
             tokenExpirationTime: null,
-            activated: true
+            isActivated: true
         });
     });
 };

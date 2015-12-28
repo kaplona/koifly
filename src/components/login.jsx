@@ -2,21 +2,21 @@
 
 var React = require('react');
 var History = require('react-router').History;
-var LogInForm = require('./common/log-in-form');
+var LoginForm = require('./common/login-form');
 
 
-var LogIn = React.createClass({
+var Login = React.createClass({
 
     mixins: [ History ],
 
-    handleLogIn: function() {
+    handleLogin: function() {
         this.history.pushState(null, '/');
     },
 
     render: function() {
-        return <LogInForm onLogIn={ this.handleLogIn } />;
+        return <LoginForm onLogin={ this.handleLogin } />;
     }
 });
 
 
-module.exports = LogIn;
+module.exports = Login;

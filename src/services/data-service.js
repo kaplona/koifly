@@ -65,7 +65,7 @@ var DataService = {
     createPilot: function(newPilot) {
         return new Promise((resolve, reject) => {
             ajaxService({
-                url: '/api/signin',
+                url: '/api/signup',
                 method: 'post',
                 data: newPilot,
                 onSuccess: (newPilotInfo) => {
@@ -78,7 +78,7 @@ var DataService = {
         });
     },
 
-    logInPilot: function(newPilot) {
+    loginPilot: function(newPilot) {
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: '/api/login',
@@ -118,7 +118,7 @@ var DataService = {
         });
     },
 
-    oneTimeLogIn: function(email) {
+    oneTimeLogin: function(email) {
         return this.sendVerificationEmail('/api/one-time-login', { email: email });
     },
 
@@ -203,7 +203,7 @@ var DataService = {
         this.data.pilot.initialFlightNum = newPilotInfo.initialFlightNum;
         this.data.pilot.initialAirtime = newPilotInfo.initialAirtime;
         this.data.pilot.altitudeUnit = newPilotInfo.altitudeUnit;
-        this.data.pilot.activated = newPilotInfo.activated;
+        this.data.pilot.isActivated = newPilotInfo.isActivated;
     },
 
     setDataItems: function(newData, dataType) {

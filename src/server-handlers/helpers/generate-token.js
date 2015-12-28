@@ -4,7 +4,9 @@ var crypto = require('crypto');
 
 
 /**
- * @return {string}
+ *
+ * @param {integer} len
+ * @returns {string} string of certain length of random chars (a-z, A-Z, 0-9)
  */
 var GenetateToken = function(len) {
     len = len ? len : 32;
