@@ -55,7 +55,7 @@ server.register(plugins, (err) => {
     server.auth.strategy('session', 'cookie', {
         cookie: 'koifly',
         password: Constants.cookiePassword,
-        ttl: 1000 * 60 * 60 * 24 * 30, // one month
+        ttl: Constants.cookieLifeTime,
         clearInvalid: true,
         redirectTo: false,
         keepAlive: true, // reset expiry date every time
@@ -179,7 +179,8 @@ server.register(plugins, (err) => {
         path: '/email/{token}',
         handler: function(request, reply) {
             VerifyEmailToken(request.params.token).then((user) => {
-                SetCookie(request, user.id, user.password);
+                return SetCookie(request, user.id, user.password);
+            }).then(() => {
                 reply.redirect('/verified');
             }).catch(() => {
                 reply.redirect('/invalid-token');

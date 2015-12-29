@@ -22,14 +22,14 @@ var ResetPassHandler = function(request, reply) {
 
     VerifyEmailToken(payload.token).then((pilotRecord) => {
         pilot = pilotRecord;
-
         // Convert raw user password into hash
         return BcryptPromise.hash(payload.password);
     }).then((hash) => {
         return pilot.update({ password: hash });
-    }).then((pilot) => {
-        SetCookie(request, pilot.id, pilot.password);
-
+    }).then((pilotRecord) => {
+        pilot = pilotRecord;
+        return SetCookie(request, pilot.id, pilot.password);
+    }).then(() => {
         // Password reset was successful
         // Reply with all user's data
         return GetAllData(pilot, null);

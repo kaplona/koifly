@@ -28,6 +28,7 @@ sequelize.sync();
  * @param {function} reply
  */
 var SignupHandler = function(request, reply) {
+    var pilot; // we need it to have reference to current pilot
     var token = GenerateToken(); // for email verification
     var payload = JSON.parse(request.payload);
 
@@ -46,14 +47,16 @@ var SignupHandler = function(request, reply) {
             isActivated: false
         };
         return Pilot.create(newPilot);
-    }).then((pilot) => {
-        // Set cookie with new credentials
-        SetCookie(request, pilot.id, pilot.password);
+    }).then((pilotRecord) => {
+        pilot = pilotRecord;
 
         // Send user email with verification token
         var url = Constants.domain + '/email/' + token;
         SendMail(pilot.email, EmailMessages.EMAIL_VERIFICATION, { url: url });
 
+        // Set cookie with new credentials
+        return SetCookie(request, pilot.id, pilot.password);
+    }).then(() => {
         // Reply with pilot info since it's the only user's data yet
         reply(SanitizePilotInfo(pilot));
     }).catch((err) => {

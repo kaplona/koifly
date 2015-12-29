@@ -61,12 +61,12 @@ var Util = {
     isRightDateFormat: function(date) {
         return (
             date.length === 10 &&
-            date.substring(0, 4) > 1900 &&
-            date.substring(0, 4) < 2099 &&
-            date.substring(5, 7) > 1 &&
-            date.substring(5, 7) < 12 &&
-            date.substring(8) > 1 &&
-            date.substring(8) < 31 &&
+            date.substring(0, 4) >= 1900 &&
+            date.substring(0, 4) <= 2099 &&
+            date.substring(5, 7) >= 1 &&
+            date.substring(5, 7) <= 12 &&
+            date.substring(8) >= 1 &&
+            date.substring(8) <= 31 &&
             date.substring(4, 5) === '-' &&
             date.substring(7, 8) === '-'
         );

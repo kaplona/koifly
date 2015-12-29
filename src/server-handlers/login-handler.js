@@ -43,8 +43,8 @@ var LoginHandler = function(request, reply) {
         error = error ? error : new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE, 'You entered wrong password');
         throw error;
     }).then(() => {
-        SetCookie(request, pilot.id, pilot.password);
-
+        return SetCookie(request, pilot.id, pilot.password);
+    }).then(() => {
         // Log in was successful
         // Reply with all user's data starting from the latest date user has on the front end
         // e.g. if user was logged out due to expiring cookie but still has data in js

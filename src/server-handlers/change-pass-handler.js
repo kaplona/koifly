@@ -55,15 +55,15 @@ var ChangePassHandler = function(request, reply) {
         };
         return pilot.update(newPilotInfo);
     }).then((pilot) => {
-        // Set cookie with new credentials
-        SetCookie(request, pilot.id, pilot.password);
-
         // Send email notification to user
         // so he has opportunity to reset password
         // if it wasn't he who change the pass at the first place
         var url = Constants.domain + '/reset-pass/' + token;
-        SendMail(pilot.email, EmailMessages.PASSWORD_CHANGE, { url: url });
+        SendMail(pilot.email, EmailMessages.PASSWORD_CHANGE, {url: url});
 
+        // Set cookie with new credentials
+        return SetCookie(request, pilot.id, pilot.password);
+    }).then(() => {
         reply(JSON.stringify('success'));
     }).catch((error) => {
         reply({error: NormalizeError(error)});
