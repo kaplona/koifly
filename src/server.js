@@ -189,7 +189,7 @@ server.register(plugins, (err) => {
     });
 
     server.route({
-        method: 'GET',
+        method: 'POST',
         path: '/api/resend-token',
         config: { auth: 'session' },
         handler: function(request, reply) {
@@ -199,7 +199,7 @@ server.register(plugins, (err) => {
     });
 
     server.route({
-        method: 'GET',
+        method: 'POST',
         path: '/api/one-time-login',
         handler: function(request, reply) {
             OneTimeLoginHandler(request, reply);
@@ -207,8 +207,8 @@ server.register(plugins, (err) => {
     });
 
     server.route({
-        method: 'GET',
-        path: '/api/reset-pass',
+        method: 'POST',
+        path: '/api/initiate-reset-pass',
         handler: function(request, reply) {
             InitiateResetPassHandler(request, reply);
         }

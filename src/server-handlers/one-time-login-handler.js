@@ -8,13 +8,15 @@ var ErrorTypes = require('../utils/error-types');
 
 
 var OneTimeLoginHandler = function(request, reply) {
-    // Checks query for required fields
-    if (!request.query.email || !_.isString(JSON.parse(request.query.email))) {
+    var payload = JSON.parse(request.payload);
+
+    // Checks payload for required fields
+    if (!_.isString(payload.email)) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }
     // email is stored in lower case in DB, so as to perform case insensitivity
-    var userCredentials = { email: JSON.parse(request.query.email).toLowerCase() };
+    var userCredentials = { email: payload.email.toLowerCase() };
     SendToken(reply, userCredentials, EmailMessages.ONE_TIME_LOGIN, '/email');
 };
 

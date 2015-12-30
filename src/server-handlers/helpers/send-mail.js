@@ -33,7 +33,6 @@ var SendMail = function(emailAddress, message, templateData) {
                 message.html = message.html.replace(rex, value);
             });
         }
-        console.log('=> email message => ', message.html);
 
         transporter.sendMail(message, (error) => {
             if (error) {

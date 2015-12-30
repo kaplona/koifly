@@ -108,13 +108,13 @@ var DataService = {
         });
     },
 
-    sendVerificationEmail: function(path, params) {
+    sendVerificationEmail: function(path, data) {
         path = path ? path : '/api/resend-token';
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: path,
-                method: 'get',
-                params: params,
+                method: 'post',
+                data: data,
                 onSuccess: resolve,
                 onFailure: reject
             });
@@ -126,7 +126,7 @@ var DataService = {
     },
 
     initiateResetPass: function(email) {
-        return this.sendVerificationEmail('/api/reset-pass', { email: email });
+        return this.sendVerificationEmail('/api/initiate-reset-pass', { email: email });
     },
 
     resetPass: function(newPassword, token) {
