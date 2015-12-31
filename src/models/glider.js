@@ -64,6 +64,12 @@ var GliderModel = {
         }
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {array|null|object} - array of gliders
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getGlidersArray: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -75,6 +81,13 @@ var GliderModel = {
         });
     },
 
+    /**
+     * Prepare data to show to user
+     * @param {number} gliderId
+     * @returns {object|null} - glider
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getGliderOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -99,6 +112,13 @@ var GliderModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @param {number} gliderId
+     * @returns {object|null} - glider
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getGliderEditOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -126,6 +146,12 @@ var GliderModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {object|null} - glider
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getNewGliderOutput: function() {
         return {
             name: '',
@@ -137,6 +163,13 @@ var GliderModel = {
         };
     },
 
+    /**
+     * @param {number} gliderId
+     * @returns {false|null|object}
+     * false - if no errors
+     * null - if no errors but no data neither
+     * error object - if error (either general error or record required by user doesn't exist)
+     */
     checkForLoadingErrors: function(gliderId) {
         // Check for loading errors
         if (DataService.data.loadingError !== null) {
@@ -153,11 +186,22 @@ var GliderModel = {
         return false;
     },
 
+    /**
+     * @param {object} newGlider
+     * @returns {Promise} - if saving was successful or not
+     */
     saveGlider: function(newGlider) {
         newGlider = this.setGliderInput(newGlider);
         return DataService.changeGlider(newGlider);
     },
 
+    /**
+     * Fills empty fields with their defaults
+     * takes only fields that should be send to the server
+     * modifies some values how they should be stored in DB
+     * @param {object} newGlider
+     * @returns {object} - glider ready to send to the server
+     */
     setGliderInput: function(newGlider) {
         // Set default values to empty fields
         newGlider = this.setDefaultValues(newGlider);
@@ -172,6 +216,11 @@ var GliderModel = {
         return glider;
     },
 
+    /**
+     * Walks through new glider and replace all empty values with default ones
+     * @param {object} newGlider
+     * @returns {object} - with replaced empty fields
+     */
     setDefaultValues: function(newGlider) {
         var fieldsToReplace = {};
         _.each(this.formValidationConfig, (config, fieldName) => {
@@ -188,6 +237,10 @@ var GliderModel = {
         return _.extend({}, newGlider, fieldsToReplace);
     },
 
+    /**
+     * @param {number} gliderId
+     * @returns {Promise} - if deleting was successful or not
+     */
     deleteGlider: function(gliderId) {
         return DataService.changeGlider({ id: gliderId, see: 0 });
     },
@@ -196,21 +249,32 @@ var GliderModel = {
         return Object.keys(DataService.data.gliders).length;
     },
 
+    /**
+     * @param {number} id
+     * @returns {string|null} - glider's name or null if no glider with given id
+     */
     getGliderNameById: function(id) {
         return DataService.data.gliders[id] ? DataService.data.gliders[id].name : null;
     },
 
-    // Return last added glider id or null if no data has been added yet
+    /**
+     * @returns {number|null} - id of last created glider or null if no gliders yet
+     */
     getLastAddedId: function() {
         if (_.isEmpty(DataService.data.gliders)) {
             return null;
         }
 
-        return _.min(DataService.data.gliders, (glider) => {
+        var lastAddedGlider = _.min(DataService.data.gliders, (glider) => {
             return glider.createdAt;
         });
+        return lastAddedGlider.id;
     },
 
+    /**
+     * This gliders presentation is needed for dropdowns
+     * @returns {Array} - array of objects where value is glider id, text is site name
+     */
     getGliderValueTextList: function() {
         return _.map(DataService.data.gliders, (glider, gliderId) => {
             return { value: gliderId, text: glider.name };

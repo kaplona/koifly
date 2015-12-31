@@ -53,6 +53,12 @@ var PilotModel = {
         }
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {object|null} - pilot info
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getPilotOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -81,6 +87,12 @@ var PilotModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {object|null} - pilot info
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getPilotEditOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -103,6 +115,12 @@ var PilotModel = {
         };
     },
 
+    /**
+     * @returns {false|null|object}
+     * false - if no errors
+     * null - if no errors but no data neither
+     * error object - if error
+     */
     checkForLoadingErrors: function() {
         // Check for loading errors
         if (DataService.data.loadingError !== null) {
@@ -116,7 +134,23 @@ var PilotModel = {
         return false;
     },
 
+    /**
+     * @param {object} newPilotInfo
+     * @returns {Promise} - if saving was successful or not
+     */
     savePilotInfo: function(newPilotInfo) {
+        newPilotInfo = this.setPilotInput(newPilotInfo);
+        return DataService.changePilotInfo(newPilotInfo);
+    },
+
+    /**
+     * Fills empty fields with their defaults
+     * takes only fields that should be send to the server
+     * modifies some values how they should be stored in DB
+     * @param {object} newPilotInfo
+     * @returns {object} - pilot info ready to send to the server
+     */
+    setPilotInput: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
 
         // Create a pilot only with fields which will be send to the server
@@ -125,9 +159,14 @@ var PilotModel = {
         pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
         pilot.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
         pilot.altitudeUnit = newPilotInfo.altitudeUnit;
-        return DataService.changePilotInfo(pilot);
+        return pilot;
     },
 
+    /**
+     * Walks through new pilot info and replace all empty values with default ones
+     * @param {object} newPilotInfo
+     * @returns {object} - with replaced empty fields
+     */
     setDefaultValues: function(newPilotInfo) {
         var fieldsToReplace = {};
         _.each(this.formValidationConfig, (config, fieldName) => {
@@ -144,6 +183,12 @@ var PilotModel = {
         return _.extend({}, newPilotInfo, fieldsToReplace);
     },
 
+    /**
+     * Takes only old and new password from new pilot info
+     * sends it to the server
+     * @param {object} newPilotInfo
+     * @returns {Promise} - if saving was successful or not
+     */
     changePass: function(newPilotInfo) {
         var passwords = {
             oldPassword: newPilotInfo.password,
@@ -156,6 +201,10 @@ var PilotModel = {
         return this.formValidationConfig;
     },
 
+    /**
+     * @returns {boolean|null} - is pilot confirmed his email,
+     * null - if data hasn't been loaded from the server yet
+     */
     getActivationStatus: function() {
         if (DataService.data.pilot === null) {
             return null;

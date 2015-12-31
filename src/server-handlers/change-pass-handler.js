@@ -20,6 +20,7 @@ sequelize.sync();
  * compares old password given by user with the one in DB
  * saves hash of new password, token info and sends email with notification that password has been changed
  * set cookie with new credentials
+ * replies success or error if the latest occurred
  * @param {object} request
  * @param {function} reply
  */

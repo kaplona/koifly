@@ -8,7 +8,6 @@ var NormalizeError = require('../utils/error-normalize');
 
 
 /**
- *
  * @param {object} request
  * @param {object} session
  * @param {function} callback - accepts (Error|null error, bool isSuccess)

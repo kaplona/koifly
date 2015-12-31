@@ -32,12 +32,10 @@ function takeOnlyPlainValues(bdInstances) {
 
 
 /**
- *
- * @param {object} pilot - sequelize DB pilot object
+ * @param {object} pilot - sequelize pilot instance
  * @param {string} dateFrom - DB will be searched for every recorded which was modified after this date
  * @returns {Promise.<object>} - object with next fields: pilot, flights, sites, gliders, lastModified
  * lastModified - is the date of last modification in DB
- * @constructor
  */
 var GetAllData = function(pilot, dateFrom) {
     // If no dateFrom =>

@@ -56,6 +56,12 @@ var SiteModel = {
         }
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {array|null|object} - array of sites
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getSitesArray: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -67,6 +73,13 @@ var SiteModel = {
         });
     },
 
+    /**
+     * Prepare data to show to user
+     * @param {number} siteId
+     * @returns {object|null} - site
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getSiteOutput: function(siteId) {
         var loadingError = this.checkForLoadingErrors(siteId);
         if (loadingError !== false) {
@@ -96,6 +109,12 @@ var SiteModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {object|null} - site
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getNewSiteOutput: function() {
         return {
             name: '',
@@ -107,6 +126,13 @@ var SiteModel = {
         };
     },
 
+    /**
+     * @param {number} siteId
+     * @returns {false|null|object}
+     * false - if no errors
+     * null - if no errors but no data neither
+     * error object - if error (either general error or record required by user doesn't exist)
+     */
     checkForLoadingErrors: function(siteId) {
         // Check for loading errors
         if (DataService.data.loadingError !== null) {
@@ -123,11 +149,22 @@ var SiteModel = {
         return false;
     },
 
+    /**
+     * @param {object} newSite
+     * @returns {Promise} - if saving was successful or not
+     */
     saveSite: function(newSite) {
         newSite = this.setSiteInput(newSite);
         return DataService.changeSite(newSite);
     },
 
+    /**
+     * Fills empty fields with their defaults
+     * takes only fields that should be send to the server
+     * modifies some values how they should be stored in DB
+     * @param {object} newSite
+     * @returns {object} - site ready to send to the server
+     */
     setSiteInput: function(newSite) {
         // Set default values to empty fields
         newSite = this.setDefaultValues(newSite);
@@ -148,6 +185,11 @@ var SiteModel = {
         return site;
     },
 
+    /**
+     * Walks through new site and replace all empty values with default ones
+     * @param {object} newSite
+     * @returns {object} - with replaced empty fields
+     */
     setDefaultValues: function(newSite) {
         var fieldsToReplace = {};
         _.each(this.formValidationConfig, (config, fieldName) => {
@@ -164,6 +206,10 @@ var SiteModel = {
         return _.extend({}, newSite, fieldsToReplace);
     },
 
+    /**
+     * @param {number} siteId
+     * @returns {Promise} - if deleting was successful or not
+     */
     deleteSite: function(siteId) {
         return DataService.changeSite({ id: siteId, see: 0 });
     },
@@ -172,6 +218,10 @@ var SiteModel = {
         return DataService.data.sites[siteId] ? DataService.data.sites[siteId].coordinates : null;
     },
 
+    /**
+     * @param {object} coordinates - object with latitude and longitude ({ lat: ..., lng: ... })
+     * @returns {string} - string representation of coordinates
+     */
     formCoordinatesOutput: function(coordinates) {
         var outputString = '';
         if (coordinates !== null) {
@@ -180,6 +230,10 @@ var SiteModel = {
         return outputString;
     },
 
+    /**
+     * @param {string} validString - string representation of coordinates
+     * @returns {object} - coordinates object with latitude and longitude ({ lat: ..., lng: ... })
+     */
     formCoordinatesInput: function(validString) {
         if (validString === null) {
             return null;
@@ -193,25 +247,36 @@ var SiteModel = {
         return Object.keys(DataService.data.sites).length;
     },
 
+    /**
+     * @param {number} id
+     * @returns {string|null} - site's name or null if no site with given id
+     */
     getSiteNameById: function(id) {
         return DataService.data.sites[id] ? DataService.data.sites[id].name : null;
     },
 
-    // Return last added site id or null if no data has been added yet
+    /**
+     * @returns {number|null} - id of last created site or null if no sites yet
+     */
     getLastAddedId: function() {
         if (_.isEmpty(DataService.data.sites)) {
             return null;
         }
 
-        return _.min(DataService.data.sites, (site) => {
+        var lastAddedSite = _.min(DataService.data.sites, (site) => {
             return site.createdAt;
         });
+        return lastAddedSite.id;
     },
 
     getLaunchAltitudeById: function(id) {
         return DataService.data.sites[id].launchAltitude;
     },
 
+    /**
+     * This sites presentation is needed for dropdowns
+     * @returns {Array} - array of objects where value is site id, text is site name
+     */
     getSiteValueTextList: function() {
         return _.map(DataService.data.sites, (site, siteId) => {
             return { value: siteId, text: site.name };

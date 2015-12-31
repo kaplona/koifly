@@ -4,6 +4,13 @@
 // mixed solution:
 // http://stackoverflow.com/questions/16356856/sequelize-js-custom-validator-check-for-unique-username-password#answer-19306820
 // https://github.com/sequelize/sequelize/issues/2640#issuecomment-97146477
+
+/**
+ * Checks if value is unique for given model and column
+ * @param {string} modelFileName
+ * @param {string} fieldName
+ * @returns {Function}
+ */
 var isUnique = function(modelFileName, fieldName) {
     return function(value, next) {
         if (value) {

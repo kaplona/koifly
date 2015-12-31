@@ -14,7 +14,7 @@ var FlightModel = {
 
     formValidationConfig: {
         date: {
-            isRequired: true, // TODO
+            isRequired: true,
             method: 'date',
             rules: {
                 field: 'Date'
@@ -65,6 +65,12 @@ var FlightModel = {
         }
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {array|null|object} - array of flights
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getFlightsArray: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -76,6 +82,13 @@ var FlightModel = {
         });
     },
 
+    /**
+     * Prepare data to show to user
+     * @param {number} flightId
+     * @returns {object|null} - flight
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getFlightOutput: function(flightId) {
         var loadingError = this.checkForLoadingErrors(flightId);
         if (loadingError !== false) {
@@ -106,6 +119,13 @@ var FlightModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @param {number} flightId
+     * @returns {object|null} - flight
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getFlightEditOutput: function(flightId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
@@ -139,6 +159,12 @@ var FlightModel = {
         };
     },
 
+    /**
+     * Prepare data to show to user
+     * @returns {object|null} - flight
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
     getNewFlightOutput: function() {
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
@@ -161,6 +187,13 @@ var FlightModel = {
         };
     },
 
+    /**
+     * @param {number} flightId
+     * @returns {false|null|object}
+     * false - if no errors
+     * null - if no errors but no data neither
+     * error object - if error (either general error or record required by user doesn't exist)
+     */
     checkForLoadingErrors: function(flightId) {
         // Check for loading errors
         if (DataService.data.loadingError !== null) {
@@ -177,6 +210,11 @@ var FlightModel = {
         return false;
     },
 
+    /**
+     * Searches for a flight with the latest date
+     * if several flights were on the same date picks the one which was created the last
+     * @returns {object|null} - last flight or null if no flights yet
+     */
     getLastFlight: function() {
         var noFlightsYet = true;
         var lastFlight = {};
@@ -203,11 +241,22 @@ var FlightModel = {
         return noFlightsYet ? null : lastFlight;
     },
 
+    /**
+     * @param {object} newFlight
+     * @returns {Promise} - if saving was successful or not
+     */
     saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
         return DataService.changeFlight(newFlight);
     },
 
+    /**
+     * Fills empty fields with their defaults
+     * takes only fields that should be send to the server
+     * modifies some values how they should be stored in DB
+     * @param {object} newFlight
+     * @returns {object} - flight ready to send to the server
+     */
     setFlightInput: function(newFlight) {
         // Set default values to empty fields
         newFlight = this.setDefaultValues(newFlight);
@@ -229,6 +278,11 @@ var FlightModel = {
         return flight;
     },
 
+    /**
+     * Walks through new flight and replace all empty values with default ones
+     * @param {object} newFlight
+     * @returns {object} - with replaced empty fields
+     */
     setDefaultValues: function(newFlight) {
         var fieldsToReplace = {};
         _.each(this.formValidationConfig, (config, fieldName) => {
@@ -245,13 +299,16 @@ var FlightModel = {
         return _.extend({}, newFlight, fieldsToReplace);
     },
 
+    /**
+     * @param {number} flightId
+     * @returns {Promise} - if deleting was successful or not
+     */
     deleteFlight: function(flightId) {
         return DataService.changeFlight({ id: flightId, see: 0 });
     },
 
 
     /**
-     * Gets altitude above launch in pilot's altitude units
      * @param {number|null} siteId
      * @param {number} flightAltitude in meters
      * @returns {number} altitude above launch in pilot's altitude units
@@ -262,6 +319,9 @@ var FlightModel = {
         return Altitude.getAltitudeInPilotUnits(altitudeDiff);
     },
 
+    /**
+     * @returns {string|null} - date of the last flight or null if no flights yet
+     */
     getLastFlightDate: function() {
         var lastFlight = this.getLastFlight();
         return (lastFlight !== null) ? lastFlight.date : null;
@@ -271,6 +331,10 @@ var FlightModel = {
         return Object.keys(DataService.data.flights).length;
     },
 
+    /**
+     * @param {number|string} gliderId
+     * @returns {number} - number of flights for given glider recorded in App
+     */
     getNumberOfFlightsOnGlider: function(gliderId) {
         gliderId = parseInt(gliderId);
         var numberOfFlights = 0;
@@ -282,6 +346,9 @@ var FlightModel = {
         return numberOfFlights;
     },
 
+    /**
+     * @returns {number} - number of sites for which pilot has flight record in App
+     */
     getNumberOfVisitedSites: function() {
         var sitesVisited = [];
         _.each(DataService.data.flights, (flight) => {
@@ -294,10 +361,17 @@ var FlightModel = {
         return sitesVisited.length;
     },
 
+    /**
+     * @returns {number} - airtime of all flights recorded in App
+     */
     getTotalAirtime: function() {
         return _.sum(DataService.data.flights, 'airtime');
     },
 
+    /**
+     * @param {number|string} gliderId
+     * @returns {number} - airtime for given glider recorded in App
+     */
     getGliderAirtime: function(gliderId) {
         gliderId = parseInt(gliderId);
         return _.sum(DataService.data.flights, (flight) => {

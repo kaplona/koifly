@@ -4,7 +4,6 @@ var crypto = require('crypto');
 
 
 /**
- *
  * @param {integer} len
  * @returns {string} string of certain length of random chars (a-z, A-Z, 0-9)
  */

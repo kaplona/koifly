@@ -10,6 +10,14 @@ var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 
 
+/**
+ * Verifies token received from client
+ * save new password hash in DB
+ * sets cookie with new credentials
+ * replies with all user's data or error it the latest occurred
+ * @param {object} request
+ * @param {function} reply
+ */
 var ResetPassHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
     var payload = JSON.parse(request.payload);

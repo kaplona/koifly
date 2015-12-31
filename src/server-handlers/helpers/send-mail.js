@@ -7,7 +7,6 @@ var Constants = require('../../utils/constants');
 
 
 /**
- *
  * @param {string} emailAddress
  * @param {object} message - email message options: from, subject, text, html
  * @param {object} templateData - if provided this path will be added to email text as a link (usually it's link with a token)

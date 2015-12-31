@@ -7,8 +7,12 @@ var ErrorTypes = require('../utils/error-types');
 
 var ajaxTimeout = 6000;
 
-// options properties: url, method (get or post), params (for get request), data (for post request),
-// onSuccess, onFailure (functions triggered on certain events)
+/**
+ * Sends Ajax requests to the server,
+ * options properties: url, method (get or post), params (for get request), data (for post request),
+ * onSuccess, onFailure (functions triggered on certain events)
+ * @param {object} options
+ */
 var AjaxService = function(options) {
     var ajaxRequest = new XMLHttpRequest();
     ajaxRequest.timeout = ajaxTimeout;

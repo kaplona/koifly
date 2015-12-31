@@ -2,7 +2,6 @@
 
 
 /**
- *
  * @param {object} pilot - sequelize instance of pilot record
  * @returns {object} - pilot information which front end needs
  */
