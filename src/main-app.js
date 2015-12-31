@@ -62,7 +62,7 @@ function mainApp() {
                 <Route path='pilot' component={ PilotView } />
                 <Route path='signup' component={ Signup } />
                 <Route path='login' component={ Login } />
-                <Route path='reset-pass/:token' component={ ResetPass } />
+                <Route path='reset-pass/:pilotId/:token' component={ ResetPass } />
                 <Route path='reset-pass' component={ InitiateResetPass } />
                 <Route path='verified' component={ EmailVerified } />
                 <Route path='invalid-token' component={ InvalidToken } />

@@ -15,12 +15,15 @@ var ResetPassHandler = function(request, reply) {
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
-    if (!_.isString(payload.token) || !_.isString(payload.password)) {
+    if (!_.isString(payload.pilotId) ||
+        !_.isString(payload.token) ||
+        !_.isString(payload.password)
+    ) {
         reply({ error: new KoiflyError(ErrorTypes.RETRIEVING_FAILURE) });
         return;
     }
 
-    VerifyEmailToken(payload.token).then((pilotRecord) => {
+    VerifyEmailToken(payload.pilotId, payload.token).then((pilotRecord) => {
         pilot = pilotRecord;
         // Convert raw user password into hash
         return BcryptPromise.hash(payload.password);

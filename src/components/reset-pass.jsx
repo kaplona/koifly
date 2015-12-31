@@ -14,6 +14,7 @@ var ResetPass = React.createClass({
 
     propTypes: {
         params: React.PropTypes.shape({
+            pilotId: React.PropTypes.string.isRequired,
             token: React.PropTypes.string.isRequired
         })
     },
@@ -41,7 +42,10 @@ var ResetPass = React.createClass({
                 error: null
             });
 
-            DataService.resetPass(this.state.password, this.props.params.token).then(() => {
+            var password = this.state.password;
+            var pilotId = this.props.params.pilotId;
+            var token = this.props.params.token;
+            DataService.resetPass(password, pilotId, token).then(() => {
                 this.setState({ successNotice: true });
             }).catch((error) => {
                 this.handleSavingError(error);

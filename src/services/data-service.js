@@ -129,13 +129,14 @@ var DataService = {
         return this.sendVerificationEmail('/api/initiate-reset-pass', { email: email });
     },
 
-    resetPass: function(newPassword, token) {
+    resetPass: function(newPassword, pilotId, token) {
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: '/api/reset-pass',
                 method: 'post',
                 data: {
                     password: newPassword,
+                    pilotId: pilotId,
                     token: token
                 },
                 onSuccess: (serverResponse) => {

@@ -176,9 +176,9 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'GET',
-        path: '/email/{token}',
+        path: '/email/{pilotId}/{token}',
         handler: function(request, reply) {
-            VerifyEmailToken(request.params.token).then((user) => {
+            VerifyEmailToken(request.params.pilotId, request.params.token).then((user) => {
                 return SetCookie(request, user.id, user.password);
             }).then(() => {
                 reply.redirect('/verified');
