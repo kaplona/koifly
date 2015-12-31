@@ -17,7 +17,6 @@ var ChangePassHandler = require('./server-handlers/change-pass-handler');
 var ResendTokenHandler = require('./server-handlers/resend-token-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
 var VerifyEmailToken = require('./server-handlers/helpers/verify-email-token');
-var SendToken = require('./server-handlers/helpers/send-token');
 var EmailMessages = require('./server-handlers/helpers/email-messages');
 var Constants = require('./utils/constants');
 
@@ -118,7 +117,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/{path*}',
         handler: {
-            view: 'app' // app.jsx in /views
+            view: 'app' // app.jsx in /server-views
         }
     });
 
@@ -181,7 +180,7 @@ server.register(plugins, (err) => {
             VerifyEmailToken(request.params.pilotId, request.params.token).then((user) => {
                 return SetCookie(request, user.id, user.password);
             }).then(() => {
-                reply.redirect('/verified');
+                reply.view('app');
             }).catch(() => {
                 reply.redirect('/invalid-token');
             });

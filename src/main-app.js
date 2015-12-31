@@ -64,7 +64,7 @@ function mainApp() {
                 <Route path='login' component={ Login } />
                 <Route path='reset-pass/:pilotId/:token' component={ ResetPass } />
                 <Route path='reset-pass' component={ InitiateResetPass } />
-                <Route path='verified' component={ EmailVerified } />
+                <Route path='email/:pilotId/:token' component={ EmailVerified } />
                 <Route path='invalid-token' component={ InvalidToken } />
                 <Route path='*' component={ noPage }/>
             </Route>
