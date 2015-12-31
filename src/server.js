@@ -12,11 +12,11 @@ var CheckCookie = require('./server-handlers/check-cookie');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignupHandler = require('./server-handlers/signup-handler');
 var LoginHandler = require('./server-handlers/login-handler');
-var OneTimeLoginHandler = require('./server-handlers/one-time-login-handler');
+var SendTokenToEmailHandler = require('./server-handlers/send-token-handler');
 var ChangePassHandler = require('./server-handlers/change-pass-handler');
-var InitiateResetPassHandler = require('./server-handlers/initiate-reset-pass-handler');
+var ResendTokenHandler = require('./server-handlers/resend-token-handler');
 var ResetPassHandler= require('./server-handlers/reset-pass-handler');
-var VerifyEmailToken = require('./server-handlers/helpers/verify-email');
+var VerifyEmailToken = require('./server-handlers/helpers/verify-email-token');
 var SendToken = require('./server-handlers/helpers/send-token');
 var EmailMessages = require('./server-handlers/helpers/email-messages');
 var Constants = require('./utils/constants');
@@ -193,8 +193,7 @@ server.register(plugins, (err) => {
         path: '/api/resend-token',
         config: { auth: 'session' },
         handler: function(request, reply) {
-            var userCredentials = { id: request.auth.credentials.userId };
-            SendToken(reply, userCredentials, EmailMessages.EMAIL_VERIFICATION, '/email');
+            ResendTokenHandler(request, reply);
         }
     });
 
@@ -202,7 +201,7 @@ server.register(plugins, (err) => {
         method: 'POST',
         path: '/api/one-time-login',
         handler: function(request, reply) {
-            OneTimeLoginHandler(request, reply);
+            SendTokenToEmailHandler(EmailMessages.ONE_TIME_LOGIN, '/email', request, reply);
         }
     });
 
@@ -210,7 +209,7 @@ server.register(plugins, (err) => {
         method: 'POST',
         path: '/api/initiate-reset-pass',
         handler: function(request, reply) {
-            InitiateResetPassHandler(request, reply);
+            SendTokenToEmailHandler(EmailMessages.PASSWORD_RESET, '/reset-pass', request, reply);
         }
     });
 

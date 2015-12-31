@@ -3,8 +3,7 @@
 var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
 var BcryptPromise = require('../utils/bcrypt-promise');
-var GenerateToken = require('./helpers/generate-token');
-var SendMail = require('./helpers/send-mail');
+var SendTokenToPilot = require('./helpers/send-token');
 var EmailMessages = require('./helpers/email-messages');
 var SetCookie = require('./helpers/set-cookie');
 var KoiflyError = require('../utils/error');
@@ -12,7 +11,6 @@ var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 var SanitizePilotInfo = require('./helpers/sanitize-pilot-info');
 var Pilot = require('../orm/pilots');
-var Constants = require('../utils/constants');
 
 
 sequelize.sync();
@@ -29,7 +27,6 @@ sequelize.sync();
  */
 var SignupHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
-    var token = GenerateToken(); // for email verification
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
@@ -42,20 +39,16 @@ var SignupHandler = function(request, reply) {
         var newPilot = {
             email: payload.email,
             password: hash,
-            token: token,
-            tokenExpirationTime: Date.now() + (1000 * 60 * 60 * 24 * 7), // a week starting from now
             isActivated: false
         };
         return Pilot.create(newPilot);
     }).then((pilotRecord) => {
         pilot = pilotRecord;
-
-        // Send user email with verification token
-        var url = Constants.domain + '/email/' + token;
-        SendMail(pilot.email, EmailMessages.EMAIL_VERIFICATION, { url: url });
-
         // Set cookie with new credentials
         return SetCookie(request, pilot.id, pilot.password);
+    }).then(() => {
+        // Send user email with verification token
+        return SendTokenToPilot(pilot, EmailMessages.EMAIL_VERIFICATION, '/email/');
     }).then(() => {
         // Reply with pilot info since it's the only user's data yet
         reply(SanitizePilotInfo(pilot));

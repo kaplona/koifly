@@ -2,13 +2,13 @@
 
 var _ = require('lodash');
 var sequelize = require('../orm/sequelize');
+var Pilot = require('../orm/pilots');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var SetCookie = require('./helpers/set-cookie');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
 var GetAllData = require('./helpers/get-all-data');
-var Pilot = require('../orm/pilots');
 
 
 sequelize.sync();

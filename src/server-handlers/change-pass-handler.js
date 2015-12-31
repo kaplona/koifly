@@ -5,13 +5,11 @@ var sequelize = require('../orm/sequelize');
 var Pilot = require('../orm/pilots');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var SetCookie = require('./helpers/set-cookie');
-var GenerateToken = require('./helpers/generate-token');
-var SendMail = require('./helpers/send-mail');
+var SendTokenToPilot = require('./helpers/send-token');
 var EmailMessages = require('./helpers/email-messages');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
-var Constants = require('../utils/constants');
 
 
 sequelize.sync();
@@ -27,7 +25,6 @@ sequelize.sync();
  */
 var ChangePassHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
-    var token = GenerateToken(); // for email notification
     var payload = JSON.parse(request.payload);
 
     // Checks payload for required fields
@@ -44,29 +41,24 @@ var ChangePassHandler = function(request, reply) {
         error = error ? error : new KoiflyError(ErrorTypes.SAVING_FAILURE, 'You entered wrong password');
         throw error;
     }).then(() => {
+        // Generate hash from new password
         return BcryptPromise.hash(payload.newPassword);
     }).then((hash) => {
         // Change password hash in DB
-        // and set token in order to send user email notification
-        var newPilotInfo = {
-            password: hash,
-            token: token,
-            tokenExpirationTime: Date.now() + (1000 * 60 * 60) // an hour starting from now
-        };
-        return pilot.update(newPilotInfo);
-    }).then((pilot) => {
+        return pilot.update({ password: hash });
+    }).then((pilotRecord) => {
+        pilot = pilotRecord;
         // Send email notification to user
         // so he has opportunity to reset password
         // if it wasn't he who change the pass at the first place
-        var url = Constants.domain + '/reset-pass/' + token;
-        SendMail(pilot.email, EmailMessages.PASSWORD_CHANGE, {url: url});
-
+        return SendTokenToPilot(pilot, EmailMessages.PASSWORD_CHANGE, '/reset-pass/');
+    }).then(() => {
         // Set cookie with new credentials
         return SetCookie(request, pilot.id, pilot.password);
     }).then(() => {
         reply(JSON.stringify('success'));
     }).catch((error) => {
-        reply({error: NormalizeError(error)});
+        reply({ error: NormalizeError(error) });
     });
 };
 

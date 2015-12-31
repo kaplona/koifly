@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash');
-var VerifyEmailToken = require('./helpers/verify-email');
+var VerifyEmailToken = require('./helpers/verify-email-token');
 var BcryptPromise = require('../utils/bcrypt-promise');
 var SetCookie = require('./helpers/set-cookie');
 var GetAllData = require('./helpers/get-all-data');
