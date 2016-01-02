@@ -120,7 +120,7 @@ var LoginForm = React.createClass({
                 { this.renderNotice() }
                 { this.renderError() }
                 <div className='container__subtitle'>Please, Log in</div>
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <TextInput
                         inputValue={ this.state.email }
                         labelText='Email:'
@@ -135,7 +135,7 @@ var LoginForm = React.createClass({
                         onChange={ this.handleInputChange }
                         />
 
-                    <Button type='submit' active={ !this.state.isSending }>
+                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSending }>
                         { this.state.isSending ? 'Sending...' : 'Log in' }
                     </Button>
 

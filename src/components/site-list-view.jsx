@@ -106,7 +106,7 @@ var SiteListView = React.createClass({
                     onRowClick={ this.handleRowClick }
                     />
                 { this.renderLoader() }
-                <Link to='/site/0/edit'><Button>Add Site</Button></Link>
+                <Button onClick={ this.handleSiteAdding }>Add Site</Button>
             </View>
         );
     }

@@ -1,9 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
-var History = ReactRouter.History;
+var History = require('react-router').History;
 var Util = require('../utils/util');
 var GliderModel = require('../models/glider');
 var View = require('./common/view');
@@ -26,6 +24,10 @@ var GliderListView = React.createClass({
 
     handleGliderAdding: function() {
         this.history.pushState(null, '/glider/0/edit');
+    },
+
+    handleGliderEditing: function(gliderId) {
+        this.history.pushState(null, '/glider/' + gliderId + '/edit');
     },
 
     handleDataModified: function() {
@@ -75,7 +77,13 @@ var GliderListView = React.createClass({
                         <div>Total Airtime: { Util.hoursMinutes(glider.trueAirtime) }</div>
                     </div>
                     <div>{ glider.remarks }</div>
-                    <Link to={ '/glider/' + glider.id + '/edit' }><Button>Edit</Button></Link>
+                    <Button
+                        onClick={ () => {
+                            this.handleGliderEditing(glider.id);
+                        } }
+                        >
+                        Edit
+                    </Button>
                 </div>
             );
         });

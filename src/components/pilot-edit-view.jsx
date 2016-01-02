@@ -143,7 +143,7 @@ var PilotEditView = React.createClass({
             <View onDataModified={ this.handleDataModified }>
                 <Loader />
                 <div className='button__menu'>
-                    <Button active={ false }>Save</Button>
+                    <Button isEnabled={ false }>Save</Button>
                     <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
             </View>
@@ -151,13 +151,13 @@ var PilotEditView = React.createClass({
     },
 
     renderButtonMenu: function() {
-        var isActive = !this.state.isSaving;
+        var isEnabled = !this.state.isSaving;
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ isActive }>
+                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
                     { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
-                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
                     Cancel
                 </Button>
             </div>
@@ -179,7 +179,7 @@ var PilotEditView = React.createClass({
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
                 { this.renderSavingError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
 
                     <div className='container__title'>{ this.state.pilot.email }</div>
 

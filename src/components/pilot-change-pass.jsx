@@ -108,13 +108,13 @@ var PilotChangePass = React.createClass({
             return <Notice text='Your password was successfully changed' type='success' />;
         }
 
-        var isSavingButtonActive = this.state.isUserActivated && !this.state.isSaving;
+        var isSavingButtonEnabled = this.state.isUserActivated && !this.state.isSaving;
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.error }>
                 { this.renderEmailVerificationNotice() }
                 { this.renderError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <PasswordInput
                         inputValue={ this.state.password }
                         labelText='Old Password:'
@@ -136,7 +136,11 @@ var PilotChangePass = React.createClass({
                         onChange={ this.handleInputChange }
                         />
 
-                    <Button type='submit' active={ isSavingButtonActive }>
+                    <Button
+                        type='submit'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ isSavingButtonEnabled }
+                        >
                         { this.state.isSaving ? 'Saving ...' : 'Save' }
                     </Button>
 

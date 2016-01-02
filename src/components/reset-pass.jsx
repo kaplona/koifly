@@ -92,7 +92,7 @@ var ResetPass = React.createClass({
         return (
             <div>
                 { this.renderError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <PasswordInput
                         inputValue={ this.state.password }
                         labelText='New Password:'
@@ -107,7 +107,7 @@ var ResetPass = React.createClass({
                         onChange={ this.handleInputChange }
                         />
 
-                    <Button type='submit' active={ !this.state.isSaving }>
+                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSaving }>
                         { this.state.isSaving ? 'Saving ...' : 'Save' }
                     </Button>
                 </form>

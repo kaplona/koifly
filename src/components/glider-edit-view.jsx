@@ -185,13 +185,13 @@ var GliderEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.gliderId) ? <Button active={ false }>Delete</Button> : '';
+        var deleteButton = (this.props.params.gliderId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
                 <Link to='/gliders'>Back to Gliders</Link>
                 <Loader />
                 <div className='button__menu'>
-                    <Button active={ false }>Save</Button>
+                    <Button isEnabled={ false }>Save</Button>
                     { deleteButton }
                     <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
@@ -201,11 +201,11 @@ var GliderEditView = React.createClass({
 
     renderDeleteButton: function() {
         if (this.props.params.gliderId) {
-            var isActive = (!this.state.isSaving && !this.state.isDeleting);
+            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
                 <Button
                     onClick={ this.handleDeleteGlider }
-                    active={ isActive }
+                    isEnabled={ isEnabled }
                     >
                     { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
                 </Button>
@@ -214,14 +214,14 @@ var GliderEditView = React.createClass({
     },
 
     renderButtonMenu: function() {
-        var isActive = (!this.state.isSaving && !this.state.isDeleting);
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ isActive }>
+                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
                     { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
                 { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
                     Cancel
                 </Button>
             </div>
@@ -244,7 +244,7 @@ var GliderEditView = React.createClass({
                 <Link to='/gliders'>Back to Gliders</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <TextInput
                         inputValue={ this.state.glider.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }

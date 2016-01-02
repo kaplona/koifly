@@ -202,13 +202,13 @@ var SiteEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.siteId) ? <Button active={ false }>Delete</Button> : '';
+        var deleteButton = (this.props.params.siteId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Sites</Link>
                 <Loader />
                 <div className='button__menu'>
-                    <Button active={ false }>Save</Button>
+                    <Button isEnabled={ false }>Save</Button>
                     { deleteButton }
                     <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
@@ -218,9 +218,9 @@ var SiteEditView = React.createClass({
 
     renderDeleteButton: function() {
         if (this.props.params.siteId) {
-            var isActive = (!this.state.isSaving && !this.state.isDeleting);
+            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button onClick={ this.handleDeleteSite } active={ isActive }>
+                <Button onClick={ this.handleDeleteSite } isEnabled={ isEnabled }>
                     { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
                 </Button>
             );
@@ -228,14 +228,14 @@ var SiteEditView = React.createClass({
     },
 
     renderButtonMenu: function() {
-        var isActive = (!this.state.isSaving && !this.state.isDeleting);
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ isActive }>
+                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
                     { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
                 { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
                     Cancel
                 </Button>
             </div>
@@ -287,7 +287,7 @@ var SiteEditView = React.createClass({
                 <Link to='/sites'>Back to Sites</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <TextInput
                         inputValue={ this.state.site.name }
                         labelText={ <span>Name<sup>*</sup>:</span> }

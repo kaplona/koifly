@@ -87,7 +87,7 @@ input, textarea, select {
     box-sizing: border-box;
 }
 
-    .button--disabled {
+    .button:disabled {
         background-color: #81BCF7;
     }
 

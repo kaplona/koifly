@@ -196,13 +196,13 @@ var FlightEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.flightId) ? <Button active={ false }>Delete</Button> : '';
+        var deleteButton = (this.props.params.flightId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
                 <Link to='/flights'>Back to Flights</Link>
                 <Loader />
                 <div className='button__menu'>
-                    <Button active={ false }>Save</Button>
+                    <Button isEnabled={ false }>Save</Button>
                     { deleteButton }
                     <Button onClick={ this.handleCancelEditing }>Cancel</Button>
                 </div>
@@ -212,9 +212,9 @@ var FlightEditView = React.createClass({
 
     renderDeleteButton: function() {
         if (this.props.params.flightId) {
-            var isActive = (!this.state.isSaving && !this.state.isDeleting);
+            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button onClick={ this.handleDeleteFlight } active={ isActive }>
+                <Button onClick={ this.handleDeleteFlight } isEnabled={ isEnabled }>
                     { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
                 </Button>
             );
@@ -222,14 +222,14 @@ var FlightEditView = React.createClass({
     },
 
     renderButtonMenu: function() {
-        var isActive = (!this.state.isSaving && !this.state.isDeleting);
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <div className='button__menu'>
-                <Button type='submit' active={ isActive }>
+                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
                     { this.state.isSaving ? 'Saving ...' : 'Save' }
                 </Button>
                 { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } active={ isActive }>
+                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
                     Cancel
                 </Button>
             </div>
@@ -254,7 +254,7 @@ var FlightEditView = React.createClass({
                 <Link to='/flights'>Back to Flights</Link>
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <TextInput
                         inputValue={ this.state.flight.date }
                         labelText={ <span>Date<sup>*</sup>:</span> }

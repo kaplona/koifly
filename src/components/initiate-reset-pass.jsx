@@ -74,7 +74,7 @@ var InitiateResetPass = React.createClass({
             <div>
                 { this.renderNotice() }
                 { this.renderError() }
-                <form onSubmit={ this.handleSubmit }>
+                <form>
                     <TextInput
                         inputValue={ this.state.email }
                         labelText='Email:'
@@ -82,7 +82,7 @@ var InitiateResetPass = React.createClass({
                         onChange={ this.handleInputChange }
                         />
 
-                    <Button type='submit' active={ !this.state.isSending }>
+                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSending }>
                         { this.state.isSending ? 'Sending...' : 'Send' }
                     </Button>
                 </form>

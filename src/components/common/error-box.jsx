@@ -23,7 +23,7 @@ var ErrorView = React.createClass({
             return (
                 <Button
                     onClick={ this.props.onTryAgain }
-                    active={ !this.props.isTrying }
+                    isEnabled={ !this.props.isTrying }
                     >
                     { this.props.isTrying ? 'Trying ...' : 'Try Again' }
                 </Button>

@@ -1,7 +1,9 @@
 'use strict';
 
 var React = require('react');
-var Link = require('react-router').Link;
+var ReactRouter = require('react-router');
+var History = ReactRouter.History;
+var Link = ReactRouter.Link;
 var SiteModel = require('../models/site');
 var View = require('./common/view');
 var StaticMap = require('./common/static-map');
@@ -12,11 +14,17 @@ var ErrorBox = require('./common/error-box');
 
 var SiteListMapView = React.createClass({
 
+    mixins: [ History ],
+
     getInitialState: function() {
         return {
             sites: null,
             loadingError: null
         };
+    },
+
+    handleSiteAdding: function() {
+        this.history.pushState(null, '/site/0/edit');
     },
 
     handleDataModified: function() {
@@ -53,7 +61,7 @@ var SiteListMapView = React.createClass({
             <View onDataModified={ this.handleDataModified }>
                 <Link to='/sites'>Back to Site List</Link>
                 { this.renderMap() }
-                <Link to='/site/0/edit'><Button>Add Site</Button></Link>
+                <Button onClick={ this.handleSiteAdding }>Add Site</Button>
             </View>
         );
     }
