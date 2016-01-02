@@ -6,6 +6,7 @@ var PilotModel = require('../models/pilot');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var View = require('./common/view');
+var EmailVerificationNotice = require('./common/email-verification-notice');
 var PasswordInput = require('./common/password-input');
 var Button = require('./common/button');
 var ErrorBox = require('./common/error-box');
@@ -21,8 +22,13 @@ var PilotChangePass = React.createClass({
             passwordConfirm: null,
             error: null,
             isSaving: false,
-            successNotice: false
+            successNotice: false,
+            isUserActivated: PilotModel.getUserActivationStatus()
         };
+    },
+
+    componentWillMount: function() {
+        PilotModel.hideActivationNotice();
     },
 
     handleSubmit: function(event) {
@@ -59,6 +65,11 @@ var PilotChangePass = React.createClass({
         });
     },
 
+    handleDataModified: function() {
+        PilotModel.hideActivationNotice();
+        this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
+    },
+
     validateForm: function() {
         if (this.state.password === null && this.state.password.trim() === '' ||
             this.state.newPassword === null && this.state.newPassword.trim() === ''
@@ -73,6 +84,18 @@ var PilotChangePass = React.createClass({
         return true;
     },
 
+    renderEmailVerificationNotice: function() {
+        // false comparison because isUserActivated can be null if no pilot info in front end yet
+        if (this.state.isUserActivated === false) {
+            var noticeText = [
+                'You need to verify your email before changing your password.',
+                'Follow the link we sent you.'
+            ].join(' ');
+
+            return <EmailVerificationNotice text={ noticeText } />;
+        }
+    },
+
     renderError: function() {
         if (this.state.error !== null) {
             return <ErrorBox error={ this.state.error } />;
@@ -85,8 +108,11 @@ var PilotChangePass = React.createClass({
             return <Notice text='Your password was successfully changed' type='success' />;
         }
 
+        var isSavingButtonActive = this.state.isUserActivated && !this.state.isSaving;
+
         return (
-            <View error={ this.state.error }>
+            <View onDataModified={ this.handleDataModified } error={ this.state.error }>
+                { this.renderEmailVerificationNotice() }
                 { this.renderError() }
                 <form onSubmit={ this.handleSubmit }>
                     <PasswordInput
@@ -110,7 +136,7 @@ var PilotChangePass = React.createClass({
                         onChange={ this.handleInputChange }
                         />
 
-                    <Button type='submit' active={ !this.state.isSaving }>
+                    <Button type='submit' active={ isSavingButtonActive }>
                         { this.state.isSaving ? 'Saving ...' : 'Save' }
                     </Button>
 

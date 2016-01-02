@@ -7,7 +7,7 @@ var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
 
-//var DataService = require('./services/data-service');
+var DataService = require('./services/data-service');
 
 var createBrowserHistory = require('history/lib/createBrowserHistory');
 var Home = require('./components/home');
@@ -39,7 +39,7 @@ require('./components/koifly.css');
 
 function mainApp() {
     //Test.runTests();
-    //DataService.loadData();
+    DataService.loadData();
 
     React.render((
         <Router history={ createBrowserHistory() }>

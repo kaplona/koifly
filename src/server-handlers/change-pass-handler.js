@@ -36,6 +36,10 @@ var ChangePassHandler = function(request, reply) {
 
     Pilot.findById(request.auth.credentials.userId).then((pilotRecord) => {
         pilot = pilotRecord;
+        // User can't change password if he didn't verified his email address
+        if (!pilot.isActivated) {
+            throw new KoiflyError(ErrorTypes.NOT_ACTIVATED_USER);
+        }
         // Compare password provided by user with the one we have in DB
         return BcryptPromise.compare(payload.oldPassword, pilot.password);
     }).catch((error) => {

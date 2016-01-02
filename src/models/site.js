@@ -263,8 +263,8 @@ var SiteModel = {
             return null;
         }
 
-        var lastAddedSite = _.min(DataService.data.sites, (site) => {
-            return site.createdAt;
+        var lastAddedSite = _.max(DataService.data.sites, (site) => {
+            return Date.parse(site.createdAt);
         });
         return lastAddedSite.id;
     },

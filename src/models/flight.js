@@ -174,6 +174,7 @@ var FlightModel = {
                 gliderId: GliderModel.getLastAddedId() // null if no data has been added yet
             };
         }
+
         return {
             date: Util.today(),
             siteId: lastFlight.siteId, // null if no sites yet otherwise last added site id

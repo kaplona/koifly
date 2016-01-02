@@ -265,8 +265,8 @@ var GliderModel = {
             return null;
         }
 
-        var lastAddedGlider = _.min(DataService.data.gliders, (glider) => {
-            return glider.createdAt;
+        var lastAddedGlider = _.max(DataService.data.gliders, (glider) => {
+            return Date.parse(glider.createdAt);
         });
         return lastAddedGlider.id;
     },

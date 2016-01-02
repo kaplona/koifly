@@ -8,7 +8,8 @@ var Notice = React.createClass({
         text: React.PropTypes.string.isRequired,
         type: React.PropTypes.string,
         onClick: React.PropTypes.func,
-        buttonText: React.PropTypes.string
+        buttonText: React.PropTypes.string,
+        onClose: React.PropTypes.func
     },
 
     handleClick: function(event) {
@@ -18,6 +19,13 @@ var Notice = React.createClass({
         this.props.onClick();
     },
 
+    handleClose: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.props.onClose();
+    },
+
     renderButton: function() {
         if (this.props.onClick) {
             return (
@@ -25,6 +33,12 @@ var Notice = React.createClass({
                     { this.props.buttonText }
                 </a>
             );
+        }
+    },
+
+    renderCloseButton: function() {
+        if (this.props.onClose) {
+            return <a href='#' onClick={ this.handleClose }> Close</a>;
         }
     },
 
@@ -38,6 +52,7 @@ var Notice = React.createClass({
             <div className={ className }>
                 { this.props.text }
                 { this.renderButton() }
+                { this.renderCloseButton() }
             </div>
         );
     }

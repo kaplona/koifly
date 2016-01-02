@@ -202,14 +202,33 @@ var PilotModel = {
     },
 
     /**
-     * @returns {boolean|null} - is pilot confirmed his email,
-     * null - if data hasn't been loaded from the server yet
+     * @returns {boolean|null} - is pilot's email was verified,
+     * null - if no information about pilot yet
      */
-    getActivationStatus: function() {
+    getUserActivationStatus: function() {
         if (DataService.data.pilot === null) {
             return null;
         }
         return DataService.data.pilot.isActivated;
+    },
+
+    /**
+     * @returns {boolean|null} - if show pilot notification about verifying his email,
+     * true - if pilot didn't confirmed his email
+     * false - if pilot confirmed his email or doesn't want to see notification about this
+     * null - if data hasn't been loaded from the server yet
+     */
+    getActivationNoticeStatus: function() {
+        if (DataService.data.pilot === null) {
+            return null;
+        }
+        return !DataService.data.pilot.isActivationNoticeHidden && !DataService.data.pilot.isActivated;
+    },
+
+    hideActivationNotice: function() {
+        if (DataService.data.pilot !== null) {
+            DataService.data.pilot.isActivationNoticeHidden = true;
+        }
     }
 };
 

@@ -2,10 +2,9 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
-var DataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 var LoginForm = require('./login-form');
-var Notice = require('./notice');
+var EmailVerificationNotice = require('./email-verification-notice');
 var ErrorTypes = require('../../utils/error-types');
 
 
@@ -17,8 +16,7 @@ var View = React.createClass({
 
     getInitialState: function() {
         return {
-            isUserActivated: PilotModel.getActivationStatus(),
-            isEmailSent: false
+            isActivationNotice: PilotModel.getActivationNoticeStatus()
         };
     },
 
@@ -32,32 +30,29 @@ var View = React.createClass({
     },
 
     handleDataModified: function() {
-        this.setState({ isUserActivated: PilotModel.getActivationStatus() });
         if (this.props.onDataModified) {
             this.props.onDataModified();
         }
+        this.setState({ isActivationNotice: PilotModel.getActivationNoticeStatus() });
     },
 
-    handleEmailVerification: function() {
-        DataService.sendVerificationEmail().then(() => {
-            this.setState({ isEmailSent: true });
-        });
+    handleCloseNotice: function() {
+        PilotModel.hideActivationNotice();
+        this.setState({ isActivationNotice: false });
     },
 
     renderNotice: function() {
-        if (this.state.isUserActivated === false) {
-            var noticeText = 'Your account was not activated. You cannot save any data until you verify your email';
-            var onClick = this.handleEmailVerification;
-            if (this.state.isEmailSent) {
-                noticeText = 'The verification link is sent to your email';
-                onClick = null;
-            }
+        if (this.state.isActivationNotice) {
+            var noticeText = [
+                'Your email has not been verified yet.',
+                'It is required for your records safety',
+                'since your email is the primary way to access the App'
+            ].join(' ');
 
             return (
-                <Notice
+                <EmailVerificationNotice
                     text={ noticeText }
-                    onClick={ onClick }
-                    buttonText='Send email again'
+                    onClose={ this.handleCloseNotice }
                     />
             );
         }
