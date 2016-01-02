@@ -67,7 +67,7 @@ var ResetPass = React.createClass({
     },
 
     validateForm: function() {
-        if (this.state.password === null && this.state.password.trim() === '') {
+        if (this.state.password === null || this.state.password.trim() === '') {
             return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
         }
 

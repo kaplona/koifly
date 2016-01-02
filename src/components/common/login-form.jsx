@@ -93,7 +93,7 @@ var LoginForm = React.createClass({
 
     validateForm: function() {
         if (this.state.email === null || this.state.email.trim() === '' ||
-            this.state.password === null && this.state.password.trim() === ''
+            this.state.password === null || this.state.password.trim() === ''
         ) {
             return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
         }

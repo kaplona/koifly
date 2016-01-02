@@ -71,8 +71,8 @@ var PilotChangePass = React.createClass({
     },
 
     validateForm: function() {
-        if (this.state.password === null && this.state.password.trim() === '' ||
-            this.state.newPassword === null && this.state.newPassword.trim() === ''
+        if (this.state.password === null || this.state.password.trim() === '' ||
+            this.state.newPassword === null || this.state.newPassword.trim() === ''
         ) {
             return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
         }
