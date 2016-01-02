@@ -61,7 +61,10 @@ var PilotView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <div className='container__title'>{ this.state.pilot.userName }</div>
+                <div className='container__title'>
+                    <div>{ this.state.pilot.userName }</div>
+                    <div>{ this.state.pilot.email }</div>
+                </div>
                 <div className='container__subtitle'>
                     <div>Flights #: { this.state.pilot.flightNumTotal }</div>
                     <div>Total Airtime: { airtimeTotal }</div>

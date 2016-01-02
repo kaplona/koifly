@@ -201,13 +201,8 @@ var DataService = {
         // If loading data the first time => create a data storage object
         if (this.data.pilot === null) {
             this.data.pilot = {};
-            this.data.pilot.id = newPilotInfo.id;
         }
-        this.data.pilot.userName = newPilotInfo.userName;
-        this.data.pilot.initialFlightNum = newPilotInfo.initialFlightNum;
-        this.data.pilot.initialAirtime = newPilotInfo.initialAirtime;
-        this.data.pilot.altitudeUnit = newPilotInfo.altitudeUnit;
-        this.data.pilot.isActivated = newPilotInfo.isActivated;
+        this.data.pilot = _.extend(this.data.pilot, newPilotInfo);
     },
 
     setDataItems: function(newData, dataType) {

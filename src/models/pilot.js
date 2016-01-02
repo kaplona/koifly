@@ -78,6 +78,7 @@ var PilotModel = {
         var gliderNum = GliderModel.getNumberOfGliders();
 
         return {
+            email: pilot.email,
             userName: pilot.userName,
             flightNumTotal: flightNumTotal,
             airtimeTotal: airtimeTotal,
@@ -106,6 +107,7 @@ var PilotModel = {
         var minutes = pilot.initialAirtime % 60;
 
         return {
+            email: pilot.email,
             userName: pilot.userName,
             initialFlightNum: pilot.initialFlightNum,
             initialAirtime: pilot.initialAirtime,
@@ -195,6 +197,16 @@ var PilotModel = {
             newPassword: newPilotInfo.newPassword
         };
         return DataService.changePass(passwords);
+    },
+
+    /**
+     * @returns {string|null} - email address or null if no pilot information in front end yet
+     */
+    getEmailAddress: function() {
+        if (DataService.data.pilot === null) {
+            return null;
+        }
+        return DataService.data.pilot.email;
     },
     
     getValidationConfig: function() {

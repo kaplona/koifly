@@ -2,6 +2,7 @@
 
 var React = require('react');
 var DataService = require('../../services/data-service');
+var PilotModel = require('../../models/pilot');
 var Notice = require('./notice');
 
 
@@ -29,7 +30,8 @@ var EmailVerificationNotice = React.createClass({
         var onClick = this.handleEmailVerification;
         var onClose = this.props.onClose;
         if (this.state.isEmailSent) {
-            noticeText = 'The verification link is sent to your email';
+            var email = PilotModel.getEmailAddress();
+            noticeText = 'The verification link is sent to your email ' + email;
             onClick = null;
             onClose = null;
         }

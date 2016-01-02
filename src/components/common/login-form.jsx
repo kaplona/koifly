@@ -103,7 +103,8 @@ var LoginForm = React.createClass({
 
     renderNotice: function() {
         if (this.state.isEmailSent) {
-            return <Notice text='Email with verification link was successfully sent to you' />;
+            var noticeText = 'Email with verification link was successfully sent to ' + this.state.email;
+            return <Notice text={ noticeText } />;
         }
     },
 

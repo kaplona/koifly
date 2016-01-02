@@ -58,7 +58,8 @@ var InitiateResetPass = React.createClass({
 
     renderNotice: function() {
         if (this.state.isEmailSent) {
-            return <Notice text='Email with reset password link was successfully sent to you' />;
+            var noticeText = 'Email with reset password link was successfully sent to ' + this.state.email;
+            return <Notice text={ noticeText } />;
         }
     },
 

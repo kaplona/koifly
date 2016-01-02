@@ -181,6 +181,8 @@ var PilotEditView = React.createClass({
                 { this.renderSavingError() }
                 <form onSubmit={ this.handleSubmit }>
 
+                    <div className='container__title'>{ this.state.pilot.email }</div>
+
                     <TextInput
                         inputValue={ this.state.pilot.userName }
                         labelText='Name:'
