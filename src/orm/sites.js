@@ -3,6 +3,7 @@
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var isUnique = require('./is-unique');
+var ErrorMessages = require('../utils/error-messages');
 
 
 var Site = sequelize.define('site', {
@@ -16,7 +17,9 @@ var Site = sequelize.define('site', {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        validate: { isUnique: isUnique('sites', 'name') }
+        validate: {
+            isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site'))
+        }
     },
     location: {
         type: Sequelize.STRING,
@@ -28,8 +31,11 @@ var Site = sequelize.define('site', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isFloat: true,
-            min: 0
+            isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
+            }
         }
     },
     lat: {
@@ -37,9 +43,15 @@ var Site = sequelize.define('site', {
         allowNull: true,
         defaultValue: null,
         validate: {
-            isFloat: true,
-            min: -90,
-            max: 90
+            isFloat: { msg: ErrorMessages.COORDINATES },
+            min: {
+                args: [ -90 ],
+                msg: ErrorMessages.COORDINATES
+            },
+            max: {
+                args: [ 90 ],
+                msg: ErrorMessages.COORDINATES
+            }
         }
     },
     lng: {
@@ -47,9 +59,15 @@ var Site = sequelize.define('site', {
         allowNull: true,
         defaultValue: null,
         validate: {
-            isFloat: true,
-            min: -180,
-            max: 180
+            isFloat: { msg: ErrorMessages.COORDINATES },
+            min: {
+                args: [ -180 ],
+                msg: ErrorMessages.COORDINATES
+            },
+            max: {
+                args: [ 180 ],
+                msg: ErrorMessages.COORDINATES
+            }
         }
     },
     remarks: {
@@ -93,9 +111,9 @@ var Site = sequelize.define('site', {
         }
     },
     validate: {
-        bothCoordsOrNone: function() {
+        coordinates: function() {
             if ((this.lat === null) !== (this.lng === null)) {
-                throw new Error('Require either both latitude and longitude or neither')
+                throw new Error(ErrorMessages.EITHER_BOTH_COORDS_OR_NON)
             }
         }
     }

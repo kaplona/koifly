@@ -6,6 +6,7 @@ var Flight = require('./flights');
 var Site = require('./sites');
 var Glider = require('./gliders');
 var isUnique = require('./is-unique');
+var ErrorMessages = require('../utils/error-messages');
 
 
 var Pilot = sequelize.define('pilot', {
@@ -17,9 +18,7 @@ var Pilot = sequelize.define('pilot', {
     },
     userName: {
         type: Sequelize.STRING,
-        allowNull: true,
-        unique: true,
-        validate: { isUnique: isUnique('pilots', 'userName') }
+        allowNull: true
     },
     email: {
         type: Sequelize.STRING,
@@ -28,21 +27,28 @@ var Pilot = sequelize.define('pilot', {
             this.setDataValue('email', value.toLowerCase());
         },
         validate: {
-            isEmail: true,
-            isUnique: isUnique('pilots', 'email')
+            notNull: { msg: ErrorMessages.NOT_EMPTY.replace('%field', 'Email') },
+            isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL },
+            isUnique: isUnique('pilots', 'email', ErrorMessages.EXISTENT_EMAIL)
         }
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: { msg: ErrorMessages.NOT_EMPTY.replace('%field', 'Password') }
+        }
     },
     initialFlightNum: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true,
-            min: 0
+            isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
+            }
         }
     },
     initialAirtime: {
@@ -50,8 +56,11 @@ var Pilot = sequelize.define('pilot', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true,
-            min: 0
+            isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
+            }
         }
     },
     altitudeUnit: {

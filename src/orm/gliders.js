@@ -3,6 +3,7 @@
 var Sequelize = require('sequelize');
 var sequelize = require('./sequelize');
 var isUnique = require('./is-unique');
+var ErrorMessages = require('../utils/error-messages');
 
 
 var Glider = sequelize.define('glider', {
@@ -16,15 +17,20 @@ var Glider = sequelize.define('glider', {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true,
-        validate: { isUnique: isUnique('gliders', 'name') }
+        validate: {
+            isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider'))
+        }
     },
     initialFlightNum: {
         type: Sequelize.INTEGER,
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true,
-            min: 0
+            isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
+            }
         }
     },
     initialAirtime: {
@@ -32,8 +38,11 @@ var Glider = sequelize.define('glider', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true,
-            min: 0
+            isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
+            }
         }
     },
     remarks: {

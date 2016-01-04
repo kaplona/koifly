@@ -44,7 +44,7 @@ function saveData(dataType, data, pilot) {
  */
 function saveFlight(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update
-    if (data.see === 0) {
+    if (data.see === 0 || data.see === false) {
         data = {
             id: data.id,
             see: 0
@@ -83,7 +83,7 @@ function saveFlight(data, pilotId) {
  */
 function saveSite(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update
-    if (data.see === 0) {
+    if (data.see === 0 || data.see === false) {
         data = {
             id: data.id,
             see: 0
@@ -126,7 +126,7 @@ function saveSite(data, pilotId) {
  */
 function saveGlider(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update
-    if (data.see === 0) {
+    if (data.see === 0 || data.see === false) {
         data = {
             id: data.id,
             see: 0
@@ -147,7 +147,7 @@ function saveGlider(data, pilotId) {
     }
 
     return Glider.findOne({ where: { id: data.id, pilotId: pilotId } }).then((glider) => {
-        if (!glider || glider.id !== data.id) {
+        if (!glider || glider.id.toString() !== data.id.toString()) {
             throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
         }
 

@@ -26,7 +26,7 @@ var TimeInput = React.createClass({
     },
 
     renderErrorMessage: function() {
-        if (this.props.errorMessageHours || this.props.errorMessageMinutes) {
+        if (this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes) {
             return (
                 <div className='error_message'>
                     { this.props.errorMessage } { ' ' } { this.props.errorMessageHours } { ' ' } { this.props.errorMessageMinutes }

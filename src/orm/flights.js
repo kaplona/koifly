@@ -5,6 +5,7 @@ var sequelize = require('./sequelize');
 var Site = require('./sites');
 var Glider = require('./gliders');
 var isValidId = require('./is-valid-id');
+var ErrorMessages = require('../utils/error-messages');
 
 
 var Flight = sequelize.define('flight', {
@@ -17,21 +18,28 @@ var Flight = sequelize.define('flight', {
     date: {
         type: Sequelize.DATE,
         allowNull: false,
-        validate: { isDate: true }
+        validate: {
+            isDate: { msg: ErrorMessages.DATE_FORMAT }
+        }
     },
     siteId: {
         type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: null,
-        validate: { isValidId: isValidId('sites', 'there is no site with this id') }
+        validate: {
+            isValidId: isValidId('sites', ErrorMessages.NOT_EXIST.replace('%field', 'Site'))
+        }
     },
     altitude: {
         type: Sequelize.FLOAT,
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isFloat: true,
-            min: 0
+            isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
+            }
         }
     },
     airtime: {
@@ -39,15 +47,20 @@ var Flight = sequelize.define('flight', {
         allowNull: false,
         defaultValue: 0,
         validate: {
-            isInt: true,
-            min: 0
+            isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
+            min: {
+                args: [ 0 ],
+                msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
+            }
         }
     },
     gliderId: {
         type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: null,
-        validate: { isValidId: isValidId('gliders', 'there is no glider with this id') }
+        validate: {
+            isValidId: isValidId('gliders', ErrorMessages.NOT_EXIST.replace('%field', 'Glider'))
+        }
     },
     remarks: {
         type: Sequelize.TEXT,

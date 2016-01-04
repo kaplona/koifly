@@ -3,91 +3,104 @@
 var _ = require('lodash');
 
 
-//var miniFlight = {
-//    date: '2015-09-01',
-//    remarks: ''
-//};
-//
-//var flight = {
-//    id: 1, // test id
-//    date: '2015-09-01',
-//    altitude: 1000,
-//    airtime: 100,
-//    siteId: null,
-//    gliderId: null,
-//    remarks: 'TEST'
-//};
-
-var emptyFlight = {
-    date: '2015-11-01',
-    altitude: '',
-    airtime: '',
-    siteId: '',
-    gliderId: '',
-    remarks: ''
-};
-
-//var miniSite = {
-//    name: 'newName',
-//    remarks: ''
-//};
-//
-//var site = {
-//    id: 1, // test id
-//    name: 'someName',
-//    location: 'somewhere',
-//    launchAltitude: 1000,
-//    coordinates: { lat: 48.693829, lng: -98.893716 }, // middle USA
-//    remarks: 'TEST'
-//};
-//
-//var miniGlider = {
-//    name: 'newName',
-//    remarks: ''
-//};
-//
-//var glider = {
-//    id: 1, // test id
-//    name: 'someName',
-//    initialFlightNum: 10,
-//    initialAirtime: 100,
-//    remarks: ''
-//};
-//
-//function modifyData(data, field, value) {
-//    data = _.clone(data);
-//    data[field] = value;
-//    return data;
-//}
-
-
 var Test = {
 
-    lastModified: '2015-12-08T21:41:20.000Z',
+    lastModified: '2016-01-01T00:00:00.000Z',
 
-    tests: {
-        NEGATIVE_FLIGHT_AIRTIME: { data: { id: 4, airtime: -10 }, dataType: 'flight' },
-        NO_EXISTENT_SITE_ID: { data: { id: 4, siteId: 10 }, dataType: 'flight' },
-        DELETED_SITE_ID: { data: { id: 4, siteId: 3 }, dataType: 'flight' },
-        NO_EXISTENT_GLIDE_ID: { data: { id: 4, gliderId: 10 }, dataType: 'flight' },
-        DELETED_GLIDER_ID: { data: { id: 4, gliderId: 3 }, dataType: 'flight' },
-        DOUBLE_SITE_NAME: { data: { id: 4, name: 'US spot' }, dataType: 'site' },
-        DOUBLE_GLIDER_NAME: { data: { id: 4, name: 'Sport 2' }, dataType: 'glider' },
-        SEE_NOT_BOOL: { data: { id: 4, see: 10 }, dataType: 'flight' },
-        NOT_VALID_ALTITUDE_UNITS: { data: { altitudeUnit: 'otherUnit' }, dataType: 'pilot' },
-        NOT_ROUND_AIRTIME: { data: { id: 4, airtime: 10.34 }, dataType: 'flight' },
-        NOT_ROUND_INITIAL_FLIGHT_NUM: { data: { id: 4, initialFlightNum: 10.34 }, dataType: 'glider' },
-        EMPTY_STRING_VALUES: { data: emptyFlight, dataType: 'flight' },
-        NO_EXISTENT_RECORD: { data: { id: 'id', remarks: 'no existent record' }, dataType: 'flight' },
-        OTHER_PILOT_RECORD: { data: { id: 5, remarks: 'changing other pilot record' }, dataType: 'flight' }
-        //DEFAULT_FLIGHT_VALUES: { data: modifyData(miniFlight, 'siteId', 1), dataType: 'flight' },
-        //DEFAULT_SITE_VALUES: { data: miniSite, dataType: 'site' },
-        //DEFAULT_GLIDER_VALUES: { data: miniGlider, dataType: 'glider' }
+    flight: {
+        date: '2016-01-01',
+        siteId: null,
+        gliderId: null,
+        altitude: 0,
+        airtime: 0,
+        remarks: ''
+    },
+
+    site: {
+        name: 'someSite',
+        location: 'someLocation',
+        launchAltitude: 0,
+        coordinates: null,
+        remarks: ''
+    },
+
+    glider: {
+        name: 'someGlider',
+        initialFlightNum: 0,
+        initialAirtime: 0,
+        remarks: ''
+    },
+
+    pilot: {
+        userName: '',
+        initialFlightNum: 0,
+        initialAirtime: 0,
+        altitudeUnit: 'meter'
+    },
+
+    ids: {
+        flight: 11,
+        site: 6,
+        glider: 7,
+        pilot: 13
+    },
+
+    testData: {
+        flight: {
+            EMPTY_DATE: { date: null },
+            WRONG_DATE_FORMAT: { date: '31.12.15' },
+            NEGATIVE_ALTITUDE: { altitude: -10 },
+            NOT_NUMERIC_ALTITUDE: { altitude: 'abc' },
+            NEGATIVE_AIRTIME: { airtime: -10 },
+            NOT_NUMERIC_AIRTIME: { airtime: 'abc' },
+            NOT_ROUND_AIRTIME: { airtime: 10.34 },
+            NO_EXISTENT_SITE_ID: { siteId: 100 },
+            DELETED_SITE_ID: { siteId: 3 },
+            NO_EXISTENT_GLIDE_ID: { gliderId: 100 },
+            DELETED_GLIDER_ID: { gliderId: 3 }
+
+            //NO_EXISTENT_RECORD: { id: 'id', remarks: 'no existent record' },
+            //OTHER_PILOT_RECORD: { id: 5, remarks: 'changing other pilot record' },
+        },
+
+        site: {
+            EMPTY_SITE_NAME: { name: null },
+            DOUBLE_SITE_NAME: { name: 'Grouse' },
+            NEGATIVE_LAUNCH_ALTITUDE: { launchAltitude: -10 },
+            NOT_NUMERIC_LAUNCH_ALTITUDE: { launchAltitude: 'abc' },
+            EMPTY_LAT: { coordinates: { lat: null, lng: 0 } },
+            NOT_NUMERIC_LAT: { coordinates: { lat: 'abc', lng: 0 } },
+            NOT_PROPER_LAT: { coordinates: { lat: 1200, lng: 0 } }
+        },
+
+        glider: {
+            EMPTY_GLIDER_NAME: { name: null },
+            DOUBLE_GLIDER_NAME: { name: 'glider 2' },
+            NEGATIVE_GLIDER_FLIGHT_NUM: { initialFlightNum: -10 },
+            NOT_NUMERIC_GLIDER_FLIGHT_NUM: { initialFlightNum: 'abc' },
+            NOT_ROUND_GLIDER_FLIGHT_NUM: { initialFlightNum: 10.34 },
+            NEGATIVE_GLIDER_AIRTIME: { initialAirtime: -10 },
+            NOT_NUMERIC_GLIDER_AIRTIME: { initialAirtime: 'abc' },
+            NOT_ROUND_GLIDER_AIRTIME: { initialAirtime: 10.34 }
+        },
+
+        pilot: {
+            NOT_VALID_ALTITUDE_UNITS: { altitudeUnit: 'otherUnit' },
+            NEGATIVE_PILOT_FLIGHT_NUM: { initialFlightNum: -10 },
+            NOT_NUMERIC_PILOT_FLIGHT_NUM: { initialFlightNum: 'abc' },
+            NOT_ROUND_PILOT_FLIGHT_NUM: { initialFlightNum: 10.34 },
+            NEGATIVE_PILOT_AIRTIME: { initialAirtime: -10 },
+            NOT_NUMERIC_PILOT_AIRTIME: { initialAirtime: 'abc' },
+            NOT_ROUND_PILOT_AIRTIME: { initialAirtime: 10.34 }
+        }
     },
 
     runTests: function() {
-        _.each(this.tests, (test, testName) => {
-            this.sendData(test.data, test.dataType, testName);
+        _.each(this.testData, (tests, dataType) => {
+            _.each(tests, (data, testName) => {
+                data = _.extend({}, Test[dataType], data, { id: Test.ids[dataType] });
+                this.sendData(data, dataType, testName);
+            });
         });
     },
 
@@ -100,7 +113,6 @@ var Test = {
 
         var ajaxRequest = new XMLHttpRequest();
         ajaxRequest.responseType = 'json'; // EI 10
-        ajaxRequest.timeout = 3000;
         ajaxRequest.addEventListener('load', () => this.printResponse(testName, ajaxRequest.response)); // EI 10
         ajaxRequest.addEventListener('error', () => this.printResponse(testName, ajaxRequest.response));
         ajaxRequest.addEventListener('timeout', () => this.printResponse(testName, ajaxRequest.response));
@@ -110,6 +122,9 @@ var Test = {
 
     printResponse: function(testName, serverResponse) {
         //console.log('test response: ', JSON.parse(this.responseText));
+        if (serverResponse.error && serverResponse.error.errors) {
+            serverResponse = serverResponse.error.errors;
+        }
         console.log(testName, ' => ', serverResponse);
         //testHandler(testName, serverResponse);
     },

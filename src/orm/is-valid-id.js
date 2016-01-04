@@ -1,5 +1,7 @@
 'use strict';
 
+var ErrorMessages = require('../utils/error-messages');
+
 
 // mixed solution:
 // http://stackoverflow.com/questions/16356856/sequelize-js-custom-validator-check-for-unique-username-password#answer-19306820
@@ -13,19 +15,15 @@
  */
 var isValidId = function(modelFileName, msg) {
     return function(value, next) {
-        if (value) {
-            var Model = require('./' + modelFileName);
-            Model.scope('see').findById(value).then((instance) => {
-                if (instance) {
-                    next();
-                }
-                next(msg);
-            }).catch((e) => {
-                next(e.message);
-            });
-        } else {
-            next('empty field');
-        }
+        var Model = require('./' + modelFileName);
+        Model.scope('see').findById(value).then((instance) => {
+            if (instance) {
+                next();
+            }
+            next(msg);
+        }).catch((e) => {
+            next(e.message);
+        });
     }
 };
 

@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Util = require('./util');
+var ErrorMessages = require('./error-messages');
 
 
 var Validation = {
@@ -15,7 +16,7 @@ var Validation = {
 
             // Check if field value is empty
             if (this.isEmpty(formData[fieldName]) && !isSoft && config.isRequired) {
-                validationResult = '%s cannot be empty'.replace('%s', config.rules.field);
+                validationResult = ErrorMessages.NOT_EMPTY.replace('%field', config.rules.field);
             }
 
             // Otherwise call validation method for this field
@@ -43,10 +44,10 @@ var Validation = {
     methods: {
 
         // Check if value is yyyy-mm-dd date format
-        date: function(formData, fieldName, rules) {
+        date: function(formData, fieldName) {
 
             if (!Util.isRightDateFormat(formData[fieldName])) {
-                return '%s must be in yyyy-mm-dd format'.replace('%s', rules.field);
+                return ErrorMessages.DATE_FORMAT;
             }
 
             return true;
@@ -60,7 +61,7 @@ var Validation = {
 
             // If value is not a number
             if (!Util.isNumber(formData[fieldName])) {
-                return '%s must be a number'.replace('%s', rules.field);
+                return ErrorMessages.NUMBER.replace('%field', rules.field);
             }
 
             var errors = [];
@@ -100,8 +101,8 @@ var Validation = {
         // Check text length
         text: function(formData, fieldName, rules) {
             if (formData[fieldName].length > rules.maxLength) {
-                var errorMessage = '%s exceeds maximum field length %s characters';
-                return errorMessage.replace('%s', rules.field).replace('%s', rules.maxLength);
+                var errorMessage = ErrorMessages.MAX_LENGTH;
+                return errorMessage.replace('%field', rules.field).replace('%max', rules.maxLength);
             }
 
             return true;
@@ -134,7 +135,7 @@ var Validation = {
             }
 
             // If validation failed
-            return '%s must be in Decimal Degrees format'.replace('%s', rules.field);
+            return ErrorMessages.COORDINATES;
         }
     }
 };
