@@ -9,6 +9,7 @@ var HapiReactViews = require('hapi-react-views');
 var AuthCookie = require('hapi-auth-cookie');
 var SetCookie = require('./server-handlers/helpers/set-cookie');
 var CheckCookie = require('./server-handlers/check-cookie');
+var CheckCsrfToken = require('./server-handlers/check-csrf-token');
 var QueryHandler = require('./server-handlers/query-handler');
 var SignupHandler = require('./server-handlers/signup-handler');
 var LoginHandler = require('./server-handlers/login-handler');
@@ -19,6 +20,8 @@ var ResetPassHandler= require('./server-handlers/reset-pass-handler');
 var VerifyEmailToken = require('./server-handlers/helpers/verify-email-token');
 var EmailMessages = require('./server-handlers/helpers/email-messages');
 var Constants = require('./utils/constants');
+
+
 
 
 var server = new Hapi.Server();
@@ -61,6 +64,18 @@ server.register(plugins, (err) => {
         isSecure: false, // cookie allows to be transmitted over insecure connection
         isHttpOnly: true, // auth cookie is unavailable to js
         validateFunc: CheckCookie
+    });
+
+    // Register csrf cookie
+    server.state('csrf', {
+        ttl: Constants.cookieLifeTime,
+        path: '/',
+        isSecure: false, // cookie allows to be transmitted over insecure connection
+        isHttpOnly: false, // scrf cookie is available to js
+        strictHeader: true, // don't allow violations of RFC 6265
+        encoding: 'none',
+        ignoreErrors: false, // errors are ignored and treated as missing cookie
+        clearInvalid: false
     });
 
     // Set up server side react views using Vision
@@ -124,35 +139,33 @@ server.register(plugins, (err) => {
     server.route({
         method: 'GET',
         path: '/api/data',
-        config: { auth: 'session' },
-        handler: function(request, reply) {
-            QueryHandler(request, reply);
-        }
+        config: {
+            auth: 'session',
+            pre: [ CheckCsrfToken ]
+        },
+        handler: QueryHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/data',
-        config: { auth: 'session' },
-        handler: function(request, reply) {
-            QueryHandler(request, reply);
-        }
+        config: {
+            auth: 'session',
+            pre: [ CheckCsrfToken ]
+        },
+        handler: QueryHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/signup',
-        handler: function(request, reply) {
-            SignupHandler(request, reply);
-        }
+        handler: SignupHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/login',
-        handler: function(request, reply) {
-            LoginHandler(request, reply);
-        }
+        handler: LoginHandler
     });
 
     server.route({
@@ -167,10 +180,10 @@ server.register(plugins, (err) => {
     server.route({
         method: 'POST',
         path: '/api/change-pass',
-        config: { auth: 'session' },
-        handler: function(request, reply) {
-            ChangePassHandler(request, reply);
-        }
+        config: {
+            auth: 'session',
+            pre: [ CheckCsrfToken ]},
+        handler: ChangePassHandler
     });
 
     server.route({
@@ -190,10 +203,11 @@ server.register(plugins, (err) => {
     server.route({
         method: 'POST',
         path: '/api/resend-token',
-        config: { auth: 'session' },
-        handler: function(request, reply) {
-            ResendTokenHandler(request, reply);
-        }
+        config: {
+            auth: 'session',
+            pre: [ CheckCsrfToken ]
+        },
+        handler: ResendTokenHandler
     });
 
     server.route({
@@ -215,9 +229,7 @@ server.register(plugins, (err) => {
     server.route({
         method: 'POST',
         path: '/api/reset-pass',
-        handler: function(request, reply) {
-            ResetPassHandler(request, reply);
-        }
+        handler: ResetPassHandler
     });
 
 

@@ -2,6 +2,7 @@
 
 var Pilot = require('../orm/pilots');
 var BcryptPromise = require('../utils/bcrypt-promise');
+var SetCookie = require('./helpers/set-cookie');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var NormalizeError = require('../utils/error-normalize');
@@ -21,7 +22,10 @@ var CheckCookie = function(request, session, callback) {
         return;
     }
 
-    Pilot.findById(session.userId).then((pilot) => {
+    var pilot; // we need it to have reference to current pilot
+
+    Pilot.findById(session.userId).then((pilotRecord) => {
+        pilot = pilotRecord;
         if (!pilot || pilot.id !== session.userId) {
             callback(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE), false);
             return;
@@ -29,6 +33,9 @@ var CheckCookie = function(request, session, callback) {
 
         var hashBase = session.expiryDate.toString() + pilot.password;
         return BcryptPromise.compare(hashBase, session.hash);
+    }).then(() => {
+        // Reset cookie so as to have new expiry date
+        return SetCookie(request, pilot.id, pilot.password);
     }).then(() => {
         callback(null, true); // All OK!
     }).catch((error) => {

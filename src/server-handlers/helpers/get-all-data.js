@@ -38,6 +38,9 @@ function takeOnlyPlainValues(bdInstances) {
  * lastModified - is the date of last modification in DB
  */
 var GetAllData = function(pilot, dateFrom) {
+    // DEV
+    console.log('=> retrieving all data');
+
     // If no dateFrom =>
     // it's first request from the user
     // so retrieve only active data (where see = true)

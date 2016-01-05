@@ -2,14 +2,15 @@
 
 
 var ErrorTypes = {
-    RETRIEVING_FAILURE: 'retrievingFailure',
-    NO_EXISTENT_RECORD: 'noExistentRecord',
-    SAVING_FAILURE: 'savingFailure',
-    CONNECTION_FAILURE: 'connectionFailure',
-    VALIDATION_FAILURE: 'validationFailure',
     AUTHENTICATION_FAILURE: 'authenticationFailure',
+    CONNECTION_FAILURE: 'connectionFailure',
+    INVALID_CSRF_TOKEN: 'invalidCsrfToken',
     INVALID_TOKEN: 'invalidToken',
-    NOT_ACTIVATED_USER: 'notActivatedUser'
+    NO_EXISTENT_RECORD: 'noExistentRecord',
+    NOT_ACTIVATED_USER: 'notActivatedUser',
+    RETRIEVING_FAILURE: 'retrievingFailure',
+    SAVING_FAILURE: 'savingFailure',
+    VALIDATION_FAILURE: 'validationFailure'
 };
 
 

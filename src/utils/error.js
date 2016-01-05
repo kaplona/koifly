@@ -21,6 +21,8 @@ var defaultMessage = function(errorType) {
             return 'verification token is invalid or expired';
         case ErrorTypes.NOT_ACTIVATED_USER:
             return 'You need to verify your email before performing this operation.';
+        case ErrorTypes.INVALID_CSRF_TOKEN:
+            return 'invalid csrf token';
         default:
             return 'error occurred';
     }
