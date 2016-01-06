@@ -15,11 +15,11 @@ var Sandbox = React.createClass({
                 </head>
                 <body>
                     <p>
-                        This is views/sandbox.jsx, a sandbox view. Use it to develop components in a
+                        This is server-views/sandbox.jsx, a sandbox view. Use it to develop components in a
                         fast, clean environment, without loading the rest of your application.
                     </p>
                     <p>{ 'UTC time from server: ' + Date.now() }</p>
-                    <p id='counterContainer'>This text will be replaced by Counter component</p>
+                    <p id='container'>This text will be replaced by your component</p>
                 </body>
             </html>
         );

@@ -3,7 +3,7 @@
 var React = require('react');
 var Header = require('./header');
 
-require('./koifly.css');
+require('./koifly.less');
 
 var Koifly = React.createClass({
 

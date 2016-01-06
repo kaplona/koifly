@@ -22,7 +22,7 @@ var webpackConfig = {
     },
     resolve: {
         // Webpack tries appending these extensions when you require(moduleName)
-        // The empty extension allows specifying the extension in a require call, e.g. require('./main-app.css')
+        // The empty extension allows specifying the extension in a require call, e.g. require('./main-app.less')
         extensions: ['', '.js', '.jsx']
     },
     output: {
@@ -35,8 +35,8 @@ var webpackConfig = {
     module: {
         loaders: [
             {
-                test: /\.css$/,
-                loaders: ['style', 'css'], // Loaders are processed last-to-first
+                test: /\.less$/,
+                loaders: ['style', 'css', 'less'], // Loaders are processed last-to-first
                 include: config.paths.source
             }
         ]

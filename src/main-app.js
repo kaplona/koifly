@@ -34,7 +34,7 @@ var InvalidToken = require('./components/invalid-token');
 
 //var Test = require('./tests/test');
 
-require('./components/koifly.css');
+require('./components/koifly.less');
 
 
 function mainApp() {
