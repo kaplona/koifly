@@ -2,8 +2,8 @@
 
 var React = require('react');
 var Header = require('./header');
+var BottomMenu = require('./common/bottom-menu');
 
-require('./koifly.less');
 
 var Koifly = React.createClass({
 
@@ -12,6 +12,7 @@ var Koifly = React.createClass({
             <div>
                 <Header />
                 { this.props.children }
+                <BottomMenu />
             </div>
         );
     }
