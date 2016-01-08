@@ -3,6 +3,8 @@
 var React = require('react');
 var History = require('react-router').History;
 var LoginForm = require('./common/login-form');
+var TopMenu = require('./common/top-menu');
+var BottomMenu = require('./common/bottom-menu');
 
 
 var Login = React.createClass({
@@ -13,8 +15,22 @@ var Login = React.createClass({
         this.history.pushState(null, '/');
     },
 
+    handleToSignup: function() {
+        this.history.pushState(null, '/signup');
+    },
+
     render: function() {
-        return <LoginForm onLogin={ this.handleLogin } />;
+        return (
+            <div>
+                <TopMenu
+                    headerText='Koifly'
+                    rightText='Sign Up'
+                    onRightClick={ this.handleToSignup }
+                    />
+                <LoginForm onLogin={ this.handleLogin } />
+                <BottomMenu />
+            </div>
+        );
     }
 });
 

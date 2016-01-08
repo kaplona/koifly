@@ -1,9 +1,12 @@
 'use strict';
 
 var React = require('react');
-var Link = require('react-router').Link;
+var History = require('react-router').History;
 var DataService = require('../../services/data-service');
-var Button = require('./button');
+var Section = require('./section');
+var SectionTitle = require('./section-title');
+var SectionRow = require('./section-row');
+var SectionButton = require('./section-button');
 var TextInput = require('./text-input');
 var PasswordInput = require('./password-input');
 var Notice = require('./notice');
@@ -16,6 +19,8 @@ var LoginForm = React.createClass({
     propTypes: {
         onLogin: React.PropTypes.func
     },
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -79,6 +84,10 @@ var LoginForm = React.createClass({
         });
     },
 
+    handleLinkTo: function(link) {
+        this.history.pushState(null, link);
+    },
+
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
     },
@@ -119,38 +128,51 @@ var LoginForm = React.createClass({
             <div>
                 { this.renderNotice() }
                 { this.renderError() }
-                <div className='container__subtitle'>Please, Log in</div>
                 <form>
-                    <TextInput
-                        inputValue={ this.state.email }
-                        labelText='Email:'
-                        inputName='email'
-                        onChange={ this.handleInputChange }
+                    <Section>
+                        <SectionTitle>Please, log in</SectionTitle>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.email }
+                                labelText='Email:'
+                                inputName='email'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isSectionEnd={ true }>
+                            <PasswordInput
+                                inputValue={ this.state.password }
+                                labelText='Password:'
+                                inputName='password'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSending ? 'Sending...' : 'Log in' }
+                        type='submit'
+                        category='ok'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ !this.state.isSending }
                         />
 
-                    <PasswordInput
-                        inputValue={ this.state.password }
-                        labelText='Password:'
-                        inputName='password'
-                        onChange={ this.handleInputChange }
+                    <SectionButton
+                        text='Forgot Password?'
+                        onClick={ () => this.handleLinkTo('/reset-pass') }
                         />
 
-                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSending }>
-                        { this.state.isSending ? 'Sending...' : 'Log in' }
-                    </Button>
+                    <SectionButton
+                        text='Log In With Email'
+                        onClick={ this.handleEmailLogin }
+                        />
 
-                    <div>
-                        Forgot your password? <Link to='/reset-pass'>Reset password</Link>
-                    </div>
-
-                    <div>
-                        Or you can one time log in just with
-                        <a href='#' onClick={ this.handleEmailLogin }> your email</a>
-                    </div>
-
-                    <div>
-                        Don't have an account yet? <Link to='/signup'>Sign up</Link>
-                    </div>
+                    <SectionButton
+                        text='Don&#39;t Have Account?'
+                        onClick={ () => this.handleLinkTo('/signup') }
+                        />
                 </form>
             </div>
         );

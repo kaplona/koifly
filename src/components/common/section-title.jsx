@@ -1,18 +1,17 @@
 'use strict';
 
 var React = require('react');
-//var Header = require('./header');
 
 
-var Koifly = React.createClass({
-
+var SectionTitle = React.createClass({
     render: function() {
         return (
-            <div>
+            <div className='section-title'>
                 { this.props.children }
             </div>
         );
     }
 });
 
-module.exports = Koifly;
+
+module.exports = SectionTitle;
