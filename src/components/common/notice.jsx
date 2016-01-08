@@ -43,10 +43,7 @@ var Notice = React.createClass({
     },
 
     render: function() {
-        var className = 'notice';
-        if (this.props.type) {
-            className += ' notice--' + this.props.type;
-        }
+        var className = this.props.type ? 'notice--' + this.props.type : 'notice';
 
         return (
             <div className={ className }>

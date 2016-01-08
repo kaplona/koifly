@@ -8,7 +8,7 @@ var PlainButton = React.createClass({
     propTypes: {
         text: React.PropTypes.string,
         type: React.PropTypes.string,
-        category: React.PropTypes.string,
+        buttonStyle: React.PropTypes.string,
         onClick: React.PropTypes.func,
         isEnabled: React.PropTypes.bool
     },
@@ -28,8 +28,8 @@ var PlainButton = React.createClass({
 
     render: function() {
         var className = 'section-button';
-        if (this.props.category) {
-            className += ' ' + this.props.category + '-button';
+        if (this.props.buttonStyle) {
+            className += ' x-' + this.props.buttonStyle;
         }
 
         return (

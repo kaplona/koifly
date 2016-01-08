@@ -10,7 +10,7 @@ var SectionButton = React.createClass({
     propTypes: {
         text: React.PropTypes.string,
         type: React.PropTypes.string,
-        category: React.PropTypes.string,
+        buttonStyle: React.PropTypes.string,
         onClick: React.PropTypes.func,
         isEnabled: React.PropTypes.bool
     },

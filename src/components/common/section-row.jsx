@@ -6,11 +6,11 @@ var React = require('react');
 var SectionRow = React.createClass({
 
     propTypes: {
-        isSectionEnd: React.PropTypes.bool
+        isLast: React.PropTypes.bool
     },
 
     render: function() {
-        var className = this.props.isSectionEnd ? 'section-row end' : 'section-row';
+        var className = this.props.isLast ? 'section-row last' : 'section-row';
 
         return (
             <div className={ className }>

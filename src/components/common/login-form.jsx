@@ -56,7 +56,7 @@ var LoginForm = React.createClass({
                 this.props.onLogin();
             }
         }).catch((error) => {
-            this.handleSavingError(error);
+            setTimeout(() => this.handleSavingError(error), 2000);
         });
     },
 
@@ -125,56 +125,54 @@ var LoginForm = React.createClass({
 
     render: function() {
         return (
-            <div>
+            <form>
                 { this.renderNotice() }
                 { this.renderError() }
-                <form>
-                    <Section>
-                        <SectionTitle>Please, log in</SectionTitle>
+                <Section>
+                    <SectionTitle>Please, log in</SectionTitle>
 
-                        <SectionRow>
-                            <TextInput
-                                inputValue={ this.state.email }
-                                labelText='Email:'
-                                inputName='email'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
+                    <SectionRow>
+                        <TextInput
+                            inputValue={ this.state.email }
+                            labelText='Email:'
+                            inputName='email'
+                            onChange={ this.handleInputChange }
+                            />
+                    </SectionRow>
 
-                        <SectionRow isSectionEnd={ true }>
-                            <PasswordInput
-                                inputValue={ this.state.password }
-                                labelText='Password:'
-                                inputName='password'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-                    </Section>
+                    <SectionRow isLast={ true }>
+                        <PasswordInput
+                            inputValue={ this.state.password }
+                            labelText='Password:'
+                            inputName='password'
+                            onChange={ this.handleInputChange }
+                            />
+                    </SectionRow>
+                </Section>
 
-                    <SectionButton
-                        text={ this.state.isSending ? 'Sending...' : 'Log in' }
-                        type='submit'
-                        category='ok'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ !this.state.isSending }
-                        />
+                <SectionButton
+                    text={ this.state.isSending ? 'Sending...' : 'Log in' }
+                    type='submit'
+                    buttonStyle='primary'
+                    onClick={ this.handleSubmit }
+                    isEnabled={ !this.state.isSending }
+                    />
 
-                    <SectionButton
-                        text='Forgot Password?'
-                        onClick={ () => this.handleLinkTo('/reset-pass') }
-                        />
+                <SectionButton
+                    text='Forgot Password?'
+                    onClick={ () => this.handleLinkTo('/reset-pass') }
+                    />
 
-                    <SectionButton
-                        text='Log In With Email'
-                        onClick={ this.handleEmailLogin }
-                        />
+                <SectionButton
+                    text='Log In With Email'
+                    onClick={ this.handleEmailLogin }
+                    />
 
-                    <SectionButton
-                        text='Don&#39;t Have Account?'
-                        onClick={ () => this.handleLinkTo('/signup') }
-                        />
-                </form>
-            </div>
+                <SectionButton
+                    text='Don&#39;t Have Account?'
+                    onClick={ () => this.handleLinkTo('/signup') }
+                    />
+            </form>
         );
     }
 });

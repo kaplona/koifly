@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react');
+var Label = require('./label');
+var RowValue = require('./row-value');
 
 
 var PasswordInput = React.createClass({
@@ -43,14 +45,20 @@ var PasswordInput = React.createClass({
         return (
             <div>
                 { this.renderErrorMessage() }
-                { this.renderLabel() }
-                <input
-                    value={ this.props.inputValue }
-                    type='password'
-                    className={ (this.props.errorMessage) ? 'error' : '' }
-                    onChange={ this.handleUserInput }
-                    ref='input'
-                    />
+
+                <Label>
+                    { this.renderLabel() }
+                </Label>
+
+                <RowValue>
+                    <input
+                        value={ this.props.inputValue }
+                        type='password'
+                        className={ (this.props.errorMessage) ? 'error' : '' }
+                        onChange={ this.handleUserInput }
+                        ref='input'
+                        />
+                </RowValue>
             </div>
         );
     }
