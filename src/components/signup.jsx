@@ -61,7 +61,6 @@ var Signup = React.createClass({
     },
 
     handleSavingError: function(error) {
-        // TODO error message verbiage
         this.setState({
             error: error,
             isSaving: false

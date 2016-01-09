@@ -26,6 +26,7 @@ var PilotEditView = require('./components/pilot-views/pilot-edit-view');
 var PilotChangePass = require('./components/pilot-views/pilot-change-pass');
 var Signup = require('./components/signup');
 var Login = require('./components/login');
+var OneTimeLogin = require('./components/one-time-login');
 var InitiateResetPass = require('./components/initiate-reset-pass');
 var ResetPass = require('./components/reset-pass');
 var noPage = require('./components/page-not-found');
@@ -62,6 +63,7 @@ function mainApp() {
                 <Route path='pilot' component={ PilotView } />
                 <Route path='signup' component={ Signup } />
                 <Route path='login' component={ Login } />
+                <Route path='one-time-login' component={ OneTimeLogin } />
                 <Route path='reset-pass/:pilotId/:token' component={ ResetPass } />
                 <Route path='reset-pass' component={ InitiateResetPass } />
                 <Route path='email/:pilotId/:token' component={ EmailVerified } />

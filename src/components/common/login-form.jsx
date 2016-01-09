@@ -9,7 +9,6 @@ var SectionRow = require('./section/section-row');
 var SectionButton = require('./section/section-button');
 var TextInput = require('./inputs/text-input');
 var PasswordInput = require('./inputs/password-input');
-var Notice = require('./notice/notice');
 var ErrorBox = require('./notice/error-box');
 var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
@@ -27,8 +26,7 @@ var LoginForm = React.createClass({
             email: null,
             password: null,
             error: null,
-            isSending: false,
-            isEmailSent: false
+            isSending: false
         };
     },
 
@@ -39,7 +37,7 @@ var LoginForm = React.createClass({
 
         var validationResponse = this.validateForm();
         if (validationResponse !== true) {
-            return this.handleSavingError(validationResponse);
+            return this.handleError(validationResponse);
         }
 
         this.setState({
@@ -56,31 +54,8 @@ var LoginForm = React.createClass({
                 this.props.onLogin();
             }
         }).catch((error) => {
-            setTimeout(() => this.handleSavingError(error), 2000);
-        });
-    },
-
-    handleEmailLogin: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        if (this.state.email === null || this.state.email.trim() === '') {
-            return this.handleSavingError(new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'Enter your email address'));
-        }
-
-        this.setState({
-            isSending: true,
-            error: null
-        });
-
-        DataService.oneTimeLogin(this.state.email).then(() => {
-            this.setState({
-                isSending: false,
-                isEmailSent: true
-            });
-        }).catch((error) => {
-            this.handleSavingError(error);
+            // DEV
+            setTimeout(() => this.handleError(error), 2000);
         });
     },
 
@@ -92,8 +67,7 @@ var LoginForm = React.createClass({
         this.setState({ [inputName]: inputValue });
     },
 
-    handleSavingError: function(error) {
-        // TODO error message verbiage
+    handleError: function(error) {
         this.setState({
             error: error,
             isSending: false
@@ -110,13 +84,6 @@ var LoginForm = React.createClass({
         return true;
     },
 
-    renderNotice: function() {
-        if (this.state.isEmailSent) {
-            var noticeText = 'Email with verification link was successfully sent to ' + this.state.email;
-            return <Notice text={ noticeText } />;
-        }
-    },
-
     renderError: function() {
         if (this.state.error !== null) {
             return <ErrorBox error={ this.state.error } />;
@@ -126,7 +93,6 @@ var LoginForm = React.createClass({
     render: function() {
         return (
             <form>
-                { this.renderNotice() }
                 { this.renderError() }
                 <Section>
                     <SectionTitle>Please, log in</SectionTitle>
@@ -165,7 +131,7 @@ var LoginForm = React.createClass({
 
                 <SectionButton
                     text='Log In Without Password'
-                    onClick={ this.handleEmailLogin }
+                    onClick={ () => this.handleLinkTo('/one-time-login') }
                     />
 
                 <SectionButton
