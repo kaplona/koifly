@@ -3,9 +3,9 @@
 var React = require('react');
 var DataService = require('../services/data-service');
 var Button = require('./common/button');
-var TextInput = require('./common/text-input');
-var Notice = require('./common/notice');
-var ErrorBox = require('./common/error-box');
+var TextInput = require('./common/inputs/text-input');
+var Notice = require('./common/notice/notice');
+var ErrorBox = require('./common/notice/error-box');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 

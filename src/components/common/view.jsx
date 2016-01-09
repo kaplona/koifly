@@ -4,7 +4,7 @@ var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var PilotModel = require('../../models/pilot');
 var LoginForm = require('./login-form');
-var EmailVerificationNotice = require('./email-verification-notice');
+var EmailVerificationNotice = require('./notice/email-verification-notice');
 var ErrorTypes = require('../../utils/error-types');
 
 

@@ -1,0 +1,35 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.section-row {
+  .border-box();
+
+  min-height: @menu-height * 0.8;
+  padding: (@menu-height / 6);
+  border-bottom: 1px solid @dark-base;
+
+  &.x-last {
+    border-bottom: none;
+  }
+
+  .label {
+    &:extend(.column);
+    .column-width(0.3);
+  }
+
+  .row-value {
+    &:extend(.column);
+    .column-width(0.7);
+  }
+
+  input {
+    width: 90%;
+    padding-left: 15px;
+    border: none;
+    color: @dark-base;
+    font-size: @font-size;
+    outline: none; // no blue glowing around input
+  }
+}

@@ -1,0 +1,20 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.navigation-item {
+  height: @menu-height;
+  padding: (@menu-height / 4) 0;
+  font-size: @menu-height / 2.4;
+}
+
+.navigation-item-@{menu-items-number} {
+  &:extend(.navigation-item);
+  &:extend(.column);
+  .column-width(1 / @menu-items-number);
+
+  &.x-active {
+    background-color: @dark-blue;
+  }
+}

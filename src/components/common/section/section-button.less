@@ -1,0 +1,32 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.section-button {
+  width: 100%;
+  min-height: @menu-height * 0.8;
+  padding: (@menu-height / 6) 0;
+  border: none;
+  background-color: inherit;
+  color: @main-blue;
+  text-align: center;
+  font-size: @font-size;
+  font-weight: 400;
+
+  &:active {
+    background-color: @light-blue;
+  }
+
+  &:disabled {
+    color: @mild-base;
+  }
+
+  &.x-primary {
+    color: @grass-color;
+  }
+
+  &.x-warning {
+    color: @brick-color;
+  }
+}

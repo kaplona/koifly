@@ -1,0 +1,21 @@
+
+// --- General Style ---
+
+.border-box() {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.column {
+  .border-box();
+
+  display: inline-block;
+  margin-left: 0;
+  margin-right: 0;
+  vertical-align: top;
+}
+
+.column-width(@fraction) {
+  width: 100% * @fraction;
+}

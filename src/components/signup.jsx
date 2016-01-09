@@ -4,9 +4,9 @@ var React = require('react');
 var History = require('react-router').History;
 var DataService = require('../services/data-service');
 var Button = require('./common/button');
-var TextInput = require('./common/text-input');
-var PasswordInput = require('./common/password-input');
-var ErrorBox = require('./common/error-box');
+var TextInput = require('./common/inputs/text-input');
+var PasswordInput = require('./common/inputs/password-input');
+var ErrorBox = require('./common/notice/error-box');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 

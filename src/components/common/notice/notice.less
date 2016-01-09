@@ -1,0 +1,22 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.notice {
+  .border-box();
+
+  min-height: @menu-height;
+  padding: (@menu-height / 6);
+  background-color: @sand-color;
+
+  &.x-success {
+    &:extend(.notice);
+    background-color: @light-grass;
+  }
+
+  &.x-error {
+    &:extend(.notice);
+    background-color: @light-brick;
+  }
+}

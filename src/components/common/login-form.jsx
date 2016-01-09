@@ -3,14 +3,14 @@
 var React = require('react');
 var History = require('react-router').History;
 var DataService = require('../../services/data-service');
-var Section = require('./section');
-var SectionTitle = require('./section-title');
-var SectionRow = require('./section-row');
-var SectionButton = require('./section-button');
-var TextInput = require('./text-input');
-var PasswordInput = require('./password-input');
-var Notice = require('./notice');
-var ErrorBox = require('./error-box');
+var Section = require('./section/section');
+var SectionTitle = require('./section/section-title');
+var SectionRow = require('./section/section-row');
+var SectionButton = require('./section/section-button');
+var TextInput = require('./inputs/text-input');
+var PasswordInput = require('./inputs/password-input');
+var Notice = require('./notice/notice');
+var ErrorBox = require('./notice/error-box');
 var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
 
@@ -164,7 +164,7 @@ var LoginForm = React.createClass({
                     />
 
                 <SectionButton
-                    text='Log In With Email'
+                    text='Log In Without Password'
                     onClick={ this.handleEmailLogin }
                     />
 

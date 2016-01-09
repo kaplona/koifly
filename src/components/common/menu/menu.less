@@ -1,0 +1,46 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.menu {
+  width: 100%;
+  height: @menu-height;
+  text-align: center;
+  color: @light-blue;
+  background-color: @main-blue;
+  position: fixed;
+}
+
+.top-menu {
+  &:extend(.menu);
+
+  left: 0;
+  top: 0;
+
+  .top-navigation {
+    &:extend(.column);
+    .column-width(1/5);
+
+    height: @menu-height;
+    padding: (@menu-height / 4) 0;
+    font-size: @menu-height / 2.4;
+  }
+
+  .header {
+    &:extend(.column);
+    .column-width(3/5);
+
+    height: @menu-height;
+    padding: (@menu-height / 5) 0;
+    font-size: @menu-height / 2;
+    font-weight: 900;
+  }
+}
+
+.bottom-menu {
+  &:extend(.menu);
+
+  left: 0;
+  bottom: 0;
+}

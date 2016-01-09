@@ -3,8 +3,8 @@
 var React = require('react');
 var History = require('react-router').History;
 var LoginForm = require('./common/login-form');
-var TopMenu = require('./common/top-menu');
-var BottomMenu = require('./common/bottom-menu');
+var TopMenu = require('./common/menu/top-menu');
+var BottomMenu = require('./common/menu/bottom-menu');
 
 
 var Login = React.createClass({

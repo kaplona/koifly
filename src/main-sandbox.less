@@ -1,7 +1,7 @@
 
 @soft_white: #E5F8FF;
 @main-blue: #1F95C7;
-@darken-blue: darken(@main-blue, 20%);
+@dark-blue: darken(@main-blue, 20%);
 
 @menu-items-number: 4;
 @menu-height: 120px;
@@ -74,10 +74,6 @@ body {
 
     left: 0;
     bottom: 0;
-
-    .active-menu-item {
-        background-color: @darken-blue;
-    }
 }
 
 .navigation-item {
@@ -90,4 +86,8 @@ body {
     &:extend(.navigation-item);
     &:extend(.column);
     .column-width(1 / @menu-items-number);
+
+    &.x-active {
+        background-color: @dark-blue;
+    }
 }

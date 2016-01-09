@@ -5,9 +5,9 @@ var DataService = require('../services/data-service');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 var Button = require('./common/button');
-var PasswordInput = require('./common/password-input');
-var Notice = require('./common/notice');
-var ErrorBox = require('./common/error-box');
+var PasswordInput = require('./common/inputs/password-input');
+var Notice = require('./common/notice/notice');
+var ErrorBox = require('./common/notice/error-box');
 
 
 var ResetPass = React.createClass({

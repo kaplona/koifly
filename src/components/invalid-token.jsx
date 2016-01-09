@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Notice = require('./common/notice');
+var Notice = require('./common/notice/notice');
 
 
 var InvalidToken = React.createClass({
