@@ -2,12 +2,17 @@
 
 var React = require('react');
 var DataService = require('../services/data-service');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
-var Button = require('./common/button');
+var TopMenu = require('./common/menu/top-menu');
+var BottomMenu = require('./common/menu/bottom-menu');
+var Section = require('./common/section/section');
+var SectionTitle = require('./common/section/section-title');
+var SectionRow = require('./common/section/section-row');
+var SectionButton = require('./common/section/section-button');
 var PasswordInput = require('./common/inputs/password-input');
 var Notice = require('./common/notice/notice');
 var ErrorBox = require('./common/notice/error-box');
+var KoiflyError = require('../utils/error');
+var ErrorTypes = require('../utils/error-types');
 
 
 var ResetPass = React.createClass({
@@ -55,6 +60,10 @@ var ResetPass = React.createClass({
         }
     },
 
+    handleToLogin: function() {
+        this.history.pushState(null, '/login');
+    },
+
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
     },
@@ -91,26 +100,47 @@ var ResetPass = React.createClass({
 
         return (
             <div>
-                { this.renderError() }
+                <TopMenu
+                    headerText='Koifly'
+                    rightText='Log in'
+                    onRightClick={ this.handleToLogin }
+                    />
+
                 <form>
-                    <PasswordInput
-                        inputValue={ this.state.password }
-                        labelText='New Password:'
-                        inputName='password'
-                        onChange={ this.handleInputChange }
-                        />
+                    { this.renderError() }
 
-                    <PasswordInput
-                        inputValue={ this.state.passwordConfirm }
-                        labelText='Confirm password::'
-                        inputName='passwordConfirm'
-                        onChange={ this.handleInputChange }
-                        />
+                    <Section>
+                        <SectionTitle>Reset Password</SectionTitle>
 
-                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSaving }>
-                        { this.state.isSaving ? 'Saving ...' : 'Save' }
-                    </Button>
+                        <SectionRow>
+                            <PasswordInput
+                                inputValue={ this.state.password }
+                                labelText='New Password:'
+                                inputName='password'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <PasswordInput
+                                inputValue={ this.state.passwordConfirm }
+                                labelText='Confirm password::'
+                                inputName='passwordConfirm'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSaving ? 'Saving ...' : 'Save' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ !this.state.isSaving }
+                        />
                 </form>
+
+                <BottomMenu />
             </div>
         );
     }

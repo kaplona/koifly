@@ -57,12 +57,12 @@ var Signup = React.createClass({
         });
     },
 
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
     handleToLogin: function() {
         this.history.pushState(null, '/login');
+    },
+
+    handleInputChange: function(inputName, inputValue) {
+        this.setState({ [inputName]: inputValue });
     },
 
     handleSavingError: function(error) {

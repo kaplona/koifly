@@ -2,8 +2,14 @@
 
 var React = require('react');
 var DataService = require('../services/data-service');
-var Button = require('./common/button');
+var TopMenu = require('./common/menu/top-menu');
+var BottomMenu = require('./common/menu/bottom-menu');
+var Section = require('./common/section/section');
+var SectionTitle = require('./common/section/section-title');
+var SectionRow = require('./common/section/section-row');
+var SectionButton = require('./common/section/section-button');
 var TextInput = require('./common/inputs/text-input');
+var Description = require('./common/description');
 var Notice = require('./common/notice/notice');
 var ErrorBox = require('./common/notice/error-box');
 var KoiflyError = require('../utils/error');
@@ -45,6 +51,10 @@ var InitiateResetPass = React.createClass({
         });
     },
 
+    handleLinkTo: function(link) {
+        this.history.pushState(null, link);
+    },
+
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
     },
@@ -72,20 +82,47 @@ var InitiateResetPass = React.createClass({
     render: function() {
         return (
             <div>
-                { this.renderNotice() }
-                { this.renderError() }
-                <form>
-                    <TextInput
-                        inputValue={ this.state.email }
-                        labelText='Email:'
-                        inputName='email'
-                        onChange={ this.handleInputChange }
-                        />
+                <TopMenu
+                    headerText='Koifly'
+                    leftText='Back'
+                    rightText='Sign Up'
+                    onLeftClick={ () => this.handleLinkTo('/login') }
+                    onRightClick={ () => this.handleLinkTo('/signup') }
+                    />
 
-                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSending }>
-                        { this.state.isSending ? 'Sending...' : 'Send' }
-                    </Button>
+                <form>
+                    { this.renderNotice() }
+                    { this.renderError() }
+
+                    <Section>
+                        <SectionTitle>Reset Password</SectionTitle>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.email }
+                                labelText='Email:'
+                                inputName='email'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <Description>
+                                We will send you an email with a link to password reset page
+                            </Description>
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSending ? 'Sending...' : 'Send' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ !this.state.isSending }
+                        />
                 </form>
+
+                <BottomMenu />
             </div>
         );
     }
