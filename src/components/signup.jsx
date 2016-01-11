@@ -3,7 +3,12 @@
 var React = require('react');
 var History = require('react-router').History;
 var DataService = require('../services/data-service');
-var Button = require('./common/button');
+var TopMenu = require('./common/menu/top-menu');
+var BottomMenu = require('./common/menu/bottom-menu');
+var Section = require('./common/section/section');
+var SectionTitle = require('./common/section/section-title');
+var SectionRow = require('./common/section/section-row');
+var SectionButton = require('./common/section/section-button');
 var TextInput = require('./common/inputs/text-input');
 var PasswordInput = require('./common/inputs/password-input');
 var ErrorBox = require('./common/notice/error-box');
@@ -23,10 +28,6 @@ var Signup = React.createClass({
             error: null,
             isSaving: false
         };
-    },
-
-    componentWillMount: function() {
-        // TODO check cookie and redirect to home page
     },
 
     handleSubmit: function(event) {
@@ -60,6 +61,10 @@ var Signup = React.createClass({
         this.setState({ [inputName]: inputValue });
     },
 
+    handleToLogin: function() {
+        this.history.pushState(null, '/login');
+    },
+
     handleSavingError: function(error) {
         this.setState({
             error: error,
@@ -90,33 +95,55 @@ var Signup = React.createClass({
     render: function() {
         return (
             <div>
-                { this.renderError() }
+                <TopMenu
+                    headerText='Koifly'
+                    rightText='Log In'
+                    onRightClick={ this.handleToLogin }
+                    />
+
                 <form>
-                    <TextInput
-                        inputValue={ this.state.email }
-                        labelText='Email:'
-                        inputName='email'
-                        onChange={ this.handleInputChange }
-                        />
+                    { this.renderError() }
+                    <Section>
+                        <SectionTitle>Sign up</SectionTitle>
 
-                    <PasswordInput
-                        inputValue={ this.state.password }
-                        labelText='Password:'
-                        inputName='password'
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.email }
+                                labelText='Email:'
+                                inputName='email'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <PasswordInput
-                        inputValue={ this.state.passwordConfirm }
-                        labelText='Confirm password:'
-                        inputName='passwordConfirm'
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionRow>
+                            <PasswordInput
+                                inputValue={ this.state.password }
+                                labelText='Password:'
+                                inputName='password'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <Button type='submit' onClick={ this.handleSubmit } isEnabled={ !this.state.isSaving }>
-                        { this.state.isSaving ? 'Saving ...' : 'Save' }
-                    </Button>
+                        <SectionRow isLast={ true }>
+                            <PasswordInput
+                                inputValue={ this.state.passwordConfirm }
+                                labelText='Confirm password:'
+                                inputName='passwordConfirm'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSending ? 'Saving...' : 'Sign Up' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ !this.state.isSaving }
+                        />
                 </form>
+
+                <BottomMenu />
             </div>
         );
     }
