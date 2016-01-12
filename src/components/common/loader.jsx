@@ -2,6 +2,8 @@
 
 var React = require('react');
 
+require('./loader.less');
+
 
 var Loader = React.createClass({
     propTypes: {
@@ -9,8 +11,7 @@ var Loader = React.createClass({
     },
 
     render: function() {
-        var loaderClass = this.props.mini ? 'loader loader--mini' : 'loader loader--large';
-        return <div className={ loaderClass } />;
+        return <div className='loader' />;
     }
 });
 

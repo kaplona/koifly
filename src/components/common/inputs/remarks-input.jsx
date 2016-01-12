@@ -2,6 +2,8 @@
 
 var React = require('react');
 
+require('./remarks.less');
+
 
 var RemarksInput = React.createClass({
 

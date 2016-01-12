@@ -1,0 +1,17 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+textarea {
+  .border-box();
+
+  width: 100%;
+  min-height: @menu-height;
+  margin-top: @menu-height * 0.2;
+  padding: @menu-height * 0.1;
+  border: 1px solid @dark-base;
+  color: @dark-base;
+  font-size: @font-size * 0.8;
+  outline: none; // no blue glowing around input
+}

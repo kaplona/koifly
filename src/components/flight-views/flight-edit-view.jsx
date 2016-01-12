@@ -1,21 +1,24 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
-var Link = ReactRouter.Link;
+var History = require('react-router').History;
 var _ = require('lodash');
 var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
 var GliderModel = require('../../models/glider');
 var Validation = require('../../utils/validation');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+//var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var SectionButton = require('../common/section/section-button');
 var TextInput = require('./../common/inputs/text-input');
 var TimeInput = require('./../common/inputs/time-input');
 var AltitudeInput = require('./../common/inputs/altitude-input');
 var RemarksInput = require('./../common/inputs/remarks-input');
-var DropDown = require('./../common/inputs/dropdown');
+var DropDown = require('./../common/inputs/dropdown-input');
 var Loader = require('./../common/loader');
 var ErrorBox = require('./../common/notice/error-box');
 var ErrorTypes = require('../../utils/error-types');
@@ -161,10 +164,15 @@ var FlightEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <ErrorBox
                     error={ this.state.loadingError }
                     onTryAgain={ this.handleDataModified }
                     />
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     },
@@ -196,16 +204,14 @@ var FlightEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.flightId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/flights'>Back to Flights</Link>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <Loader />
-                <div className='button__menu'>
-                    <Button isEnabled={ false }>Save</Button>
-                    { deleteButton }
-                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
-                </div>
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     },
@@ -214,26 +220,14 @@ var FlightEditView = React.createClass({
         if (this.props.params.flightId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button onClick={ this.handleDeleteFlight } isEnabled={ isEnabled }>
-                    { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
-                </Button>
+                <SectionButton
+                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    buttonStyle='warning'
+                    onClick={ this.handleDeleteFlight }
+                    isEnabled={ isEnabled }
+                    />
             );
         }
-    },
-
-    renderButtonMenu: function() {
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-        return (
-            <div className='button__menu'>
-                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
-                    { this.state.isSaving ? 'Saving ...' : 'Save' }
-                </Button>
-                { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
-                    Cancel
-                </Button>
-            </div>
-        );
     },
 
     render: function() {
@@ -246,74 +240,105 @@ var FlightEditView = React.createClass({
         }
 
         var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         var sites = SiteModel.getSiteValueTextList();
         var gliders = GliderModel.getGliderValueTextList();
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <Link to='/flights'>Back to Flights</Link>
+                <TopMenu
+                    leftText='Cancel'
+                    rightText='Save'
+                    onLeftClick={ this.handleCancelEditing }
+                    onRightClick={ this.handleSubmit }
+                    />
+
                 { this.renderSavingError() }
                 { this.renderDeletingError() }
                 <form>
-                    <TextInput
-                        inputValue={ this.state.flight.date }
-                        labelText={ <span>Date<sup>*</sup>:</span> }
-                        inputName='date'
-                        errorMessage={ this.state.errors.date }
-                        onChange={ this.handleInputChange }
+                    <Section>
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.flight.date }
+                                labelText={ <span>Date<sup>*</sup>:</span> }
+                                inputName='date'
+                                errorMessage={ this.state.errors.date }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TimeInput
+                                hours={ this.state.flight.hours }
+                                minutes={ this.state.flight.minutes }
+                                labelText='Airtime:'
+                                errorMessage={ this.state.errors.airtime }
+                                errorMessageHours={ this.state.errors.hours }
+                                errorMessageMinutes={ this.state.errors.minutes }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <AltitudeInput
+                                inputValue={ this.state.flight.altitude }
+                                selectedAltitudeUnit={ this.state.flight.altitudeUnit }
+                                labelText='Altitude gained:'
+                                errorMessage={ this.state.errors.altitude }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <DropDown
+                                selectedValue={ this.state.flight.siteId === null ? '0' : this.state.flight.siteId }
+                                options={ sites }
+                                labelText='Site:'
+                                inputName='siteId'
+                                emptyValue={ 0 }
+                                errorMessage={ this.state.errors.siteId }
+                                onChangeFunc={ (inputName, inputValue) => {
+                                    this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
+                                } }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <DropDown
+                                selectedValue={ this.state.flight.gliderId === null ? '0' : this.state.flight.gliderId }
+                                options={ gliders }
+                                labelText='Glider:'
+                                inputName='gliderId'
+                                emptyValue={ 0 }
+                                errorMessage={ this.state.errors.gliderId }
+                                onChangeFunc={ (inputName, inputValue) => {
+                                    this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
+                                } }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <RemarksInput
+                                inputValue={ this.state.flight.remarks }
+                                labelText='Remarks:'
+                                errorMessage={ this.state.errors.remarks }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ isEnabled }
                         />
 
-                    <TimeInput
-                        hours={ this.state.flight.hours }
-                        minutes={ this.state.flight.minutes }
-                        labelText='Airtime:'
-                        errorMessage={ this.state.errors.airtime }
-                        errorMessageHours={ this.state.errors.hours }
-                        errorMessageMinutes={ this.state.errors.minutes }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <AltitudeInput
-                        inputValue={ this.state.flight.altitude }
-                        selectedAltitudeUnit={ this.state.flight.altitudeUnit }
-                        labelText='Altitude gained:'
-                        errorMessage={ this.state.errors.altitude }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <DropDown
-                        selectedValue={ this.state.flight.siteId === null ? '0' : this.state.flight.siteId }
-                        options={ sites }
-                        labelText='Site:'
-                        inputName='siteId'
-                        emptyValue={ 0 }
-                        errorMessage={ this.state.errors.siteId }
-                        onChangeFunc={ (inputName, inputValue) => {
-                            this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
-                        } }
-                        />
-
-                    <DropDown
-                        selectedValue={ this.state.flight.gliderId === null ? '0' : this.state.flight.gliderId }
-                        options={ gliders }
-                        labelText='Glider:'
-                        inputName='gliderId'
-                        emptyValue={ 0 }
-                        errorMessage={ this.state.errors.gliderId }
-                        onChangeFunc={ (inputName, inputValue) => {
-                            this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
-                        } }
-                        />
-
-                    <RemarksInput
-                        inputValue={ this.state.flight.remarks }
-                        labelText='Remarks'
-                        errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    { this.renderButtonMenu() }
+                    { this.renderDeleteButton() }
                 </form>
+
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     }

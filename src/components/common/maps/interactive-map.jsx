@@ -6,6 +6,8 @@ var PubSub = require('../../../utils/pubsub');
 var Map = require('../../../utils/map');
 var Altitude = require('../../../utils/altitude');
 
+require('./map.less');
+
 
 var InteractiveMap = React.createClass({
 

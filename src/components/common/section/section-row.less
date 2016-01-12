@@ -7,30 +7,10 @@
   .border-box();
 
   min-height: @menu-height * 0.8;
-  padding: (@menu-height / 6);
+  padding: (@menu-height * 0.3) (@menu-height * 0.15);
   border-bottom: 1px solid @dark-base;
 
   &.x-last {
     border-bottom: none;
-  }
-
-  // maybe I need to move everything below to separate less files
-  .label {
-    &:extend(.column);
-    .column-width(0.3);
-  }
-
-  .row-value {
-    &:extend(.column);
-    .column-width(0.7);
-  }
-
-  input {
-    width: 90%;
-    padding-left: 15px;
-    border: none;
-    color: @dark-base;
-    font-size: @font-size;
-    outline: none; // no blue glowing around input
   }
 }

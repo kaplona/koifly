@@ -2,14 +2,18 @@
 
 var React = require('react');
 var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
 var History = ReactRouter.History;
 var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var RowContent = require('../common/section/row-content');
 var StaticMap = require('./../common/maps/static-map');
 var Loader = require('./../common/loader');
 var ErrorBox = require('./../common/notice/error-box');
@@ -32,12 +36,12 @@ var FlightView = React.createClass({
         };
     },
 
-    handleFlightEditing: function() {
-        this.history.pushState(null, '/flight/' + this.props.params.flightId + '/edit');
+    handleToFlightList: function() {
+        this.history.pushState(null, '/flights');
     },
 
-    handleFlightAdding: function() {
-        this.history.pushState(null, '/flight/0/edit');
+    handleFlightEditing: function() {
+        this.history.pushState(null, '/flight/' + this.props.params.flightId + '/edit');
     },
 
     handleDataModified: function() {
@@ -55,7 +59,12 @@ var FlightView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Back'
+                    onLeftClick={ this.handleToFlightList }
+                    />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     },
@@ -63,19 +72,13 @@ var FlightView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/flights'>Back to Flights</Link>
+                <TopMenu
+                    leftText='Back'
+                    onLeftClick={ this.handleToFlightList }
+                    />
                 <Loader />
-                { this.renderButtonMenu() }
+                <BottomMenu isFlightView={ true } />
             </View>
-        );
-    },
-
-    renderButtonMenu: function() {
-        return (
-            <div className='button__menu'>
-                <Button onClick={ this.handleFlightEditing }>Edit</Button>
-                <Button onClick={ this.handleFlightAdding }>Add Flight</Button>
-            </div>
         );
     },
 
@@ -108,27 +111,52 @@ var FlightView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/flights'>Back to Flights</Link>
-                <div className='container__title'>
-                    <div>{ this.state.flight.date }</div>
-                    <div>{ this.state.flight.siteName }</div>
-                </div>
-                <div className='container__subtitle'>
-                    <div>
-                        Altitude gained:
-                        { this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
-                    </div>
-                    <div>
-                        Above the launch:
-                        { this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
-                    </div>
-                    <div>Airtime: { Util.hoursMinutes(this.state.flight.airtime) }</div>
-                    <div>Glider: { this.state.flight.gliderName }</div>
-                    <div>Remarks:</div>
-                    <div>{ this.state.flight.remarks }</div>
-                </div>
-                { this.renderButtonMenu() }
-                { this.renderMap() }
+                <TopMenu
+                    leftText='Back'
+                    rightText='Edit'
+                    onLeftClick={ this.handleToFlightList }
+                    onRightClick={ this.handleFlightEditing }
+                    />
+
+                <Section>
+                    <SectionTitle>
+                        <div>{ this.state.flight.date }</div>
+                        <div>{ this.state.flight.siteName }</div>
+                    </SectionTitle>
+
+                    <SectionRow>
+                        <RowContent
+                            label='Altitude gained:'
+                            value={ ' ' + this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Above the launch:'
+                            value={ ' ' + this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Airtime:'
+                            value={ Util.hoursMinutes(this.state.flight.airtime) }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Glider:'
+                            value={ this.state.flight.gliderName }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <div>Remarks:</div>
+                        <div>{ this.state.flight.remarks }</div>
+                    </SectionRow>
+
+                    { this.renderMap() }
+                </Section>
+
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     }

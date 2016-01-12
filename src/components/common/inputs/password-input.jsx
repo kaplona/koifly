@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Label = require('./../section/label');
-var RowValue = require('./../section/row-value');
+var Value = require('./../section/value-input');
 
 
 var PasswordInput = React.createClass({
@@ -50,7 +50,7 @@ var PasswordInput = React.createClass({
                     { this.renderLabel() }
                 </Label>
 
-                <RowValue>
+                <Value>
                     <input
                         value={ this.props.inputValue }
                         type='password'
@@ -58,7 +58,7 @@ var PasswordInput = React.createClass({
                         onChange={ this.handleUserInput }
                         ref='input'
                         />
-                </RowValue>
+                </Value>
             </div>
         );
     }

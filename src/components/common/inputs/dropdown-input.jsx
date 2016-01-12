@@ -3,27 +3,28 @@
 var React = require('react');
 var Label = require('../section/label');
 var Value = require('../section/value-input');
+var Dropdown = require('./dropdown');
 
 
-var TextInput = React.createClass({
+var DropdownInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.oneOfType([
+        selectedValue: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ]).isRequired,
+        options: React.PropTypes.arrayOf(React.PropTypes.shape({
+            value: React.PropTypes.string,
+            text: React.PropTypes.string
+        })).isRequired,
+        labelText: React.PropTypes.string,
+        inputName: React.PropTypes.string.isRequired,
+        emptyValue: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.number
         ]),
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
-        ]),
-        inputName: React.PropTypes.string,
         errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func,
-        onBlur: React.PropTypes.func
-    },
-
-    handleUserInput: function() {
-        this.props.onChange(this.props.inputName, this.refs.input.getDOMNode().value);
+        onChangeFunc: React.PropTypes.func.isRequired
     },
 
     renderErrorMessage: function() {
@@ -52,13 +53,13 @@ var TextInput = React.createClass({
                 </Label>
 
                 <Value>
-                    <input
-                        value={ this.props.inputValue }
-                        type='text'
+                    <Dropdown
                         className={ (this.props.errorMessage) ? 'error' : '' }
-                        onChange={ this.handleUserInput }
-                        onBlur={ this.props.onBlur }
-                        ref='input'
+                        selectedValue={ this.props.selectedValue }
+                        options={ this.props.options }
+                        inputName={ this.props.inputName }
+                        emptyValue={ this.props.emptyValue }
+                        onChangeFunc={ this.props.onChangeFunc }
                         />
                 </Value>
             </div>
@@ -67,4 +68,4 @@ var TextInput = React.createClass({
 });
 
 
-module.exports = TextInput;
+module.exports = DropdownInput;

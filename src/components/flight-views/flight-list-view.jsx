@@ -4,8 +4,9 @@ var React = require('react');
 var History = require('react-router').History;
 var FlightModel = require('../../models/flight');
 var View = require('./../common/view');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
 var Table = require('./../common/table');
-var Button = require('./../common/button');
 var Loader = require('./../common/loader');
 var FirstAdding = require('./../common/first-adding');
 var ErrorBox = require('./../common/notice/error-box');
@@ -104,6 +105,12 @@ var FlightListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
+                <TopMenu
+                    headerText='Flights'
+                    rightText='+'
+                    onRightClick={ this.handleFlightAdding }
+                    />
+
                 <Table
                     columns={ columns }
                     rows={ rows }
@@ -111,7 +118,8 @@ var FlightListView = React.createClass({
                     onRowClick={ this.handleRowClick }
                     />
                 { this.renderLoader() }
-                <Button onClick={ this.handleFlightAdding }>Add Flight</Button>
+
+                <BottomMenu isFlightView={ true } />
             </View>
         );
     }

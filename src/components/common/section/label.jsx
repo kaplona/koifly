@@ -2,6 +2,8 @@
 
 var React = require('react');
 
+require('./label.less');
+
 
 var Label = React.createClass({
     render: function() {

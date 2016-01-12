@@ -6,6 +6,8 @@ var PubSub = require('../../../utils/pubsub');
 var Map = require('../../../utils/map');
 var SiteModel = require('../../../models/site');
 
+require('./map.less');
+
 
 var StaticMap = React.createClass({
 

@@ -15,34 +15,16 @@ var DropDown = React.createClass({
             value: React.PropTypes.string,
             text: React.PropTypes.string
         })).isRequired,
-        labelText: React.PropTypes.string,
         inputName: React.PropTypes.string.isRequired,
         emptyValue: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.number
         ]),
-        errorMessage: React.PropTypes.string,
         onChangeFunc: React.PropTypes.func.isRequired
     },
 
     handleUserInput: function() {
         this.props.onChangeFunc(this.props.inputName, this.refs.selectInput.getDOMNode().value);
-    },
-
-    renderErrorMessage: function() {
-        if (this.props.errorMessage) {
-            return (
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
-            );
-        }
-    },
-
-    renderLabel: function() {
-        if (this.props.labelText) {
-            return <label>{ this.props.labelText }</label>;
-        }
     },
 
     render: function() {
@@ -69,18 +51,13 @@ var DropDown = React.createClass({
         });
 
         return (
-            <div>
-                { this.renderErrorMessage() }
-                { this.renderLabel() }
-                <select
-                    className={ (this.props.errorMessage) ? 'error' : '' }
-                    value={ this.props.selectedValue }
-                    onChange={ this.handleUserInput }
-                    ref='selectInput'
-                    >
-                    { selectOptions }
-                </select>
-            </div>
+            <select
+                value={ this.props.selectedValue }
+                onChange={ this.handleUserInput }
+                ref='selectInput'
+                >
+                { selectOptions }
+            </select>
         );
     }
 });

@@ -3,6 +3,8 @@
 var React = require('react');
 var _ = require('lodash');
 
+require('./table.less');
+
 
 var Table = React.createClass({
 
@@ -78,6 +80,7 @@ var Table = React.createClass({
                     onClick={ () => this.handleSorting(column.key) }
                     >
                     { column.label }
+                    <sup>{ '\u25bc' }</sup>
                 </th>
             );
         });

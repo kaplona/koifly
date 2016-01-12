@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react');
+var Label = require('../section/label');
+var Value = require('../section/value-input');
 
 
 var TimeInput = React.createClass({
@@ -39,23 +41,31 @@ var TimeInput = React.createClass({
         return (
             <div>
                 { this.renderErrorMessage() }
-                <label>{ this.props.labelText }</label>
-                <input
-                    value={ this.props.hours }
-                    type='text'
-                    className={ (this.props.errorMessageHours) ? 'error' : '' }
-                    onChange={ () => this.handleUserInput('hours') }
-                    ref='hours'
-                    />
-                <span>h</span>
-                <input
-                    value={ this.props.minutes }
-                    type='text'
-                    className={ (this.props.errorMessageMinutes) ? 'error' : '' }
-                    onChange={ () => this.handleUserInput('minutes') }
-                    ref='minutes'
-                    />
-                <span>min</span>
+
+                <Label>
+                    { this.props.labelText }
+                </Label>
+
+                <Value>
+                    <input
+                        className='col-of-four'
+                        value={ this.props.hours }
+                        type='text'
+                        //className={ (this.props.errorMessageHours) ? 'error' : '' }
+                        onChange={ () => this.handleUserInput('hours') }
+                        ref='hours'
+                        />
+                    <div className='col-of-four'>h</div>
+                    <input
+                        className='col-of-four'
+                        value={ this.props.minutes }
+                        type='text'
+                        //className={ (this.props.errorMessageMinutes) ? 'error' : '' }
+                        onChange={ () => this.handleUserInput('minutes') }
+                        ref='minutes'
+                        />
+                    <div className='col-of-four'>min</div>
+                </Value>
             </div>
         );
     }

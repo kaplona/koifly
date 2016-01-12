@@ -2,7 +2,9 @@
 
 var React = require('react');
 var Altitude = require('../../../utils/altitude');
-var DropDown = require('./dropdown');
+var Label = require('../section/label');
+var Value = require('../section/value-input');
+var Dropdown = require('./dropdown');
 
 
 var AltitudeInput = React.createClass({
@@ -53,22 +55,29 @@ var AltitudeInput = React.createClass({
         return (
             <div>
                 { this.renderErrorMessage() }
-                <label>{ this.props.labelText }</label>
-                <input
-                    value={ this.props.inputValue }
-                    type='text'
-                    className={ (this.props.errorMessage) ? 'error' : '' }
-                    onChange={ () => this.handleUserInput(this.props.inputName) }
-                    ref={ this.props.inputName }
-                    />
-                <div className='inline'>
-                    <DropDown
-                        selectedValue={ this.props.selectedAltitudeUnit }
-                        options={ altitudeUnitsList }
-                        inputName='altitudeUnit'
-                        onChangeFunc={ this.handleUserInput }
+
+                <Label>
+                    { this.props.labelText }
+                </Label>
+
+                <Value>
+                    <input
+                        className='col-of-two'
+                        value={ this.props.inputValue }
+                        type='text'
+                        //className={ (this.props.errorMessage) ? 'error' : '' }
+                        onChange={ () => this.handleUserInput(this.props.inputName) }
+                        ref={ this.props.inputName }
                         />
-                </div>
+                    <div className='col-of-two'>
+                        <Dropdown
+                            selectedValue={ this.props.selectedAltitudeUnit }
+                            options={ altitudeUnitsList }
+                            inputName='altitudeUnit'
+                            onChangeFunc={ this.handleUserInput }
+                            />
+                    </div>
+                </Value>
             </div>
         );
     }

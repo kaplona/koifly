@@ -2,12 +2,13 @@
 
 var React = require('react');
 
+require('./value.less');
 
-var RowValue = React.createClass({
+
+var Value = React.createClass({
     render: function() {
         return (
-            <div className='row-value'>
-                { '\u25bb' }
+            <div className='value'>
                 { this.props.children }
             </div>
         );
@@ -15,4 +16,4 @@ var RowValue = React.createClass({
 });
 
 
-module.exports = RowValue;
+module.exports = Value;

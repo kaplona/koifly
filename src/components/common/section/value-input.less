@@ -1,0 +1,36 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.value-input {
+  &:extend(.column);
+  .column-width(0.6);
+
+  .arrow {
+    &:extend(.column);
+    .column-width(0.09);
+  }
+
+  input, select {
+    width: 90%;
+    border: none;
+    color: @dark-base;
+    font-size: @font-size;
+    outline: none; // no blue glowing around input
+  }
+
+  select {
+    background-color: inherit;
+  }
+
+  .col-of-four {
+    &:extend(.column);
+    .column-width(0.22);
+  }
+
+  .col-of-two {
+    &:extend(.column);
+    .column-width(0.44);
+  }
+}
