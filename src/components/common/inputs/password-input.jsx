@@ -3,6 +3,7 @@
 var React = require('react');
 var Label = require('./../section/label');
 var Value = require('./../section/value-input');
+var ValidationError = require('../section/validation-error');
 
 
 var PasswordInput = React.createClass({
@@ -27,17 +28,7 @@ var PasswordInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return (
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
-            );
-        }
-    },
-
-    renderLabel: function() {
-        if (this.props.labelText) {
-            return <label>{ this.props.labelText }</label>;
+            return <ValidationError text={ this.props.errorMessage } />;
         }
     },
 
@@ -47,14 +38,13 @@ var PasswordInput = React.createClass({
                 { this.renderErrorMessage() }
 
                 <Label>
-                    { this.renderLabel() }
+                    { this.props.labelText }
                 </Label>
 
                 <Value>
                     <input
                         value={ this.props.inputValue }
                         type='password'
-                        className={ (this.props.errorMessage) ? 'error' : '' }
                         onChange={ this.handleUserInput }
                         ref='input'
                         />

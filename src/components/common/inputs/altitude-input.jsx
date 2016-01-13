@@ -5,6 +5,7 @@ var Altitude = require('../../../utils/altitude');
 var Label = require('../section/label');
 var Value = require('../section/value-input');
 var Dropdown = require('./dropdown');
+var ValidationError = require('../section/validation-error');
 
 
 var AltitudeInput = React.createClass({
@@ -43,9 +44,7 @@ var AltitudeInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return (<div className='error_message'>
-                { this.props.errorMessage }
-            </div>);
+            return <ValidationError text={ this.props.errorMessage } />;
         }
     },
 
@@ -65,7 +64,6 @@ var AltitudeInput = React.createClass({
                         className='col-of-two'
                         value={ this.props.inputValue }
                         type='text'
-                        //className={ (this.props.errorMessage) ? 'error' : '' }
                         onChange={ () => this.handleUserInput(this.props.inputName) }
                         ref={ this.props.inputName }
                         />

@@ -3,6 +3,7 @@
 var React = require('react');
 var Label = require('../section/label');
 var Value = require('../section/value-input');
+var ValidationError = require('../section/validation-error');
 
 
 var TimeInput = React.createClass({
@@ -29,11 +30,8 @@ var TimeInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes) {
-            return (
-                <div className='error_message'>
-                    { this.props.errorMessage } { ' ' } { this.props.errorMessageHours } { ' ' } { this.props.errorMessageMinutes }
-                </div>
-            );
+            var errorText = this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes;
+            return <ValidationError text={ errorText } />;
         }
     },
 
@@ -51,7 +49,6 @@ var TimeInput = React.createClass({
                         className='col-of-four'
                         value={ this.props.hours }
                         type='text'
-                        //className={ (this.props.errorMessageHours) ? 'error' : '' }
                         onChange={ () => this.handleUserInput('hours') }
                         ref='hours'
                         />
@@ -60,7 +57,6 @@ var TimeInput = React.createClass({
                         className='col-of-four'
                         value={ this.props.minutes }
                         type='text'
-                        //className={ (this.props.errorMessageMinutes) ? 'error' : '' }
                         onChange={ () => this.handleUserInput('minutes') }
                         ref='minutes'
                         />

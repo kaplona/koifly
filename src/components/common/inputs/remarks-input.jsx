@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ValidationError = require('../section/validation-error');
 
 require('./remarks.less');
 
@@ -27,28 +28,17 @@ var RemarksInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return (
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
-            );
-        }
-    },
-
-    renderLabel: function() {
-        if (this.props.labelText) {
-            return <label>{ this.props.labelText }</label>;
+            return <ValidationError text={ this.props.errorMessage } />;
         }
     },
 
     render: function() {
         return (
             <div>
-                { this.renderLabel() }
                 { this.renderErrorMessage() }
+                <label>{ this.props.labelText }</label>
                 <textarea
                     value={ this.props.inputValue }
-                    className={ (this.props.errorMessage) ? 'error' : '' }
                     onChange={ this.handleUserInput }
                     ref='textarea'
                     />

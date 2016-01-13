@@ -1,7 +1,8 @@
 'use strict';
 
 var React = require('react');
-var Button = require('./button');
+
+require('./first-adding.less');
 
 
 var FirstAdding = React.createClass({
@@ -16,9 +17,13 @@ var FirstAdding = React.createClass({
 
     render: function() {
         return (
-            <div className='center'>
+            <div className='first-adding'>
                 <div>{ 'You don\'t have any ' + this.props.dataType + ' yet' }</div>
-                <Button onClick={ this.handleAdding }>Add</Button>
+                <input
+                    type='button'
+                    value='+'
+                    onClick={ this.props.onAdding }
+                    />
             </div>
         );
     }

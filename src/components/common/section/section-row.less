@@ -6,9 +6,11 @@
 .section-row {
   .border-box();
 
+  @vertical-padding: (@menu-height * 0.15);
   min-height: @menu-height * 0.8;
-  padding: (@menu-height * 0.3) (@menu-height * 0.15);
+  padding: (@menu-height * 0.33) @vertical-padding (@menu-height * 0.25) @vertical-padding;
   border-bottom: 1px solid @dark-base;
+  position: relative;
 
   &.x-last {
     border-bottom: none;

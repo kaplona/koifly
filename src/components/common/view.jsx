@@ -3,12 +3,13 @@
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
 var PilotModel = require('../../models/pilot');
-var LoginForm = require('./login-form');
+var Login = require('../login');
 var EmailVerificationNotice = require('./notice/email-verification-notice');
 var ErrorTypes = require('../../utils/error-types');
 
 
 var View = React.createClass({
+
     propTypes: {
         onDataModified: React.PropTypes.func,
         error: React.PropTypes.object
@@ -60,7 +61,7 @@ var View = React.createClass({
 
     render: function() {
         if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_FAILURE) {
-            return <LoginForm />;
+            return <Login isStayOnThisPage={ true } />;
         }
 
         return (

@@ -39,6 +39,7 @@ var PilotView = React.createClass({
 
     handleLogOut: function() {
         DataService.logOut();
+        this.history.pushState(null, '/');
     },
 
     handleDataModified: function() {

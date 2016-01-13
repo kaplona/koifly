@@ -3,6 +3,7 @@
 var React = require('react');
 var Label = require('../section/label');
 var Value = require('../section/value-input');
+var ValidationError = require('../section/validation-error');
 
 
 var TextInput = React.createClass({
@@ -28,17 +29,7 @@ var TextInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return (
-                <div className='error_message'>
-                    { this.props.errorMessage }
-                </div>
-            );
-        }
-    },
-
-    renderLabel: function() {
-        if (this.props.labelText) {
-            return <label>{ this.props.labelText }</label>;
+            return <ValidationError text={ this.props.errorMessage } />;
         }
     },
 
@@ -48,14 +39,13 @@ var TextInput = React.createClass({
                 { this.renderErrorMessage() }
 
                 <Label>
-                    { this.renderLabel() }
+                    { this.props.labelText }
                 </Label>
 
                 <Value>
                     <input
                         value={ this.props.inputValue }
                         type='text'
-                        className={ (this.props.errorMessage) ? 'error' : '' }
                         onChange={ this.handleUserInput }
                         onBlur={ this.props.onBlur }
                         ref='input'
