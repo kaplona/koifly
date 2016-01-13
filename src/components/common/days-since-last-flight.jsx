@@ -3,6 +3,8 @@
 var React = require('react');
 var FlightModel = require('../../models/flight');
 
+require('./days-since.less');
+
 
 var DaysSinceLastFlight = React.createClass({
 
@@ -17,7 +19,7 @@ var DaysSinceLastFlight = React.createClass({
         }
 
         return (
-            <div className='container__days_since'>
+            <div className='days-since'>
                 { daysSinceLastFlight }
             </div>
         );

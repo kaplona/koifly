@@ -1,11 +1,18 @@
 'use strict';
 
 var React = require('react');
-var Link = require('react-router').Link;
+var History = require('react-router').History;
+var DataService = require('../../services/data-service');
 var Util = require('../../utils/util');
 var PilotModel = require('../../models/pilot');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var RowContent = require('../common/section/row-content');
+var SectionButton = require('../common/section/section-button');
 var DaysSinceLastFlight = require('./../common/days-since-last-flight');
 var Loader = require('./../common/loader');
 var ErrorBox = require('./../common/notice/error-box');
@@ -13,11 +20,25 @@ var ErrorBox = require('./../common/notice/error-box');
 
 var PilotView = React.createClass({
 
+    mixins: [ History ],
+
     getInitialState: function() {
         return {
             pilot: null,
             loadingError: null
         };
+    },
+
+    handlePilotEditing: function() {
+        this.history.pushState(null, '/pilot/edit');
+    },
+
+    handleChangePass: function() {
+        this.history.pushState(null, '/pilot/edit/change-pass');
+    },
+
+    handleLogOut: function() {
+        DataService.logOut();
     },
 
     handleDataModified: function() {
@@ -35,7 +56,9 @@ var PilotView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu header='Pilot' />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     },
@@ -43,7 +66,9 @@ var PilotView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
+                <TopMenu header='Pilot' />
                 <Loader />
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     },
@@ -61,27 +86,70 @@ var PilotView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <div className='container__title'>
-                    <div>{ this.state.pilot.userName }</div>
-                    <div>{ this.state.pilot.email }</div>
-                </div>
-                <div className='container__subtitle'>
-                    <div>Flights #: { this.state.pilot.flightNumTotal }</div>
-                    <div>Total Airtime: { airtimeTotal }</div>
-                    <div>Sites #: { this.state.pilot.siteNum }</div>
-                    <div>Gliders #: { this.state.pilot.gliderNum }</div>
-                    <DaysSinceLastFlight />
-                </div>
+                <TopMenu
+                    header='Pilot'
+                    rightText='Edit'
+                    onRightClick={ this.handlePilotEditing }
+                    />
 
-                <div className='line' />
+                <Section>
+                    <SectionTitle>
+                        <div>{ this.state.pilot.userName }</div>
+                        <div>{ this.state.pilot.email }</div>
+                    </SectionTitle>
 
-                <div className='container__title'>Settings</div>
-                <div className='container__subtitle'>
-                    <div>Altitude units: { this.state.pilot.altitudeUnit }</div>
-                    <div>Password: <Link to='/pilot/edit/change-pass'>Change Password</Link></div>
-                </div>
+                    <SectionRow>
+                        <RowContent
+                            label='Flights #:'
+                            value={ this.state.pilot.flightNumTotal }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Total Airtime:'
+                            value={ airtimeTotal }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Sites #:'
+                            value={ this.state.pilot.siteNum }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Gliders #:'
+                            value={ this.state.pilot.gliderNum }
+                            />
+                    </SectionRow>
+                    <SectionRow isLast={ true }>
+                        <DaysSinceLastFlight />
+                    </SectionRow>
+                </Section>
 
-                <Link to='/pilot/edit'><Button>Edit</Button></Link>
+                <Section>
+                    <SectionTitle>Settings</SectionTitle>
+
+                    <SectionRow isLast={ true }>
+                        <RowContent
+                            label='Altitude units:'
+                            value={ this.state.pilot.altitudeUnit }
+                            />
+                    </SectionRow>
+                </Section>
+
+                <SectionButton
+                    text='Change Password'
+                    onClick={ this.handleChangePass }
+                    />
+
+                <SectionButton
+                    text='Log Out'
+                    buttonStyle='warning'
+                    onClick={ this.handleLogOut }
+                    />
+
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     }

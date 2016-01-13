@@ -7,7 +7,11 @@ var PilotModel = require('../../models/pilot');
 var Validation = require('../../utils/validation');
 var Altitude = require('../../utils/altitude');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
 var TextInput = require('./../common/inputs/text-input');
 var TimeInput = require('./../common/inputs/time-input');
 var DropDown = require('./../common/inputs/dropdown-input');
@@ -120,7 +124,12 @@ var PilotEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     },
@@ -141,26 +150,13 @@ var PilotEditView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <Loader />
-                <div className='button__menu'>
-                    <Button isEnabled={ false }>Save</Button>
-                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
-                </div>
+                <BottomMenu isPilotView={ true } />
             </View>
-        );
-    },
-
-    renderButtonMenu: function() {
-        var isEnabled = !this.state.isSaving;
-        return (
-            <div className='button__menu'>
-                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
-                    { this.state.isSaving ? 'Saving ...' : 'Save' }
-                </Button>
-                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
-                    Cancel
-                </Button>
-            </div>
         );
     },
 
@@ -178,54 +174,74 @@ var PilotEditView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                { this.renderSavingError() }
+                <TopMenu
+                    leftText='Cancel'
+                    rightText='Save'
+                    onLeftClick={ this.handleCancelEditing }
+                    onRightClick={ this.handleSubmit }
+                    />
+
                 <form>
+                    { this.renderSavingError() }
+                    <Section>
+                        <SectionTitle>
+                            { this.state.pilot.email }
+                        </SectionTitle>
 
-                    <div className='container__title'>{ this.state.pilot.email }</div>
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.pilot.userName }
+                                labelText='Name:'
+                                inputName='userName'
+                                errorMessage={ this.state.errors.userName }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <TextInput
-                        inputValue={ this.state.pilot.userName }
-                        labelText='Name:'
-                        inputName='userName'
-                        errorMessage={ this.state.errors.userName }
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionTitle>
+                            My achievements before Koifly:
+                        </SectionTitle>
 
-                    <div className='line' />
-                    <div>My achievements before Koifly:</div>
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.pilot.initialFlightNum }
+                                labelText='Number of Flights:'
+                                inputName='initialFlightNum'
+                                errorMessage={ this.state.errors.initialFlightNum }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <TextInput
-                        inputValue={ this.state.pilot.initialFlightNum }
-                        labelText='Number of Flights:'
-                        inputName='initialFlightNum'
-                        errorMessage={ this.state.errors.initialFlightNum }
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionRow>
+                            <TimeInput
+                                hours={ this.state.pilot.hours }
+                                minutes={ this.state.pilot.minutes }
+                                labelText='Airtime:'
+                                errorMessage={ this.state.errors.initialAirtime }
+                                errorMessageHours={ this.state.errors.hours }
+                                errorMessageMinutes={ this.state.errors.minutes }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <TimeInput
-                        hours={ this.state.pilot.hours }
-                        minutes={ this.state.pilot.minutes }
-                        labelText='Airtime:'
-                        errorMessage={ this.state.errors.initialAirtime }
-                        errorMessageHours={ this.state.errors.hours }
-                        errorMessageMinutes={ this.state.errors.minutes }
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionTitle>
+                            My settings:
+                        </SectionTitle>
 
-                    <div className='line' />
-                    <div>My settings:</div>
-
-                    <DropDown
-                        selectedValue={ this.state.pilot.altitudeUnit }
-                        options={ altitudeUnitsList }
-                        labelText='Altitude unit:'
-                        inputName='altitudeUnit'
-                        errorMessage={ this.state.errors.altitudeUnit }
-                        onChangeFunc={ this.handleInputChange }
-                        />
-
-                    { this.renderButtonMenu() }
+                        <SectionRow isLast={ true }>
+                            <DropDown
+                                selectedValue={ this.state.pilot.altitudeUnit }
+                                options={ altitudeUnitsList }
+                                labelText='Altitude unit:'
+                                inputName='altitudeUnit'
+                                errorMessage={ this.state.errors.altitudeUnit }
+                                onChangeFunc={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
                 </form>
+
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     }

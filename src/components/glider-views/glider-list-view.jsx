@@ -5,7 +5,13 @@ var History = require('react-router').History;
 var Util = require('../../utils/util');
 var GliderModel = require('../../models/glider');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var RowContent = require('../common/section/row-content');
+var SimpleButton = require('../common/section/simple-button');
 var Loader = require('./../common/loader');
 var FirstAdding = require('./../common/first-adding');
 var ErrorBox = require('./../common/notice/error-box');
@@ -43,22 +49,17 @@ var GliderListView = React.createClass({
     },
 
     renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            </View>
-        );
+        if (this.state.loadingError !== null) {
+            return <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>;
+        }
     },
 
     renderNoGlidersYet: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <FirstAdding
-                    dataType='gliders'
-                    onAdding={ this.handleGliderAdding }
-                    />
-            </View>
-        );
+        if (this.state.gliders instanceof Array &&
+            this.state.gliders.length === 0
+        ) {
+            return <FirstAdding dataType='gliders' onAdding={ this.handleGliderAdding } />;
+        }
     },
 
     renderGliderNodes: function() {
@@ -67,24 +68,32 @@ var GliderListView = React.createClass({
         }
 
         var gliderNodes = this.state.gliders.map((glider) => {
+            var remarks = glider.remarks ? <SectionRow>{ glider.remarks }</SectionRow> : '';
             return (
-                <div key={ glider.id }>
-                    <div className='container__title'>
-                        { glider.name }
-                    </div>
-                    <div className='container__subtitle'>
-                        <div>Flights #: { glider.trueFlightNum }</div>
-                        <div>Total Airtime: { Util.hoursMinutes(glider.trueAirtime) }</div>
-                    </div>
-                    <div>{ glider.remarks }</div>
-                    <Button
-                        onClick={ () => {
-                            this.handleGliderEditing(glider.id);
-                        } }
-                        >
-                        Edit
-                    </Button>
-                </div>
+                <Section key={ glider.id }>
+                    <SectionTitle>{ glider.name }</SectionTitle>
+
+                    <SectionRow>
+                        <RowContent
+                            label='Flights #:'
+                            value={ glider.trueFlightNum }
+                            />
+                    </SectionRow>
+
+                    <SectionRow>
+                        <RowContent
+                            label='Total Airtime:'
+                            value={ Util.hoursMinutes(glider.trueAirtime) }
+                            />
+                    </SectionRow>
+
+                    { remarks }
+
+                    <SimpleButton
+                        text='Edit'
+                        onClick={ () => this.handleGliderEditing(glider.id) }
+                        />
+                </Section>
             );
         });
 
@@ -92,20 +101,25 @@ var GliderListView = React.createClass({
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
-            return this.renderError();
+        var content = this.renderError();
+
+        if (!content) {
+            content = this.renderNoGlidersYet();
         }
 
-        if (this.state.gliders instanceof Array &&
-            this.state.gliders.length === 0
-        ) {
-            return this.renderNoGlidersYet();
+        if (!content) {
+            content = this.renderGliderNodes();
         }
 
         return (
-            <View onDataModified={ this.handleDataModified }>
-                <Button onClick={ this.handleGliderAdding }>Add Glider</Button>
-                { this.renderGliderNodes() }
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    headerText='Sites'
+                    rightText='+'
+                    onRightClick={ this.handleGliderAdding }
+                    />
+                { content }
+                <BottomMenu isGliderView={ true } />
             </View>
         );
     }

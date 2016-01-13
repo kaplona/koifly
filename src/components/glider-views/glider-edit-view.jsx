@@ -1,14 +1,17 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
-var Link = ReactRouter.Link;
+var History = require('react-router').History;
 var _ = require('lodash');
 var GliderModel = require('../../models/glider');
 var Validation = require('../../utils/validation');
 var View = require('./../common/view');
-var Button = require('./../common/button');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var SectionButton = require('../common/section/section-button');
 var TextInput = require('./../common/inputs/text-input');
 var TimeInput = require('./../common/inputs/time-input');
 var RemarksInput = require('./../common/inputs/remarks-input');
@@ -153,7 +156,12 @@ var GliderEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
@@ -185,16 +193,14 @@ var GliderEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.gliderId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/gliders'>Back to Gliders</Link>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <Loader />
-                <div className='button__menu'>
-                    <Button isEnabled={ false }>Save</Button>
-                    { deleteButton }
-                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
-                </div>
+                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
@@ -203,29 +209,14 @@ var GliderEditView = React.createClass({
         if (this.props.params.gliderId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button
+                <SectionButton
+                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    buttonStyle='warning'
                     onClick={ this.handleDeleteGlider }
                     isEnabled={ isEnabled }
-                    >
-                    { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
-                </Button>
+                    />
             );
         }
-    },
-
-    renderButtonMenu: function() {
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-        return (
-            <div className='button__menu'>
-                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
-                    { this.state.isSaving ? 'Saving ...' : 'Save' }
-                </Button>
-                { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
-                    Cancel
-                </Button>
-            </div>
-        );
     },
 
     render: function() {
@@ -238,50 +229,79 @@ var GliderEditView = React.createClass({
         }
 
         var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <Link to='/gliders'>Back to Gliders</Link>
-                { this.renderSavingError() }
-                { this.renderDeletingError() }
+                <TopMenu
+                    leftText='Cancel'
+                    rightText='Save'
+                    onLeftClick={ this.handleCancelEditing }
+                    onRightClick={ this.handleSubmit }
+                    />
+
                 <form>
-                    <TextInput
-                        inputValue={ this.state.glider.name }
-                        labelText={ <span>Name<sup>*</sup>:</span> }
-                        inputName='name'
-                        errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange }
+                    { this.renderSavingError() }
+                    { this.renderDeletingError() }
+                    <Section>
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.glider.name }
+                                labelText={ <span>Name<sup>*</sup>:</span> }
+                                inputName='name'
+                                errorMessage={ this.state.errors.name }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionTitle>
+                            Glider usage before Koifly:
+                        </SectionTitle>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.glider.initialFlightNum }
+                                labelText='Number of Flights:'
+                                inputName='initialFlightNum'
+                                errorMessage={ this.state.errors.initialFlightNum }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TimeInput
+                                hours={ this.state.glider.hours }
+                                minutes={ this.state.glider.minutes }
+                                labelText='Airtime:'
+                                errorMessage={ this.state.errors.initialAirtime }
+                                errorMessageHours={ this.state.errors.hours }
+                                errorMessageMinutes={ this.state.errors.minutes }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <RemarksInput
+                                inputValue={ this.state.glider.remarks }
+                                labelText='Remarks'
+                                errorMessage={ this.state.errors.remarks }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ isEnabled }
                         />
 
-                    <div>Glider usage before Koifly:</div>
-
-                    <TextInput
-                        inputValue={ this.state.glider.initialFlightNum }
-                        labelText='Number of Flights:'
-                        inputName='initialFlightNum'
-                        errorMessage={ this.state.errors.initialFlightNum }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <TimeInput
-                        hours={ this.state.glider.hours }
-                        minutes={ this.state.glider.minutes }
-                        labelText='Airtime:'
-                        errorMessage={ this.state.errors.initialAirtime }
-                        errorMessageHours={ this.state.errors.hours }
-                        errorMessageMinutes={ this.state.errors.minutes }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <RemarksInput
-                        inputValue={ this.state.glider.remarks }
-                        labelText='Remarks'
-                        errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    { this.renderButtonMenu() }
+                    { this.renderDeleteButton() }
                 </form>
+
+                <BottomMenu isGliderView={ true } />
             </View>
         );
     }

@@ -11,7 +11,6 @@ var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
 var Section = require('../common/section/section');
-//var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
 var SectionButton = require('../common/section/section-button');
 var TextInput = require('./../common/inputs/text-input');
@@ -253,9 +252,9 @@ var FlightEditView = React.createClass({
                     onRightClick={ this.handleSubmit }
                     />
 
-                { this.renderSavingError() }
-                { this.renderDeletingError() }
                 <form>
+                    { this.renderSavingError() }
+                    { this.renderDeletingError() }
                     <Section>
                         <SectionRow>
                             <TextInput

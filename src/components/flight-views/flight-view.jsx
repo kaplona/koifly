@@ -1,22 +1,21 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
+var History = require('react-router').History;
 var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
-var View = require('./../common/view');
+var View = require('../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
 var RowContent = require('../common/section/row-content');
-var StaticMap = require('./../common/maps/static-map');
-var Loader = require('./../common/loader');
-var ErrorBox = require('./../common/notice/error-box');
+var StaticMap = require('../common/maps/static-map');
+var Loader = require('../common/loader');
+var ErrorBox = require('../common/notice/error-box');
 
 
 var FlightView = React.createClass({
@@ -127,13 +126,13 @@ var FlightView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Altitude gained:'
-                            value={ ' ' + this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
+                            value={ this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
                             />
                     </SectionRow>
                     <SectionRow>
                         <RowContent
                             label='Above the launch:'
-                            value={ ' ' + this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
+                            value={ this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
                             />
                     </SectionRow>
                     <SectionRow>
@@ -148,7 +147,7 @@ var FlightView = React.createClass({
                             value={ this.state.flight.gliderName }
                             />
                     </SectionRow>
-                    <SectionRow>
+                    <SectionRow isLast={ true }>
                         <div>Remarks:</div>
                         <div>{ this.state.flight.remarks }</div>
                     </SectionRow>

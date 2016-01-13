@@ -1,16 +1,18 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
-var Link = ReactRouter.Link;
+var History = require('react-router').History;
 var _ = require('lodash');
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 var Validation = require('../../utils/validation');
 var View = require('./../common/view');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionButton = require('../common/section/section-button');
 var InteractiveMap = require('./../common/maps/interactive-map');
-var Button = require('./../common/button');
 var TextInput = require('./../common/inputs/text-input');
 var AltitudeInput = require('./../common/inputs/altitude-input');
 var RemarksInput = require('./../common/inputs/remarks-input');
@@ -170,7 +172,12 @@ var SiteEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     },
@@ -202,16 +209,14 @@ var SiteEditView = React.createClass({
     },
 
     renderLoader: function() {
-        var deleteButton = (this.props.params.siteId) ? <Button isEnabled={ false }>Delete</Button> : '';
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/sites'>Back to Sites</Link>
+                <TopMenu
+                    leftText='Cancel'
+                    onLeftClick={ this.handleCancelEditing }
+                    />
                 <Loader />
-                <div className='button__menu'>
-                    <Button isEnabled={ false }>Save</Button>
-                    { deleteButton }
-                    <Button onClick={ this.handleCancelEditing }>Cancel</Button>
-                </div>
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     },
@@ -220,27 +225,30 @@ var SiteEditView = React.createClass({
         if (this.props.params.siteId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <Button onClick={ this.handleDeleteSite } isEnabled={ isEnabled }>
-                    { this.state.isDeleting ? 'Deleting ...' : 'Delete' }
-                </Button>
+                <SectionButton
+                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    buttonStyle='warning'
+                    onClick={ this.handleDeleteSite }
+                    isEnabled={ isEnabled }
+                    />
             );
         }
     },
 
-    renderButtonMenu: function() {
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-        return (
-            <div className='button__menu'>
-                <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
-                    { this.state.isSaving ? 'Saving ...' : 'Save' }
-                </Button>
-                { this.renderDeleteButton() }
-                <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
-                    Cancel
-                </Button>
-            </div>
-        );
-    },
+    //renderButtonMenu: function() {
+    //    var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+    //    return (
+    //        <div className='button__menu'>
+    //            <Button type='submit' onClick={ this.handleSubmit } isEnabled={ isEnabled }>
+    //                { this.state.isSaving ? 'Saving ...' : 'Save' }
+    //            </Button>
+    //            { this.renderDeleteButton() }
+    //            <Button onClick={ this.handleCancelEditing } isEnabled={ isEnabled }>
+    //                Cancel
+    //            </Button>
+    //        </div>
+    //    );
+    //},
 
     renderMap: function() {
         var markerId = this.props.params.siteId ? this.props.params.siteId : 'new';
@@ -281,57 +289,87 @@ var SiteEditView = React.createClass({
         }
 
         var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <Link to='/sites'>Back to Sites</Link>
-                { this.renderSavingError() }
-                { this.renderDeletingError() }
+                <TopMenu
+                    leftText='Cancel'
+                    rightText='Save'
+                    onLeftClick={ this.handleCancelEditing }
+                    onRightClick={ this.handleSubmit }
+                    />
+
                 <form>
-                    <TextInput
-                        inputValue={ this.state.site.name }
-                        labelText={ <span>Name<sup>*</sup>:</span> }
-                        inputName='name'
-                        errorMessage={ this.state.errors.name }
-                        onChange={ this.handleInputChange }
+                    { this.renderSavingError() }
+                    { this.renderDeletingError() }
+                    <Section>
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.site.name }
+                                labelText={ <span>Name<sup>*</sup>:</span> }
+                                inputName='name'
+                                errorMessage={ this.state.errors.name }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.site.location }
+                                labelText='Location:'
+                                inputName='location'
+                                errorMessage={ this.state.errors.location }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <AltitudeInput
+                                inputValue={ this.state.site.launchAltitude }
+                                selectedAltitudeUnit={ this.state.site.altitudeUnit }
+                                labelText='Launch Altitude:'
+                                inputName='launchAltitude'
+                                errorMessage={ this.state.errors.launchAltitude }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.site.coordinates }
+                                labelText='Coordinates:'
+                                inputName='coordinates'
+                                errorMessage={ this.state.errors.coordinates }
+                                onChange={ this.handleInputChange }
+                                onBlur={ this.dropPinByCoordinates }
+                                />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <RemarksInput
+                                inputValue={ this.state.site.remarks }
+                                labelText='Remarks'
+                                errorMessage={ this.state.errors.remarks }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        { this.renderMap() }
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                        type='submit'
+                        buttonStyle='primary'
+                        onClick={ this.handleSubmit }
+                        isEnabled={ isEnabled }
                         />
 
-                    <TextInput
-                        inputValue={ this.state.site.location }
-                        labelText='Location:'
-                        inputName='location'
-                        errorMessage={ this.state.errors.location }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <AltitudeInput
-                        inputValue={ this.state.site.launchAltitude }
-                        selectedAltitudeUnit={ this.state.site.altitudeUnit }
-                        labelText='Launch Altitude:'
-                        inputName='launchAltitude'
-                        errorMessage={ this.state.errors.launchAltitude }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    <TextInput
-                        inputValue={ this.state.site.coordinates }
-                        labelText='Coordinates:'
-                        inputName='coordinates'
-                        errorMessage={ this.state.errors.coordinates }
-                        onChange={ this.handleInputChange }
-                        onBlur={ this.dropPinByCoordinates }
-                        />
-
-                    <RemarksInput
-                        inputValue={ this.state.site.remarks }
-                        labelText='Remarks'
-                        errorMessage={ this.state.errors.remarks }
-                        onChange={ this.handleInputChange }
-                        />
-
-                    { this.renderMap() }
-                    { this.renderButtonMenu() }
+                    { this.renderDeleteButton() }
                 </form>
+
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

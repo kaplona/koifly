@@ -1,13 +1,12 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var History = ReactRouter.History;
-var Link = ReactRouter.Link;
+var History = require('react-router').History;
 var SiteModel = require('../../models/site');
 var View = require('./../common/view');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
 var StaticMap = require('./../common/maps/static-map');
-var Button = require('./../common/button');
 var Loader = require('./../common/loader');
 var ErrorBox = require('./../common/notice/error-box');
 
@@ -21,6 +20,10 @@ var SiteListMapView = React.createClass({
             sites: null,
             loadingError: null
         };
+    },
+
+    handleToListView: function() {
+        this.history.pushState(null, '/sites/');
     },
 
     handleSiteAdding: function() {
@@ -40,28 +43,36 @@ var SiteListMapView = React.createClass({
     },
 
     renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+        if (this.state.loadingError !== null) {
+            return (
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            </View>
-        );
+            );
+        }
     },
 
     renderMap: function() {
         var siteList = this.state.sites;
-        return (siteList !== null) ? <StaticMap markers={ siteList } /> : <Loader />;
+        return (siteList !== null) ? <StaticMap markers={ siteList } fullScreen={ true } /> : <Loader />;
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
-            return this.renderError();
+        var content = this.renderError();
+
+        if (!content) {
+            content = this.renderMap();
         }
 
         return (
-            <View onDataModified={ this.handleDataModified }>
-                <Link to='/sites'>Back to Site List</Link>
-                { this.renderMap() }
-                <Button onClick={ this.handleSiteAdding }>Add Site</Button>
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    headerText='Sites'
+                    leftText='List'
+                    rightText='+'
+                    onLeftClick={ this.handleToListView }
+                    onRightClick={ this.handleSiteAdding }
+                    />
+                { content }
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

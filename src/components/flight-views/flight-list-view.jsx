@@ -44,40 +44,24 @@ var FlightListView = React.createClass({
     },
 
     renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            </View>
-        );
+        if (this.state.loadingError !== null) {
+            return <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />;
+        }
     },
 
     renderNoFlightsYet: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <FirstAdding
-                    dataType='flights'
-                    onAdding={ this.handleFlightAdding }
-                    />
-            </View>
-        );
+        if (this.state.flights instanceof Array &&
+            this.state.flights.length === 0
+        ) {
+            return <FirstAdding dataType='flights' onAdding={ this.handleFlightAdding } />;
+        }
     },
 
     renderLoader: function() {
         return (this.state.flights === null) ? <Loader /> : '';
     },
 
-    render: function() {
-        if (this.state.loadingError !== null) {
-            return this.renderError();
-        }
-
-        if (this.state.flights instanceof Array &&
-            this.state.flights.length === 0
-        ) {
-            return this.renderNoFlightsYet();
-        }
-
-
+    renderTable: function() {
         var columns = [
             {
                 key: 'date',
@@ -104,19 +88,35 @@ var FlightListView = React.createClass({
         var rows = (this.state.flights !== null) ? this.state.flights : [];
 
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <Table
+                columns={ columns }
+                rows={ rows }
+                initialSortingField='date'
+                onRowClick={ this.handleRowClick }
+                />
+        );
+    },
+
+    render: function() {
+        var content = this.renderError();
+
+        if (!content) {
+            content = this.renderNoFlightsYet();
+        }
+
+        if (!content) {
+            content = this.renderTable();
+        }
+
+        return (
+            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
                 <TopMenu
                     headerText='Flights'
                     rightText='+'
                     onRightClick={ this.handleFlightAdding }
                     />
 
-                <Table
-                    columns={ columns }
-                    rows={ rows }
-                    initialSortingField='date'
-                    onRowClick={ this.handleRowClick }
-                    />
+                { content }
                 { this.renderLoader() }
 
                 <BottomMenu isFlightView={ true } />

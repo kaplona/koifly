@@ -1,19 +1,26 @@
 'use strict';
 
 var React = require('react');
-var Link = require('react-router').Link;
+var History = require('react-router').History;
 var PilotModel = require('../../models/pilot');
 var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
-var View = require('./../common/view');
+var View = require('../common/view');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var SectionButton = require('../common/section/section-button');
 var EmailVerificationNotice = require('./../common/notice/email-verification-notice');
-var PasswordInput = require('./../common/inputs/password-input');
-var Button = require('./../common/button');
-var ErrorBox = require('./../common/notice/error-box');
-var Notice = require('./../common/notice/notice');
+var PasswordInput = require('../common/inputs/password-input');
+var ErrorBox = require('../common/notice/error-box');
+var Notice = require('../common/notice/notice');
 
 
 var PilotChangePass = React.createClass({
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -56,6 +63,10 @@ var PilotChangePass = React.createClass({
 
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
+    },
+
+    handleLinkTo: function(link) {
+        this.history.pushState(null, link);
     },
 
     handleSavingError: function(error) {
@@ -108,46 +119,66 @@ var PilotChangePass = React.createClass({
             return <Notice text='Your password was successfully changed' type='success' />;
         }
 
-        var isSavingButtonEnabled = this.state.isUserActivated && !this.state.isSaving;
+        var isEnabled = this.state.isUserActivated && !this.state.isSaving;
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.error }>
-                { this.renderEmailVerificationNotice() }
-                { this.renderError() }
+                <TopMenu
+                    leftText='Back'
+                    rightText='Save'
+                    onLeftClick={ () => this.handleLinkTo('/pilot') }
+                    onRightClick={ this.handleSubmit }
+                    />
+
                 <form>
-                    <PasswordInput
-                        inputValue={ this.state.password }
-                        labelText='Old Password:'
-                        inputName='password'
-                        onChange={ this.handleInputChange }
-                        />
+                    { this.renderEmailVerificationNotice() }
+                    { this.renderError() }
+                    <Section>
+                        <SectionTitle>Change Password</SectionTitle>
 
-                    <PasswordInput
-                        inputValue={ this.state.newPassword }
-                        labelText='New Password:'
-                        inputName='newPassword'
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionRow>
+                            <PasswordInput
+                                inputValue={ this.state.password }
+                                labelText='Old Password:'
+                                inputName='password'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <PasswordInput
-                        inputValue={ this.state.passwordConfirm }
-                        labelText='Confirm password::'
-                        inputName='passwordConfirm'
-                        onChange={ this.handleInputChange }
-                        />
+                        <SectionRow>
+                            <PasswordInput
+                                inputValue={ this.state.newPassword }
+                                labelText='New Password:'
+                                inputName='newPassword'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
 
-                    <Button
+                        <SectionRow isLast={ true }>
+                            <PasswordInput
+                                inputValue={ this.state.passwordConfirm }
+                                labelText='Confirm password:'
+                                inputName='passwordConfirm'
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+                    </Section>
+
+                    <SectionButton
+                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
                         type='submit'
+                        buttonStyle='primary'
                         onClick={ this.handleSubmit }
-                        isEnabled={ isSavingButtonEnabled }
-                        >
-                        { this.state.isSaving ? 'Saving ...' : 'Save' }
-                    </Button>
+                        isEnabled={ isEnabled }
+                        />
 
-                    <div>
-                        Forgot your password? <Link to='/reset-pass'>Reset password</Link>
-                    </div>
+                    <SectionButton
+                        text='Forgot Password?'
+                        onClick={ () => this.handleLinkTo('/reset-pass') }
+                        />
                 </form>
+
+                <BottomMenu isPilotView={ true } />
             </View>
         );
     }

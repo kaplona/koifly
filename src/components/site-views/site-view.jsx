@@ -1,16 +1,19 @@
 'use strict';
 
 var React = require('react');
-var ReactRouter = require('react-router');
-var Link = ReactRouter.Link;
-var History = ReactRouter.History;
+var History = require('react-router').History;
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 var View = require('./../common/view');
-var StaticMap = require('./../common/maps/static-map');
-var Button = require('./../common/button');
-var Loader = require('./../common/loader');
-var ErrorBox = require('./../common/notice/error-box');
+var TopMenu = require('../common/menu/top-menu');
+var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
+var SectionTitle = require('../common/section/section-title');
+var SectionRow = require('../common/section/section-row');
+var RowContent = require('../common/section/row-content');
+var StaticMap = require('../common/maps/static-map');
+var Loader = require('../common/loader');
+var ErrorBox = require('../common/notice/error-box');
 
 
 var SiteView = React.createClass({
@@ -30,12 +33,12 @@ var SiteView = React.createClass({
         };
     },
 
-    handleSiteEditing: function() {
-        this.history.pushState(null, '/site/' + this.props.params.siteId + '/edit');
+    handleToSiteList: function() {
+        this.history.pushState(null, '/sites');
     },
 
-    handleSiteAdding: function() {
-        this.history.pushState(null, '/site/0/edit');
+    handleSiteEditing: function() {
+        this.history.pushState(null, '/site/' + this.props.params.siteId + '/edit');
     },
 
     handleDataModified: function() {
@@ -53,7 +56,12 @@ var SiteView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <TopMenu
+                    leftText='Back'
+                    onLeftClick={ this.handleToSiteList }
+                    />
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     },
@@ -61,19 +69,13 @@ var SiteView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/sites'>Back to Sites</Link>
+                <TopMenu
+                    leftText='Back'
+                    onLeftClick={ this.handleToSiteList }
+                    />
                 <Loader />
-                { this.renderButtonMenu() }
+                <BottomMenu isSiteView={ true } />
             </View>
-        );
-    },
-
-    renderButtonMenu: function() {
-        return (
-            <div className='button__menu'>
-                <Button onClick={ this.handleSiteEditing }>Edit</Button>
-                <Button onClick={ this.handleSiteAdding }>Add Site</Button>
-            </div>
         );
     },
 
@@ -101,22 +103,45 @@ var SiteView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <Link to='/sites'>Back to Sites</Link>
-                <div className='container__title'>
-                    { this.state.site.name }
-                </div>
-                <div className='container__subtitle'>
-                    <div>Location: { this.state.site.location }</div>
-                    <div>
-                        Launch Altitude:
-                        { this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
-                    </div>
-                    <div>Coordinates: { this.state.site.coordinates }</div>
-                    <div>Remarks:</div>
-                    <div>{ this.state.site.remarks }</div>
-                </div>
-                { this.renderButtonMenu() }
-                { this.renderMap() }
+                <TopMenu
+                    leftText='Back'
+                    rightText='Edit'
+                    onLeftClick={ this.handleToSiteList }
+                    onRightClick={ this.handleSiteEditing }
+                    />
+
+                <Section>
+                    <SectionTitle>
+                        { this.state.site.name }
+                    </SectionTitle>
+
+                    <SectionRow>
+                        <RowContent
+                            label='Location:'
+                            value={ this.state.site.location }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Launch Altitude:'
+                            value={ this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Coordinates:'
+                            value={ this.state.site.coordinates }
+                            />
+                    </SectionRow>
+                    <SectionRow isLast={ true }>
+                        <div>Remarks:</div>
+                        <div>{ this.state.site.remarks }</div>
+                    </SectionRow>
+
+                    { this.renderMap() }
+                </Section>
+
+                <BottomMenu isSiteView={ true } />
             </View>
         );
     }
