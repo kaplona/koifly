@@ -2,10 +2,10 @@
 
 var React = require('react');
 var ErrorTypes = require('../../../utils/error-types');
-var Button = require('./../button');
+var Notice = require('./notice');
 
 
-var ErrorView = React.createClass({
+var ErrorBox = React.createClass({
     propTypes: {
         error: React.PropTypes.shape({
             type: React.PropTypes.string,
@@ -15,30 +15,23 @@ var ErrorView = React.createClass({
         isTrying: React.PropTypes.bool
     },
 
-    renderTryAgainButton: function() {
-        if (this.props.onTryAgain &&
-            this.props.error.type !== ErrorTypes.NO_EXISTENT_RECORD &&
-            this.props.error.type !== ErrorTypes.VALIDATION_FAILURE
-        ) {
-            return (
-                <Button
-                    onClick={ this.props.onTryAgain }
-                    isEnabled={ !this.props.isTrying }
-                    >
-                    { this.props.isTrying ? 'Trying ...' : 'Try Again' }
-                </Button>
-            );
-        }
-    },
-
     render: function() {
+        var onClick = this.props.onTryAgain;
+        if (this.props.error.type == ErrorTypes.NO_EXISTENT_RECORD &&
+            this.props.error.type == ErrorTypes.VALIDATION_FAILURE
+        ) {
+            onClick = null;
+        }
+
         return (
-            <div className='notice x-error'>
-                { this.props.error.message }
-                { this.renderTryAgainButton() }
-            </div>
+            <Notice
+                text={ this.props.error.message }
+                type='error'
+                onClick={ onClick }
+                buttonText={ this.props.isTrying ? 'Trying ...' : 'Try Again' }
+                />
         );
     }
 });
 
-module.exports = ErrorView;
+module.exports = ErrorBox;

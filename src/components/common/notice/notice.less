@@ -7,8 +7,9 @@
   .border-box();
 
   min-height: @menu-height;
-  padding: (@menu-height / 6);
+  padding: @menu-height * 0.18;
   background-color: @sand-color;
+  position: relative;
 
   &.x-success {
     &:extend(.notice);
@@ -18,5 +19,25 @@
   &.x-error {
     &:extend(.notice);
     background-color: @light-brick;
+  }
+
+  input {
+    min-width: @menu-height * 2;
+    margin: 0 (@menu-height * 0.3);
+    padding: (@menu-height * 0.1) (@menu-height * 0.2);
+    border: 1px solid @dark-base;
+    //border: none;
+    //border-radius: @menu-height * 0.1;
+    //background-color: fade(@dark-base, 20%);
+    background: none;
+    //font-size: @font-size * 0.8;
+    outline: none; // no blue glowing
+  }
+
+  .close {
+    color: fade(@dark-base, 70%);
+    position: absolute;
+    top: 0;
+    right: @menu-height * 0.18;
   }
 }

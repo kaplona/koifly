@@ -31,16 +31,18 @@ var Notice = React.createClass({
     renderButton: function() {
         if (this.props.onClick) {
             return (
-                <a href='#' onClick={ this.handleClick }>
-                    { this.props.buttonText }
-                </a>
+                <input
+                    type='button'
+                    value={ this.props.buttonText }
+                    onClick={ this.handleClick }
+                    />
             );
         }
     },
 
     renderCloseButton: function() {
         if (this.props.onClose) {
-            return <a href='#' onClick={ this.handleClose }> Close</a>;
+            return <div className='close' onClick={ this.handleClose }>x</div>;
         }
     },
 
