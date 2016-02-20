@@ -90,8 +90,15 @@ var SiteModel = {
             return this.getNewSiteOutput();
         }
 
+        // require FlightModel here so as to avoid circle requirements
+        var FlightModel = require('./flight');
+
         // Get required site from Data Service helper
         var site = DataService.data.sites[siteId];
+
+        var flightNumObj = FlightModel.getNumberOfFlightsAtSite(siteId);
+        var flightNum = flightNumObj.total;
+        var flightNumThisYear = flightNumObj.thisYear;
 
         var coordinates = this.formCoordinatesOutput(site.coordinates);
         var altitude = Altitude.getAltitudeInPilotUnits(site.launchAltitude);
@@ -104,6 +111,8 @@ var SiteModel = {
             coordinates: coordinates,
             launchAltitude: altitude,
             altitudeUnit: altitudeUnit,
+            flightNum: flightNum,
+            flightNumThisYear: flightNumThisYear,
             remarks: site.remarks,
             locationSort: site.location.toUpperCase()
         };

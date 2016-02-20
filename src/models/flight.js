@@ -108,6 +108,9 @@ var FlightModel = {
         return {
             id: flightId,
             date: date,
+            flightNum: flight.flightNum,
+            flightNumYear: flight.flightNumYear,
+            flightNumDay: flight.flightNumDay,
             siteId: flight.siteId,
             siteName: siteName,
             gliderName: gliderName,
@@ -175,10 +178,15 @@ var FlightModel = {
             };
         }
 
+        if (lastFlight.siteId) {
+            var siteAltitude = SiteModel.getLaunchAltitudeById(lastFlight.siteId);
+            siteAltitude = siteAltitude ? siteAltitude : 0;
+        }
+
         return {
             date: Util.today(),
             siteId: lastFlight.siteId, // null if no sites yet otherwise last added site id
-            altitude: 0,
+            altitude: siteAltitude,
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             airtime: 0,
             hours: 0,
@@ -212,34 +220,17 @@ var FlightModel = {
     },
 
     /**
-     * Searches for a flight with the latest date
-     * if several flights were on the same date picks the one which was created the last
+     * Searches for a flight with the largest flight number
+     * if several flights were on the same date the latest will be the one which was created the last
      * @returns {object|null} - last flight or null if no flights yet
      */
     getLastFlight: function() {
-        var noFlightsYet = true;
-        var lastFlight = {};
-        lastFlight.date = '1900-01-01'; // date to start from
-        lastFlight.createdAt = '1900-01-01 00:00:00';
-
-        _.each(DataService.data.flights, (flight) => {
-            // Find the most recent date
-            if (lastFlight.date < flight.date) {
-                // Save this flight
-                lastFlight = flight;
-                // And Hurey, we have a flight record
-                noFlightsYet = false;
-            // If two flights was in the same day
-            } else if (lastFlight.date === flight.date &&
-                       lastFlight.createdAt < flight.createdAt
-            ) {
-                // Take the last created
-                lastFlight = flight;
-                noFlightsYet = false;
+        return _.reduce(DataService.data.flights, (currentLastFlight, flight) => {
+            if (currentLastFlight === null || currentLastFlight.flightNum < flight.flightNum) {
+                return flight;
             }
-        });
-
-        return noFlightsYet ? null : lastFlight;
+            return currentLastFlight;
+        }, null);
     },
 
     /**
@@ -332,16 +323,64 @@ var FlightModel = {
         return Object.keys(DataService.data.flights).length;
     },
 
+    getNumberOfFlightsThisYear: function() {
+        var date = new Date();
+        var year = date.getFullYear();
+        var numberOfFlights = 0;
+        var lastFlight = this.getLastFlight();
+        if (lastFlight !== null &&
+            lastFlight.date.substring(0, 4) === year.toString()
+        ) {
+            numberOfFlights = lastFlight.flightNumYear;
+        }
+        return numberOfFlights;
+    },
+
     /**
      * @param {number|string} gliderId
-     * @returns {number} - number of flights for given glider recorded in App
+     * @returns {object} - number of flights for given glider recorded in App
+     * keys: total, thisYear
      */
     getNumberOfFlightsOnGlider: function(gliderId) {
         gliderId = parseInt(gliderId);
-        var numberOfFlights = 0;
+        var date = new Date();
+        var year = date.getFullYear();
+        var numberOfFlights = {
+            total: 0,
+            thisYear: 0
+        };
         _.each(DataService.data.flights, (flight) => {
             if (flight.gliderId === gliderId) {
-                numberOfFlights++;
+                numberOfFlights.total++;
+
+                if (flight.date.substring(0, 4) === year.toString()) {
+                    numberOfFlights.thisYear++;
+                }
+            }
+        });
+        return numberOfFlights;
+    },
+
+    /**
+     * @param {number|string} siteId
+     * @returns {object} - number of flights at given site
+     * keys: total, thisYear
+     */
+    getNumberOfFlightsAtSite: function(siteId) {
+        siteId = parseInt(siteId);
+        var date = new Date();
+        var year = date.getFullYear();
+        var numberOfFlights = {
+            total: 0,
+            thisYear: 0
+        };
+        _.each(DataService.data.flights, (flight) => {
+            if (flight.siteId === siteId) {
+                numberOfFlights.total++;
+
+                if (flight.date.substring(0, 4) === year.toString()) {
+                    numberOfFlights.thisYear++;
+                }
             }
         });
         return numberOfFlights;
@@ -360,6 +399,21 @@ var FlightModel = {
             }
         });
         return sitesVisited.length;
+    },
+
+    /**
+     * @returns {number} - number of gliders which pilot used and has flight record in App
+     */
+    getNumberOfUsedGliders: function() {
+        var glidersUsed = [];
+        _.each(DataService.data.flights, (flight) => {
+            if (flight.gliderId !== null &&
+                glidersUsed.indexOf(flight.gliderId) === -1
+            ) {
+                glidersUsed.push(flight.gliderId);
+            }
+        });
+        return glidersUsed.length;
     },
 
     /**

@@ -23,7 +23,7 @@ var Validation = {
             if (!this.isEmpty(formData[fieldName])) {
                 var methodName = config.method;
                 var rules = config.rules;
-                validationResult = this.methods[methodName](formData, fieldName, rules);
+                validationResult = this.methods[methodName](formData, fieldName, rules, isSoft);
             }
 
             // If validation failed save error message for this field
@@ -113,7 +113,12 @@ var Validation = {
         // 38.8897°, -77.0089°
         // 45.455678 56.452332
         // -15.0054 , -178.67
-        coordinates: function(formData, fieldName, rules) {
+        coordinates: function(formData, fieldName, rules, isSoft) {
+            // Don't check the format for soft validation
+            // so don't interrupt user from typing long coordinates input
+            if (isSoft) {
+                return true;
+            }
 
             // Repplace all degree characters by space
             var coord = formData[fieldName].replace(/°/g, ' ').trim();

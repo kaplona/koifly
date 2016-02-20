@@ -5,7 +5,7 @@ var DataService = require('../services/data-service');
 
 var Altitude = {
     meterConverter: {
-        meter: 1,
+        meters: 1,
         feet: 3.28084
     },
 

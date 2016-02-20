@@ -35,7 +35,7 @@ var Test = {
         userName: '',
         initialFlightNum: 0,
         initialAirtime: 0,
-        altitudeUnit: 'meter'
+        altitudeUnit: 'meters'
     },
 
     ids: {
@@ -138,6 +138,21 @@ var Test = {
         }
         console.warn(testName + 'failed');
     }
+
+    //testSorting: function() {
+    //    var originalObj = {
+    //        12: {id: 12, date: '2015-09-01', createdAt: '2016-01-01'},
+    //        10: {id: 10, date: '2015-09-04', createdAt: '2016-01-01'},
+    //        22: {id: 22, date: '2015-09-03', createdAt: '2016-01-01 18:09:00'},
+    //        120: {id: 120, date: '2015-09-03', createdAt: '2016-01-01 18:07:00'},
+    //        2: {id: 2, date: '2015-09-02', createdAt: '2016-01-01'}
+    //    };
+    //    console.log(originalObj);
+    //    var sortedObj = _.sortBy(originalObj, (value) => {
+    //        return [value.date, value.createdAt];
+    //    });
+    //    console.log(sortedObj);
+    //}
 };
 
 

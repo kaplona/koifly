@@ -89,7 +89,7 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getGliderOutput: function(gliderId) {
-        var loadingError = this.checkForLoadingErrors();
+        var loadingError = this.checkForLoadingErrors(gliderId);
         if (loadingError !== false) {
             return loadingError;
         }
@@ -100,15 +100,20 @@ var GliderModel = {
         // Get required glider from Data Service helper
         var glider = DataService.data.gliders[gliderId];
 
-        var trueFlightNum = glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(gliderId);
+        var flightNumObj = FlightModel.getNumberOfFlightsOnGlider(gliderId);
+        var trueFlightNum = glider.initialFlightNum + flightNumObj.total;
+        var flightNumThisYear = flightNumObj.thisYear;
         var trueAirtime = glider.initialAirtime + FlightModel.getGliderAirtime(gliderId);
 
         return {
             id: gliderId,
             name: glider.name,
             remarks: glider.remarks,
+            initialFlightNum: glider.initialFlightNum,
+            initialAirtime: glider.initialAirtime,
             trueFlightNum: trueFlightNum,
-            trueAirtime: trueAirtime
+            trueAirtime: trueAirtime,
+            flightNumThisYear: flightNumThisYear
         };
     },
 
@@ -120,7 +125,7 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getGliderEditOutput: function(gliderId) {
-        var loadingError = this.checkForLoadingErrors();
+        var loadingError = this.checkForLoadingErrors(gliderId);
         if (loadingError !== false) {
             return loadingError;
         }

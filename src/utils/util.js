@@ -4,18 +4,18 @@
 var Util = {
     getMonthName: function(monthIndex) {
         var monthNames = {
-            '01': 'January',
-            '02': 'February',
-            '03': 'March',
-            '04': 'April',
+            '01': 'Jan',
+            '02': 'Feb',
+            '03': 'Mar',
+            '04': 'Apr',
             '05': 'May',
-            '06': 'June',
-            '07': 'July',
-            '08': 'August',
-            '09': 'September',
-            '10': 'October',
-            '11': 'November',
-            '12': 'December'
+            '06': 'Jun',
+            '07': 'Jul',
+            '08': 'Aug',
+            '09': 'Sep',
+            '10': 'Oct',
+            '11': 'Nov',
+            '12': 'Dec'
         };
         return monthNames[monthIndex];
     },
@@ -72,6 +72,21 @@ var Util = {
         );
     },
 
+    formatDate: function(date) {
+        if (!this.isRightDateFormat(date)) {
+            return null;
+        }
+
+        var dateParts = date.split('-');
+        var formattedDate = [
+            this.getMonthName(dateParts[1]),
+            parseInt(dateParts[2]) + ',',
+            dateParts[0]
+        ].join(' ');
+
+        return formattedDate;
+    },
+
     isNumber: function(val) {
         return !isNaN(val * 1);
     },
@@ -91,13 +106,30 @@ var Util = {
     },
 
     hoursMinutes: function(timeInMinutes) {
+        if (timeInMinutes < 60) {
+            return timeInMinutes + ' min';
+        }
+
         var hours = Math.floor(timeInMinutes / 60);
         var minutes = timeInMinutes % 60;
         return hours + ' h ' + minutes + ' min';
+    },
+
+    addOrdinalSuffix: function(number) {
+        var lastDigit = number % 10;
+        var twoLastDigits = number % 100;
+        if (lastDigit == 1 && twoLastDigits != 11) {
+            return number + 'st';
+        }
+        if (lastDigit == 2 && twoLastDigits != 12) {
+            return number + 'nd';
+        }
+        if (lastDigit == 3 && twoLastDigits != 13) {
+            return number + 'rd';
+        }
+        return number + 'th';
     }
 };
 
+
 module.exports = Util;
-
-
-

@@ -30,7 +30,7 @@ var DataService = {
     },
 
 
-    logOut: function() {
+    logout: function() {
         ajaxService({
             url: '/api/logout',
             method: 'post',
@@ -155,6 +155,7 @@ var DataService = {
                 this.data[key] = {};
             }
         });
+        console.log('set empty data');
         PubSub.emit('dataModified');
     },
 
@@ -167,12 +168,18 @@ var DataService = {
     },
 
     setData: function(serverResponse) {
+        // If we got a valid response there were no errors
         this.data.loadingError = null;
+        // If we got new data update front-end data
         if (this.lastModified === null ||
             this.lastModified < serverResponse.lastModified
         ) {
+            //DEV
+            console.log('data updating...');
+
             this.lastModified = serverResponse.lastModified;
              _.each(serverResponse, (data, dataType) => {
+                 // if we have such data type update data
                  if (this.data[dataType] !== undefined) {
                      if (dataType === 'pilot') {
                          this.setPilotInfo(data);
@@ -181,6 +188,8 @@ var DataService = {
                      }
                  }
              });
+            // Calculate and add some more fields to flights
+            this.setFlightNumbers(serverResponse.flights);
         }
         // DEV
         console.log('current data', this.data);
@@ -218,6 +227,54 @@ var DataService = {
             } else if (this.data[dataType][newData[i].id]) {
                 delete this.data[dataType][newData[i].id];
             }
+        }
+    },
+
+    setFlightNumbers: function(newFlights) {
+        // If no flights records yet or no new flights added
+        if (_.isEmpty(this.data.flights) || _.isEmpty(newFlights)) {
+            return null;
+        }
+
+        var sortedFlights = _.sortBy(this.data.flights, (flight) => {
+            return [flight.date, flight.createdAt];
+        });
+
+        var flightId = null;
+        var flightYear = null;
+        var flightDay = null;
+        var iteratedYear = null;
+        var iteratedDay = null;
+        var flightNumYear = 0;
+        var flightNumDay = 0;
+        for (var flightNum = 0; flightNum < sortedFlights.length; flightNum++) {
+            flightId = sortedFlights[flightNum].id;
+
+            // Add flight number field to this flight (+1 - array indexes start from 0)
+            this.data.flights[flightId].flightNum = this.data.pilot.initialFlightNum + flightNum + 1;
+
+            flightYear = sortedFlights[flightNum].date.substring(0, 4);
+            if (iteratedYear !== flightYear) {
+                iteratedYear = flightYear;
+                flightNumYear = 0;
+            }
+            flightNumYear++;
+            // Add year-flight-number field to this flight
+            this.data.flights[flightId].flightNumYear = flightNumYear;
+
+            flightDay = sortedFlights[flightNum].date.substring(0, 10);
+            // if there was only one flight on previous day erase day-flight-number field of that flight
+            if (iteratedDay !== flightDay && flightNumDay === 1) {
+                var previousFlightId = sortedFlights[flightNum - 1].id;
+                this.data.flights[previousFlightId].flightNumDay = null;
+            }
+            if (iteratedDay !== flightDay) {
+                iteratedDay = flightDay;
+                flightNumDay = 0;
+            }
+            flightNumDay++;
+            // Add day-flight-number field to this flight
+            this.data.flights[flightId].flightNumDay = flightNumDay;
         }
     },
 

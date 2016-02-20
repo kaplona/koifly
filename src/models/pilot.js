@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var DataService = require('../services/data-service');
+var ErrorTypes = require('../utils/error-types');
 
 
 var PilotModel = {
@@ -65,22 +66,23 @@ var PilotModel = {
             return loadingError;
         }
 
-        // require FlightModel and GliderModel here so as to avoid circle requirements
+        // require FlightModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
-        var GliderModel = require('./glider');
 
         // Get pilot info from Data Service helper
         var pilot = DataService.data.pilot;
 
         var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
+        var flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
         var airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
         var siteNum = FlightModel.getNumberOfVisitedSites();
-        var gliderNum = GliderModel.getNumberOfGliders();
+        var gliderNum = FlightModel.getNumberOfUsedGliders();
 
         return {
             email: pilot.email,
             userName: pilot.userName,
             flightNumTotal: flightNumTotal,
+            flightNumThisYear: flightNumThisYear,
             airtimeTotal: airtimeTotal,
             siteNum: siteNum,
             gliderNum: gliderNum,
@@ -241,6 +243,14 @@ var PilotModel = {
         if (DataService.data.pilot !== null) {
             DataService.data.pilot.isActivationNoticeHidden = true;
         }
+    },
+
+    isLoggedIn: function() {
+        return (DataService.data.pilot && DataService.data.error !== ErrorTypes.AUTHENTICATION_FAILURE);
+    },
+
+    logout: function() {
+        DataService.logout();
     }
 };
 
