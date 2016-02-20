@@ -40,6 +40,8 @@ var config = {
     webpack: {
         // Webpack bundle filename
         outputFilename: '[name]-bundle-[hash].js',
+        // Webpack bundle filename for stylesheets
+        stylesFilename: '[name].css',
         // Assets-webpack-plugin generates a JSON file containing actual
         // webpack bundle filenames on every webpack emit event.
         // To get the actual bundle filenames, use config/webpack-assets.js

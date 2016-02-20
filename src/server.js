@@ -81,7 +81,7 @@ server.register(plugins, (err) => {
     // Set up server side react views using Vision
     server.views({
         engines: { jsx: HapiReactViews },
-        path: config.paths.serverViews
+        path: config.paths.serverViews // TODO add helperPath or/and layoutPath (plus layout: true) ???
     });
 
     // Note: only one route per will be used to fulfill a request.
@@ -128,6 +128,21 @@ server.register(plugins, (err) => {
     // });
 
     // App
+    server.route({
+        method: 'GET',
+        path: '/',
+        config: {
+            auth: {
+                strategy: 'session',
+                mode: 'try'
+            }
+        },
+        handler: function(request, reply) {
+            var isLoggedIn = request.auth.isAuthenticated;
+            reply.view('about', { isLoggedIn: isLoggedIn }); // about.jsx in /server-views
+        }
+    });
+
     server.route({
         method: 'GET',
         path: '/{path*}',

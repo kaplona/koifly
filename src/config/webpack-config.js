@@ -4,12 +4,14 @@ var path = require('path');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 // var SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
 var config = require('./variables');
 
 
 
 var APP_ENTRY = path.join(config.paths.source, 'main-app');
+var HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
 var WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client';
 var JS_JSX = /\.(js|jsx)$/;
 var BABEL = 'babel?stage=1'; // Transpile ES6/JSX into ES5. For stages see: http://babeljs.io/docs/usage/experimental/
@@ -18,7 +20,8 @@ var BABEL = 'babel?stage=1'; // Transpile ES6/JSX into ES5. For stages see: http
 
 var webpackConfig = {
     entry: {
-        app: APP_ENTRY
+        app: APP_ENTRY,
+        home: HOME_ENTRY
     },
     resolve: {
         // Webpack tries appending these extensions when you require(moduleName)
@@ -36,7 +39,8 @@ var webpackConfig = {
         loaders: [
             {
                 test: /\.less$/,
-                loaders: ['style', 'css', 'less'], // Loaders are processed last-to-first
+                //loaders: ['style', 'css', 'less'],
+                loader: ExtractTextPlugin.extract('style', 'css!less'), // Loaders are processed last-to-first
                 include: config.paths.source
             }
         ]
@@ -46,14 +50,16 @@ var webpackConfig = {
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+                'NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+                'BROWSER': JSON.stringify(true)
             }
         }),
         new AssetsWebpackPlugin({
             filename: config.webpack.assetsFilename,
             path: config.webpack.assetsPath,
             prettyPrint: true
-        })
+        }),
+        new ExtractTextPlugin(config.webpack.stylesFilename)
     ]
 };
 
@@ -96,7 +102,7 @@ if (process.env.NODE_ENV === 'development') {
 
     /** @lends webpackConfig */
     webpackConfig = webpackMerge(webpackConfig, {
-        devtool: 'source-map', // generate full source maps
+        //devtool: 'source-map', // generate full source maps
         module: {
             loaders: [
                 {
