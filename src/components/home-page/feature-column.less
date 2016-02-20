@@ -1,0 +1,44 @@
+
+@import (reference) './break-points';
+@btw-float-margin: 20px;
+
+
+.feature-column {
+  h2 {
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+  }
+
+  ul {
+    padding-left: 25px;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    li {
+      margin-bottom: 10px;
+    }
+  }
+
+  @media (min-width: @medium-viewport) {
+    width: 50%;
+    vertical-align: top;
+    display: inline-block;
+
+    ul, h2 {
+      margin-right: @btw-float-margin;
+    }
+
+    &.x-left-float {
+      float: left;
+    }
+
+    &.x-right-float {
+      float: right;
+
+      ul, h2 {
+        margin-right: 0;
+        margin-left: @btw-float-margin;
+      }
+    }
+  }
+}

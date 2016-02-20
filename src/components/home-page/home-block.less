@@ -1,0 +1,23 @@
+
+@import (reference) '../constants';
+
+
+.home-block {
+  padding: 0 30px;
+
+  @media (min-width: @medium-viewport) {
+    margin: 0 auto;
+    max-width: 1020px;
+
+    /* float style */
+    /* 'clearfix' - modified from http://css-tricks.com/pseudo-element-roundup/ */
+    &:after, &:before {
+      content: '';
+      display: table;
+    }
+
+    &:after {
+      clear: both;
+    }
+  }
+}

@@ -1,0 +1,116 @@
+
+@import (reference) '../general';
+@import (reference) './break-points';
+
+
+.screen-shots {
+  width: 100%;
+  margin-top: 30px; // ???
+
+  @media (min-width: @small-viewport) {
+    height: 42vw;
+    position: relative;
+  }
+
+  @media (min-width: @medium-viewport) {
+    margin-top: 1.2em; // the same as for h2
+    max-height: 440px;
+  }
+}
+
+
+.screen-shot {
+  //padding-top: 90%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  box-shadow: 0 0 7px -1px black;
+
+  @media (max-width: (@small-viewport - 1)) {
+    max-width: 320px;
+    max-height: 315px;
+    height: 80vw;
+    margin: 0 auto;
+  }
+
+  @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+    width: 45%;
+    padding-top: 45%;
+    position: absolute;
+  }
+
+  @media (min-width: @medium-viewport) {
+    //width: 400px;
+    //height: 400px;
+    width: 70%;
+    padding-top: 70%;
+    position: absolute;
+  }
+
+  &.first {
+    @media (min-width: @small-viewport) {
+      top: 0;
+      left: 0;
+    }
+  }
+
+  &.second {
+    @media (max-width: (@small-viewport - 1)) {
+      display: none;
+    }
+
+    @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+      top: 0;
+      right: 0;
+    }
+
+    @media (min-width: @medium-viewport) {
+      bottom: 0;
+      right: 0;
+    }
+  }
+
+
+  &.x-flights-1 {
+    @media (max-width: (@small-viewport - 1)) {
+      background-image: url('/static/images/flights-screen-shot-2.gif');
+    }
+
+    @media (min-width: @small-viewport) {
+      background-image: url('/static/images/flights-screen-shot-1.gif');
+    }
+  }
+
+  &.x-flights-2 {
+    @media (min-width: @small-viewport) {
+      background-image: url('/static/images/flights-screen-shot-2.gif');
+    }
+  }
+
+
+  &.x-sites-1 {
+    @media (max-width: (@small-viewport - 1)) {
+      background-image: url('/static/images/sites-screen-shot-2.gif');
+    }
+
+    @media (min-width: @small-viewport) {
+      background-image: url('/static/images/sites-screen-shot-1.gif');
+    }
+  }
+
+  &.x-sites-2 {
+    @media (min-width: @small-viewport) {
+      background-image: url('/static/images/sites-screen-shot-2.gif');
+    }
+  }
+
+
+  &.x-gliders-1 {
+    background-image: url('/static/images/gliders-screen-shot-1.gif');
+  }
+
+  &.x-gliders-2 {
+    @media (min-width: @small-viewport) {
+      background-image: url('/static/images/gliders-screen-shot-2.gif');
+    }
+  }
+}
