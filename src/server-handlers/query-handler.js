@@ -40,7 +40,7 @@ function saveData(dataType, data, pilot) {
 /**
  * @param {object} data
  * @param {integer} pilotId
- * @returns {Promise}
+ * @returns {Promise.<flight>} - sequelize flight instance
  */
 function saveFlight(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update
@@ -67,7 +67,7 @@ function saveFlight(data, pilotId) {
     }
 
     return Flight.findOne({ where: { id: data.id, pilotId: pilotId } }).then((flight) => {
-        if (!flight || flight.id !== data.id) {
+        if (!flight || flight.id.toString() !== data.id.toString()) {
             throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
         }
 
@@ -79,7 +79,7 @@ function saveFlight(data, pilotId) {
 /**
  * @param {object} data
  * @param {integer} pilotId
- * @returns {Promise}
+ * @returns {Promise.<site>} - sequelize site instance
  */
 function saveSite(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update
@@ -105,7 +105,7 @@ function saveSite(data, pilotId) {
     }
 
     return Site.findOne({ where: { id: data.id, pilotId: pilotId } }).then((site) => {
-        if (!site || site.id !== data.id) {
+        if (!site || site.id.toString() !== data.id.toString()) {
             throw new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD);
         }
 
@@ -122,7 +122,7 @@ function saveSite(data, pilotId) {
 /**
  * @param {object} data
  * @param {integer} pilotId
- * @returns {Promise}
+ * @returns {Promise.<glider>} - sequelize glider instance
  */
 function saveGlider(data, pilotId) {
     // Make sure that we updating the information that user is allowed to update

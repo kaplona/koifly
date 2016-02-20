@@ -27,17 +27,13 @@ var Pilot = sequelize.define('pilot', {
             this.setDataValue('email', value.toLowerCase());
         },
         validate: {
-            notNull: { msg: ErrorMessages.NOT_EMPTY.replace('%field', 'Email') },
             isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL },
             isUnique: isUnique('pilots', 'email', ErrorMessages.EXISTENT_EMAIL)
         }
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notNull: { msg: ErrorMessages.NOT_EMPTY.replace('%field', 'Password') }
-        }
+        allowNull: false
     },
     initialFlightNum: {
         type: Sequelize.INTEGER,
@@ -64,10 +60,10 @@ var Pilot = sequelize.define('pilot', {
         }
     },
     altitudeUnit: {
-        type: Sequelize.ENUM('meter', 'feet'),
+        type: Sequelize.ENUM('meters', 'feet'),
         allowNull: false,
-        defaultValue: 'meter',
-        validate: { isIn: [ ['meter', 'feet'] ] }
+        defaultValue: 'meters',
+        validate: { isIn: [ ['meters', 'feet'] ] }
     },
     token: {
         type: Sequelize.STRING,
@@ -78,6 +74,11 @@ var Pilot = sequelize.define('pilot', {
         type: Sequelize.INTEGER,
         allowNull: true,
         defaultValue: null
+    },
+    isSubscribed: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     },
     isActivated: {
         type: Sequelize.BOOLEAN,

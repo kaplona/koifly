@@ -5,8 +5,7 @@ var sequelize = require('../orm/sequelize');
 var Pilot = require('../orm/pilots');
 var SendTokenToPilot = require('./helpers/send-token');
 var EmailMessages = require('./helpers/email-messages');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var NormalizeError = require('../utils/error-normalize');
 
 
 sequelize.sync();

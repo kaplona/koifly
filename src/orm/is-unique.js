@@ -25,6 +25,9 @@ var isUnique = function(modelFileName, fieldName, msg) {
             var query = { id: { $ne: this.id } };
             // emails are stored in lower case in DB
             query[fieldName] = (fieldName === 'email') ? value.toLowerCase() : value;
+            if (modelFileName !== 'pilots') {
+                query.pilotId = this.pilotId;
+            }
 
             Model.scope(scope).findOne({
                 where: query,

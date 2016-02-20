@@ -16,7 +16,6 @@ var Glider = sequelize.define('glider', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
         validate: {
             isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider'))
         }
@@ -64,7 +63,7 @@ var Glider = sequelize.define('glider', {
     scopes: {
         see: {
             where: {
-                see: true
+                see: 1
             }
         }
     }

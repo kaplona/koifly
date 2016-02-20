@@ -16,7 +16,6 @@ var Site = sequelize.define('site', {
     name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
         validate: {
             isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site'))
         }
@@ -89,7 +88,7 @@ var Site = sequelize.define('site', {
     scopes: {
         see: {
             where: {
-                see: true
+                see: 1
             }
         }
     },

@@ -39,6 +39,7 @@ var SignupHandler = function(request, reply) {
         var newPilot = {
             email: payload.email,
             password: hash,
+            isSubscribed: payload.isSubscribed ? true : false,
             isActivated: false
         };
         return Pilot.create(newPilot);

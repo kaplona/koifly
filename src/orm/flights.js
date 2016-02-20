@@ -81,7 +81,7 @@ var Flight = sequelize.define('flight', {
     scopes: {
         see: {
             where: {
-                see: true
+                see: 1
             }
         }
     }
