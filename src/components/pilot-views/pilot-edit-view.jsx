@@ -9,6 +9,7 @@ var Altitude = require('../../utils/altitude');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BottomButtons = require('../common/buttons/bottom-buttons');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
@@ -16,6 +17,7 @@ var TextInput = require('./../common/inputs/text-input');
 var TimeInput = require('./../common/inputs/time-input');
 var DropDown = require('./../common/inputs/dropdown-input');
 var Loader = require('./../common/loader');
+var Button = require('../common/buttons/button');
 var ErrorBox = require('./../common/notice/error-box');
 var ErrorTypes = require('../../utils/error-types');
 
@@ -160,6 +162,29 @@ var PilotEditView = React.createClass({
         );
     },
 
+    renderSaveButton: function() {
+        return (
+            <Button
+                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSaving }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        return (
+            <Button
+                text='Cancel'
+                buttonStyle='secondary'
+                onClick={ this.handleCancelEditing }
+                isEnabled={ !this.state.isSaving }
+                />
+        );
+    },
+
     render: function() {
         if (this.state.loadingError !== null) {
             return this.renderError();
@@ -198,15 +223,16 @@ var PilotEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionTitle>
+                        <SectionTitle isSubtitle={ true }>
                             My achievements before Koifly:
                         </SectionTitle>
 
                         <SectionRow>
                             <TextInput
                                 inputValue={ this.state.pilot.initialFlightNum }
-                                labelText='Number of Flights:'
+                                labelText='Number of flights:'
                                 inputName='initialFlightNum'
+                                isNumber={ true }
                                 errorMessage={ this.state.errors.initialFlightNum }
                                 onChange={ this.handleInputChange }
                                 />
@@ -224,7 +250,7 @@ var PilotEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionTitle>
+                        <SectionTitle  isSubtitle={ true }>
                             My settings:
                         </SectionTitle>
 
@@ -232,12 +258,19 @@ var PilotEditView = React.createClass({
                             <DropDown
                                 selectedValue={ this.state.pilot.altitudeUnit }
                                 options={ altitudeUnitsList }
-                                labelText='Altitude unit:'
+                                labelText='Altitude units:'
                                 inputName='altitudeUnit'
                                 errorMessage={ this.state.errors.altitudeUnit }
                                 onChangeFunc={ this.handleInputChange }
                                 />
                         </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSaveButton(),
+                                this.renderCancelButton()
+                            ] }
+                            />
                     </Section>
                 </form>
 

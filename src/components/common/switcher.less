@@ -1,0 +1,28 @@
+
+@import (reference) '../constants';
+@import (reference) '../general';
+
+.switcher {
+  .border-box();
+  .box-shadow();
+
+  width: 100%;
+  height: @row-height;
+  border: 2px solid @main-blue;
+  cursor: pointer;
+
+  & > div {
+    .border-box();
+
+    width: 50%;
+    height: 100%;
+    padding: @row-height * 0.2;
+    text-align: center;
+    display: inline-block;
+  }
+
+  & .active {
+    background-color: @main-blue;
+    color: @light-blue;
+  }
+}

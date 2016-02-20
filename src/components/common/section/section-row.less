@@ -5,12 +5,24 @@
 
 .section-row {
   .border-box();
+  @hp: (@row-height * 0.2);
 
-  @vertical-padding: (@menu-height * 0.15);
-  min-height: @menu-height * 0.8;
-  padding: (@menu-height * 0.33) @vertical-padding (@menu-height * 0.25) @vertical-padding;
-  border-bottom: 1px solid @dark-base;
-  position: relative;
+  min-height: @row-height + 1; // border-bottom: 1px
+  padding-left: @hp;
+  padding-right: @hp;
+  border-bottom: 1px solid @mild-base;
+
+  @media (min-width: @medium-viewport) {
+    @hp: (@row-height * 0.6);
+    padding: (@row-height * 0.2) @hp (@row-height * 0.2) @hp;
+    border-bottom: 1px solid @base-color;
+  }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    &.x-desktop {
+      display: none;
+    }
+  }
 
   &.x-last {
     border-bottom: none;

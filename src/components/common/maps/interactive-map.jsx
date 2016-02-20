@@ -32,7 +32,8 @@ var InteractiveMap = React.createClass({
             React.PropTypes.string
         ]),
         altitudeUnit: React.PropTypes.string,
-        onDataApply: React.PropTypes.func.isRequired
+        onDataApply: React.PropTypes.func.isRequired,
+        onMapClose: React.PropTypes.func.isRequired
     },
 
     getDefaultProps: function() {
@@ -43,7 +44,7 @@ var InteractiveMap = React.createClass({
             markerPosition: Map.outOfMapCoordinates,
             location: '',
             launchAltitude: '',
-            altitudeUnit: 'meter'
+            altitudeUnit: 'meters'
         };
     },
 
@@ -59,10 +60,7 @@ var InteractiveMap = React.createClass({
         }
     },
 
-    shouldComponentUpdate: function(nextProps) {
-        if (Map.isLoaded && (nextProps.markerPosition !== this.props.markerPosition)) {
-            Map.moveMarker(nextProps.markerPosition, this.props.markerId);
-        }
+    shouldComponentUpdate: function() {
         return false;
     },
 
@@ -108,6 +106,10 @@ var InteractiveMap = React.createClass({
             document.getElementById('apply_google_data').addEventListener('click', () => {
                 this.applyGoogleData(address, infowindowContent.elevation, coordinates);
             });
+
+            document.getElementById('close_map').addEventListener('click', () => {
+                this.props.onMapClose();
+            });
         }
     },
 
@@ -128,8 +130,7 @@ var InteractiveMap = React.createClass({
 
         var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
 
-        // TODO HTMLescape
-        return '<div>' +
+        return '<div class="infowindow">' +
                     '<div>' +
                         '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
                             ' style="display:inline;width:12px;">' +
@@ -144,15 +145,20 @@ var InteractiveMap = React.createClass({
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
                         _.escape(coordinates) +
                     '</div>' +
-                    '<button id="apply_google_data" type="button">Apply</button>' +
+                    '<button id="apply_google_data" type="button" class="map-button">Apply</button>' +
+                    '<button id="close_map" type="button" class="map-button">Close Map</button>' +
                '</div>';
     },
 
     applyGoogleData: function(location, elevation, coordinates) {
+        console.log('1 - location check-box => ', document.getElementById('location_checkbox'));
+        console.log('1 - altitude check-box => ', document.getElementById('launchAltitude_checkbox'));
         // If transferring address
         if (document.getElementById('location_checkbox').checked) {
             this.props.onDataApply('location', location);
         }
+        console.log('2 - location check-box => ', document.getElementById('location_checkbox'));
+        console.log('2 - altitude check-box => ', document.getElementById('launchAltitude_checkbox'));
         // If transfering elevation
         if (document.getElementById('launchAltitude_checkbox').checked) {
             // Convert elevation into units that user chose in the form
@@ -163,10 +169,16 @@ var InteractiveMap = React.createClass({
         }
         // Coordinates transfers anyway
         this.props.onDataApply('coordinates', coordinates);
+        this.props.onMapClose();
     },
 
     render: function() {
-        return <div className='map_container' ref='map' />;
+        return (
+            <div className='interactive-container'>
+                <div className='map_container x-full-screen' ref='map' />
+                <div className='dimmer' onClick={ this.props.onMapClose } />
+            </div>
+        );
     }
 });
 

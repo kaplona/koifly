@@ -1,0 +1,23 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.bottom-menu {
+  &:extend(.menu);
+
+  z-index: 20;
+  left: 0;
+  bottom: 0;
+
+  @media (min-width: @medium-viewport) {
+    width: 60%;
+    height: @header-height;
+    left: 20%;
+    top: 0;
+
+    &.x-mobile {
+      display: none;
+    }
+  }
+}

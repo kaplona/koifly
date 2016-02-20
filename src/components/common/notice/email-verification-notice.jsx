@@ -9,7 +9,6 @@ var Notice = require('./notice');
 var EmailVerificationNotice = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string.isRequired,
         onClose: React.PropTypes.func
     },
 
@@ -26,7 +25,12 @@ var EmailVerificationNotice = React.createClass({
     },
 
     render: function() {
-        var noticeText = this.props.text;
+        var noticeText = [
+            'We sent you email with verification link.',
+            'Please follow it to activate your account.',
+            'It is required for your records safety',
+            'since your email is the primary way to access application'
+        ].join(' ');
         var onClick = this.handleEmailVerification;
         var onClose = this.props.onClose;
         if (this.state.isEmailSent) {

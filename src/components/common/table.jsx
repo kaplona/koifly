@@ -64,6 +64,28 @@ var Table = React.createClass({
     },
 
     render: function() {
+
+        var headerNodes = _.map(this.props.columns, (column) => {
+            var arrow = '\u25bc';
+            var arrowClassName = 'arrow';
+            if (column.key === this.state.sortingField) {
+                arrow = this.state.sortingDirection ? '\u25bc' : '\u25b2';
+            } else {
+                arrowClassName += ' x-hidden';
+            }
+
+            return (
+                <th
+                    key={ 'column-' + column.key }
+                    onClick={ () => this.handleSorting(column.key) }
+                    >
+                    { column.label }
+                    <span className={ arrowClassName }>{ arrow }</span>
+                </th>
+            );
+        });
+
+
         var sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
         var sortedRows = _.sortByOrder(this.props.rows, [ (row) => {
             // turn string to upper case so as to avoid ABCabc type of sorting
@@ -72,18 +94,6 @@ var Table = React.createClass({
             }
             return row[this.state.sortingField];
         } ], [ sortingOrder ]);
-
-        var headerNodes = _.map(this.props.columns, (column) => {
-            return (
-                <th
-                    key={ 'column-' + column.key }
-                    onClick={ () => this.handleSorting(column.key) }
-                    >
-                    { column.label }
-                    <sup>{ '\u25bc' }</sup>
-                </th>
-            );
-        });
 
         var rowNodes = _.map(sortedRows, (row) => {
             var rowToDisplay = [];

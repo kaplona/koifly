@@ -1,16 +1,18 @@
 'use strict';
 
 var React = require('react');
+var History = require('react-router').History;
 var DataService = require('../services/data-service');
 var TopMenu = require('./common/menu/top-menu');
 var BottomMenu = require('./common/menu/bottom-menu');
+var BottomButtons = require('./common/buttons/bottom-buttons');
 var Section = require('./common/section/section');
 var SectionTitle = require('./common/section/section-title');
 var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/section/section-button');
+var SectionButton = require('./common/buttons/section-button');
 var PasswordInput = require('./common/inputs/password-input');
 var Notice = require('./common/notice/notice');
-var ErrorBox = require('./common/notice/error-box');
+var Button = require('./common/buttons/button');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 
@@ -23,6 +25,8 @@ var ResetPass = React.createClass({
             token: React.PropTypes.string.isRequired
         })
     },
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -89,8 +93,20 @@ var ResetPass = React.createClass({
 
     renderError: function() {
         if (this.state.error !== null) {
-            return <ErrorBox error={ this.state.error } />;
+            return <Notice type='validation' text={ this.state.error.message } />;
         }
+    },
+
+    renderSaveButton: function() {
+        return (
+            <Button
+                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSaving }
+                />
+        );
     },
 
     render: function() {
@@ -107,9 +123,9 @@ var ResetPass = React.createClass({
                     />
 
                 <form>
-                    { this.renderError() }
+                    <Section isCompact={ true }>
+                        { this.renderError() }
 
-                    <Section>
                         <SectionTitle>Reset Password</SectionTitle>
 
                         <SectionRow>
@@ -124,11 +140,13 @@ var ResetPass = React.createClass({
                         <SectionRow isLast={ true }>
                             <PasswordInput
                                 inputValue={ this.state.passwordConfirm }
-                                labelText='Confirm password::'
+                                labelText='Confirm password:'
                                 inputName='passwordConfirm'
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
+
+                        <BottomButtons leftElements={ [ this.renderSaveButton() ] } />
                     </Section>
 
                     <SectionButton
@@ -140,7 +158,7 @@ var ResetPass = React.createClass({
                         />
                 </form>
 
-                <BottomMenu />
+                <BottomMenu isMobile={ true } />
             </div>
         );
     }

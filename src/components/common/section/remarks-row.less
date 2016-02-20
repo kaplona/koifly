@@ -1,0 +1,20 @@
+
+@import (reference) '../../constants';
+
+
+.remarks-row {
+  @hp: (@row-height * 0.2);
+
+  padding-left: @hp;
+  padding-right: @hp;
+  margin-bottom: @row-height * 0.6;
+
+  @media (min-width: @medium-viewport) {
+    @hp: (@row-height * 0.6);
+    padding: (@row-height * 0.2) @hp (@row-height * 0.6) @hp;
+  }
+
+  .remarks {
+    margin-top: @row-height * 0.3;
+  }
+}

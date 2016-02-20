@@ -33,6 +33,11 @@ var PasswordInput = React.createClass({
     },
 
     render: function() {
+        var className = 'x-text';
+        if (this.props.errorMessage) {
+            className += ' x-error';
+        }
+
         return (
             <div>
                 { this.renderErrorMessage() }
@@ -43,6 +48,7 @@ var PasswordInput = React.createClass({
 
                 <Value>
                     <input
+                        className={ className }
                         value={ this.props.inputValue }
                         type='password'
                         onChange={ this.handleUserInput }

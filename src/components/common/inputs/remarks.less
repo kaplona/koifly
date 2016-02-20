@@ -7,11 +7,18 @@ textarea {
   .border-box();
 
   width: 100%;
-  min-height: @menu-height;
-  margin-top: @menu-height * 0.2;
-  padding: @menu-height * 0.1;
-  border: 1px solid @dark-base;
+  height: @row-height * 1.5;
+  margin-bottom: @row-height * 0.3;
+  padding: @row-height * 0.2;
+  border: 1px solid @mild-base;
   color: @dark-base;
-  font-size: @font-size * 0.8;
+  font-size: @font-size * 0.9;
   outline: none; // no blue glowing around input
+
+  @media (min-width: @medium-viewport) {
+    max-width: 100%;
+    height: @row-height * 2;
+    border-radius: 5px;
+    color: @dark-blue;
+  }
 }

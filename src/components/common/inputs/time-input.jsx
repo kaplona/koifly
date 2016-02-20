@@ -36,6 +36,15 @@ var TimeInput = React.createClass({
     },
 
     render: function() {
+        var hoursErrorClass = '';
+        var minutesErrorClass = '';
+        if (this.props.errorMessage || this.props.errorMessageHours) {
+            hoursErrorClass = ' x-error';
+        }
+        if (this.props.errorMessage || this.props.errorMessageMinutes) {
+            minutesErrorClass = ' x-error';
+        }
+
         return (
             <div>
                 { this.renderErrorMessage() }
@@ -46,21 +55,25 @@ var TimeInput = React.createClass({
 
                 <Value>
                     <input
-                        className='col-of-four'
+                        className={ 'col-of-four input x-number' + hoursErrorClass }
                         value={ this.props.hours }
                         type='text'
+                        patern='[0-9]*'
                         onChange={ () => this.handleUserInput('hours') }
                         ref='hours'
                         />
-                    <div className='col-of-four'>h</div>
+                    <div className='mobile col-of-four'>h</div>
+                    <div className='desktop col-of-four'>hours</div>
                     <input
-                        className='col-of-four'
+                        className={ 'col-of-four input x-number' + minutesErrorClass }
                         value={ this.props.minutes }
                         type='text'
+                        patern='[0-9]*'
                         onChange={ () => this.handleUserInput('minutes') }
                         ref='minutes'
                         />
-                    <div className='col-of-four'>min</div>
+                    <div className='mobile col-of-four'>min</div>
+                    <div className='desktop col-of-four'>minutes</div>
                 </Value>
             </div>
         );

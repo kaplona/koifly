@@ -7,19 +7,21 @@ var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
 var GliderModel = require('../../models/glider');
 var Validation = require('../../utils/validation');
-var View = require('./../common/view');
+var View = require('../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BottomButtons = require('../common/buttons/bottom-buttons');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
-var SectionButton = require('../common/section/section-button');
-var TextInput = require('./../common/inputs/text-input');
-var TimeInput = require('./../common/inputs/time-input');
-var AltitudeInput = require('./../common/inputs/altitude-input');
-var RemarksInput = require('./../common/inputs/remarks-input');
-var DropDown = require('./../common/inputs/dropdown-input');
-var Loader = require('./../common/loader');
-var ErrorBox = require('./../common/notice/error-box');
+var SectionButton = require('../common/buttons/section-button');
+var DateInput = require('../common/inputs/date-input');
+var TimeInput = require('../common/inputs/time-input');
+var AltitudeInput = require('../common/inputs/altitude-input');
+var RemarksInput = require('../common/inputs/remarks-input');
+var DropDown = require('../common/inputs/dropdown-input');
+var Button = require('../common/buttons/button');
+var Loader = require('../common/loader');
+var ErrorBox = require('../common/notice/error-box');
 var ErrorTypes = require('../../utils/error-types');
 
 
@@ -56,7 +58,7 @@ var FlightEditView = React.createClass({
             this.setState({ isSaving: true });
 
             FlightModel.saveFlight(this.state.flight).then(() => {
-                this.history.pushState(null, '/flights');
+                this.handleCancelEditing();
             }).catch((error) => {
                 this.handleSavingError(error);
             });
@@ -64,12 +66,16 @@ var FlightEditView = React.createClass({
     },
 
     handleDeleteFlight: function() {
-        this.setState({ isDeleting: true });
-        FlightModel.deleteFlight(this.props.params.flightId).then(() => {
-            this.history.pushState(null, '/flights');
-        }).catch((error) => {
-            this.handleDeletingError(error);
-        });
+        var alertMessage = 'Delete this flight?';
+
+        if (window.confirm(alertMessage)) {
+            this.setState({ isDeleting: true });
+            FlightModel.deleteFlight(this.props.params.flightId).then(() => {
+                this.history.pushState(null, '/flights');
+            }).catch((error) => {
+                this.handleDeletingError(error);
+            });
+        }
     },
 
     handleInputChange: function(inputName, inputValue) {
@@ -215,7 +221,7 @@ var FlightEditView = React.createClass({
         );
     },
 
-    renderDeleteButton: function() {
+    renderDeleteSectionButton: function() {
         if (this.props.params.flightId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
@@ -227,6 +233,45 @@ var FlightEditView = React.createClass({
                     />
             );
         }
+    },
+
+    renderDeleteButton: function() {
+        if (this.props.params.flightId) {
+            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+            return (
+                <Button
+                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    buttonStyle='warning'
+                    onClick={ this.handleDeleteFlight }
+                    isEnabled={ isEnabled }
+                    />
+            );
+        }
+    },
+
+    renderSaveButton: function() {
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+        return (
+            <Button
+                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ isEnabled }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+        return (
+            <Button
+                text='Cancel'
+                buttonStyle='secondary'
+                onClick={ this.handleCancelEditing }
+                isEnabled={ isEnabled }
+                />
+        );
     },
 
     render: function() {
@@ -257,33 +302,11 @@ var FlightEditView = React.createClass({
                     { this.renderDeletingError() }
                     <Section>
                         <SectionRow>
-                            <TextInput
+                            <DateInput
                                 inputValue={ this.state.flight.date }
                                 labelText={ <span>Date<sup>*</sup>:</span> }
                                 inputName='date'
                                 errorMessage={ this.state.errors.date }
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow>
-                            <TimeInput
-                                hours={ this.state.flight.hours }
-                                minutes={ this.state.flight.minutes }
-                                labelText='Airtime:'
-                                errorMessage={ this.state.errors.airtime }
-                                errorMessageHours={ this.state.errors.hours }
-                                errorMessageMinutes={ this.state.errors.minutes }
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow>
-                            <AltitudeInput
-                                inputValue={ this.state.flight.altitude }
-                                selectedAltitudeUnit={ this.state.flight.altitudeUnit }
-                                labelText='Altitude gained:'
-                                errorMessage={ this.state.errors.altitude }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
@@ -299,6 +322,28 @@ var FlightEditView = React.createClass({
                                 onChangeFunc={ (inputName, inputValue) => {
                                     this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
                                 } }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <AltitudeInput
+                                inputValue={ this.state.flight.altitude }
+                                selectedAltitudeUnit={ this.state.flight.altitudeUnit }
+                                labelText='Max altitude:'
+                                errorMessage={ this.state.errors.altitude }
+                                onChange={ this.handleInputChange }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TimeInput
+                                hours={ this.state.flight.hours }
+                                minutes={ this.state.flight.minutes }
+                                labelText='Airtime:'
+                                errorMessage={ this.state.errors.airtime }
+                                errorMessageHours={ this.state.errors.hours }
+                                errorMessageMinutes={ this.state.errors.minutes }
+                                onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
 
@@ -324,6 +369,14 @@ var FlightEditView = React.createClass({
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSaveButton(),
+                                this.renderCancelButton()
+                            ] }
+                            rightElement={ this.renderDeleteButton() }
+                            />
                     </Section>
 
                     <SectionButton
@@ -334,7 +387,7 @@ var FlightEditView = React.createClass({
                         isEnabled={ isEnabled }
                         />
 
-                    { this.renderDeleteButton() }
+                    { this.renderDeleteSectionButton() }
                 </form>
 
                 <BottomMenu isFlightView={ true } />

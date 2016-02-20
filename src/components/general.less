@@ -1,10 +1,16 @@
 
+@import (reference) './constants';
+
 // --- General Style ---
 
 .border-box() {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+}
+
+.box-shadow() {
+  box-shadow: 0 0 5px -1px @dark-base;
 }
 
 .column {
@@ -18,4 +24,13 @@
 
 .column-width(@fraction) {
   width: 100% * @fraction;
+}
+
+.menu {
+  width: 100%;
+  height: @menu-height;
+  text-align: center;
+  color: @light-blue;
+  background-color: @main-blue;
+  position: fixed;
 }

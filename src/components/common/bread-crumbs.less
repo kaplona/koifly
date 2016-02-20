@@ -1,0 +1,16 @@
+
+@import (reference) '../constants';
+
+
+.bread-crumbs {
+  @media (max-width: (@medium-viewport - 1)) {
+    display: none;
+  }
+
+  padding-left: (@row-height * 0.6);
+  color: @link-color;
+
+  & a {
+    font-size: @font-size;
+  }
+}

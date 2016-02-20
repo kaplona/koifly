@@ -1,7 +1,9 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var Router = require('react-router');
+var History = Router.History;
+var Link = Router.Link;
 var Util = require('../../utils/util');
 var Map = require('../../utils/map');
 var FlightModel = require('../../models/flight');
@@ -9,10 +11,12 @@ var SiteModel = require('../../models/site');
 var View = require('../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BreadCrumbs = require('../common/bread-crumbs');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
 var RowContent = require('../common/section/row-content');
+var RemarksRow = require('../common/section/remarks-row');
 var StaticMap = require('../common/maps/static-map');
 var Loader = require('../common/loader');
 var ErrorBox = require('../common/notice/error-box');
@@ -117,15 +121,32 @@ var FlightView = React.createClass({
                     onRightClick={ this.handleFlightEditing }
                     />
 
-                <Section>
+                <Section onEditClick={ this.handleFlightEditing }>
+                    <BreadCrumbs>
+                        <Link to='/flights'>Flights</Link>
+                        { ' / ' + this.state.flight.date }
+                        { this.state.flight.flightNumDay ? '(' + this.state.flight.flightNumDay + ')' : '' }
+                    </BreadCrumbs>
+
                     <SectionTitle>
-                        <div>{ this.state.flight.date }</div>
+                        <div>{ Util.formatDate(this.state.flight.date) }</div>
                         <div>{ this.state.flight.siteName }</div>
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
-                            label='Altitude gained:'
+                            label='Flight number:'
+                            value={ [
+                                this.state.flight.flightNum,
+                                '(',
+                                Util.addOrdinalSuffix(this.state.flight.flightNumYear),
+                                'for the year )'
+                            ].join(' ') }
+                            />
+                    </SectionRow>
+                    <SectionRow>
+                        <RowContent
+                            label='Max altitude:'
                             value={ this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
                             />
                     </SectionRow>
@@ -147,10 +168,8 @@ var FlightView = React.createClass({
                             value={ this.state.flight.gliderName }
                             />
                     </SectionRow>
-                    <SectionRow isLast={ true }>
-                        <div>Remarks:</div>
-                        <div>{ this.state.flight.remarks }</div>
-                    </SectionRow>
+
+                    <RemarksRow value={ this.state.flight.remarks } />
 
                     { this.renderMap() }
                 </Section>

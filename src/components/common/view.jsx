@@ -44,18 +44,7 @@ var View = React.createClass({
 
     renderNotice: function() {
         if (this.state.isActivationNotice) {
-            var noticeText = [
-                'Your email has not been verified yet.',
-                'It is required for your records safety',
-                'since your email is the primary way to access the App'
-            ].join(' ');
-
-            return (
-                <EmailVerificationNotice
-                    text={ noticeText }
-                    onClose={ this.handleCloseNotice }
-                    />
-            );
+            return <EmailVerificationNotice onClose={ this.handleCloseNotice } />;
         }
     },
 

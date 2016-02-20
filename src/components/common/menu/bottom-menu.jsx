@@ -4,7 +4,7 @@ var React = require('react');
 var History = require('react-router').History;
 var NavigationItem = require('./navigation-item');
 
-require('./menu.less');
+require('./bottom-menu.less');
 
 
 var BottomMenu = React.createClass({
@@ -13,7 +13,8 @@ var BottomMenu = React.createClass({
         isFlightView: React.PropTypes.bool,
         isSiteView: React.PropTypes.bool,
         isGliderView: React.PropTypes.bool,
-        isPilotView: React.PropTypes.bool
+        isPilotView: React.PropTypes.bool,
+        isMobile: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
@@ -35,35 +36,35 @@ var BottomMenu = React.createClass({
         var itemsNumber = 4;
 
         return (
-            <div className='bottom-menu'>
+            <div className={ 'bottom-menu' + (this.props.isMobile ? ' x-mobile' : '') }>
                 <NavigationItem
+                    iconFileName='log-book.png'
+                    text='Flights'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.isFlightView }
                     onClick={ () => this.handleLinkTo('/flights') }
-                    >
-                    F
-                </NavigationItem>
+                    />
                 <NavigationItem
+                    iconFileName='mountains.png'
+                    text='Sites'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.isSiteView }
                     onClick={ () => this.handleLinkTo('/sites') }
-                    >
-                    S
-                </NavigationItem>
+                    />
                 <NavigationItem
+                    iconFileName='glider.png'
+                    text='Gliders'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.isGliderView }
                     onClick={ () => this.handleLinkTo('/gliders') }
-                    >
-                    G
-                </NavigationItem>
+                    />
                 <NavigationItem
+                    iconFileName='person.png'
+                    text='Pilot'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.isPilotView }
                     onClick={ () => this.handleLinkTo('/pilot') }
-                    >
-                    P
-                </NavigationItem>
+                    />
             </div>
         );
     }

@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Label = require('../section/label');
 var ValidationError = require('../section/validation-error');
 
 require('./remarks.less');
@@ -36,7 +37,7 @@ var RemarksInput = React.createClass({
         return (
             <div>
                 { this.renderErrorMessage() }
-                <label>{ this.props.labelText }</label>
+                <Label>{ this.props.labelText }</Label>
                 <textarea
                     value={ this.props.inputValue }
                     onChange={ this.handleUserInput }

@@ -3,13 +3,17 @@
 var React = require('react');
 var History = require('react-router').History;
 var SiteModel = require('../../models/site');
-var View = require('./../common/view');
+var View = require('../common/view');
 var TopMenu = require('../common/menu/top-menu');
+var TopButtons = require('../common/buttons/top-buttons');
 var BottomMenu = require('../common/menu/bottom-menu');
-var Table = require('./../common/table');
-var Loader = require('./../common/loader');
-var FirstAdding = require('./../common/first-adding');
-var ErrorBox = require('./../common/notice/error-box');
+var Section = require('../common/section/section');
+var Table = require('../common/table');
+var Switcher = require('../common/switcher');
+var Button = require('../common/buttons/button');
+var Loader = require('../common/loader');
+var FirstAdding = require('../common/first-adding');
+var ErrorBox = require('../common/notice/error-box');
 
 
 var SiteListView = React.createClass({
@@ -65,6 +69,21 @@ var SiteListView = React.createClass({
         }
     },
 
+    renderAddSiteButton: function() {
+        return <Button text='Add Site' onClick={ this.handleSiteAdding }/>;
+    },
+
+    renderSwitcher: function() {
+        return (
+            <Switcher
+                leftText = 'List'
+                rightText = 'Map'
+                onRightClick = { this.handleToMapView }
+                initialPosition = 'left'
+                />
+        );
+    },
+
     renderTable: function() {
         var columnsConfig = [
             {
@@ -107,16 +126,23 @@ var SiteListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    headerText='Sites'
-                    leftText='Map'
-                    rightText='+'
-                    onLeftClick={ this.handleToMapView }
-                    onRightClick={ this.handleSiteAdding }
-                    />
+                <Section>
+                    <TopMenu
+                        headerText='Sites'
+                        leftText='Map'
+                        rightText='Add'
+                        onLeftClick={ this.handleToMapView }
+                        onRightClick={ this.handleSiteAdding }
+                        />
 
-                { content }
-                { this.renderLoader() }
+                    <TopButtons
+                        leftElement={ this.renderAddSiteButton() }
+                        middleElement={ this.renderSwitcher() }
+                        />
+
+                    { content }
+                    { this.renderLoader() }
+                </Section>
 
                 <BottomMenu isSiteView={ true } />
             </View>

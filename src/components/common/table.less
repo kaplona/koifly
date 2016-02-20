@@ -1,19 +1,32 @@
 
 @import (reference) '../constants';
+@import (reference) '../general';
 
 
 table {
   width: 100%;
   border: none;
+  border-spacing: 0;
   background-color: @soft-white;
+
+  //@media (min-width: @medium-viewport) {
+  //  .box-shadow();
+  //}
+}
+
+tbody tr:hover {
+  background-color: lighten(@main-blue, 47%);
 }
 
 tbody tr:nth-child(odd) {
-  background-color: @light-blue;
+  background-color: lighten(@main-blue, 52%);
+
+  &:hover {
+    background-color: lighten(@main-blue, 47%);
+  }
 }
 
 .cell {
-  padding: 30px 15px;
   text-align: center;
   vertical-align: center;
   cursor: pointer;
@@ -22,13 +35,29 @@ tbody tr:nth-child(odd) {
 th {
   &:extend(.cell);
 
-  padding-top: 50px;
+  padding: 1em 0 1em 0;
+
+  &:hover {
+    color: @main-blue;
+  }
+
+  & .arrow {
+    margin-left: 3px;
+    font-size: 0.8em;
+
+    &:hover {
+      color: @main-blue;
+    }
+
+    &.x-hidden {
+      visibility: hidden;
+    }
+  }
 }
 
 td {
   &:extend(.cell);
 
+  padding: 1em 0.5em;
   border-top: 1px solid @dark-base;
 }
-
-

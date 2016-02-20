@@ -1,6 +1,8 @@
 'use strict';
 
 var React = require('react');
+var Router = require('react-router');
+var History = Router.History;
 var _ = require('lodash');
 var PubSub = require('../../../utils/pubsub');
 var Map = require('../../../utils/map');
@@ -42,6 +44,8 @@ var StaticMap = React.createClass({
         };
     },
 
+    mixins: [ History ],
+
     componentDidMount: function() {
         if (Map.isLoaded) {
             this.createMap();
@@ -61,8 +65,12 @@ var StaticMap = React.createClass({
         }
     },
 
+    handleToSite: function(siteId) {
+        this.history.pushState(null, '/site/' + siteId);
+    },
+
     createMap: function() {
-        var markerId, markerPosition, infowindowContent;
+        var markerId, markerPosition, infowindowContent, infowindowOnClickFunc;
         var mapContainer = this.refs.map.getDOMNode();
         Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
         for (var i = 0; i < this.props.markers.length; i++) {
@@ -71,18 +79,19 @@ var StaticMap = React.createClass({
                 markerPosition = SiteModel.getLatLngCoordinates(markerId);
                 Map.createMarker(markerId, markerPosition, false);
                 infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
-                Map.createInfowindow(markerId, infowindowContent);
+                infowindowOnClickFunc = ((siteId) => {
+                    return () => this.handleToSite(siteId);
+                })(markerId);
+                Map.createInfowindow(markerId, infowindowContent, infowindowOnClickFunc);
                 Map.bindMarkerAndInfowindow(markerId);
             }
         }
     },
 
     composeInfowindowMessage: function(site) {
-        return '<div>' +
-                    '<div>' +
-                        '<a href="/site/' + _.escape(site.id) + '">' +
+        return '<div class="infowindow">' +
+                    '<div class="infowindow-title" id="site-' + _.escape(site.id) + '">' +
                             _.escape(site.name) +
-                        '</a>' +
                     '</div>' +
                     '<div>' + _.escape(site.location) + '</div>' +
                     '<div>' +

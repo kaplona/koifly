@@ -9,7 +9,11 @@ var RowContent = React.createClass({
 
     propTypes: {
         label: React.PropTypes.string,
-        value: React.PropTypes.string
+        value: React.PropTypes.oneOfType([
+            React.PropTypes.element,
+            React.PropTypes.string,
+            React.PropTypes.number
+        ])
     },
 
     render: function() {

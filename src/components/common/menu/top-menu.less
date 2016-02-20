@@ -1,0 +1,50 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.top-menu {
+  &:extend(.menu);
+
+  z-index: 5;
+  left: 0;
+  top: 0;
+
+  @media (min-width: @medium-viewport) {
+    display: none;
+  }
+
+  .top-navigation {
+    &:extend(.column);
+    .column-width(0.2);
+
+    height: @menu-height;
+    padding: (@menu-height * 0.25) 0;
+    font-size: @menu-height * 0.4;
+    cursor: pointer;
+
+    @media (min-width: @medium-viewport) {
+      &.x-empty {
+        background-color: @base-color;
+      }
+
+      &:active {
+        background-color: darken(@main-blue, 5%);
+      }
+    }
+  }
+
+  .header {
+    &:extend(.column);
+    .column-width(0.6);
+
+    height: @menu-height;
+    padding: (@menu-height * 0.2) 0;
+    font-size: @menu-height * 0.5;
+    font-weight: 900;
+
+    @media (min-width: @medium-viewport) {
+      background-color: @base-color;
+    }
+  }
+}

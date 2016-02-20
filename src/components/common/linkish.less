@@ -1,0 +1,19 @@
+
+@import (reference) '../constants';
+
+
+.linkish {
+  color: @link-color;
+  text-decoration: underline;
+  cursor: pointer;
+
+  @media (max-width: (@medium-viewport - 1)) {
+    padding-bottom: 5px;
+  }
+
+  @media (min-width: @medium-viewport) {
+    margin-left: 12px;
+    padding-top: 5px;
+    display: inline-block;
+  }
+}

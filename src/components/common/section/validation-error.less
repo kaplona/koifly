@@ -4,6 +4,14 @@
 
 .validation-error {
   color: @brick-color;
-  position: absolute;
-  top: 0;
+
+  @media (max-width: (@medium-viewport - 1)) {
+    margin-top: 3px;
+    margin-bottom: -3px;
+  }
+
+  @media (min-width: @medium-viewport) {
+    margin-left: @label-width;
+    margin-bottom: 5px;
+  }
 }

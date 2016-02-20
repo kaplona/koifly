@@ -5,14 +5,15 @@ var History = require('react-router').History;
 var DataService = require('../services/data-service');
 var TopMenu = require('./common/menu/top-menu');
 var BottomMenu = require('./common/menu/bottom-menu');
+var BottomButtons = require('./common/buttons/bottom-buttons');
 var Section = require('./common/section/section');
 var SectionTitle = require('./common/section/section-title');
 var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/section/section-button');
+var SectionButton = require('./common/buttons/section-button');
 var TextInput = require('./common/inputs/text-input');
 var Description = require('./common/description');
 var Notice = require('./common/notice/notice');
-var ErrorBox = require('./common/notice/error-box');
+var Button = require('./common/buttons/button');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 
@@ -54,8 +55,12 @@ var OneTimeLogin = React.createClass({
         });
     },
 
-    handleLinkTo: function(link) {
-        this.history.pushState(null, link);
+    handleToLogin: function() {
+        this.history.pushState(null, '/login');
+    },
+
+    handleToSignup: function() {
+        this.history.pushState(null, '/signup');
     },
 
     handleInputChange: function(inputName, inputValue) {
@@ -78,8 +83,31 @@ var OneTimeLogin = React.createClass({
 
     renderError: function() {
         if (this.state.error !== null) {
-            return <ErrorBox error={ this.state.error } />;
+            return <Notice type='validation' text={ this.state.error.message } />;
         }
+    },
+
+    renderSendButton: function() {
+        return (
+            <Button
+                text={ this.state.isSending ? 'Sending...' : 'Send' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSending }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        return (
+            <Button
+                text='Back'
+                buttonStyle='secondary'
+                onClick={ this.handleToLogin }
+                isEnabled={ !this.state.isSending }
+                />
+        );
     },
 
     render: function() {
@@ -89,14 +117,15 @@ var OneTimeLogin = React.createClass({
                     headerText='Koifly'
                     leftText='Back'
                     rightText='Sign Up'
-                    onLeftClick={ () => this.handleLinkTo('/login') }
-                    onRightClick={ () => this.handleLinkTo('/signup') }
+                    onLeftClick={ this.handleToLogin }
+                    onRightClick={ this.handleToSignup }
                     />
 
                 <form>
-                    { this.renderNotice() }
-                    { this.renderError() }
-                    <Section>
+                    <Section isCompact={ true }>
+                        { this.renderNotice() }
+                        { this.renderError() }
+
                         <SectionTitle>Log in without password</SectionTitle>
 
                         <SectionRow>
@@ -113,6 +142,13 @@ var OneTimeLogin = React.createClass({
                                 We will send you an email with a link, which will log in you into app
                             </Description>
                         </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSendButton(),
+                                this.renderCancelButton()
+                            ] }
+                            />
                     </Section>
 
                     <SectionButton
@@ -125,11 +161,11 @@ var OneTimeLogin = React.createClass({
 
                     <SectionButton
                         text='Log In With Password'
-                        onClick={ () => this.handleLinkTo('/login') }
+                        onClick={ this.handleToLogin }
                         />
                 </form>
 
-                <BottomMenu />
+                <BottomMenu isMobile={ true } />
             </div>
         );
     }

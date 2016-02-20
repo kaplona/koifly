@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-require('./menu.less');
+require('./top-menu.less');
 
 
 var TopMenu = React.createClass({

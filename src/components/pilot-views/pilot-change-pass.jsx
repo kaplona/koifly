@@ -1,19 +1,23 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var Router = require('react-router');
+var History = Router.History;
+var Link = Router.Link;
 var PilotModel = require('../../models/pilot');
 var KoiflyError = require('../../utils/error');
 var ErrorTypes = require('../../utils/error-types');
 var View = require('../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BottomButtons = require('../common/buttons/bottom-buttons');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
-var SectionButton = require('../common/section/section-button');
+var SectionButton = require('../common/buttons/section-button');
 var EmailVerificationNotice = require('./../common/notice/email-verification-notice');
 var PasswordInput = require('../common/inputs/password-input');
+var Button = require('../common/buttons/button');
 var ErrorBox = require('../common/notice/error-box');
 var Notice = require('../common/notice/notice');
 
@@ -52,7 +56,10 @@ var PilotChangePass = React.createClass({
             });
 
             PilotModel.changePass(this.state).then(() => {
-                this.setState({ successNotice: true });
+                this.setState({
+                    successNotice: true,
+                    isSaving: false
+                });
             }).catch((error) => {
                 this.handleSavingError(error);
             });
@@ -113,6 +120,29 @@ var PilotChangePass = React.createClass({
         }
     },
 
+    renderSaveButton: function() {
+        return (
+            <Button
+                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSaving }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        return (
+            <Button
+                text='Cancel'
+                buttonStyle='secondary'
+                onClick={ () => this.handleLinkTo('/pilot') }
+                isEnabled={ !this.state.isSaving }
+                />
+        );
+    },
+
 
     render: function() {
         if (this.state.successNotice) {
@@ -161,6 +191,17 @@ var PilotChangePass = React.createClass({
                                 inputName='passwordConfirm'
                                 onChange={ this.handleInputChange }
                                 />
+                        </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSaveButton(),
+                                this.renderCancelButton()
+                            ] }
+                            />
+
+                        <SectionRow isDesktopOnly={ true } isLast={ true }>
+                            <Link to='/reset-pass'>Forgot Password?</Link>
                         </SectionRow>
                     </Section>
 

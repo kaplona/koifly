@@ -1,8 +1,17 @@
 
+@import (reference) '../../constants';
 @import (reference) '../../general';
 
 
 .label {
   &:extend(.column);
   .column-width(0.4);
+
+  padding: (@row-height * 0.3) 0;
+
+  @media (min-width: @medium-viewport) {
+    width: @label-width;
+    padding: (@row-height * 0.2) 0;
+    display: table-cell;
+  }
 }

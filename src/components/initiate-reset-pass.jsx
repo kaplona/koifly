@@ -1,22 +1,27 @@
 'use strict';
 
 var React = require('react');
+var History = require('react-router').History;
 var DataService = require('../services/data-service');
+var PilotModel = require('../models/pilot');
 var TopMenu = require('./common/menu/top-menu');
 var BottomMenu = require('./common/menu/bottom-menu');
+var BottomButtons = require('./common/buttons/bottom-buttons');
 var Section = require('./common/section/section');
 var SectionTitle = require('./common/section/section-title');
 var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/section/section-button');
+var SectionButton = require('./common/buttons/section-button');
 var TextInput = require('./common/inputs/text-input');
 var Description = require('./common/description');
 var Notice = require('./common/notice/notice');
-var ErrorBox = require('./common/notice/error-box');
+var Button = require('./common/buttons/button');
 var KoiflyError = require('../utils/error');
 var ErrorTypes = require('../utils/error-types');
 
 
 var InitiateResetPass = React.createClass({
+
+    mixins: [ History ],
 
     getInitialState: function() {
         return {
@@ -25,6 +30,12 @@ var InitiateResetPass = React.createClass({
             isSending: false,
             isEmailSent: false
         };
+    },
+
+    componentDidMount: function() {
+        if (PilotModel.isLoggedIn()) {
+            this.setState({ email: PilotModel.getEmailAddress() });
+        }
     },
 
     handleSubmit: function(event) {
@@ -73,9 +84,32 @@ var InitiateResetPass = React.createClass({
         }
     },
 
+    renderSendButton: function() {
+        return (
+            <Button
+                text={ this.state.isSending ? 'Sending...' : 'Send' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSending }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        return (
+            <Button
+                text='Cancel'
+                buttonStyle='secondary'
+                onClick={ () => this.handleLinkTo('/pilot') }
+                isEnabled={ !this.state.isSending }
+                />
+        );
+    },
+
     renderError: function() {
         if (this.state.error !== null) {
-            return <ErrorBox error={ this.state.error } />;
+            return <Notice type='validation' text={ this.state.error.message } />;
         }
     },
 
@@ -91,10 +125,10 @@ var InitiateResetPass = React.createClass({
                     />
 
                 <form>
-                    { this.renderNotice() }
-                    { this.renderError() }
+                    <Section isCompact={ true }>
+                        { this.renderNotice() }
+                        { this.renderError() }
 
-                    <Section>
                         <SectionTitle>Reset Password</SectionTitle>
 
                         <SectionRow>
@@ -111,6 +145,13 @@ var InitiateResetPass = React.createClass({
                                 We will send you an email with a link to password reset page
                             </Description>
                         </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSendButton(),
+                                this.renderCancelButton()
+                            ] }
+                            />
                     </Section>
 
                     <SectionButton
@@ -122,7 +163,7 @@ var InitiateResetPass = React.createClass({
                         />
                 </form>
 
-                <BottomMenu />
+                <BottomMenu isMobile={ true } />
             </div>
         );
     }

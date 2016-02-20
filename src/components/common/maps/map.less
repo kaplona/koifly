@@ -1,15 +1,139 @@
 
 @import (reference) '../../constants';
+@import (reference) '../../general';
 
+
+.box-shadow() {
+  box-shadow: 0 0 3px black;
+}
 
 .map_container {
-  // TODO for landscape view port
-  //margin: 0 20px;
-
-  height: 500px;
+  height: 300px;
   background-color: @map-background;
 
-  &.x-full-screen {
+  @media (max-width: (@medium-viewport - 1)) and (orientation: landscape) {
+    margin: (@row-height * 0.3) (@row-height * 1.5);
     height: 100vh;
   }
+
+  &.x-full-screen {
+    z-index: 4;
+
+    @media (max-width: (@medium-viewport - 1)) {
+      height: 100vh;
+    }
+
+    @media (min-width: @medium-viewport) {
+      .box-shadow();
+
+      height: 500px;
+    }
+  }
+}
+
+
+.interactive-container {
+  .border-box();
+
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  @media (min-width: @medium-viewport) {
+    padding: @row-height * 0.4;
+  }
+}
+
+@media (min-width: @medium-viewport) {
+  .dimmer {
+    content: '';
+    width: 100vw;
+    height: 100vh;
+    background-color: @dimmer;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1;
+  }
+}
+
+
+.search-control {
+  .box-shadow();
+
+  width: 50%;
+  max-width: 350px;
+  margin-top: 6px;
+  background-color: white;
+
+  @media (max-width: (@medium-viewport - 1)) {
+    margin-left: -60px;
+  }
+
+  & .search-bar {
+    .border-box();
+
+    width: 77%;
+    padding: 5px;
+    border: none;
+    display: inline-block;
+
+    @media (max-width: (@medium-viewport - 1)) {
+      width: 100%;
+    }
+  }
+
+  & .search-button {
+    .border-box();
+
+    width: 22%;
+    padding: 7px;
+    border-left: 1px solid @mild-base;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+
+    @media (max-width: (@medium-viewport - 1)) {
+      display: none;
+    }
+
+    @media (min-width: @medium-viewport) {
+      display: inline-block;
+    }
+  }
+}
+
+
+.map-button {
+  .box-shadow();
+
+  width: 75px;
+  margin: 10px 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: @dark-blue;
+  color: @light-blue;
+  cursor: pointer;
+  outline: none;
+
+  &:active {
+    background-color: lighten(@dark-blue, 7%);
+    box-shadow: none;
+  }
+}
+
+
+.infowindow > div {
+  min-width: 150px;
+  max-width: 200px;
+  margin-top: 5px;
+}
+
+.infowindow-title {
+  font-size: 18px;
+  margin-top: 10px;
+  color: @link-color;
+  text-decoration: underline;
+  cursor: pointer;
 }

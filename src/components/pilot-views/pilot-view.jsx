@@ -12,7 +12,7 @@ var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
 var RowContent = require('../common/section/row-content');
-var SectionButton = require('../common/section/section-button');
+var SectionButton = require('../common/buttons/section-button');
 var DaysSinceLastFlight = require('./../common/days-since-last-flight');
 var Loader = require('./../common/loader');
 var ErrorBox = require('./../common/notice/error-box');
@@ -33,7 +33,10 @@ var PilotView = React.createClass({
         this.history.pushState(null, '/pilot/edit');
     },
 
-    handleChangePass: function() {
+    handleChangePass: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
         this.history.pushState(null, '/pilot/edit/change-pass');
     },
 
@@ -52,6 +55,7 @@ var PilotView = React.createClass({
                 loadingError: null
             });
         }
+        console.log('handleDataModified => ', pilot);
     },
 
     renderError: function() {
@@ -93,7 +97,7 @@ var PilotView = React.createClass({
                     onRightClick={ this.handlePilotEditing }
                     />
 
-                <Section>
+                <Section onEditClick={ this.handlePilotEditing }>
                     <SectionTitle>
                         <div>{ this.state.pilot.userName }</div>
                         <div>{ this.state.pilot.email }</div>
@@ -101,40 +105,50 @@ var PilotView = React.createClass({
 
                     <SectionRow>
                         <RowContent
-                            label='Flights #:'
-                            value={ this.state.pilot.flightNumTotal }
+                            label='Flights:'
+                            value={ [
+                                this.state.pilot.flightNumTotal,
+                                '( this year:',
+                                this.state.pilot.flightNumThisYear,
+                                ')'
+                            ].join(' ') }
                             />
                     </SectionRow>
                     <SectionRow>
                         <RowContent
-                            label='Total Airtime:'
+                            label='Airtime:'
                             value={ airtimeTotal }
                             />
                     </SectionRow>
                     <SectionRow>
                         <RowContent
-                            label='Sites #:'
+                            label='Sites flown:'
                             value={ this.state.pilot.siteNum }
                             />
                     </SectionRow>
                     <SectionRow>
                         <RowContent
-                            label='Gliders #:'
+                            label='Gliders used:'
                             value={ this.state.pilot.gliderNum }
                             />
                     </SectionRow>
                     <SectionRow isLast={ true }>
                         <DaysSinceLastFlight />
                     </SectionRow>
-                </Section>
 
-                <Section>
                     <SectionTitle>Settings</SectionTitle>
 
                     <SectionRow isLast={ true }>
                         <RowContent
                             label='Altitude units:'
                             value={ this.state.pilot.altitudeUnit }
+                            />
+                    </SectionRow>
+
+                    <SectionRow isDesktopOnly={ true } isLast={ true }>
+                        <RowContent
+                            label='Account password:'
+                            value={ <a href='/pilot/edit/change-pass' onClick={ this.handleChangePass }>Change password</a> }
                             />
                     </SectionRow>
                 </Section>

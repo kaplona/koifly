@@ -1,0 +1,38 @@
+
+@import (reference) '../../constants';
+
+
+.bottom-buttons {
+
+  @media (max-width: (@medium-viewport - 1)) {
+    display: none;
+  }
+
+  @media (min-width: @medium-viewport) {
+    width: 100%;
+    height: @row-height;
+    margin-top: @row-height * 0.5;
+    padding-bottom: @row-height * 0.5;
+    position: relative;
+
+    & .left-elements {
+      width: 80%;
+      position: absolute;
+      top: 0;
+      left: @row-height * 0.6;
+    }
+
+    & .left-elements > div{
+      width: 25%;
+      margin-right: @row-height * 0.5;
+      display: inline-block;
+    }
+
+    & .right-element {
+      width: 20%;
+      position: absolute;
+      top: 0;
+      right: @row-height * 0.6;
+    }
+  }
+}

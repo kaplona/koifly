@@ -8,14 +8,16 @@ var Validation = require('../../utils/validation');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BottomButtons = require('../common/buttons/bottom-buttons');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
-var SectionButton = require('../common/section/section-button');
+var SectionButton = require('../common/buttons/section-button');
 var TextInput = require('./../common/inputs/text-input');
 var TimeInput = require('./../common/inputs/time-input');
 var RemarksInput = require('./../common/inputs/remarks-input');
 var Loader = require('./../common/loader');
+var Button = require('../common/buttons/button');
 var ErrorBox = require('./../common/notice/error-box');
 var ErrorTypes = require('../../utils/error-types');
 
@@ -53,7 +55,7 @@ var GliderEditView = React.createClass({
             this.setState({ isSaving: true });
 
             GliderModel.saveGlider(this.state.glider).then(() => {
-                this.history.pushState(null, '/gliders');
+                this.handleCancelEditing();
             }).catch((error) => {
                 this.handleSavingError(error);
             });
@@ -62,12 +64,16 @@ var GliderEditView = React.createClass({
     },
 
     handleDeleteGlider: function() {
-        this.setState({ isDeleting: true });
-        GliderModel.deleteGlider(this.props.params.gliderId).then(() => {
-            this.history.pushState(null, '/gliders');
-        }).catch((error) => {
-            this.handleDeletingError(error);
-        });
+        var alertMessage = 'We will delete this glider from all flight records';
+
+        if (window.confirm(alertMessage)) {
+            this.setState({ isDeleting: true });
+            GliderModel.deleteGlider(this.props.params.gliderId).then(() => {
+                this.history.pushState(null, '/gliders');
+            }).catch((error) => {
+                this.handleDeletingError(error);
+            });
+        }
     },
 
     handleInputChange: function(inputName, inputValue) {
@@ -78,7 +84,10 @@ var GliderEditView = React.createClass({
     },
 
     handleCancelEditing: function() {
-        this.history.pushState(null, '/gliders');
+        this.history.pushState(
+            null,
+            this.props.params.gliderId ? ('/glider/' + this.props.params.gliderId) : '/gliders'
+        );
     },
 
     handleSavingError: function(error) {
@@ -205,7 +214,7 @@ var GliderEditView = React.createClass({
         );
     },
 
-    renderDeleteButton: function() {
+    renderDeleteSectionButton: function() {
         if (this.props.params.gliderId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
@@ -217,6 +226,45 @@ var GliderEditView = React.createClass({
                     />
             );
         }
+    },
+
+    renderDeleteButton: function() {
+        if (this.props.params.gliderId) {
+            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+            return (
+                <Button
+                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    buttonStyle='warning'
+                    onClick={ this.handleDeleteGlider }
+                    isEnabled={ isEnabled }
+                    />
+            );
+        }
+    },
+
+    renderSaveButton: function() {
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+        return (
+            <Button
+                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ isEnabled }
+                />
+        );
+    },
+
+    renderCancelButton: function() {
+        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
+        return (
+            <Button
+                text='Cancel'
+                buttonStyle='secondary'
+                onClick={ this.handleCancelEditing }
+                isEnabled={ isEnabled }
+                />
+        );
     },
 
     render: function() {
@@ -254,15 +302,16 @@ var GliderEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionTitle>
+                        <SectionTitle isSubtitle={ true }>
                             Glider usage before Koifly:
                         </SectionTitle>
 
                         <SectionRow>
                             <TextInput
                                 inputValue={ this.state.glider.initialFlightNum }
-                                labelText='Number of Flights:'
+                                labelText='Number of flights:'
                                 inputName='initialFlightNum'
+                                isNumber={ true }
                                 errorMessage={ this.state.errors.initialFlightNum }
                                 onChange={ this.handleInputChange }
                                 />
@@ -288,6 +337,14 @@ var GliderEditView = React.createClass({
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
+
+                        <BottomButtons
+                            leftElements={ [
+                                this.renderSaveButton(),
+                                this.renderCancelButton()
+                            ] }
+                            rightElement={ this.renderDeleteButton() }
+                            />
                     </Section>
 
                     <SectionButton
@@ -298,7 +355,7 @@ var GliderEditView = React.createClass({
                         isEnabled={ isEnabled }
                         />
 
-                    { this.renderDeleteButton() }
+                    { this.renderDeleteSectionButton() }
                 </form>
 
                 <BottomMenu isGliderView={ true } />

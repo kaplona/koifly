@@ -6,38 +6,72 @@
 .notice {
   .border-box();
 
-  min-height: @menu-height;
-  padding: @menu-height * 0.18;
+  min-height: @row-height;
+  padding: @row-height * 0.3;
+  padding-right: @row-height * 0.5;
   background-color: @sand-color;
   position: relative;
 
+  @media (min-width: @medium-viewport) {
+    .box-shadow();
+
+    @row-height: @row-height-desktop;
+    @vp: @row-height * 0.23;
+    margin: (@row-height * 0.3) 0;
+    padding: @vp 1.5em @vp 1em;
+  }
+
   &.x-success {
-    &:extend(.notice);
     background-color: @light-grass;
   }
 
   &.x-error {
-    &:extend(.notice);
     background-color: @light-brick;
   }
 
+  &.x-validation {
+    background-color: @light-brick;
+
+    @media (min-width: @medium-viewport) {
+      margin: 0 (@row-height * 0.6);
+    }
+
+    @media (max-width: (@medium-viewport - 1)) {
+      margin-top: @row-height * -0.3; // section padding-top (so notice sticks to the very top)
+    }
+  }
+
   input {
-    min-width: @menu-height * 2;
-    margin: 0 (@menu-height * 0.3);
-    padding: (@menu-height * 0.1) (@menu-height * 0.2);
-    border: 1px solid @dark-base;
-    //border: none;
-    //border-radius: @menu-height * 0.1;
-    //background-color: fade(@dark-base, 20%);
+    min-width: @row-height * 2;
+    margin-top: @row-height * 0.2;
+    padding: (@row-height * 0.1) (@row-height * 0.2);
+    border: 1px solid @mild-base;
     background: none;
-    //font-size: @font-size * 0.8;
     outline: none; // no blue glowing
+    font-size: @font-size * 0.9;
+    display: block;
+    cursor: pointer;
+
+    @media (min-width: @medium-viewport) {
+      .box-shadow();
+    }
+
+    &:active {
+      background-color: fade(@mild-base, 30%);
+      box-shadow: none;
+    }
   }
 
   .close {
     color: fade(@dark-base, 70%);
+    font-size: 1.5em;
     position: absolute;
     top: 0;
-    right: @menu-height * 0.18;
+    right: 7px;
+    cursor: pointer;
+
+    &:active {
+      color: @dark-base;
+    }
   }
 }

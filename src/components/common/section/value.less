@@ -5,7 +5,16 @@
 
 .value {
   &:extend(.column);
-  .column-width(0.6);
 
-  text-align: right;
+  @media (min-width: @medium-viewport) {
+    padding: (@row-height * 0.2) 0;
+    display: table-cell;
+  }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    .column-width(0.6);
+
+    padding: (@row-height * 0.3) 0;
+    text-align: right;
+  }
 }

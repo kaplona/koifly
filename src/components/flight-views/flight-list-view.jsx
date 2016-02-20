@@ -5,8 +5,11 @@ var History = require('react-router').History;
 var FlightModel = require('../../models/flight');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
+var TopButtons = require('../common/buttons/top-buttons');
 var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
 var Table = require('./../common/table');
+var Button = require('../common/buttons/button');
 var Loader = require('./../common/loader');
 var FirstAdding = require('./../common/first-adding');
 var ErrorBox = require('./../common/notice/error-box');
@@ -55,6 +58,10 @@ var FlightListView = React.createClass({
         ) {
             return <FirstAdding dataType='flights' onAdding={ this.handleFlightAdding } />;
         }
+    },
+
+    renderAddFlightButton: function() {
+        return <Button text='Add Flight' onClick={ this.handleFlightAdding }/>;
     },
 
     renderLoader: function() {
@@ -110,14 +117,20 @@ var FlightListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    headerText='Flights'
-                    rightText='+'
-                    onRightClick={ this.handleFlightAdding }
-                    />
+                <Section>
+                    <TopMenu
+                        headerText='Flights'
+                        rightText='Add'
+                        onRightClick={ this.handleFlightAdding }
+                        />
 
-                { content }
-                { this.renderLoader() }
+                    <TopButtons
+                        leftElement={ this.renderAddFlightButton() }
+                        />
+
+                    { content }
+                    { this.renderLoader() }
+                </Section>
 
                 <BottomMenu isFlightView={ true } />
             </View>

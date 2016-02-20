@@ -1,208 +1,59 @@
 
 @import (reference) './constants';
-//@import (reference) './general';
+@import (reference) './general';
 
 
 body {
   margin: 0;
   padding: 0;
-  background-color: @base-color;
 }
 
 body, input, select {
   font-family: Helvetica Neue, Arial, sans-serif;
-  font-size: @font-size;
+  font-size: @font-mini;
+
+  @media (min-width: @medium-viewport) {
+    font-size: @font-size;
+  }
 }
 
-#app {
-  margin: @menu-height 0 (@menu-height + 30) 0;
+a {
+  color: @link-color;
 }
 
+.content {
+  .border-box();
 
-//
-//textarea {
-//    width: 100%;
-//    min-height: 3em;
-//}
-//
-//select {
-//    background: white;
-//}
-//
-//input, textarea, select {
-//    -webkit-box-sizing: border-box;
-//       -moz-box-sizing: border-box;
-//            box-sizing: border-box;
-//}
-//
-//
-//
-//
-//.hide {
-//    display: none !important;
-//}
-//
-//.nolink {
-//    text-decoration: none;
-//    color: #000;
-//}
-//
-//.inline {
-//    display: inline-block;
-//}
-//
-//
-//
-//.back_button {
-//    margin-bottom: 10px;
-//    padding: 0;
-//    color: blue;
-//    text-decoration: underline;
-//    cursor: pointer;
-//}
-//
-//.button {
-//    min-width: 4.5em;
-//    height: 2em;
-//    padding: 0.35em 0.5em;
-//    margin: 0 0.5em;
-//    background-color: #1C4E61;
-//    border: none;
-//    border-radius: 0.5em;
-//    font-size: 1em;
-//    color: #FFF;
-//    text-align: center;
-//    cursor: pointer;
-//    box-sizing: border-box;
-//}
-//
-//    .button:disabled {
-//        background-color: #81BCF7;
-//    }
-//
-//    .button:active {
-//        background-color: #3285A9;
-//    }
-//
-//    .button__menu {
-//        margin: 1em 0;
-//    }
-//
-//
-//
-//.center {
-//    margin: 30px auto;
-//    font-size: 1.5em;
-//    color: #81BCF7;
-//    text-align: center;
-//}
-//
-//.map_container {
-//    width: 100%;
-//    height: 400px;
-//    background-color: #DFDCD7;
-//}
-//
-//.data {
-//    color: #146D94;
-//}
-//
-//
-//.error {
-//    border-color: red;
-//}
-//
-//.error_message {
-//    color: red;
-//}
-//
-//.line {
-//    width: 100%;
-//    margin: 10px;
-//    border-top: 1px solid #146D94;
-//}
-//
-//
-//
-//
-////.header {
-////    height: 2.5em;
-////    padding: 2%;
-////    background: linear-gradient(90deg, #81BCF7, #0859AB);
-////    /*font-size: 2.2em;*/
-////    box-sizing: padding-box;
-////}
-////
-////    .header__title {
-////        margin-left: 10px;
-////        width: 30%;
-////        font-size: 1.8em;
-////        font-weight: 700;
-////        letter-spacing: 0.1em;
-////        color: #FFF;
-////        box-sizing: padding-box;
-////        cursor: pointer;
-////        display: inline-block;
-////        text-decoration: none;
-////    }
-////
-////    .header__new_flight {
-////        width: 10%;
-////        box-sizing: padding-box;
-////        text-align: center;
-////        font-weight: 700;
-////        cursor: pointer;
-////        display: inline-block;
-////        text-decoration: none;
-////        color: #000;
-////    }
-////
-////    .header__menu {
-////        display: inline-block;
-////    }
-////
-////        .header__menu__item {
-////            margin-left: 10px;
-////            margin-right: 10px;
-////            cursor: pointer;
-////            display: inline-block;
-////            text-decoration: none;
-////            color: #000;
-////        }
-//
-//
-//
-//
-//.container {
-//    width: 100%;
-//    padding: 3% 1%;
-//    /*font-size: 2.5em;*/
-//    color: #1C4E61;
-//    box-sizing: border-box;
-//}
-//
-//    .container >div {
-//        margin-bottom: 0.3em;
-//    }
-//
-//    .container label {
-//        font-size: 1.2em;
-//    }
-//
-//    .container input, select {
-//        margin: 2px;
-//        width: 10em;
-//    }
-//
-//    .container__title {
-//        font-size: 1.5em;
-//    }
-//
-//    .container__subtitle {
-//        font-size: 1.2em;
-//    }
-//
-//    .container__days_since {
-//        color: red;
-//        text-align: center;
-//    }
+  min-height: 100vh;
+  max-width: @content-width;
+  margin: 0 auto;
+  padding: @menu-height 0 (@menu-height * 1.5) 0;
+  background-color: @base-color;
+
+  @media (min-width: @medium-viewport) {
+    @hp: (@row-height * 0.6);
+    padding: (@header-height * 1.3) @hp (@header-height * 1.5) @hp;
+
+    &:before {
+      content: '';
+      width: 100vw;
+      height: 100vh;
+      background-color: @base-color;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+  }
+}
+
+@media (max-width: (@medium-viewport - 1)) {
+  .desktop {
+    display: none;
+  }
+}
+
+@media (min-width: @medium-viewport) {
+  .mobile {
+    display: none;
+  }
+}

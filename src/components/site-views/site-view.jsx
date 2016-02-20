@@ -1,16 +1,20 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var Router = require('react-router');
+var History = Router.History;
+var Link = Router.Link;
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
 var BottomMenu = require('../common/menu/bottom-menu');
+var BreadCrumbs = require('../common/bread-crumbs');
 var Section = require('../common/section/section');
 var SectionTitle = require('../common/section/section-title');
 var SectionRow = require('../common/section/section-row');
 var RowContent = require('../common/section/row-content');
+var RemarksRow = require('../common/section/remarks-row');
 var StaticMap = require('../common/maps/static-map');
 var Loader = require('../common/loader');
 var ErrorBox = require('../common/notice/error-box');
@@ -110,7 +114,12 @@ var SiteView = React.createClass({
                     onRightClick={ this.handleSiteEditing }
                     />
 
-                <Section>
+                <Section onEditClick={ this.handleSiteEditing }>
+                    <BreadCrumbs>
+                        <Link to='/sites'>Sites</Link>
+                        { ' / ' + this.state.site.name }
+                    </BreadCrumbs>
+
                     <SectionTitle>
                         { this.state.site.name }
                     </SectionTitle>
@@ -123,7 +132,7 @@ var SiteView = React.createClass({
                     </SectionRow>
                     <SectionRow>
                         <RowContent
-                            label='Launch Altitude:'
+                            label='Launch altitude:'
                             value={ this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
                             />
                     </SectionRow>
@@ -133,10 +142,19 @@ var SiteView = React.createClass({
                             value={ this.state.site.coordinates }
                             />
                     </SectionRow>
-                    <SectionRow isLast={ true }>
-                        <div>Remarks:</div>
-                        <div>{ this.state.site.remarks }</div>
+                    <SectionRow>
+                        <RowContent
+                            label='Flights:'
+                            value={ [
+                                this.state.site.flightNum,
+                                '( this year:',
+                                this.state.site.flightNumThisYear,
+                                ')'
+                            ].join(' ') }
+                            />
                     </SectionRow>
+
+                    <RemarksRow value={ this.state.site.remarks } />
 
                     { this.renderMap() }
                 </Section>

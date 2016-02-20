@@ -4,6 +4,11 @@
 
 
 .days-since {
+  padding: (@row-height * 0.3) 0;
   color: @brick-color;
   text-align: center;
+
+  @media (min-width: @medium-viewport) {
+    padding: (@row-height * 0.2) 0;
+  }
 }

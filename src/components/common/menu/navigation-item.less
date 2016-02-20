@@ -2,19 +2,60 @@
 @import (reference) '../../constants';
 @import (reference) '../../general';
 
+@small-viewport: 400px;
+@large-viewport: 900px;
 
-.navigation-item {
+
+.navigation-item() {
   height: @menu-height;
-  padding: (@menu-height / 4) 0;
-  font-size: @menu-height / 2.4;
+  padding: 3px 0 4px 0;
+  font-size: 10px;
+  cursor: pointer;
+
+  @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+    padding-top: 7px;
+    font-size: 13px;
+
+  }
+
+  @media (min-width: @medium-viewport) {
+    height: @header-height;
+    padding: (@header-height * 0.25) 0;
+    font-size: @header-height * 0.4;
+
+    &:hover {
+      color: @dark-blue;
+    }
+  }
 }
 
 .navigation-item-@{menu-items-number} {
-  &:extend(.navigation-item);
+  .navigation-item();
   &:extend(.column);
   .column-width(1 / @menu-items-number);
 
   &.x-active {
     background-color: @dark-blue;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  .icon {
+    @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+      margin-right: 10px;
+      vertical-align: middle;
+      display: inline-block;
+    }
+
+    @media (min-width: @medium-viewport) and (max-width: (@large-viewport - 1)) {
+      display: none;
+    }
+
+    @media (min-width: @large-viewport) {
+      margin-right: 15px;
+      display: inline-block;
+    }
   }
 }

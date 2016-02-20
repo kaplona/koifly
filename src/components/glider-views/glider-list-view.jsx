@@ -2,16 +2,14 @@
 
 var React = require('react');
 var History = require('react-router').History;
-var Util = require('../../utils/util');
 var GliderModel = require('../../models/glider');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
+var TopButtons = require('../common/buttons/top-buttons');
 var BottomMenu = require('../common/menu/bottom-menu');
 var Section = require('../common/section/section');
-var SectionTitle = require('../common/section/section-title');
-var SectionRow = require('../common/section/section-row');
-var RowContent = require('../common/section/row-content');
-var SimpleButton = require('../common/section/simple-button');
+var Table = require('../common/table');
+var Button = require('../common/buttons/button');
 var Loader = require('./../common/loader');
 var FirstAdding = require('./../common/first-adding');
 var ErrorBox = require('./../common/notice/error-box');
@@ -32,8 +30,8 @@ var GliderListView = React.createClass({
         this.history.pushState(null, '/glider/0/edit');
     },
 
-    handleGliderEditing: function(gliderId) {
-        this.history.pushState(null, '/glider/' + gliderId + '/edit');
+    handleRowClick: function(gliderId) {
+        this.history.pushState(null, '/glider/' + gliderId);
     },
 
     handleDataModified: function() {
@@ -54,6 +52,10 @@ var GliderListView = React.createClass({
         }
     },
 
+    renderLoader: function() {
+        return (this.state.gliders === null) ? <Loader /> : '';
+    },
+
     renderNoGlidersYet: function() {
         if (this.state.gliders instanceof Array &&
             this.state.gliders.length === 0
@@ -62,42 +64,37 @@ var GliderListView = React.createClass({
         }
     },
 
-    renderGliderNodes: function() {
-        if (this.state.gliders === null) {
-            return <Loader />;
-        }
+    renderAddGliderButton: function() {
+        return <Button text='Add Glider' onClick={ this.handleGliderAdding }/>;
+    },
 
-        var gliderNodes = this.state.gliders.map((glider) => {
-            var remarks = glider.remarks ? <SectionRow>{ glider.remarks }</SectionRow> : '';
-            return (
-                <Section key={ glider.id }>
-                    <SectionTitle>{ glider.name }</SectionTitle>
+    renderTable: function() {
+        var columnsConfig = [
+            {
+                key: 'name',
+                label: 'Name',
+                defaultSortingDirection: true
+            },
+            {
+                key: 'trueFlightNum',
+                label: 'Flight#',
+                defaultSortingDirection: false
+            },
+            {
+                key: 'trueAirtime',
+                label: 'Airtime',
+                defaultSortingDirection: false
+            }
+        ];
 
-                    <SectionRow>
-                        <RowContent
-                            label='Flights #:'
-                            value={ glider.trueFlightNum }
-                            />
-                    </SectionRow>
-
-                    <SectionRow>
-                        <RowContent
-                            label='Total Airtime:'
-                            value={ Util.hoursMinutes(glider.trueAirtime) }
-                            />
-                    </SectionRow>
-
-                    { remarks }
-
-                    <SimpleButton
-                        text='Edit'
-                        onClick={ () => this.handleGliderEditing(glider.id) }
-                        />
-                </Section>
-            );
-        });
-
-        return <div>{ gliderNodes }</div>;
+        return (
+            <Table
+                columns={ columnsConfig }
+                rows={ this.state.gliders }
+                initialSortingField='name'
+                onRowClick={ this.handleRowClick }
+                />
+        );
     },
 
     render: function() {
@@ -108,17 +105,26 @@ var GliderListView = React.createClass({
         }
 
         if (!content) {
-            content = this.renderGliderNodes();
+            content = this.renderTable();
         }
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    headerText='Sites'
-                    rightText='+'
-                    onRightClick={ this.handleGliderAdding }
-                    />
-                { content }
+                <Section>
+                    <TopMenu
+                        headerText='Gliders'
+                        rightText='Add'
+                        onRightClick={ this.handleGliderAdding }
+                        />
+
+                    <TopButtons
+                        leftElement={ this.renderAddGliderButton() }
+                        />
+
+                    { content }
+                    { this.renderLoader() }
+                </Section>
+
                 <BottomMenu isGliderView={ true } />
             </View>
         );

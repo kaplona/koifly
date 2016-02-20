@@ -1,0 +1,67 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.button {
+
+  @media (max-width: (@medium-viewport - 1)) {
+    display: none;
+  }
+
+  @media (min-width: @medium-viewport) {
+    .box-shadow();
+
+    width: 100%;
+    height: @row-height;
+    padding: (@row-height * 0.27) 0;
+    border: none;
+    background-color: @dark-blue;
+    color: @light-blue;
+    text-align: center;
+    font-size: @row-height * 0.45;
+    font-weight: 400;
+    outline: none;
+    cursor: pointer;
+    display: block;
+
+
+    &.x-primary {
+      background-color: darken(@grass-color, 5%);
+
+      &:active {
+        background-color: darken(@grass-color, 10%);
+      }
+    }
+
+    &.x-secondary {
+      background-color: @grey-blue;
+
+      &:active {
+        background-color: darken(@grey-blue, 10%);
+      }
+    }
+
+    &.x-warning {
+      background-color: @brick-color;
+
+      &:active {
+        background-color: darken(@brick-color, 5%);
+      }
+    }
+
+    &:disabled {
+      background-color: lighten(@mild-base, 17%);
+      color: darken(@mild-base, 5%);
+    }
+
+    &:hover {
+      box-shadow: 0 0 5px 1px @dark-base;
+    }
+
+    &:active {
+      background-color: lighten(@dark-blue, 7%);
+      box-shadow: none;
+    }
+  }
+}

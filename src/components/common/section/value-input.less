@@ -5,32 +5,121 @@
 
 .value-input {
   &:extend(.column);
-  .column-width(0.6);
+
+  position: relative;
+
+  @media (max-width: (@medium-viewport - 1)) {
+    .column-width(0.6);
+  }
+
+  @media (min-width: @medium-viewport) {
+    display: table-cell;
+
+    .x-text {
+      width: @text-input-width;
+    }
+
+    .x-number {
+      width: @number-input-width
+    }
+
+    .x-date {
+      width: @date-input-width
+    }
+  }
 
   .arrow {
     &:extend(.column);
     .column-width(0.09);
+
+    padding: @row-height * 0.3 0;
+
+    @media (min-width: @medium-viewport) {
+      display: none;
+    }
   }
 
   input, select {
-    width: 90%;
-    border: none;
-    color: @dark-base;
-    font-size: @font-size;
+    .border-box();
+
+    height: @row-height * 0.9;
     outline: none; // no blue glowing around input
+
+    @media (max-width: (@medium-viewport - 1)) {
+      width: 90%;
+      padding: @row-height * 0.3;
+      border: none;
+      color: @dark-base;
+    }
+
+    @media (min-width: @medium-viewport) {
+      padding: @row-height * 0.2;
+      border: 1px solid @mild-base;
+      border-radius: 5px;
+      color: @dark-blue;
+
+      &.x-error {
+        border-color: @brick-color;
+      }
+    }
   }
 
   select {
     background-color: inherit;
+
+    @media (min-width: @medium-viewport) {
+      min-width: @number-input-width;
+      max-width: @text-input-width;
+    }
   }
 
-  .col-of-four {
-    &:extend(.column);
-    .column-width(0.22);
-  }
 
-  .col-of-two {
-    &:extend(.column);
-    .column-width(0.44);
-  }
+    .col-of-four {
+      &:extend(.column);
+
+      @media (min-width: @medium-viewport) {
+        &.mobile {
+          display: none;
+        }
+
+        &.desktop {
+          padding: @row-height * 0.2;
+        }
+      }
+
+      @media (max-width: (@medium-viewport - 1)) {
+        &.desktop {
+          display: none;
+        }
+
+        &.input {
+          .column-width(0.25);
+        }
+
+        &.mobile {
+          .column-width(0.19);
+
+          padding: @row-height * 0.3 0;
+          text-align: center;
+        }
+      }
+    }
+
+    .col-of-two {
+      &:extend(.column);
+
+      @media (min-width: @medium-viewport) {
+        margin-right: @row-height * 0.2;
+      }
+
+      @media (max-width: (@medium-viewport - 1)) {
+        .column-width(0.45);
+
+        &.second {
+          position: absolute;
+          top: 0;
+          right: 0;
+        }
+      }
+    }
 }

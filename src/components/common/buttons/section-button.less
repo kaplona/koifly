@@ -1,0 +1,43 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+@import (reference) '../section/section';
+
+
+.section-button {
+  &:extend(.section);
+
+  @media (min-width: @medium-viewport) {
+    display: none;
+  }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    width: 100%;
+    min-height: @row-height;
+    padding: (@row-height * 0.3) 0;
+    border-left: none;
+    border-right: none;
+    color: @main-blue;
+    text-align: center;
+    font-size: @font-size;
+    font-weight: 400;
+    outline: none;
+    cursor: pointer;
+
+    &:active {
+      background-color: darken(@light-blue, 5%);
+    }
+
+    &:disabled {
+      color: @mild-base;
+    }
+
+    &.x-primary {
+      color: @grass-color;
+    }
+
+    &.x-warning {
+      color: @brick-color;
+    }
+  }
+}

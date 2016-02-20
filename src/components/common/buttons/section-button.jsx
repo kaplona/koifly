@@ -5,7 +5,7 @@ var React = require('react');
 require('./section-button.less');
 
 
-var SimpleButton = React.createClass({
+var SectionButton = React.createClass({
 
     propTypes: {
         text: React.PropTypes.string,
@@ -47,4 +47,4 @@ var SimpleButton = React.createClass({
 });
 
 
-module.exports = SimpleButton;
+module.exports = SectionButton;

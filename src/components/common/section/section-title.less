@@ -3,7 +3,20 @@
 
 
 .section-title {
-  @vertical-padding: (@menu-height * 0.15);
-  padding: (@menu-height * 0.2) @vertical-padding (@menu-height * 0.13) @vertical-padding;
-  font-size: @font-size * 1.2;
+  @hp: (@row-height * 0.2);
+
+  padding: (@row-height * 0.3) @hp (@row-height * 0.13) @hp;
+  color: @main-blue;
+  font-size: @font-size * 1.4;
+
+  @media (min-width: @medium-viewport) {
+    @pad: (@row-height * 0.6);
+    padding-top: @pad;
+    padding-left: @pad;
+    padding-right: @pad;
+  }
+
+  &.subtitle {
+    font-size: @font-size * 1.1;
+  }
 }

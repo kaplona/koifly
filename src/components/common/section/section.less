@@ -1,10 +1,38 @@
 
 @import (reference) '../../constants';
+@import (reference) '../../general';
 
 
 .section {
-  margin-bottom: 30px;
+  margin-bottom: @row-height * 0.3;
+  padding-top: @row-height * 0.3;
   background-color: @soft-white;
-  border-top: 1px solid @dark-base;
-  border-bottom: 1px solid @dark-base;
+  position: relative;
+
+  @media (max-width: (@medium-viewport - 1)) {
+    border-top: 1px solid @mild-base;
+    border-bottom: 1px solid @mild-base;
+
+    &.x-full-screen {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  @media (min-width: @medium-viewport) {
+    .box-shadow();
+
+    &.x-compact {
+      width: @login-width;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  & .edit-button {
+    width: 15%;
+    position: absolute;
+    top: @row-height * 0.4;
+    right: @row-height * 0.4;
+  }
 }

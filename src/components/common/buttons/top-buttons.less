@@ -1,0 +1,38 @@
+
+@import (reference) '../../constants';
+
+
+.top-buttons {
+
+  @media (max-width: (@medium-viewport - 1)) {
+    display: none;
+  }
+
+  @media (min-width: @medium-viewport) {
+    width: 100%;
+    height: @row-height;
+    margin-bottom: @row-height * 0.2;
+    position: relative;
+
+    & .left-element {
+      width: 20%;
+      position: absolute;
+      top: 0;
+      left: @row-height * 0.5;
+    }
+
+    & .middle-element {
+      width: 40%;
+      position: absolute;
+      top: 0;
+      left: 30%;
+    }
+
+    & .right-element {
+      width: 20%;
+      position: absolute;
+      top: 0;
+      right: @row-height * 0.5;
+    }
+  }
+}

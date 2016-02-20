@@ -5,9 +5,13 @@ var History = require('react-router').History;
 var SiteModel = require('../../models/site');
 var View = require('./../common/view');
 var TopMenu = require('../common/menu/top-menu');
+var TopButtons = require('../common/buttons/top-buttons');
 var BottomMenu = require('../common/menu/bottom-menu');
+var Section = require('../common/section/section');
 var StaticMap = require('./../common/maps/static-map');
 var Loader = require('./../common/loader');
+var Switcher = require('../common/switcher');
+var Button = require('../common/buttons/button');
 var ErrorBox = require('./../common/notice/error-box');
 
 
@@ -50,6 +54,21 @@ var SiteListMapView = React.createClass({
         }
     },
 
+    renderAddSiteButton: function() {
+        return <Button text='Add Site' onClick={ this.handleSiteAdding }/>;
+    },
+
+    renderSwitcher: function() {
+        return (
+            <Switcher
+                leftText = 'List'
+                rightText = 'Map'
+                onLeftClick = { this.handleToListView }
+                initialPosition = 'right'
+                />
+        );
+    },
+
     renderMap: function() {
         var siteList = this.state.sites;
         return (siteList !== null) ? <StaticMap markers={ siteList } fullScreen={ true } /> : <Loader />;
@@ -64,14 +83,22 @@ var SiteListMapView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    headerText='Sites'
-                    leftText='List'
-                    rightText='+'
-                    onLeftClick={ this.handleToListView }
-                    onRightClick={ this.handleSiteAdding }
-                    />
-                { content }
+                <Section isFullScreen={ true }>
+                    <TopMenu
+                        headerText='Sites'
+                        leftText='List'
+                        rightText='Add'
+                        onLeftClick={ this.handleToListView }
+                        onRightClick={ this.handleSiteAdding }
+                        />
+
+                    <TopButtons
+                        leftElement={ this.renderAddSiteButton() }
+                        middleElement={ this.renderSwitcher() }
+                        />
+
+                    { content }
+                </Section>
                 <BottomMenu isSiteView={ true } />
             </View>
         );

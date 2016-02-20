@@ -18,9 +18,13 @@ var TextInput = React.createClass({
             React.PropTypes.element
         ]),
         inputName: React.PropTypes.string,
+        isNumber: React.PropTypes.bool,
         errorMessage: React.PropTypes.string,
         onChange: React.PropTypes.func,
-        onBlur: React.PropTypes.func
+        afterComment: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.element
+        ])
     },
 
     handleUserInput: function() {
@@ -34,6 +38,11 @@ var TextInput = React.createClass({
     },
 
     render: function() {
+        var className = this.props.isNumber ? 'x-number' : 'x-text';
+        if (this.props.errorMessage) {
+            className += ' x-error';
+        }
+
         return (
             <div>
                 { this.renderErrorMessage() }
@@ -44,12 +53,14 @@ var TextInput = React.createClass({
 
                 <Value>
                     <input
+                        className={ className }
                         value={ this.props.inputValue }
                         type='text'
+                        patern={ this.props.isNumber ? '[0-9]*' : null }
                         onChange={ this.handleUserInput }
-                        onBlur={ this.props.onBlur }
                         ref='input'
                         />
+                    { this.props.afterComment }
                 </Value>
             </div>
         );

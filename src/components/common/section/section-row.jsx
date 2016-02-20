@@ -8,11 +8,18 @@ require('./section-row.less');
 var SectionRow = React.createClass({
 
     propTypes: {
-        isLast: React.PropTypes.bool
+        isLast: React.PropTypes.bool,
+        isDesktopOnly: React.PropTypes.bool
     },
 
     render: function() {
-        var className = this.props.isLast ? 'section-row x-last' : 'section-row';
+        var className = 'section-row';
+        if (this.props.isLast) {
+            className += ' x-last';
+        }
+        if (this.props.isDesktopOnly) {
+            className += ' x-desktop';
+        }
 
         return (
             <div className={ className }>
