@@ -10,7 +10,8 @@ var Map = {
     geocoder: null,
     siteMarkers: {},
     siteInfowindows: {},
-    infowindowWidth: 150,
+    infowindowOnClickFunctions: {},
+    infowindowWidth: 250,
     infowindowContent: {},
     outOfMapCoordinates: { lat: 90, lng: 0 },
     zoomLevel: {
@@ -45,7 +46,8 @@ mapsapi().then((maps) => {
             streetViewControl: false,
             zoomControl: true,
             zoomControlOptions: {
-                style: maps.ZoomControlStyle.SMALL
+                style: maps.ZoomControlStyle.SMALL,
+                position: maps.ControlPosition.LEFT_TOP
             },
             mapTypeControl: true,
             mapTypeControlOptions: {
@@ -125,11 +127,14 @@ mapsapi().then((maps) => {
 
 
 
-        createInfowindow: function(infowindowId, content) {
+        createInfowindow: function(infowindowId, content, onClickFunc) {
             this.siteInfowindows[infowindowId] = new maps.InfoWindow({
                 content: content,
                 maxWidth: Map.infowindowWidth
             });
+            if (onClickFunc) {
+                this.infowindowOnClickFunctions[infowindowId] = onClickFunc;
+            }
         },
 
         setInfowindowContent: function(infowindowId, content) {
@@ -138,6 +143,11 @@ mapsapi().then((maps) => {
 
         openInfowindow: function(id) {
             this.siteInfowindows[id].open(this.map, this.siteMarkers[id]);
+            if (this.infowindowOnClickFunctions[id]) {
+                document.getElementById('site-' + id).addEventListener('click', () => {
+                    this.infowindowOnClickFunctions[id]();
+                });
+            }
         },
 
         closeInfowindow: function(id) {
@@ -166,6 +176,8 @@ mapsapi().then((maps) => {
             this.closeInfowindow(infowindowId); // Close infowindow
             this.siteInfowindows[infowindowId] = null; // Remove infowindow it-self
             delete this.siteInfowindows[infowindowId]; // Delete infowindow reference from infowindows list
+            this.infowindowOnClickFunctions[infowindowId] = null;
+            delete this.infowindowOnClickFunctions[infowindowId];
         },
 
         clearInfowindows: function() {
@@ -190,20 +202,22 @@ mapsapi().then((maps) => {
         },
 
         createSearchControl: function(containerDiv, markerId) {
+            // Set CSS for the search control container
+            containerDiv.className = 'search-control';
+
             // Set CSS for the search bar
             var searchBar = document.createElement('input');
             searchBar.setAttribute('id', 'search_bar');
             searchBar.setAttribute('type', 'textbox');
-            searchBar.style.width = '200px';
-            searchBar.style.display = 'inline';
+            searchBar.className = 'search-bar';
+            searchBar.placeholder = 'type here or drop a pin';
             containerDiv.appendChild(searchBar);
 
             // Set CSS for the search button
-            var searchButton = document.createElement('input');
+            var searchButton = document.createElement('div');
             searchButton.setAttribute('id', 'search_button');
-            searchButton.setAttribute('type', 'button');
-            searchButton.style.display = 'inline';
-            searchButton.value = 'Search';
+            searchButton.className = 'search-button';
+            searchButton.textContent = 'Search';
             containerDiv.appendChild(searchButton);
 
             // Add search event to search button
