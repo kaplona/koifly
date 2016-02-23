@@ -84,6 +84,7 @@ var PilotChangePass = React.createClass({
     },
 
     handleDataModified: function() {
+        console.log('=> pilot: data modified');
         PilotModel.hideActivationNotice();
         this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
     },
@@ -103,6 +104,7 @@ var PilotChangePass = React.createClass({
     },
 
     renderEmailVerificationNotice: function() {
+        console.log('is user activated => ', this.state.isUserActivated);
         // false comparison because isUserActivated can be null if no pilot info in front end yet
         if (this.state.isUserActivated === false) {
             var noticeText = [
@@ -110,7 +112,7 @@ var PilotChangePass = React.createClass({
                 'Follow the link we sent you.'
             ].join(' ');
 
-            return <EmailVerificationNotice text={ noticeText } />;
+            return <EmailVerificationNotice text={ noticeText } type='error' />;
         }
     },
 
