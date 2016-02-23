@@ -30,11 +30,6 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(webpackHotMiddleware(compiler));
 
 
-// app.get('*', function(req, res) {
-//    res.sendFile(path.join(__dirname, 'index.html'));
-// });
-
-
 app.listen(config.webpack.port, config.server.host, (err) => {
     if (err) {
         console.log(err);
