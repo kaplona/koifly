@@ -269,19 +269,6 @@ server.register(plugins, (err) => {
             }
         });
 
-        // Proxy webpack HMR requests to webpack-dev-server
-        // server.route({
-        //     method: 'GET',
-        //     path: '/__webpack_hmr', // this includes HMR patches, not just webpack bundle files
-        //     handler: {
-        //         proxy: {
-        //             host: config.server.host,
-        //             port: config.webpack.port,
-        //             passThrough: true
-        //         }
-        //     }
-        // });
-
         // Note: We also make requests to Webpack Dev Server EventSource endpoint (typically /__webpack_hmr).
         // We don't need to proxy these requests because we configured webpack-hot-middleware
         // to request them directly from a webpack dev server URL in webpack-config.js

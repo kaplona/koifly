@@ -12,7 +12,7 @@ var config = require('./variables');
 
 var APP_ENTRY = path.join(config.paths.source, 'main-app');
 var HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
-var WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=/__webpack_hmr'; // WTF devServerUrl ???
+var WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=' + config.webpack.devServerUrl + '/__webpack_hmr';
 var JS_JSX = /\.(js|jsx)$/;
 var BABEL = 'babel'; // Transpile ES6/JSX into ES5
 

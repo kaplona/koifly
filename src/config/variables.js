@@ -12,6 +12,10 @@ var WEB_ROOT_DIRNAME = 'public';
 var ASSETS_DIRNAME = 'static';
 var BUILD_DIRNAME = 'static/build';
 
+var SERVER_HOST = '0.0.0.0';
+var SERVER_PROTOCOL = 'http';
+var WEBPACK_DEV_SERVER_PORT = 3001;
+
 
 
 var config = {
@@ -57,19 +61,20 @@ var config = {
 if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
-            host: 'localhost',
+            host: SERVER_HOST,
             port: 3000,
             protocol: 'http'
         },
         webpack: {
-            port: 3001
+            port: WEBPACK_DEV_SERVER_PORT,
+            devServerUrl: SERVER_PROTOCOL + '://' + SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT
         }
     });
 
 } else if (process.env.NODE_ENV === 'production') {
     deepExtend(config, {
         server: {
-            host: 'localhost',
+            host: SERVER_HOST,
             port: 2000,
             protocol: 'http'
         }

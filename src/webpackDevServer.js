@@ -36,5 +36,5 @@ app.listen(config.webpack.port, config.server.host, (err) => {
         return;
     }
 
-    console.log(chalk.green('Webpack dev server listening at ' + config.server.host + ':' + config.webpack.port));
+    console.log(chalk.green('Webpack dev server listening at ' + config.webpack.devServerUrl));
 });
