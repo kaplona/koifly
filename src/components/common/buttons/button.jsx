@@ -2,7 +2,9 @@
 
 var React = require('react');
 
-require('./button.less');
+if (process.env.BROWSER) {
+    require('./button.less');
+}
 
 
 var Button = React.createClass({
