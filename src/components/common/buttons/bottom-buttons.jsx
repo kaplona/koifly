@@ -14,8 +14,8 @@ var BottomButtons = React.createClass({
     },
 
     render: function() {
-        var leftElements = _.map(this.props.leftElements, (element) => {
-            return <div>{ element }</div>;
+        var leftElements = _.map(this.props.leftElements, (element, index) => {
+            return <div key={ 'left-element-' + index }>{ element }</div>;
         });
 
         return (

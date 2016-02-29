@@ -10,6 +10,7 @@ var Button = React.createClass({
     propTypes: {
         text: React.PropTypes.string,
         type: React.PropTypes.string,
+        className: React.PropTypes.string,
         buttonStyle: React.PropTypes.string,
         onClick: React.PropTypes.func,
         isEnabled: React.PropTypes.bool
@@ -18,6 +19,7 @@ var Button = React.createClass({
     getDefaultProps: function() {
         return {
             type: 'button',
+            className: 'button',
             isEnabled: true
         };
     },
@@ -29,7 +31,7 @@ var Button = React.createClass({
     },
 
     render: function() {
-        var className = 'button';
+        var className = this.props.className;
         if (this.props.buttonStyle) {
             className += ' x-' + this.props.buttonStyle;
         }

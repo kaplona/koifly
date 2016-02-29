@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var Button = require('./button');
 
 require('./section-button.less');
 
@@ -15,34 +16,8 @@ var SectionButton = React.createClass({
         isEnabled: React.PropTypes.bool
     },
 
-    getDefaultProps: function() {
-        return {
-            type: 'button',
-            isEnabled: true
-        };
-    },
-
-    handleClick: function(event) {
-        if (this.props.onClick && this.props.isEnabled) {
-            this.props.onClick(event);
-        }
-    },
-
     render: function() {
-        var className = 'section-button';
-        if (this.props.buttonStyle) {
-            className += ' x-' + this.props.buttonStyle;
-        }
-
-        return (
-            <input
-                className={ className }
-                type={ this.props.type }
-                disabled={ !this.props.isEnabled ? 'disabled' : '' }
-                value={ this.props.text.toUpperCase() }
-                onClick={ this.handleClick }
-                />
-        );
+        return <Button { ...this.props } className='section-button' />;
     }
 });
 

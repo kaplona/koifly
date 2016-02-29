@@ -1,10 +1,10 @@
 'use strict';
 
-// Our fake DOM must be required before React for it to use it
-require('../src/test-dom.js')();
+// Our fake DOM must be required before React to be used by React
+require('../../src/test-dom.js')();
 
 var React = require('react/addons');
-var Button = require('../src/components/common/buttons/button.jsx');
+var Button = require('../../src/components/common/buttons/button.jsx');
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -19,11 +19,17 @@ describe('Button component', function() {
     var TestUtils = React.addons.TestUtils;
     var Simulate = TestUtils.Simulate;
 
-    describe('Real DOM testing approach', function() {
+    describe('Defaults and behavior testing (real DOM)', function() {
         beforeEach(function() {
+            // default component props
+            this.defaultType = 'button';
+            this.defaultClass = 'button';
+
+            // props to parse
             this.buttonText = 'test button';
             this.buttonStyle = 'primary';
             this.handleClick = Sinon.spy();
+
             this.component = TestUtils.renderIntoDocument(
                 <Button
                     text={ this.buttonText }
@@ -31,6 +37,7 @@ describe('Button component', function() {
                     onClick={ this.handleClick }
                     />
             );
+
             this.getRenderedDomElement = () => {
                 return React.findDOMNode(this.component);
             }
@@ -39,7 +46,6 @@ describe('Button component', function() {
         it('renders an input element with proper text', function() {
             let button = this.getRenderedDomElement();
 
-            // expect(button).to.have.property('tagName', 'INPUT');
             expect(button).to.be.an.instanceof(window.HTMLInputElement);
             expect(button).to.have.property('value', this.buttonText);
         });
@@ -47,24 +53,24 @@ describe('Button component', function() {
         it('renders an input type button which is enabled', function() {
             let button = this.getRenderedDomElement();
 
-            expect(button).to.have.property('type', 'button');
+            expect(button).to.have.property('type', this.defaultType);
             expect(button).to.have.property('disabled', false);
         });
 
-        it('renders an element with proper classes', function() {
+        it('renders an element with proper default classes', function() {
             let classList = this.getRenderedDomElement().classList;
 
             expect(classList).to.have.lengthOf(2);
-            expect(classList[0]).to.equal('button');
+            expect(classList[0]).to.equal(this.defaultClass);
             expect(classList[1]).to.equal('x-' + this.buttonStyle);
         });
 
         // For example purpose only I included the same tests using React TestUtils methods
         // it saves same space and test running time (which is not an issue for me... yet)
-        it('renders an input element with proper classes (React TestUtils)', function() {
+        it('renders an input element with proper default classes (React TestUtils)', function() {
             let button = TestUtils.findRenderedDOMComponentWithTag(this.component, 'input');
 
-            expect(button).to.have.deep.property('props.className', 'button x-' + this.buttonStyle);
+            expect(button).to.have.deep.property('props.className', this.defaultClass + ' x-' + this.buttonStyle);
         });
 
         // Note: we can’t just issue an event on element with real DOM
@@ -79,14 +85,16 @@ describe('Button component', function() {
     });
 
 
-    describe('Real DOM testing approach (Disabled button)', function() {
+    describe('Disabled button, button type and class name tasting (real DOM)', function() {
         beforeEach(function() {
             this.buttonText = 'test button';
+            this.className = 'section-button';
             this.handleClick = Sinon.spy();
             this.component = TestUtils.renderIntoDocument(
                 <Button
                     text={ this.buttonText }
                     type='submit'
+                    className={ this.className }
                     isEnabled={ false }
                     onClick={ this.handleClick }
                     />
@@ -96,11 +104,22 @@ describe('Button component', function() {
             }
         });
 
-        it('renders a submit button which is disabled', function() {
+        it('renders a disabled button', function() {
+            let button = this.getRenderedDomElement();
+
+            expect(button).to.have.property('disabled', true);
+        });
+
+        it('renders a submit button', function() {
             let button = this.getRenderedDomElement();
 
             expect(button).to.have.property('type', 'submit');
-            expect(button).to.have.property('disabled', true);
+        });
+
+        it('renders a button which css class we want', function() {
+            let className = this.getRenderedDomElement().className;
+
+            expect(className).to.equal(this.className);
         });
 
         it('doesn\'t trigger onClick handler once clicked', function() {
