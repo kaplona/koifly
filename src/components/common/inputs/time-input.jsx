@@ -58,7 +58,7 @@ var TimeInput = React.createClass({
                         className={ 'col-of-four input x-number' + hoursErrorClass }
                         value={ this.props.hours }
                         type='text'
-                        patern='[0-9]*'
+                        pattern='[0-9]*'
                         onChange={ () => this.handleUserInput('hours') }
                         ref='hours'
                         />
@@ -68,7 +68,7 @@ var TimeInput = React.createClass({
                         className={ 'col-of-four input x-number' + minutesErrorClass }
                         value={ this.props.minutes }
                         type='text'
-                        patern='[0-9]*'
+                        pattern='[0-9]*'
                         onChange={ () => this.handleUserInput('minutes') }
                         ref='minutes'
                         />

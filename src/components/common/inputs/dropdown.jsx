@@ -20,6 +20,7 @@ var DropDown = React.createClass({
             React.PropTypes.string,
             React.PropTypes.number
         ]),
+        className: React.PropTypes.string,
         onChangeFunc: React.PropTypes.func.isRequired
     },
 
@@ -52,6 +53,7 @@ var DropDown = React.createClass({
 
         return (
             <select
+                className={ this.props.className ? this.props.className : null }
                 value={ this.props.selectedValue }
                 onChange={ this.handleUserInput }
                 ref='selectInput'

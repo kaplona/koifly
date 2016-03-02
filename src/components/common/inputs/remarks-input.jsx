@@ -39,6 +39,7 @@ var RemarksInput = React.createClass({
                 { this.renderErrorMessage() }
                 <Label>{ this.props.labelText }</Label>
                 <textarea
+                    className={ this.props.errorMessage ? 'x-error' : null }
                     value={ this.props.inputValue }
                     onChange={ this.handleUserInput }
                     ref='textarea'
