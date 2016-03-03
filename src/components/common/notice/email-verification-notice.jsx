@@ -43,7 +43,7 @@ var EmailVerificationNotice = React.createClass({
         var onClose = this.props.onClose;
         if (this.state.isEmailSent) {
             var email = PilotModel.getEmailAddress();
-            noticeText = 'The verification link is sent to your email ' + email;
+            noticeText = 'The verification link was sent to your email ' + email;
             onClick = null;
             onClose = null;
         }

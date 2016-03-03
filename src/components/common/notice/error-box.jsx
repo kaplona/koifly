@@ -17,8 +17,8 @@ var ErrorBox = React.createClass({
 
     render: function() {
         var onClick = this.props.onTryAgain;
-        if (this.props.error.type == ErrorTypes.NO_EXISTENT_RECORD &&
-            this.props.error.type == ErrorTypes.VALIDATION_FAILURE
+        if (this.props.error.type === ErrorTypes.NO_EXISTENT_RECORD ||
+            this.props.error.type === ErrorTypes.VALIDATION_FAILURE
         ) {
             onClick = null;
         }

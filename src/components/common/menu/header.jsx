@@ -11,7 +11,7 @@ require('./header.less');
 var Header = React.createClass({
 
     getInitialState: function() {
-        return { isLoggedIn: false };
+        return { isLoggedIn: PilotModel.isLoggedIn() };
     },
 
     componentDidMount: function() {
@@ -37,12 +37,8 @@ var Header = React.createClass({
 
         return (
             <div className='main-header desktop'>
-                <div className='logo'>
-                    <a href='/' >Koifly</a>
-                </div>
-                <div className='logout'>
-                    <Link to='/login' onClick={ loginHandler } >{ loginText }</Link>
-                </div>
+                <a className='logo' href='/' >Koifly</a>
+                <Link to='/login' className='logout' onClick={ loginHandler } >{ loginText }</Link>
             </div>
         );
     }

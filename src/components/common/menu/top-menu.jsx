@@ -18,13 +18,21 @@ var TopMenu = React.createClass({
     render: function() {
         return (
             <div className='top-menu'>
-                <div className='top-navigation' onClick={ this.props.onLeftClick }>
+                <div
+                    className='top-navigation'
+                    onClick={ this.props.onLeftClick }
+                    ref='left-navigation'
+                    >
                     { this.props.leftText }
                 </div>
                 <div className='header'>
                     { this.props.headerText }
                 </div>
-                <div className='top-navigation' onClick={ this.props.onRightClick }>
+                <div
+                    className='top-navigation'
+                    onClick={ this.props.onRightClick }
+                    ref='right-navigation'
+                    >
                     { this.props.rightText }
                 </div>
             </div>
