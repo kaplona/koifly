@@ -1,8 +1,8 @@
 'use strict';
 
 var _ = require('lodash');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var KoiflyError = require('../errors/error');
+var ErrorTypes = require('../errors/error-types');
 
 
 var ajaxTimeout = 6000;
@@ -63,12 +63,12 @@ var ajaxService = function(originalOptions, isRetry) {
     // If we got response from the server
     ajaxRequest.addEventListener('load', () => {
         if (ajaxRequest.status === 401) {
-            options.onFailure(new KoiflyError(ErrorTypes.AUTHENTICATION_FAILURE));
+            options.onFailure(new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR));
             return;
         }
 
         if (ajaxRequest.status >= 400 && ajaxRequest.status < 600) {
-            options.onFailure(new KoiflyError(ErrorTypes.RETRIEVING_FAILURE));
+            options.onFailure(new KoiflyError(ErrorTypes.DB_READ_ERROR));
             return;
         }
 
@@ -79,7 +79,7 @@ var ajaxService = function(originalOptions, isRetry) {
 
         if (serverResponse.error && serverResponse.error.type === ErrorTypes.INVALID_CSRF_TOKEN) {
             if (isRetry) {
-                options.onFailure(new KoiflyError(ErrorTypes.RETRIEVING_FAILURE));
+                options.onFailure(new KoiflyError(ErrorTypes.DB_READ_ERROR));
             } else {
                 console.log('second try...');
                 ajaxService(originalOptions, true);
@@ -96,8 +96,8 @@ var ajaxService = function(originalOptions, isRetry) {
     });
 
     // If request failed
-    ajaxRequest.addEventListener('error', () => options.onFailure(new KoiflyError(ErrorTypes.CONNECTION_FAILURE)));
-    ajaxRequest.addEventListener('timeout', () => options.onFailure(new KoiflyError(ErrorTypes.CONNECTION_FAILURE)));
+    ajaxRequest.addEventListener('error', () => options.onFailure(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
+    ajaxRequest.addEventListener('timeout', () => options.onFailure(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
 
     // Open and send request
     ajaxRequest.open(options.method, options.url);

@@ -1,9 +1,11 @@
 'use strict';
 
 var Sequelize = require('sequelize');
-var sequelize = require('./sequelize');
+
+const SCOPES = require('./orm-constants').SCOPES;
+var ErrorMessages = require('../errors/error-messages');
 var isUnique = require('./is-unique');
-var ErrorMessages = require('../utils/error-messages');
+var sequelize = require('./sequelize');
 
 
 var Glider = sequelize.define('glider', {
@@ -61,9 +63,9 @@ var Glider = sequelize.define('glider', {
 }, {
     timestamps: true, // automatically adds fields updatedAt and createdAt
     scopes: {
-        see: {
+        [SCOPES.visible]: {
             where: {
-                see: 1
+                see: true
             }
         }
     }

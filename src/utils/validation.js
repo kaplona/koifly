@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 var Util = require('./util');
-var ErrorMessages = require('./error-messages');
+var ErrorMessages = require('./../errors/error-messages');
 
 
 var Validation = {

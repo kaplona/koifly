@@ -19,7 +19,7 @@ var RemarksInput = require('./../common/inputs/remarks-input');
 var Loader = require('./../common/loader');
 var Button = require('../common/buttons/button');
 var ErrorBox = require('./../common/notice/error-box');
-var ErrorTypes = require('../../utils/error-types');
+var ErrorTypes = require('../../errors/error-types');
 
 
 var GliderEditView = React.createClass({
@@ -92,7 +92,7 @@ var GliderEditView = React.createClass({
 
     handleSavingError: function(error) {
         var newError = null;
-        if (error.type === ErrorTypes.VALIDATION_FAILURE) {
+        if (error.type === ErrorTypes.VALIDATION_ERROR) {
             this.updateErrorState(error.errors);
         } else {
             newError = error;

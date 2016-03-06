@@ -4,20 +4,23 @@ var React = require('react');
 var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
+
 var DataService = require('../services/data-service');
-var TopMenu = require('./common/menu/top-menu');
-var BottomMenu = require('./common/menu/bottom-menu');
+
 var BottomButtons = require('./common/buttons/bottom-buttons');
-var Section = require('./common/section/section');
-var SectionTitle = require('./common/section/section-title');
-var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/buttons/section-button');
-var TextInput = require('./common/inputs/text-input');
-var PasswordInput = require('./common/inputs/password-input');
+var BottomMenu = require('./common/menu/bottom-menu');
 var Button = require('./common/buttons/button');
+var CompactContainer = require('./common/compact-container');
+var ErrorTypes = require('../errors/error-types');
+var KoiflyError = require('../errors/error');
 var Notice = require('./common/notice/notice');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var PasswordInput = require('./common/inputs/password-input');
+var Section = require('./common/section/section');
+var SectionButton = require('./common/buttons/section-button');
+var SectionRow = require('./common/section/section-row');
+var SectionTitle = require('./common/section/section-title');
+var TextInput = require('./common/inputs/text-input');
+var TopMenu = require('./common/menu/top-menu');
 
 
 var Login = React.createClass({
@@ -89,7 +92,7 @@ var Login = React.createClass({
         if (this.state.email === null || this.state.email.trim() === '' ||
             this.state.password === null || this.state.password.trim() === ''
         ) {
-            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
+            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
 
         return true;
@@ -97,7 +100,7 @@ var Login = React.createClass({
 
     renderError: function() {
         if (this.state.error !== null) {
-            return <Notice type='validation' text={ this.state.error.message } />;
+            return <Notice type='error' text={ this.state.error.message } />;
         }
     },
 
@@ -124,10 +127,12 @@ var Login = React.createClass({
                     onRightClick={ () => this.handleLinkTo('/signup') }
                     />
 
+                <CompactContainer>
                 <form>
 
-                    <Section isCompact={ true }>
-                        { this.renderError() }
+                    { this.renderError() }
+
+                    <Section>
 
                         <SectionTitle>Please, log in</SectionTitle>
 
@@ -152,7 +157,7 @@ var Login = React.createClass({
                         <BottomButtons leftElements={ [ this.renderSendButton() ] } />
 
                         <SectionRow isDesktopOnly={ true } >
-                            <Link to='/reset-pass'>Forgot Password?</Link>
+                            <Link to='/reset-password'>Forgot Password?</Link>
                         </SectionRow>
 
                         <SectionRow isDesktopOnly={ true } >
@@ -174,7 +179,7 @@ var Login = React.createClass({
 
                     <SectionButton
                         text='Forgot Password?'
-                        onClick={ () => this.handleLinkTo('/reset-pass') }
+                        onClick={ () => this.handleLinkTo('/reset-password') }
                         />
 
                     <SectionButton
@@ -187,6 +192,7 @@ var Login = React.createClass({
                         onClick={ () => this.handleLinkTo('/signup') }
                         />
                 </form>
+                </CompactContainer>
 
                 <BottomMenu isMobile={ true } />
             </div>

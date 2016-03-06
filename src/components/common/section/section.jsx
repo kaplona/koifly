@@ -10,7 +10,6 @@ var Section = React.createClass({
 
     propTypes: {
         isFullScreen: React.PropTypes.bool,
-        isCompact: React.PropTypes.bool, // smaller plate for login/signup pages
         onEditClick: React.PropTypes.func
     },
 
@@ -28,10 +27,6 @@ var Section = React.createClass({
         var className = 'section';
         if (this.props.isFullScreen) {
             className += ' x-full-screen';
-        }
-
-        if (this.props.isCompact) {
-            className += ' x-compact';
         }
 
         return (

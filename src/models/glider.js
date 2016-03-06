@@ -2,8 +2,8 @@
 
 var _ = require('lodash');
 var DataService = require('../services/data-service');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var KoiflyError = require('../errors/error');
+var ErrorTypes = require('../errors/error-types');
 
 
 var GliderModel = {
@@ -186,7 +186,7 @@ var GliderModel = {
             return null;
         // Check if required id exists
         } else if (gliderId && DataService.data.gliders[gliderId] === undefined) {
-            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+            return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
     },
@@ -247,7 +247,7 @@ var GliderModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteGlider: function(gliderId) {
-        return DataService.changeGlider({ id: gliderId, see: 0 });
+        return DataService.changeGlider({ id: gliderId, see: false });
     },
 
     getNumberOfGliders: function() {

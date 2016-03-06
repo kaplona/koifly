@@ -2,20 +2,24 @@
 
 var React = require('react');
 var History = require('react-router').History;
+
 var DataService = require('../services/data-service');
-var TopMenu = require('./common/menu/top-menu');
-var BottomMenu = require('./common/menu/bottom-menu');
+
+
 var BottomButtons = require('./common/buttons/bottom-buttons');
-var Section = require('./common/section/section');
-var SectionTitle = require('./common/section/section-title');
-var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/buttons/section-button');
-var TextInput = require('./common/inputs/text-input');
-var Description = require('./common/description');
-var Notice = require('./common/notice/notice');
+var BottomMenu = require('./common/menu/bottom-menu');
 var Button = require('./common/buttons/button');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var CompactContainer = require('./common/compact-container');
+var Description = require('./common/description');
+var ErrorTypes = require('../errors/error-types');
+var KoiflyError = require('../errors/error');
+var Notice = require('./common/notice/notice');
+var Section = require('./common/section/section');
+var SectionButton = require('./common/buttons/section-button');
+var SectionRow = require('./common/section/section-row');
+var SectionTitle = require('./common/section/section-title');
+var TextInput = require('./common/inputs/text-input');
+var TopMenu = require('./common/menu/top-menu');
 
 
 var OneTimeLogin = React.createClass({
@@ -27,7 +31,7 @@ var OneTimeLogin = React.createClass({
             email: null,
             error: null,
             isSending: false,
-            isEmailSent: false
+            lastSentEmailAddress: null
         };
     },
 
@@ -37,7 +41,7 @@ var OneTimeLogin = React.createClass({
         }
 
         if (this.state.email === null || this.state.email.trim() === '') {
-            return this.handleError(new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'Enter your email address'));
+            return this.handleError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
         }
 
         this.setState({
@@ -45,10 +49,11 @@ var OneTimeLogin = React.createClass({
             error: null
         });
 
+        var lastSentEmailAddress = this.state.email;
         DataService.oneTimeLogin(this.state.email).then(() => {
             this.setState({
                 isSending: false,
-                isEmailSent: true
+                lastSentEmailAddress: lastSentEmailAddress
             });
         }).catch((error) => {
             this.handleError(error);
@@ -75,15 +80,15 @@ var OneTimeLogin = React.createClass({
     },
 
     renderNotice: function() {
-        if (this.state.isEmailSent) {
-            var noticeText = 'Email with verification link was successfully sent to ' + this.state.email;
+        if (this.state.lastSentEmailAddress) {
+            var noticeText = 'Email with verification link was successfully sent to ' + this.state.lastSentEmailAddress;
             return <Notice text={ noticeText } />;
         }
     },
 
     renderError: function() {
         if (this.state.error !== null) {
-            return <Notice type='validation' text={ this.state.error.message } />;
+            return <Notice type='error' text={ this.state.error.message } />;
         }
     },
 
@@ -121,10 +126,13 @@ var OneTimeLogin = React.createClass({
                     onRightClick={ this.handleToSignup }
                     />
 
+                <CompactContainer>
                 <form>
-                    <Section isCompact={ true }>
-                        { this.renderNotice() }
-                        { this.renderError() }
+
+                    { this.renderNotice() }
+                    { this.renderError() }
+
+                    <Section>
 
                         <SectionTitle>Log in without password</SectionTitle>
 
@@ -164,6 +172,7 @@ var OneTimeLogin = React.createClass({
                         onClick={ this.handleToLogin }
                         />
                 </form>
+                </CompactContainer>
 
                 <BottomMenu isMobile={ true } />
             </div>

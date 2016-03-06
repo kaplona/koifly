@@ -1,15 +1,16 @@
 'use strict';
 
-var Promise = require('es6-promise').Promise;
 var Bcrypt = require('bcrypt');
-var Constants = require('./constants');
+var Promise = require('es6-promise').Promise;
+
+const BCRYPT_ROUNDS = require('../secrets').bcryptRounds;
 
 
 var BcryptPromise = {
 
     hash: function(password) {
         return new Promise((resolve, reject) => {
-            Bcrypt.hash(password, Constants.bcryptRounds, (err, hash) => {
+            Bcrypt.hash(password, BCRYPT_ROUNDS, (err, hash) => {
                 if (hash && !err) {
                     resolve(hash);
                     return;

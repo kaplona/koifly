@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var ErrorTypes = require('../../../utils/error-types');
+var ErrorTypes = require('../../../errors/error-types');
 var Notice = require('./notice');
 
 
@@ -17,8 +17,8 @@ var ErrorBox = React.createClass({
 
     render: function() {
         var onClick = this.props.onTryAgain;
-        if (this.props.error.type === ErrorTypes.NO_EXISTENT_RECORD ||
-            this.props.error.type === ErrorTypes.VALIDATION_FAILURE
+        if (this.props.error.type === ErrorTypes.RECORD_NOT_FOUND ||
+            this.props.error.type === ErrorTypes.VALIDATION_ERROR
         ) {
             onClick = null;
         }

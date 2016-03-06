@@ -11,20 +11,25 @@ var Hapi = require('hapi');
 var Inert = require('inert');
 var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
+
 var AuthCookie = require('hapi-auth-cookie');
-var SetCookie = require('./server-handlers/helpers/set-cookie');
-var CheckCookie = require('./server-handlers/check-cookie');
-var CheckCsrfToken = require('./server-handlers/check-csrf-token');
-var QueryHandler = require('./server-handlers/query-handler');
-var SignupHandler = require('./server-handlers/signup-handler');
-var LoginHandler = require('./server-handlers/login-handler');
-var SendTokenToEmailHandler = require('./server-handlers/send-token-handler');
-var ChangePassHandler = require('./server-handlers/change-pass-handler');
-var ResendTokenHandler = require('./server-handlers/resend-token-handler');
-var ResetPassHandler= require('./server-handlers/reset-pass-handler');
-var VerifyEmailToken = require('./server-handlers/helpers/verify-email-token');
-var EmailMessages = require('./server-handlers/helpers/email-messages');
-var Constants = require('./utils/constants');
+var setAuthCookie = require('./server/helpers/set-auth-cookie');
+var checkAuthCookie = require('./server/auth/check-auth-cookie');
+var checkCsrfToken = require('./server/auth/check-csrf-token');
+
+var changePasswordHandler = require('./server/handlers/change-password-handler');
+var loginHandler = require('./server/handlers/login-handler');
+var queryHandler = require('./server/handlers/query-handler');
+var resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
+var resetPasswordHandler= require('./server/handlers/reset-password-handler');
+var sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
+var signupHandler = require('./server/handlers/signup-handler');
+var verifyAuthToken = require('./server/helpers/verify-auth-token');
+
+var MessageTemplates = require('./server/constants/messages-templates');
+
+const COOKIE_PASSWORD = require('./secrets').cookiePassword;
+const COOKIE_LIFETIME = require('./secrets').cookieLifeTime;
 
 
 
@@ -61,19 +66,19 @@ server.register(plugins, (err) => {
     // Register cookie authentication scheme
     server.auth.strategy('session', 'cookie', {
         cookie: 'koifly',
-        password: Constants.cookiePassword,
-        ttl: Constants.cookieLifeTime,
+        password: COOKIE_PASSWORD,
+        ttl: COOKIE_LIFETIME,
         clearInvalid: true,
         redirectTo: false,
         keepAlive: true, // reset expiry date every time
         isSecure: false, // cookie allows to be transmitted over insecure connection
         isHttpOnly: true, // auth cookie is unavailable to js
-        validateFunc: CheckCookie
+        validateFunc: checkAuthCookie
     });
 
     // Register csrf cookie
     server.state('csrf', {
-        ttl: Constants.cookieLifeTime,
+        ttl: COOKIE_LIFETIME,
         path: '/',
         isSecure: false, // cookie allows to be transmitted over insecure connection
         isHttpOnly: false, // scrf cookie is available to js
@@ -86,7 +91,7 @@ server.register(plugins, (err) => {
     // Set up server side react views using Vision
     server.views({
         engines: { jsx: HapiReactViews },
-        path: config.paths.serverViews // TODO add helperPath or/and layoutPath (plus layout: true) ???
+        path: config.paths.serverViews
     });
 
     // Note: only one route per will be used to fulfill a request.
@@ -144,7 +149,7 @@ server.register(plugins, (err) => {
         },
         handler: function(request, reply) {
             var isLoggedIn = request.auth.isAuthenticated;
-            reply.view('about', { isLoggedIn: isLoggedIn }); // about.jsx in /server-views
+            reply.view('about', { isLoggedIn: isLoggedIn }); // about.jsx in /views
         }
     });
 
@@ -152,7 +157,7 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/{path*}',
         handler: {
-            view: 'app' // app.jsx in /server-views
+            view: 'app' // app.jsx in /views
         }
     });
 
@@ -161,9 +166,9 @@ server.register(plugins, (err) => {
         path: '/api/data',
         config: {
             auth: 'session',
-            pre: [ CheckCsrfToken ]
+            pre: [ checkCsrfToken ]
         },
-        handler: QueryHandler
+        handler: queryHandler
     });
 
     server.route({
@@ -171,21 +176,21 @@ server.register(plugins, (err) => {
         path: '/api/data',
         config: {
             auth: 'session',
-            pre: [ CheckCsrfToken ]
+            pre: [ checkCsrfToken ]
         },
-        handler: QueryHandler
+        handler: queryHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/signup',
-        handler: SignupHandler
+        handler: signupHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/login',
-        handler: LoginHandler
+        handler: loginHandler
     });
 
     server.route({
@@ -199,57 +204,54 @@ server.register(plugins, (err) => {
 
     server.route({
         method: 'POST',
-        path: '/api/change-pass',
+        path: '/api/change-password',
         config: {
             auth: 'session',
-            pre: [ CheckCsrfToken ]},
-        handler: ChangePassHandler
+            pre: [ checkCsrfToken ]
+        },
+        handler: changePasswordHandler
     });
 
     server.route({
         method: 'GET',
-        path: '/email/{pilotId}/{token}',
+        path: '/email-verification/{pilotId}/{authToken}',
         handler: function(request, reply) {
-            VerifyEmailToken(request.params.pilotId, request.params.token).then((user) => {
-                return SetCookie(request, user.id, user.password);
+            verifyAuthToken(request.params.pilotId, request.params.authToken).then((user) => {
+                return setAuthCookie(request, user.id, user.password);
             }).then(() => {
                 reply.view('app');
             }).catch(() => {
-                reply.redirect('/invalid-token');
+                reply.redirect('/invalid-verification-link');
             });
         }
     });
 
     server.route({
         method: 'POST',
-        path: '/api/resend-token',
+        path: '/api/resend-auth-token',
         config: {
             auth: 'session',
-            pre: [ CheckCsrfToken ]
+            pre: [ checkCsrfToken ]
         },
-        handler: ResendTokenHandler
+        handler: resendAuthTokenHandler
     });
 
     server.route({
         method: 'POST',
         path: '/api/one-time-login',
-        handler: function(request, reply) {
-            SendTokenToEmailHandler(EmailMessages.ONE_TIME_LOGIN, '/email', request, reply);
-        }
+        handler: sendAuthTokenHandler
     });
 
     server.route({
         method: 'POST',
-        path: '/api/initiate-reset-pass',
-        handler: function(request, reply) {
-            SendTokenToEmailHandler(EmailMessages.PASSWORD_RESET, '/reset-pass', request, reply);
-        }
+        path: '/api/initiate-reset-password',
+        handler: sendAuthTokenHandler
     });
 
     server.route({
         method: 'POST',
-        path: '/api/reset-pass',
-        handler: ResetPassHandler
+        path: '/api/reset-password',
+        handler: resetPasswordHandler
     });
 
 

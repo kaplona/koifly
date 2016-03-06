@@ -1,10 +1,11 @@
 'use strict';
 
 var _ = require('lodash');
-var DataService = require('../services/data-service');
+
 var Altitude = require('../utils/altitude');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var DataService = require('../services/data-service');
+var ErrorTypes = require('../errors/error-types');
+var KoiflyError = require('../errors/error');
 
 
 var SiteModel = {
@@ -153,7 +154,7 @@ var SiteModel = {
             return null;
         // Check if required id exists
         } else if (siteId && DataService.data.sites[siteId] === undefined) {
-            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+            return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
     },
@@ -186,10 +187,10 @@ var SiteModel = {
         site.coordinates = this.formCoordinatesInput(newSite.coordinates);
         site.remarks = newSite.remarks;
 
-        var oldAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
-        var newAltitude = newSite.launchAltitude;
-        var newAltitudeUnit = newSite.altitudeUnit;
-        site.launchAltitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, newAltitudeUnit);
+        var currentAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
+        var nextAltitude = newSite.launchAltitude;
+        var nextAltitudeUnit = newSite.altitudeUnit;
+        site.launchAltitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
         return site;
     },
@@ -220,7 +221,7 @@ var SiteModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteSite: function(siteId) {
-        return DataService.changeSite({ id: siteId, see: 0 });
+        return DataService.changeSite({ id: siteId, see: false });
     },
 
     getLatLngCoordinates: function(siteId) {

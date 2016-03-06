@@ -1,8 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+
 var DataService = require('../services/data-service');
-var ErrorTypes = require('../utils/error-types');
+var ErrorTypes = require('../errors/error-types');
 
 
 var PilotModel = {
@@ -188,17 +189,17 @@ var PilotModel = {
     },
 
     /**
-     * Takes only old and new password from new pilot info
+     * Takes only current and next password from new pilot info
      * sends it to the server
      * @param {object} newPilotInfo
      * @returns {Promise} - if saving was successful or not
      */
-    changePass: function(newPilotInfo) {
+    changePassword: function(newPilotInfo) {
         var passwords = {
-            oldPassword: newPilotInfo.password,
-            newPassword: newPilotInfo.newPassword
+            currentPassword: newPilotInfo.password,
+            nextPassword: newPilotInfo.newPassword
         };
-        return DataService.changePass(passwords);
+        return DataService.changePassword(passwords);
     },
 
     /**
@@ -246,7 +247,7 @@ var PilotModel = {
     },
 
     isLoggedIn: function() {
-        return (DataService.data.pilot && DataService.data.error !== ErrorTypes.AUTHENTICATION_FAILURE);
+        return (DataService.data.pilot && DataService.data.error !== ErrorTypes.AUTHENTICATION_ERROR);
     },
 
     logout: function() {

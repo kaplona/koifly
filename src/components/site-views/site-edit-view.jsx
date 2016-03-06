@@ -21,7 +21,7 @@ var Loader = require('./../common/loader');
 var Linkish = require('./../common/linkish');
 var Button = require('../common/buttons/button');
 var ErrorBox = require('./../common/notice/error-box');
-var ErrorTypes = require('../../utils/error-types');
+var ErrorTypes = require('../../errors/error-types');
 
 
 var SiteEditView = React.createClass({
@@ -102,7 +102,7 @@ var SiteEditView = React.createClass({
 
     handleSavingError: function(error) {
         var newError = null;
-        if (error.type === ErrorTypes.VALIDATION_FAILURE) {
+        if (error.type === ErrorTypes.VALIDATION_ERROR) {
             this.updateErrorState(error.errors);
         } else {
             newError = error;

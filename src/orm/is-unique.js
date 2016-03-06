@@ -1,6 +1,7 @@
 'use strict';
 
-var ErrorMessages = require('../utils/error-messages');
+const SCOPES = require('./orm-constants').SCOPES;
+var ErrorMessages = require('../errors/error-messages');
 
 
 // mixed solution:
@@ -20,7 +21,7 @@ var isUnique = function(modelFileName, fieldName, msg) {
         // Here we just checks that user doesn't want to save an empty string
         if (value.trim() !== '') {
             var Model = require('./' + modelFileName);
-            var scope = (modelFileName === 'pilots') ? null : 'see';
+            var scope = (modelFileName === 'pilots') ? SCOPES.all : SCOPES.visible;
             // assuming that 'id' is primary key
             var query = { id: { $ne: this.id } };
             // emails are stored in lower case in DB
@@ -29,17 +30,20 @@ var isUnique = function(modelFileName, fieldName, msg) {
                 query.pilotId = this.pilotId;
             }
 
-            Model.scope(scope).findOne({
-                where: query,
-                atributes: ['id']
-            }).then((instance) => {
-                if (instance) {
-                    next(msg);
-                }
-                next();
-            }).catch((e) => {
-                next(e.message);
-            });
+            Model.scope(scope)
+                .findOne({
+                    where: query,
+                    atributes: ['id']
+                })
+                .then((record) => {
+                    if (record) {
+                        next(msg);
+                    }
+                    next();
+                })
+                .catch((e) => {
+                    next(e.message);
+                });
         } else {
             next(ErrorMessages.NOT_EMPTY.replace('%field', fieldName));
         }

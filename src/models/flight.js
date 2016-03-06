@@ -1,13 +1,15 @@
 'use strict';
 
 var _ = require('lodash');
+
+var Altitude = require('../utils/altitude');
+var ErrorTypes = require('../errors/error-types');
+var KoiflyError = require('../errors/error');
+var Util = require('../utils/util');
+
 var DataService = require('../services/data-service');
 var SiteModel = require('./site');
 var GliderModel = require('./glider');
-var Util = require('../utils/util');
-var Altitude = require('../utils/altitude');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
 
 
 var FlightModel = {
@@ -214,7 +216,7 @@ var FlightModel = {
             return null;
         // Check if required id exists
         } else if (flightId && DataService.data.flights[flightId] === undefined) {
-            return { error: new KoiflyError(ErrorTypes.NO_EXISTENT_RECORD) };
+            return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
     },
@@ -262,10 +264,10 @@ var FlightModel = {
         flight.airtime = parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes);
         flight.remarks = newFlight.remarks;
 
-        var oldAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
-        var newAltitude = newFlight.altitude;
-        var newAltitudeUnit = newFlight.altitudeUnit;
-        flight.altitude = Altitude.getAltitudeInMeters(newAltitude, oldAltitude, newAltitudeUnit);
+        var currentAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
+        var nextAltitude = newFlight.altitude;
+        var nextAltitudeUnit = newFlight.altitudeUnit;
+        flight.altitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
         return flight;
     },
@@ -296,7 +298,7 @@ var FlightModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteFlight: function(flightId) {
-        return DataService.changeFlight({ id: flightId, see: 0 });
+        return DataService.changeFlight({ id: flightId, see: false });
     },
 
 

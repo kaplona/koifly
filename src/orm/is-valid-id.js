@@ -1,6 +1,6 @@
 'use strict';
 
-var ErrorMessages = require('../utils/error-messages');
+const SCOPES = require('./orm-constants').SCOPES;
 
 
 // mixed solution:
@@ -16,14 +16,18 @@ var ErrorMessages = require('../utils/error-messages');
 var isValidId = function(modelFileName, msg) {
     return function(value, next) {
         var Model = require('./' + modelFileName);
-        Model.scope('see').findById(value).then((instance) => {
-            if (instance) {
-                next();
-            }
-            next(msg);
-        }).catch((e) => {
-            next(e.message);
-        });
+
+        Model.scope(SCOPES.visible)
+            .findById(value)
+            .then((record) => {
+                if (record) {
+                    next();
+                }
+                next(msg);
+            })
+            .catch((e) => {
+                next(e.message);
+            });
     }
 };
 

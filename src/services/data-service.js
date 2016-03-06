@@ -96,10 +96,10 @@ var DataService = {
         });
     },
 
-    changePass: function(passwords) {
+    changePassword: function(passwords) {
         return new Promise((resolve, reject) => {
             ajaxService({
-                url: '/api/change-pass',
+                url: '/api/change-password',
                 method: 'post',
                 data: passwords,
                 onSuccess: resolve,
@@ -109,7 +109,7 @@ var DataService = {
     },
 
     sendVerificationEmail: function(path, data) {
-        path = path ? path : '/api/resend-token';
+        path = path ? path : '/api/resend-auth-token';
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: path,
@@ -125,19 +125,19 @@ var DataService = {
         return this.sendVerificationEmail('/api/one-time-login', { email: email });
     },
 
-    initiateResetPass: function(email) {
-        return this.sendVerificationEmail('/api/initiate-reset-pass', { email: email });
+    initiateResetPassword: function(email) {
+        return this.sendVerificationEmail('/api/initiate-reset-password', { email: email });
     },
 
-    resetPass: function(newPassword, pilotId, token) {
+    resetPassword: function(newPassword, pilotId, authToken) {
         return new Promise((resolve, reject) => {
             ajaxService({
-                url: '/api/reset-pass',
+                url: '/api/reset-password',
                 method: 'post',
                 data: {
                     password: newPassword,
                     pilotId: pilotId,
-                    token: token
+                    authToken: authToken
                 },
                 onSuccess: (serverResponse) => {
                     this.setData(serverResponse);

@@ -40,21 +40,21 @@ var Altitude = {
 
     /**
      * Modifies altitude from provided altitude units into meters
-     * If user changed neither altitude nor units take old value
+     * If user changed neither altitude nor units take previous value
      * (altitude is always displayed rounded for user, so rounded value is submitted)
      * We need to keep exact the same value in meters in DB
      * in order to get the same value in feet (or other units) all the times
-     * @param {number} val - new value inserted by user
-     * @param {number} oldVal - old value to compare to
+     * @param {number} nextValue - new value inserted by user
+     * @param {number} previousValue - old value to compare to
      * @param {string} units chose by user
      * @returns {number} altitude in meters
      */
-    getAltitudeInMeters: function(val, oldVal, units) {
-        var oldFilteredVal = this.getAltitudeInPilotUnits(oldVal);
-        if (val != oldFilteredVal || units != DataService.data.pilot.altitudeUnit) {
-            return parseFloat(val) / this.meterConverter[units];
+    getAltitudeInMeters: function(nextValue, previousValue, units) {
+        var previousFilteredVal = this.getAltitudeInPilotUnits(previousValue);
+        if (nextValue != previousFilteredVal || units != DataService.data.pilot.altitudeUnit) {
+            return parseFloat(nextValue) / this.meterConverter[units];
         }
-        return oldVal;
+        return previousValue;
     },
 
     /**

@@ -33,11 +33,11 @@ var PilotView = React.createClass({
         this.history.pushState(null, '/pilot/edit');
     },
 
-    handleChangePass: function(event) {
+    handleChangePassword: function(event) {
         if (event) {
             event.preventDefault();
         }
-        this.history.pushState(null, '/pilot/edit/change-pass');
+        this.history.pushState(null, '/pilot/edit/change-password');
     },
 
     handleLogOut: function() {
@@ -148,14 +148,14 @@ var PilotView = React.createClass({
                     <SectionRow isDesktopOnly={ true } isLast={ true }>
                         <RowContent
                             label='Account password:'
-                            value={ <a href='/pilot/edit/change-pass' onClick={ this.handleChangePass }>Change password</a> }
+                            value={ <a href='/pilot/edit/change-password' onClick={ this.handleChangePassword }>Change password</a> }
                             />
                     </SectionRow>
                 </Section>
 
                 <SectionButton
                     text='Change Password'
-                    onClick={ this.handleChangePass }
+                    onClick={ this.handleChangePassword }
                     />
 
                 <SectionButton

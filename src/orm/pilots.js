@@ -1,12 +1,14 @@
 'use strict';
 
 var Sequelize = require('sequelize');
+
+var ErrorMessages = require('../errors/error-messages');
+var isUnique = require('./is-unique');
 var sequelize = require('./sequelize');
+
 var Flight = require('./flights');
 var Site = require('./sites');
 var Glider = require('./gliders');
-var isUnique = require('./is-unique');
-var ErrorMessages = require('../utils/error-messages');
 
 
 var Pilot = sequelize.define('pilot', {

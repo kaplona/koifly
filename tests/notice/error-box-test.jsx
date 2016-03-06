@@ -3,7 +3,7 @@
 require('../../src/test-dom')();
 
 var React = require('react/addons');
-var ErrorTypes = require('../../src/utils/error-types');
+var ErrorTypes = require('../../src/errors/error-types');
 var ErrorBox = require('../../src/components/common/notice/error-box');
 
 var Notice = require('../../src/components/common/notice/notice');
@@ -63,7 +63,7 @@ describe('ErrorBox component', () => {
         });
 
         it('doesn\'t pass onClick function for some designated errors', () => {
-            let error = { type: ErrorTypes.NO_EXISTENT_RECORD, message: 'non clickable error box' };
+            let error = { type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
                     error={ error }
@@ -76,7 +76,7 @@ describe('ErrorBox component', () => {
             expect(notice).to.have.deep.property('props.onClick', null);
 
 
-            error = { type: ErrorTypes.VALIDATION_FAILURE, message: 'non clickable error box' };
+            error = { type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
                     error={ error }

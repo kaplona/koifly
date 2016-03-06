@@ -5,7 +5,7 @@ var PubSub = require('../../utils/pubsub');
 var PilotModel = require('../../models/pilot');
 var Login = require('../login');
 var EmailVerificationNotice = require('./notice/email-verification-notice');
-var ErrorTypes = require('../../utils/error-types');
+var ErrorTypes = require('../../errors/error-types');
 
 
 var View = React.createClass({
@@ -49,7 +49,7 @@ var View = React.createClass({
     },
 
     render: function() {
-        if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_FAILURE) {
+        if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_ERROR) {
             return <Login isStayOnThisPage={ true } />;
         }
 

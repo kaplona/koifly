@@ -2,17 +2,19 @@
 
 var React = require('react');
 var History = require('react-router').History;
+
 var FlightModel = require('../../models/flight');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var TopButtons = require('../common/buttons/top-buttons');
+
 var BottomMenu = require('../common/menu/bottom-menu');
+var Button = require('../common/buttons/button');
+var ErrorBox = require('./../common/notice/error-box');
+var FirstAdding = require('./../common/first-adding');
+var Loader = require('./../common/loader');
 var Section = require('../common/section/section');
 var Table = require('./../common/table');
-var Button = require('../common/buttons/button');
-var Loader = require('./../common/loader');
-var FirstAdding = require('./../common/first-adding');
-var ErrorBox = require('./../common/notice/error-box');
+var TopButtons = require('../common/buttons/top-buttons');
+var TopMenu = require('../common/menu/top-menu');
+var View = require('./../common/view');
 
 
 var FlightListView = React.createClass({

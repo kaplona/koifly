@@ -1,11 +1,14 @@
 'use strict';
 
 var Sequelize = require('sequelize');
+
+const SCOPES = require('./orm-constants').SCOPES;
+var ErrorMessages = require('../errors/error-messages');
+var isValidId = require('./is-valid-id');
 var sequelize = require('./sequelize');
+
 var Site = require('./sites');
 var Glider = require('./gliders');
-var isValidId = require('./is-valid-id');
-var ErrorMessages = require('../utils/error-messages');
 
 
 var Flight = sequelize.define('flight', {
@@ -79,9 +82,9 @@ var Flight = sequelize.define('flight', {
 }, {
     timestamps: true, // automatically adds fields updatedAt and createdAt
     scopes: {
-        see: {
+        [SCOPES.visible]: {
             where: {
-                see: 1
+                see: true
             }
         }
     }

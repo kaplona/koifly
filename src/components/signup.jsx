@@ -4,21 +4,24 @@ var React = require('react');
 var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
+
 var DataService = require('../services/data-service');
-var TopMenu = require('./common/menu/top-menu');
-var BottomMenu = require('./common/menu/bottom-menu');
-var BottomButtons = require('./common/buttons/bottom-buttons');
-var Section = require('./common/section/section');
-var SectionTitle = require('./common/section/section-title');
-var SectionRow = require('./common/section/section-row');
-var SectionButton = require('./common/buttons/section-button');
-var TextInput = require('./common/inputs/text-input');
-var PasswordInput = require('./common/inputs/password-input');
+
 var Button = require('./common/buttons/button');
-var Notice = require('./common/notice/notice');
+var BottomButtons = require('./common/buttons/bottom-buttons');
+var BottomMenu = require('./common/menu/bottom-menu');
+var CompactContainer = require('./common/compact-container');
 var Description = require('./common/description');
-var KoiflyError = require('../utils/error');
-var ErrorTypes = require('../utils/error-types');
+var ErrorTypes = require('../errors/error-types');
+var KoiflyError = require('../errors/error');
+var Notice = require('./common/notice/notice');
+var PasswordInput = require('./common/inputs/password-input');
+var Section = require('./common/section/section');
+var SectionButton = require('./common/buttons/section-button');
+var SectionRow = require('./common/section/section-row');
+var SectionTitle = require('./common/section/section-title');
+var TextInput = require('./common/inputs/text-input');
+var TopMenu = require('./common/menu/top-menu');
 
 
 var Signup = React.createClass({
@@ -87,11 +90,11 @@ var Signup = React.createClass({
         if (this.state.email === null || this.state.email.trim() === '' ||
             this.state.password === null || this.state.password.trim() === ''
         ) {
-            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'All fields are required');
+            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
 
         if (this.state.password !== this.state.passwordConfirm) {
-            return new KoiflyError(ErrorTypes.VALIDATION_FAILURE, 'password and confirmed password must be the same');
+            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'password and confirmed password must be the same');
         }
 
         return true;
@@ -99,7 +102,7 @@ var Signup = React.createClass({
 
     renderError: function() {
         if (this.state.error !== null) {
-            return <Notice type='validation' text={ this.state.error.message } />;
+            return <Notice type='error' text={ this.state.error.message } />;
         }
     },
 
@@ -124,9 +127,12 @@ var Signup = React.createClass({
                     onRightClick={ this.handleToLogin }
                     />
 
+                <CompactContainer>
                 <form>
-                    <Section isCompact={ true }>
-                        { this.renderError() }
+
+                    { this.renderError() }
+
+                    <Section>
 
                         <SectionTitle>Sign up</SectionTitle>
 
@@ -186,6 +192,7 @@ var Signup = React.createClass({
                         isEnabled={ !this.state.isSaving }
                         />
                 </form>
+                </CompactContainer>
 
                 <BottomMenu isMobile={ true } />
             </div>
