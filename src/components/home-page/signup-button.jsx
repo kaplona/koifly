@@ -10,19 +10,19 @@ if (process.env.BROWSER) {
 var SignupButton = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string
+        capture: React.PropTypes.string.isRequired
     },
 
     getDefaultProps: function() {
         return {
-            text: 'Sign up'
+            capture: 'Sign up'
         };
     },
 
     render: function() {
         return (
             <a href='/signup' className='signup-button'>
-               { this.props.text }
+               { this.props.capture }
             </a>
         );
     }

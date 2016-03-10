@@ -27,17 +27,17 @@ var PilotChangePassword = require('./components/pilot-views/pilot-change-passwor
 var PilotEditView = require('./components/pilot-views/pilot-edit-view');
 var PilotView = require('./components/pilot-views/pilot-view');
 
-var Signup = require('./components/signup');
-var Login = require('./components/login');
-var OneTimeLogin = require('./components/one-time-login');
+var Signup = require('./components/public-views/signup');
+var Login = require('./components/public-views/login');
+var OneTimeLogin = require('./components/public-views/one-time-login');
 
-var InitiateResetPassword = require('./components/initiate-reset-password');
-var ResetPassword = require('./components/reset-password');
+var InitiateResetPassword = require('./components/public-views/initiate-reset-password');
+var ResetPassword = require('./components/public-views/reset-password');
 
-var EmailVerified = require('./components/verified');
-var InvalidVerificationLink = require('./components/invalid-verification-link');
+var EmailVerified = require('./components/public-views/email-verified');
+var InvalidVerificationLink = require('./components/public-views/invalid-verification-link');
 
-var pageNotFound = require('./components/page-not-found');
+var pageNotFound = require('./components/public-views/page-not-found');
 
 //var Test = require('./tests/test');
 //var DataService = require('./services/data-service');

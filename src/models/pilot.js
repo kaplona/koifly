@@ -78,6 +78,7 @@ var PilotModel = {
         var airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
         var siteNum = FlightModel.getNumberOfVisitedSites();
         var gliderNum = FlightModel.getNumberOfUsedGliders();
+        var daysSinceLastFlight = this.getDaysSinceLastFlight();
 
         return {
             email: pilot.email,
@@ -87,7 +88,8 @@ var PilotModel = {
             airtimeTotal: airtimeTotal,
             siteNum: siteNum,
             gliderNum: gliderNum,
-            altitudeUnit: pilot.altitudeUnit
+            altitudeUnit: pilot.altitudeUnit,
+            daysSinceLastFlight: daysSinceLastFlight
         };
     },
 
@@ -137,6 +139,23 @@ var PilotModel = {
             return null;
         }
         return false;
+    },
+
+    /**
+     * @returns {number|null} - days passed since the last flight
+     */
+    getDaysSinceLastFlight: function() {
+        // require FlightModel here so as to avoid circle requirements
+        var FlightModel = require('./flight');
+
+        var lastFlightDate = FlightModel.getLastFlightDate();
+
+        if (lastFlightDate === null) {
+            return null;
+        }
+
+        var milisecondsSince = Date.now() - Date.parse(lastFlightDate);
+        return Math.floor(milisecondsSince / (24 * 60 * 60 * 1000));
     },
 
     /**

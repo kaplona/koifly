@@ -2,22 +2,24 @@
 
 var React = require('react');
 var PubSub = require('../../utils/pubsub');
-var PilotModel = require('../../models/pilot');
-var Login = require('../login');
-var EmailVerificationNotice = require('./notice/email-verification-notice');
+
 var ErrorTypes = require('../../errors/error-types');
+var PilotModel = require('../../models/pilot');
+
+var EmailVerificationNotice = require('./notice/email-verification-notice');
+var Login = require('../public-views/login');
 
 
 var View = React.createClass({
 
     propTypes: {
-        onDataModified: React.PropTypes.func,
+        onDataModified: React.PropTypes.func.isRequired,
         error: React.PropTypes.object
     },
 
     getInitialState: function() {
         return {
-            isActivationNotice: PilotModel.getActivationNoticeStatus()
+            isActivationNotice: false
         };
     },
 
@@ -31,9 +33,7 @@ var View = React.createClass({
     },
 
     handleDataModified: function() {
-        if (this.props.onDataModified) {
-            this.props.onDataModified();
-        }
+        this.props.onDataModified();
         this.setState({ isActivationNotice: PilotModel.getActivationNoticeStatus() });
     },
 

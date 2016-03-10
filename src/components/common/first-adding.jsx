@@ -7,12 +7,8 @@ require('./first-adding.less');
 
 var FirstAdding = React.createClass({
     propTypes: {
-        dataType: React.PropTypes.string, // plural
-        onAdding: React.PropTypes.func
-    },
-
-    handleAdding: function() {
-        this.props.onAdding();
+        dataType: React.PropTypes.string.isRequired, // plural
+        onAdding: React.PropTypes.func.isRequired
     },
 
     render: function() {

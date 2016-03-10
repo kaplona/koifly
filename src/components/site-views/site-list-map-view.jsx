@@ -71,7 +71,7 @@ var SiteListMapView = React.createClass({
 
     renderMap: function() {
         var siteList = this.state.sites;
-        return (siteList !== null) ? <StaticMap markers={ siteList } fullScreen={ true } /> : <Loader />;
+        return (siteList !== null) ? <StaticMap markers={ siteList } isFullScreen={ true } /> : <Loader />;
     },
 
     render: function() {

@@ -100,11 +100,11 @@ describe('Dropdown component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Dropdown
-                    selectedValue={ mocks.initialInputValue }
+                    selectedValue={ mocks.selectedValue }
                     options={ mockOptions }
                     emptyValue={ mocks.emptyValue }
                     inputName={ mocks.inputName }
-                    onChangeFunc={ mocks.handleInputChange }
+                    onChangeFunc={ mocks.handleSelectChange }
                     />
             );
         });

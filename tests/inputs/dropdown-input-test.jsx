@@ -89,7 +89,7 @@ describe('DropdownInput component', () => {
                     labelText={ mocks.labelText }
                     inputName={ mocks.inputName }
                     errorMessage={ mocks.errorMessage }
-                    onChangeFunc={ mocks.handleInputChange }
+                    onChangeFunc={ mocks.handleSelectChange }
                     />
             );
 

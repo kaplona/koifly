@@ -9,7 +9,9 @@ require('./table.less');
 var Table = React.createClass({
 
     propTypes: {
-        rows: React.PropTypes.array,
+        rows: React.PropTypes.arrayOf(React.PropTypes.shape({
+            id: React.PropTypes.number
+        })),
         columns: React.PropTypes.arrayOf(React.PropTypes.shape({
             key: React.PropTypes.string,
             label: React.PropTypes.string,
@@ -100,7 +102,7 @@ var Table = React.createClass({
             for (var i = 0; i < this.props.columns.length; i++) {
                 var columnKey = this.props.columns[i].key;
                 rowToDisplay.push(
-                    <td>
+                    <td key={ 'cell-' + row.id + '-' + columnKey } >
                         { (row[columnKey] !== null) ? row[columnKey] : '-' }
                     </td>
                 );

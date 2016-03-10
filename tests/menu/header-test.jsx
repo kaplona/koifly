@@ -3,11 +3,7 @@
 require('../../src/test-dom')();
 
 var React = require('react/addons');
-var Header = require('../../src/components/common/menu/header');
-
-var PilotModel = require('../../src/models/pilot');
 var PubSub = require('../../src/utils/pubsub');
-var Link = require('react-router').Link;
 
 var then = require('../../src/utils/then');
 var Chai = require('chai');
@@ -15,6 +11,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
+
+var PilotModel = require('../../src/models/pilot');
+
+var Header = require('../../src/components/common/menu/header');
+var Link = require('react-router').Link;
 
 
 
@@ -31,66 +32,66 @@ describe('Header component', () => {
         eventToListen: 'dataModified'
     };
 
-    var mocks = {};
+    var mocks = {
+        pilotLogout: null // will be used for stub function
+    };
 
 
-    describe('Defaults testing', () => {
-        before(() => {
-            mocks.pilotLogout = Sinon.stub(PilotModel, 'logout');
+    before(() => {
+        mocks.pilotLogout = Sinon.stub(PilotModel, 'logout');
 
-            Sinon.stub(PilotModel, 'isLoggedIn', () => {
-                return false;
-            });
-
-            component = TestUtils.renderIntoDocument(
-                <Header />
-            );
+        Sinon.stub(PilotModel, 'isLoggedIn', () => {
+            return false;
         });
 
-        after(() => {
-            PilotModel.logout.restore();
-            PilotModel.isLoggedIn.restore();
+        component = TestUtils.renderIntoDocument(
+            <Header />
+        );
+    });
+
+    after(() => {
+        PilotModel.logout.restore();
+        PilotModel.isLoggedIn.restore();
+    });
+
+    it('renders Link with login text and no onClick prop', () => {
+        let loginLink = TestUtils.findRenderedComponentWithType(component, Link);
+
+        expect(loginLink).to.have.deep.property('props.children', defaults.loginText);
+        expect(loginLink).to.have.deep.property('props.onClick', null);
+
+        Simulate.click(React.findDOMNode(loginLink));
+
+        expect(mocks.pilotLogout).to.not.be.called;
+    });
+
+    it('changes state when dataModified event emitted', (done) => {
+        // here we restore PilotModel isLoggedIn method
+        // in order to stub it again but with other function that returns true
+        // emitting event should trigger setState of Header component and rerender it
+        PilotModel.isLoggedIn.restore();
+        Sinon.stub(PilotModel, 'isLoggedIn', () => {
+            return true;
         });
 
-        it('renders Link with login text and no onClick prop', () => {
-            let loginLink = TestUtils.findRenderedComponentWithType(component, Link);
+        expect(component).to.have.deep.property('state.isLoggedIn', false);
 
-            expect(loginLink).to.have.deep.property('props.children', defaults.loginText);
-            expect(loginLink).to.have.deep.property('props.onClick', null);
+        PubSub.emit(defaults.eventToListen);
 
-            Simulate.click(React.findDOMNode(loginLink));
-
-            expect(mocks.pilotLogout).to.not.be.called;
+        then(() => {
+            expect(component).to.have.deep.property('state.isLoggedIn', true);
+            done();
         });
+    });
 
-        it('changes state when dataModified event emitted', (done) => {
-            // here we restore PilotModel isLoggedIn method
-            // in order to stub it again but with other function that returns true
-            // emitting event should trigger setState of Header component and rerender it
-            PilotModel.isLoggedIn.restore();
-            Sinon.stub(PilotModel, 'isLoggedIn', () => {
-                return true;
-            });
+    it('renders Link with logout text and logout on click', () => {
+        let logoutLink = TestUtils.findRenderedComponentWithType(component, Link);
 
-            expect(component).to.have.deep.property('state.isLoggedIn', false);
+        expect(logoutLink).to.have.deep.property('props.children', defaults.logoutText);
+        expect(logoutLink.props.onClick).to.not.equal(null);
 
-            PubSub.emit(defaults.eventToListen);
+        Simulate.click(React.findDOMNode(logoutLink));
 
-            then(() => {
-                expect(component).to.have.deep.property('state.isLoggedIn', true);
-                done();
-            });
-        });
-
-        it('renders Link with logout text and logout on click', () => {
-            let logoutLink = TestUtils.findRenderedComponentWithType(component, Link);
-
-            expect(logoutLink).to.have.deep.property('props.children', defaults.logoutText);
-            expect(logoutLink.props.onClick).to.not.equal(null);
-
-            Simulate.click(React.findDOMNode(logoutLink));
-
-            expect(mocks.pilotLogout).to.be.calledOnce;
-        });
+        expect(mocks.pilotLogout).to.be.calledOnce;
     });
 });

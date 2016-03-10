@@ -33,7 +33,7 @@ var StaticMap = React.createClass({
             altitudeUnit: React.PropTypes.string,
             coordinates: React.PropTypes.string
         })),
-        fullScreen: React.PropTypes.bool
+        isFullScreen: React.PropTypes.bool
     },
 
     getDefaultProps: function() {
@@ -102,7 +102,7 @@ var StaticMap = React.createClass({
     },
 
     render: function() {
-        var className = this.props.fullScreen ? 'map_container x-full-screen' : 'map_container';
+        var className = this.props.isFullScreen ? 'map_container x-full-screen' : 'map_container';
 
         return <div className={ className } ref='map'/>;
     }

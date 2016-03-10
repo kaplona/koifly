@@ -5,7 +5,6 @@ require('../../src/test-dom')();
 var React = require('react/addons');
 var AltitudeInput = require('../../src/components/common/inputs/altitude-input');
 
-// TODO mock this components since we check only props we pass to them
 var Label = require('../../src/components/common/section/label');
 var ValidationError = require('../../src/components/common/section/validation-error');
 var Dropdown = require('../../src/components/common/inputs/dropdown');

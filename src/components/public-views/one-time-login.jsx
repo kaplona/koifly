@@ -3,27 +3,26 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var DataService = require('../services/data-service');
-var PilotModel = require('../models/pilot');
+var DataService = require('../../services/data-service');
 
 
-var Button = require('./common/buttons/button');
-var BottomButtons = require('./common/buttons/bottom-buttons');
-var BottomMenu = require('./common/menu/bottom-menu');
-var CompactContainer = require('./common/compact-container');
-var Description = require('./common/description');
-var ErrorTypes = require('../errors/error-types');
-var KoiflyError = require('../errors/error');
-var Notice = require('./common/notice/notice');
-var Section = require('./common/section/section');
-var SectionButton = require('./common/buttons/section-button');
-var SectionRow = require('./common/section/section-row');
-var SectionTitle = require('./common/section/section-title');
-var TextInput = require('./common/inputs/text-input');
-var TopMenu = require('./common/menu/top-menu');
+var BottomButtons = require('./../common/buttons/bottom-buttons');
+var BottomMenu = require('./../common/menu/bottom-menu');
+var Button = require('./../common/buttons/button');
+var CompactContainer = require('./../common/compact-container');
+var Description = require('./../common/section/description');
+var ErrorTypes = require('../../errors/error-types');
+var KoiflyError = require('../../errors/error');
+var Notice = require('./../common/notice/notice');
+var Section = require('./../common/section/section');
+var SectionButton = require('./../common/buttons/section-button');
+var SectionRow = require('./../common/section/section-row');
+var SectionTitle = require('./../common/section/section-title');
+var TextInput = require('./../common/inputs/text-input');
+var TopMenu = require('./../common/menu/top-menu');
 
 
-var InitiateResetPassword = React.createClass({
+var OneTimeLogin = React.createClass({
 
     mixins: [ History ],
 
@@ -32,14 +31,8 @@ var InitiateResetPassword = React.createClass({
             email: null,
             error: null,
             isSending: false,
-            isEmailSent: false
+            lastSentEmailAddress: null
         };
-    },
-
-    componentDidMount: function() {
-        if (PilotModel.isLoggedIn()) {
-            this.setState({ email: PilotModel.getEmailAddress() });
-        }
     },
 
     handleSubmit: function(event) {
@@ -48,7 +41,7 @@ var InitiateResetPassword = React.createClass({
         }
 
         if (this.state.email === null || this.state.email.trim() === '') {
-            return this.handleSavingError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
+            return this.handleError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
         }
 
         this.setState({
@@ -56,25 +49,30 @@ var InitiateResetPassword = React.createClass({
             error: null
         });
 
-        DataService.initiateResetPassword(this.state.email).then(() => {
+        var lastSentEmailAddress = this.state.email;
+        DataService.oneTimeLogin(this.state.email).then(() => {
             this.setState({
                 isSending: false,
-                isEmailSent: true
+                lastSentEmailAddress: lastSentEmailAddress
             });
         }).catch((error) => {
-            this.handleSavingError(error);
+            this.handleError(error);
         });
     },
 
-    handleLinkTo: function(link) {
-        this.history.pushState(null, link);
+    handleToLogin: function() {
+        this.history.pushState(null, '/login');
+    },
+
+    handleToSignup: function() {
+        this.history.pushState(null, '/signup');
     },
 
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
     },
 
-    handleSavingError: function(error) {
+    handleError: function(error) {
         this.setState({
             error: error,
             isSending: false
@@ -82,9 +80,15 @@ var InitiateResetPassword = React.createClass({
     },
 
     renderNotice: function() {
-        if (this.state.isEmailSent) {
-            var noticeText = 'Email with reset password link was successfully sent to ' + this.state.email;
+        if (this.state.lastSentEmailAddress) {
+            var noticeText = 'Email with verification link was successfully sent to ' + this.state.lastSentEmailAddress;
             return <Notice text={ noticeText } />;
+        }
+    },
+
+    renderError: function() {
+        if (this.state.error !== null) {
+            return <Notice type='error' text={ this.state.error.message } />;
         }
     },
 
@@ -103,18 +107,12 @@ var InitiateResetPassword = React.createClass({
     renderCancelButton: function() {
         return (
             <Button
-                text='Cancel'
+                text='Back'
                 buttonStyle='secondary'
-                onClick={ () => this.handleLinkTo('/pilot') }
+                onClick={ this.handleToLogin }
                 isEnabled={ !this.state.isSending }
                 />
         );
-    },
-
-    renderError: function() {
-        if (this.state.error !== null) {
-            return <Notice type='error' text={ this.state.error.message } />;
-        }
     },
 
     render: function() {
@@ -124,8 +122,8 @@ var InitiateResetPassword = React.createClass({
                     headerText='Koifly'
                     leftText='Back'
                     rightText='Sign Up'
-                    onLeftClick={ () => this.handleLinkTo('/login') }
-                    onRightClick={ () => this.handleLinkTo('/signup') }
+                    onLeftClick={ this.handleToLogin }
+                    onRightClick={ this.handleToSignup }
                     />
 
                 <CompactContainer>
@@ -136,7 +134,7 @@ var InitiateResetPassword = React.createClass({
 
                     <Section>
 
-                        <SectionTitle>Reset Password</SectionTitle>
+                        <SectionTitle>Log in without password</SectionTitle>
 
                         <SectionRow>
                             <TextInput
@@ -149,7 +147,7 @@ var InitiateResetPassword = React.createClass({
 
                         <SectionRow isLast={ true }>
                             <Description>
-                                We will send you an email with a link to password reset page
+                                We will send you an email with a link, which will log in you into app
                             </Description>
                         </SectionRow>
 
@@ -168,6 +166,11 @@ var InitiateResetPassword = React.createClass({
                         onClick={ this.handleSubmit }
                         isEnabled={ !this.state.isSending }
                         />
+
+                    <SectionButton
+                        text='Log In With Password'
+                        onClick={ this.handleToLogin }
+                        />
                 </form>
                 </CompactContainer>
 
@@ -178,4 +181,4 @@ var InitiateResetPassword = React.createClass({
 });
 
 
-module.exports = InitiateResetPassword;
+module.exports = OneTimeLogin;

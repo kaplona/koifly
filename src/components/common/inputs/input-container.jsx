@@ -2,13 +2,13 @@
 
 var React = require('react');
 
-require('./value-input.less');
+require('./input-container.less');
 
 
 var ValueInput = React.createClass({
     render: function() {
         return (
-            <div className='value-input'>
+            <div className='input-container'>
                 <div className='arrow'>{ '\u25bb' }</div>
                 { this.props.children }
             </div>

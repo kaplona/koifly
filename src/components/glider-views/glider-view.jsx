@@ -101,10 +101,12 @@ var GliderView = React.createClass({
                     />
 
                 <Section onEditClick={ this.handleGliderEditing } >
-                    <BreadCrumbs>
-                        <Link to='/gliders'>Gliders</Link>
-                        { ' / ' + this.state.glider.name }
-                    </BreadCrumbs>
+                    <BreadCrumbs
+                        elements={ [
+                            <Link to='/gliders'>Gliders</Link>,
+                            this.state.glider.name
+                        ] }
+                        />
 
                     <SectionTitle>
                         { this.state.glider.name }

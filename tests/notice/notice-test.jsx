@@ -94,4 +94,30 @@ describe('Notice component', () => {
             expect(mocks.handleClose).to.have.been.calledOnce;
         });
     });
+
+    describe('Enabled button testing', () => {
+        before(() => {
+            component = TestUtils.renderIntoDocument(
+                <Notice
+                    text={ mocks.noticeText }
+                    type={ mocks.noticeType }
+                    buttonText={ mocks.buttonText }
+                    onClick={ mocks.handleClick }
+                    isButtonEnabled={ false }
+                    />
+            );
+
+            renderedDOMElement = React.findDOMNode(component);
+        });
+
+        it('renders disabled buttons and doesn\'t call onClick functions', () => {
+            let actionButton = renderedDOMElement.querySelector('input');
+
+            expect(actionButton).to.have.property('disabled', true);
+
+            Simulate.click(actionButton);
+
+            expect(mocks.handleClick).to.have.not.been.calledOnce;
+        });
+    });
 });

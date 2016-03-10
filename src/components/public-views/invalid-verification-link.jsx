@@ -2,9 +2,9 @@
 
 var React = require('react');
 var History = require('react-router').History;
-var TopMenu = require('./common/menu/top-menu');
-var BottomMenu = require('./common/menu/bottom-menu');
-var Notice = require('./common/notice/notice');
+var TopMenu = require('./../common/menu/top-menu');
+var BottomMenu = require('./../common/menu/bottom-menu');
+var Notice = require('./../common/notice/notice');
 
 
 var InvalidVerificationLink = React.createClass({

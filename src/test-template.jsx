@@ -1,19 +1,18 @@
 'use strict';
 
 require('../../src/test-dom')();
-
 var React = require('react/addons');
-var Header = require('../../src/components/common/menu/header');
-
-var Link = require('react-router').Link;
 
 var then = require('../../src/utils/then');
 var Chai = require('chai');
 var expect = Chai.expect;
-// var expect = require('chai').expect;
 var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
+// var expect = require('chai').expect;
+
+var Header = require('../../src/components/common/menu/header');
+var Link = require('react-router').Link;
 
 
 

@@ -112,6 +112,11 @@ var FlightView = React.createClass({
             return this.renderLoader();
         }
 
+        var flightName = this.state.flight.date;
+        if (this.state.flight.flightNumDay) {
+            flightName += '(' + this.state.flight.flightNumDay + ')';
+        }
+
         return (
             <View onDataModified={ this.handleDataModified }>
                 <TopMenu
@@ -122,11 +127,12 @@ var FlightView = React.createClass({
                     />
 
                 <Section onEditClick={ this.handleFlightEditing }>
-                    <BreadCrumbs>
-                        <Link to='/flights'>Flights</Link>
-                        { ' / ' + this.state.flight.date }
-                        { this.state.flight.flightNumDay ? '(' + this.state.flight.flightNumDay + ')' : '' }
-                    </BreadCrumbs>
+                    <BreadCrumbs
+                        elements={ [
+                            <Link to='/flights'>Flights</Link>,
+                            flightName
+                        ] }
+                        />
 
                     <SectionTitle>
                         <div>{ Util.formatDate(this.state.flight.date) }</div>

@@ -27,11 +27,13 @@ var EmailVerificationNotice = React.createClass({
 
     getInitialState: function() {
         return {
+            isSending: false,
             isEmailSent: false
         };
     },
 
     handleEmailVerification: function() {
+        this.setState({ isSending: true });
         DataService.sendVerificationEmail().then(() => {
             this.setState({ isEmailSent: true });
         });
@@ -39,11 +41,14 @@ var EmailVerificationNotice = React.createClass({
 
     render: function() {
         var noticeText = this.props.text;
+        var type = this.props.type;
         var onClick = this.handleEmailVerification;
         var onClose = this.props.onClose;
+
         if (this.state.isEmailSent) {
             var email = PilotModel.getEmailAddress();
             noticeText = 'The verification link was sent to your email ' + email;
+            type = 'success';
             onClick = null;
             onClose = null;
         }
@@ -51,9 +56,10 @@ var EmailVerificationNotice = React.createClass({
         return (
             <Notice
                 text={ noticeText }
-                type={ this.props.type }
+                type={ type }
                 onClick={ onClick }
-                buttonText='Send email again'
+                buttonText={ this.state.isSending ? 'Sending...' : 'Send email again' }
+                isButtonEnabled={ !this.state.isSending }
                 onClose={ onClose }
                 />
         );

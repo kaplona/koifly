@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Label = require('../section/label');
-var Value = require('../section/value-input');
+var InputContainer = require('./input-container');
 var Dropdown = require('./dropdown');
 var ValidationError = require('../section/validation-error');
 
@@ -43,7 +43,7 @@ var DropdownInput = React.createClass({
                     { this.props.labelText }
                 </Label>
 
-                <Value>
+                <InputContainer>
                     <Dropdown
                         className={ (this.props.errorMessage) ? 'x-error' : '' }
                         selectedValue={ this.props.selectedValue }
@@ -52,7 +52,7 @@ var DropdownInput = React.createClass({
                         emptyValue={ this.props.emptyValue }
                         onChangeFunc={ this.props.onChangeFunc }
                         />
-                </Value>
+                </InputContainer>
             </div>
         );
     }

@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Label = require('../section/label');
-var Value = require('../section/value-input');
+var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
 
@@ -51,7 +51,7 @@ var TextInput = React.createClass({
                     { this.props.labelText }
                 </Label>
 
-                <Value>
+                <InputContainer>
                     <input
                         className={ className }
                         value={ this.props.inputValue }
@@ -61,7 +61,7 @@ var TextInput = React.createClass({
                         ref='input'
                         />
                     { this.props.afterComment }
-                </Value>
+                </InputContainer>
             </div>
         );
     }

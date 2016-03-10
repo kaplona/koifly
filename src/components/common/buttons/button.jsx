@@ -40,7 +40,7 @@ var Button = React.createClass({
             <input
                 className={ className }
                 type={ this.props.type }
-                disabled={ !this.props.isEnabled ? 'disabled' : '' }
+                disabled={ !this.props.isEnabled }
                 value={ this.props.text }
                 onClick={ this.handleClick }
                 />

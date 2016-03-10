@@ -5,23 +5,23 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
-var DataService = require('../services/data-service');
+var DataService = require('../../services/data-service');
 
-var Button = require('./common/buttons/button');
-var BottomButtons = require('./common/buttons/bottom-buttons');
-var BottomMenu = require('./common/menu/bottom-menu');
-var CompactContainer = require('./common/compact-container');
-var Description = require('./common/description');
-var ErrorTypes = require('../errors/error-types');
-var KoiflyError = require('../errors/error');
-var Notice = require('./common/notice/notice');
-var PasswordInput = require('./common/inputs/password-input');
-var Section = require('./common/section/section');
-var SectionButton = require('./common/buttons/section-button');
-var SectionRow = require('./common/section/section-row');
-var SectionTitle = require('./common/section/section-title');
-var TextInput = require('./common/inputs/text-input');
-var TopMenu = require('./common/menu/top-menu');
+var Button = require('./../common/buttons/button');
+var BottomButtons = require('./../common/buttons/bottom-buttons');
+var BottomMenu = require('./../common/menu/bottom-menu');
+var CompactContainer = require('./../common/compact-container');
+var Description = require('./../common/section/description');
+var ErrorTypes = require('../../errors/error-types');
+var KoiflyError = require('../../errors/error');
+var Notice = require('./../common/notice/notice');
+var PasswordInput = require('./../common/inputs/password-input');
+var Section = require('./../common/section/section');
+var SectionButton = require('./../common/buttons/section-button');
+var SectionRow = require('./../common/section/section-row');
+var SectionTitle = require('./../common/section/section-title');
+var TextInput = require('./../common/inputs/text-input');
+var TopMenu = require('./../common/menu/top-menu');
 
 
 var Signup = React.createClass({

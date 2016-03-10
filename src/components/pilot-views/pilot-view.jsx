@@ -133,7 +133,7 @@ var PilotView = React.createClass({
                             />
                     </SectionRow>
                     <SectionRow isLast={ true }>
-                        <DaysSinceLastFlight />
+                        <DaysSinceLastFlight days={ this.state.pilot.daysSinceLastFlight }/>
                     </SectionRow>
 
                     <SectionTitle>Settings</SectionTitle>

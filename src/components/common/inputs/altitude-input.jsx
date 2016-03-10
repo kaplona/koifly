@@ -3,7 +3,7 @@
 var React = require('react');
 var Altitude = require('../../../utils/altitude');
 var Label = require('../section/label');
-var Value = require('../section/value-input');
+var InputContainer = require('./input-container');
 var Dropdown = require('./dropdown');
 var ValidationError = require('../section/validation-error');
 
@@ -59,7 +59,7 @@ var AltitudeInput = React.createClass({
                     { this.props.labelText }
                 </Label>
 
-                <Value>
+                <InputContainer>
                     <input
                         className={ 'col-of-two x-number' + (this.props.errorMessage ? ' x-error' : '') }
                         value={ this.props.inputValue }
@@ -76,7 +76,7 @@ var AltitudeInput = React.createClass({
                             onChangeFunc={ this.handleUserInput }
                             />
                     </div>
-                </Value>
+                </InputContainer>
             </div>
         );
     }

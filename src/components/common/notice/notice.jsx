@@ -9,9 +9,16 @@ var Notice = React.createClass({
     propTypes: {
         text: React.PropTypes.string.isRequired,
         type: React.PropTypes.string,
-        onClick: React.PropTypes.func,
+        onClick: React.PropTypes.func, // if not provided button won't be rendered no matter if buttonText or isButtonEnabled present
         buttonText: React.PropTypes.string,
-        onClose: React.PropTypes.func
+        isButtonEnabled: React.PropTypes.bool,
+        onClose: React.PropTypes.func // if not provided close-button won't be rendered
+    },
+
+    getDefaultProps: function() {
+        return {
+            isButtonEnabled: true
+        };
     },
 
     handleClick: function(event) {
@@ -34,6 +41,7 @@ var Notice = React.createClass({
                 <input
                     type='button'
                     value={ this.props.buttonText }
+                    disabled={ !this.props.isButtonEnabled }
                     onClick={ this.handleClick }
                     />
             );

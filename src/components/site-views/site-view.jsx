@@ -115,10 +115,12 @@ var SiteView = React.createClass({
                     />
 
                 <Section onEditClick={ this.handleSiteEditing }>
-                    <BreadCrumbs>
-                        <Link to='/sites'>Sites</Link>
-                        { ' / ' + this.state.site.name }
-                    </BreadCrumbs>
+                    <BreadCrumbs
+                        elements={ [
+                            <Link to='/sites'>Sites</Link>,
+                            this.state.site.name
+                        ] }
+                        />
 
                     <SectionTitle>
                         { this.state.site.name }

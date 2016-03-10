@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Notice = require('./common/notice/notice');
+var Notice = require('./../common/notice/notice');
 
 
 var noPage = React.createClass({

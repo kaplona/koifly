@@ -10,7 +10,7 @@ if (process.env.BROWSER) {
 var FeatureCulumn = React.createClass({
 
     propTypes: {
-        float: React.PropTypes.string
+        float: React.PropTypes.oneOf(['left', 'right'])
     },
 
     render: function() {

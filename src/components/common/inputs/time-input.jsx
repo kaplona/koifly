@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Label = require('../section/label');
-var Value = require('../section/value-input');
+var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
 
@@ -53,7 +53,7 @@ var TimeInput = React.createClass({
                     { this.props.labelText }
                 </Label>
 
-                <Value>
+                <InputContainer>
                     <input
                         className={ 'col-of-four input x-number' + hoursErrorClass }
                         value={ this.props.hours }
@@ -74,7 +74,7 @@ var TimeInput = React.createClass({
                         />
                     <div className='mobile col-of-four'>min</div>
                     <div className='desktop col-of-four'>minutes</div>
-                </Value>
+                </InputContainer>
             </div>
         );
     }

@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
-var Label = require('./../section/label');
-var Value = require('./../section/value');
+var Label = require('./label');
+var Value = require('./value-container');
 
 
 var RowContent = React.createClass({

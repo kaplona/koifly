@@ -14,7 +14,7 @@ var SectionTitle = React.createClass({
     render: function() {
         var className = 'section-title';
         if (this.props.isSubtitle) {
-            className += ' subtitle';
+            className += ' x-subtitle';
         }
 
         return (

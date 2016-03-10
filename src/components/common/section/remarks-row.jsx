@@ -14,23 +14,22 @@ var RemarksRow = React.createClass({
     },
 
     render: function() {
-        if (this.props.value) {
-            var newLines = this.props.value.split('\n');
-            var value = _.map(newLines, (newLine) => {
-                return <span>{ newLine }<br/></span>;
-            });
-
-            return (
-                <div className='remarks-row'>
-                    <Label>Remarks:</Label>
-                    <div className='remarks'>{ value }</div>
-                </div>
-            );
+        if (!this.props.value) {
+            return null;
         }
 
-        return null;
-    }
+        var newLines = this.props.value.split('\n');
+        var remarks = _.map(newLines, (newLine, index) => {
+            return <span key={ 'remark-' + index }>{ newLine }<br/></span>;
+        });
 
+        return (
+            <div className='remarks-row'>
+                <Label>Remarks:</Label>
+                <div className='remarks'>{ remarks }</div>
+            </div>
+        );
+    }
 });
 
 
