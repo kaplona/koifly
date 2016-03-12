@@ -9,15 +9,21 @@ require('./section.less');
 var Section = React.createClass({
 
     propTypes: {
-        isFullScreen: React.PropTypes.bool,
+        isFullScreen: React.PropTypes.bool.isRequired,
         onEditClick: React.PropTypes.func
+    },
+
+    getDefaultProps: function() {
+        return {
+            isFullScreen: false
+        };
     },
 
     renderEditButton: function() {
         if (this.props.onEditClick) {
             return (
                 <div className='edit-button'>
-                    <Button text='Edit' onClick={ this.props.onEditClick }/>
+                    <Button caption='Edit' onClick={ this.props.onEditClick } />
                 </div>
             );
         }

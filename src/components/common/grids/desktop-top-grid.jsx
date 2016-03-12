@@ -2,10 +2,10 @@
 
 var React = require('react');
 
-require('./top-buttons.less');
+require('./desktop-top-grid.less');
 
 
-var TopButtons = React.createClass({
+var DesktopTopGrid = React.createClass({
 
     propTypes: {
         leftElement: React.PropTypes.element,
@@ -15,7 +15,7 @@ var TopButtons = React.createClass({
 
     render: function() {
         return (
-            <div className='top-buttons'>
+            <div className='top-grid'>
                 <div className='left-element'>
                     { this.props.leftElement }
                 </div>
@@ -33,4 +33,4 @@ var TopButtons = React.createClass({
 });
 
 
-module.exports = TopButtons;
+module.exports = DesktopTopGrid;

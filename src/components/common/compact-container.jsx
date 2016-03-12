@@ -8,7 +8,11 @@ require('./compact-container.less');
 
 var CompactContainer = React.createClass({
     render: function() {
-        return <div className='compact-container'>{ this.props.children }</div>;
+        return (
+            <div className='compact-container'>
+                { this.props.children }
+            </div>
+        );
     }
 });
 

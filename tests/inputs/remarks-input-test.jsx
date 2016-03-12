@@ -100,7 +100,7 @@ describe('RemarksInput component', () => {
         it('renders error message if provided', () => {
             let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
 
-            expect(errorMessage).to.have.deep.property('props.text', mocks.errorMessage);
+            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
         });
 
         it('renders input with error classes if error message presents', () => {

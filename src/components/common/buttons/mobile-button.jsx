@@ -3,23 +3,23 @@
 var React = require('react');
 var Button = require('./button');
 
-require('./section-button.less');
+require('./mobile-button.less');
 
 
-var SectionButton = React.createClass({
+var MobileButton = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string,
+        caption: React.PropTypes.string.isRequired,
         type: React.PropTypes.string,
         buttonStyle: React.PropTypes.string,
-        onClick: React.PropTypes.func,
+        onClick: React.PropTypes.func.isRequired,
         isEnabled: React.PropTypes.bool
     },
 
     render: function() {
-        return <Button { ...this.props } className='section-button' />;
+        return <Button { ...this.props } isMobile={ true } />;
     }
 });
 
 
-module.exports = SectionButton;
+module.exports = MobileButton;

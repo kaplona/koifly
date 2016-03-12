@@ -30,7 +30,7 @@ var DropdownInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError text={ this.props.errorMessage } />;
+            return <ValidationError message={ this.props.errorMessage } />;
         }
     },
 
@@ -45,7 +45,7 @@ var DropdownInput = React.createClass({
 
                 <InputContainer>
                     <Dropdown
-                        className={ (this.props.errorMessage) ? 'x-error' : '' }
+                        className={ (this.props.errorMessage) ? 'x-error' : null }
                         selectedValue={ this.props.selectedValue }
                         options={ this.props.options }
                         inputName={ this.props.inputName }

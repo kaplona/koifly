@@ -71,7 +71,7 @@ var PilotModel = {
         var FlightModel = require('./flight');
 
         // Get pilot info from Data Service helper
-        var pilot = DataService.data.pilot;
+        var pilot = DataService.store.pilot;
 
         var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
         var flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
@@ -106,35 +106,31 @@ var PilotModel = {
         }
 
         // Get pilot info from Data Service helper
-        var pilot = DataService.data.pilot;
-
-        var hours = Math.floor(pilot.initialAirtime / 60);
-        var minutes = pilot.initialAirtime % 60;
+        var pilot = DataService.store.pilot;
 
         return {
             email: pilot.email,
             userName: pilot.userName,
-            initialFlightNum: pilot.initialFlightNum,
-            initialAirtime: pilot.initialAirtime,
+            initialFlightNum: pilot.initialFlightNum.toString(),
             altitudeUnit: pilot.altitudeUnit,
-            hours: hours,
-            minutes: minutes
+            hours: Math.floor(pilot.initialAirtime / 60).toString(),
+            minutes: (pilot.initialAirtime % 60).toString()
         };
     },
 
     /**
      * @returns {false|null|object}
      * false - if no errors
-     * null - if no errors but no data neither
+     * null - if no errors but no data either
      * error object - if error
      */
     checkForLoadingErrors: function() {
         // Check for loading errors
-        if (DataService.data.loadingError !== null) {
+        if (DataService.store.loadingError !== null) {
             DataService.loadData();
-            return { error: DataService.data.loadingError };
+            return { error: DataService.store.loadingError };
         // Check if data was loaded
-        } else if (DataService.data.pilot === null) {
+        } else if (DataService.store.pilot === null) {
             DataService.loadData();
             return null;
         }
@@ -164,7 +160,7 @@ var PilotModel = {
      */
     savePilotInfo: function(newPilotInfo) {
         newPilotInfo = this.setPilotInput(newPilotInfo);
-        return DataService.changePilotInfo(newPilotInfo);
+        return DataService.savePilotInfo(newPilotInfo);
     },
 
     /**
@@ -177,13 +173,13 @@ var PilotModel = {
     setPilotInput: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
 
-        // Create a pilot only with fields which will be send to the server
-        var pilot = {};
-        pilot.userName = newPilotInfo.userName;
-        pilot.initialFlightNum = parseInt(newPilotInfo.initialFlightNum);
-        pilot.initialAirtime = parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes);
-        pilot.altitudeUnit = newPilotInfo.altitudeUnit;
-        return pilot;
+        // Return only fields which will be send to the server
+        return {
+            userName: newPilotInfo.userName,
+            initialFlightNum: parseInt(newPilotInfo.initialFlightNum),
+            initialAirtime: parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes),
+            altitudeUnit: newPilotInfo.altitudeUnit
+        };
     },
 
     /**
@@ -225,10 +221,10 @@ var PilotModel = {
      * @returns {string|null} - email address or null if no pilot information in front end yet
      */
     getEmailAddress: function() {
-        if (DataService.data.pilot === null) {
+        if (DataService.store.pilot === null) {
             return null;
         }
-        return DataService.data.pilot.email;
+        return DataService.store.pilot.email;
     },
     
     getValidationConfig: function() {
@@ -240,10 +236,10 @@ var PilotModel = {
      * null - if no information about pilot yet
      */
     getUserActivationStatus: function() {
-        if (DataService.data.pilot === null) {
+        if (DataService.store.pilot === null) {
             return null;
         }
-        return DataService.data.pilot.isActivated;
+        return DataService.store.pilot.isActivated;
     },
 
     /**
@@ -253,20 +249,20 @@ var PilotModel = {
      * null - if data hasn't been loaded from the server yet
      */
     getActivationNoticeStatus: function() {
-        if (DataService.data.pilot === null) {
+        if (DataService.store.pilot === null) {
             return null;
         }
-        return !DataService.data.pilot.isActivationNoticeHidden && !DataService.data.pilot.isActivated;
+        return !DataService.store.pilot.isActivationNoticeHidden && !DataService.store.pilot.isActivated;
     },
 
     hideActivationNotice: function() {
-        if (DataService.data.pilot !== null) {
-            DataService.data.pilot.isActivationNoticeHidden = true;
+        if (DataService.store.pilot !== null) {
+            DataService.store.pilot.isActivationNoticeHidden = true;
         }
     },
 
     isLoggedIn: function() {
-        return (DataService.data.pilot && DataService.data.error !== ErrorTypes.AUTHENTICATION_ERROR);
+        return (DataService.store.pilot && DataService.store.error !== ErrorTypes.AUTHENTICATION_ERROR);
     },
 
     logout: function() {

@@ -10,7 +10,7 @@ require('./remarks-row.less');
 var RemarksRow = React.createClass({
 
     propTypes: {
-        value: React.PropTypes.string
+        value: React.PropTypes.string.isRequired // can be an empty string
     },
 
     render: function() {

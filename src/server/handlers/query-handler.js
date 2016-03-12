@@ -2,15 +2,15 @@
 
 var _ = require('lodash');
 
-var getAllData = require('./../helpers/get-all-data');
+var getAllData = require('../helpers/get-all-data');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
 
 var Flight = require('../../orm/flights');
-var Site = require('../../orm/sites');
 var Glider = require('../../orm/gliders');
 var Pilot = require('../../orm/pilots');
+var Site = require('../../orm/sites');
 
 
 

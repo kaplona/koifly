@@ -10,7 +10,7 @@ if (process.env.BROWSER) {
 var ScreenShort = React.createClass({
 
     propTypes: {
-        type: React.PropTypes.oneOf(['flights', 'sites', 'gliders'])
+        type: React.PropTypes.oneOf(['flights', 'sites', 'gliders']).isRequired
     },
 
     render: function() {

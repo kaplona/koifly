@@ -1,8 +1,8 @@
 'use strict';
 
 var React = require('react');
-var BottomMenu = require('./components/common/menu/bottom-menu');
-//var TopMenu = require('./components/common/menu/top-menu');
+
+var NavigationMenu = require('./components/common/menu/navigation-menu');
 
 
 if (process.env.NODE_ENV !== 'development') {
@@ -14,8 +14,7 @@ require('./main-sandbox.less');
 
 function mainSandbox() {
     React.render(
-        React.createElement(BottomMenu, { isSiteView: true }),
-        //React.createElement(TopMenu, { headerText: 'Koifly', leftText: 'Back', rightText: 'Edit' }),
+        React.createElement(NavigationMenu, { isSiteView: true }),
         document.getElementById('container')
     );
 }

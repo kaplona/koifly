@@ -6,21 +6,20 @@ var History = require('react-router').History;
 var DataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 
-
-var Button = require('./../common/buttons/button');
-var BottomButtons = require('./../common/buttons/bottom-buttons');
-var BottomMenu = require('./../common/menu/bottom-menu');
-var CompactContainer = require('./../common/compact-container');
-var Description = require('./../common/section/description');
+var Button = require('../common/buttons/button');
+var CompactContainer = require('../common/compact-container');
+var Description = require('../common/section/description');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
-var Notice = require('./../common/notice/notice');
-var Section = require('./../common/section/section');
-var SectionButton = require('./../common/buttons/section-button');
-var SectionRow = require('./../common/section/section-row');
-var SectionTitle = require('./../common/section/section-title');
-var TextInput = require('./../common/inputs/text-input');
-var TopMenu = require('./../common/menu/top-menu');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Notice = require('../common/notice/notice');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var TextInput = require('../common/inputs/text-input');
 
 
 var InitiateResetPassword = React.createClass({
@@ -91,7 +90,7 @@ var InitiateResetPassword = React.createClass({
     renderSendButton: function() {
         return (
             <Button
-                text={ this.state.isSending ? 'Sending...' : 'Send' }
+                caption={ this.state.isSending ? 'Sending...' : 'Send' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -103,7 +102,7 @@ var InitiateResetPassword = React.createClass({
     renderCancelButton: function() {
         return (
             <Button
-                text='Cancel'
+                caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ () => this.handleLinkTo('/pilot') }
                 isEnabled={ !this.state.isSending }
@@ -120,13 +119,14 @@ var InitiateResetPassword = React.createClass({
     render: function() {
         return (
             <div>
-                <TopMenu
-                    headerText='Koifly'
-                    leftText='Back'
-                    rightText='Sign Up'
+                <MobileTopMenu
+                    header='Koifly'
+                    leftButtonCaption='Back'
+                    rightButtonCaption='Sign Up'
                     onLeftClick={ () => this.handleLinkTo('/login') }
                     onRightClick={ () => this.handleLinkTo('/signup') }
                     />
+                <NavigationMenu isMobile={ true } />
 
                 <CompactContainer>
                 <form>
@@ -153,7 +153,7 @@ var InitiateResetPassword = React.createClass({
                             </Description>
                         </SectionRow>
 
-                        <BottomButtons
+                        <DesktopBottomGrid
                             leftElements={ [
                                 this.renderSendButton(),
                                 this.renderCancelButton()
@@ -161,8 +161,8 @@ var InitiateResetPassword = React.createClass({
                             />
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSending ? 'Sending...' : 'Send' }
+                    <MobileButton
+                        caption={ this.state.isSending ? 'Sending...' : 'Send' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
@@ -170,8 +170,6 @@ var InitiateResetPassword = React.createClass({
                         />
                 </form>
                 </CompactContainer>
-
-                <BottomMenu isMobile={ true } />
             </div>
         );
     }

@@ -10,11 +10,11 @@ require('./remarks.less');
 var RemarksInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string,
+        inputValue: React.PropTypes.string.isRequired,
         labelText: React.PropTypes.string,
-        inputName: React.PropTypes.string,
+        inputName: React.PropTypes.string.isRequired,
         errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func
+        onChange: React.PropTypes.func.isRequired
     },
 
     getDefaultProps: function() {
@@ -29,7 +29,7 @@ var RemarksInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError text={ this.props.errorMessage } />;
+            return <ValidationError message={ this.props.errorMessage } />;
         }
     },
 

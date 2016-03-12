@@ -4,26 +4,28 @@ var React = require('react');
 var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
+
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var BottomMenu = require('../common/menu/bottom-menu');
+
 var BreadCrumbs = require('../common/bread-crumbs');
-var Section = require('../common/section/section');
-var SectionTitle = require('../common/section/section-title');
-var SectionRow = require('../common/section/section-row');
-var RowContent = require('../common/section/row-content');
-var RemarksRow = require('../common/section/remarks-row');
-var StaticMap = require('../common/maps/static-map');
-var Loader = require('../common/loader');
 var ErrorBox = require('../common/notice/error-box');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var RemarksRow = require('../common/section/remarks-row');
+var RowContent = require('../common/section/row-content');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var StaticMap = require('../common/maps/static-map');
+var View = require('../common/view');
 
 
 var SiteView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({
+        params: React.PropTypes.shape({ // url args
             siteId: React.PropTypes.string.isRequired
         })
     },
@@ -60,12 +62,13 @@ var SiteView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    leftText='Back'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
                     onLeftClick={ this.handleToSiteList }
                     />
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-                <BottomMenu isSiteView={ true } />
+                <NavigationMenu isSiteView={ true } />
+
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
             </View>
         );
     },
@@ -73,24 +76,24 @@ var SiteView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Back'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
                     onLeftClick={ this.handleToSiteList }
                     />
+                <NavigationMenu isSiteView={ true } />
+
                 <Loader />
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     },
 
     renderMap: function() {
         if (this.state.site.coordinates) {
-            var siteList = [ this.state.site ];
             return (
                 <StaticMap
                     center={ SiteModel.getLatLngCoordinates(this.state.site.id) }
                     zoomLevel={ Map.zoomLevel.site }
-                    markers={ siteList }
+                    sites={ [ this.state.site ] }
                     />
             );
         }
@@ -107,12 +110,13 @@ var SiteView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Back'
-                    rightText='Edit'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
+                    rightButtonCaption='Edit'
                     onLeftClick={ this.handleToSiteList }
                     onRightClick={ this.handleSiteEditing }
                     />
+                <NavigationMenu isSiteView={ true } />
 
                 <Section onEditClick={ this.handleSiteEditing }>
                     <BreadCrumbs
@@ -132,18 +136,21 @@ var SiteView = React.createClass({
                             value={ this.state.site.location }
                             />
                     </SectionRow>
+
                     <SectionRow>
                         <RowContent
                             label='Launch altitude:'
                             value={ this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
                             />
                     </SectionRow>
+
                     <SectionRow>
                         <RowContent
                             label='Coordinates:'
                             value={ this.state.site.coordinates }
                             />
                     </SectionRow>
+
                     <SectionRow>
                         <RowContent
                             label='Flights:'
@@ -160,8 +167,6 @@ var SiteView = React.createClass({
 
                     { this.renderMap() }
                 </Section>
-
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

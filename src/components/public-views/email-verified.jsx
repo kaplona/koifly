@@ -1,9 +1,10 @@
 'use strict';
 
 var React = require('react');
-var TopMenu = require('./../common/menu/top-menu');
-var BottomMenu = require('./../common/menu/bottom-menu');
-var Notice = require('./../common/notice/notice');
+
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Notice = require('../common/notice/notice');
 
 
 var EmailVerified = React.createClass({
@@ -11,9 +12,10 @@ var EmailVerified = React.createClass({
     render: function() {
         return (
             <div>
-                <TopMenu headerText='Koifly' />
+                <MobileTopMenu header='Koifly' />
+                <NavigationMenu />
+                
                 <Notice text='Thank you, your email was successfully verified' type='success' />
-                <BottomMenu />
             </div>
         );
     }

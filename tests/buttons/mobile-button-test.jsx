@@ -1,24 +1,20 @@
 'use strict';
 
 require('../../src/test-dom')();
-
 var React = require('react/addons');
-var SectionButton = require('../../src/components/common/buttons/section-button');
+
+var MobileButton = require('../../src/components/common/buttons/mobile-button');
 var Button = require('../../src/components/common/buttons/button');
 
 var expect = require('chai').expect;
 
 
 
-describe('SectionButton component', () => {
+describe('MobileButton component', () => {
 
     var TestUtils = React.addons.TestUtils;
 
     var component;
-
-    var defaults ={
-        className: 'section-button'
-    };
 
     var mocks = {
         buttonText: 'test button',
@@ -29,8 +25,8 @@ describe('SectionButton component', () => {
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <SectionButton
-                text={ mocks.buttonText }
+            <MobileButton
+                caption={ mocks.buttonText }
                 type={ mocks.buttonType }
                 buttonStyle={ mocks.buttonStyle }
                 onClick={ mocks.handleClick }
@@ -41,10 +37,10 @@ describe('SectionButton component', () => {
     it('renders a Button component with proper props', () => {
         let button = TestUtils.findRenderedComponentWithType(component, Button);
 
-        expect(button).to.have.deep.property('props.text', mocks.buttonText);
+        expect(button).to.have.deep.property('props.caption', mocks.buttonText);
         expect(button).to.have.deep.property('props.type', mocks.buttonType);
         expect(button).to.have.deep.property('props.buttonStyle', mocks.buttonStyle);
-        expect(button).to.have.deep.property('props.className', defaults.className);
+        expect(button).to.have.deep.property('props.isMobile', true);
         expect(button).to.have.deep.property('props.isEnabled', true);
         expect(button).to.have.deep.property('props.onClick', mocks.handleClick);
     });

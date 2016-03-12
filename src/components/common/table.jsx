@@ -10,12 +10,12 @@ var Table = React.createClass({
 
     propTypes: {
         rows: React.PropTypes.arrayOf(React.PropTypes.shape({
-            id: React.PropTypes.number
+            id: React.PropTypes.number.isRequired
         })),
         columns: React.PropTypes.arrayOf(React.PropTypes.shape({
-            key: React.PropTypes.string,
-            label: React.PropTypes.string,
-            defaultSortingDirection: React.PropTypes.bool
+            key: React.PropTypes.string.isRequired,
+            label: React.PropTypes.string.isRequired,
+            defaultSortingDirection: React.PropTypes.bool.isRequired
         })).isRequired,
         initialSortingField: React.PropTypes.string.isRequired,
         onRowClick: React.PropTypes.func

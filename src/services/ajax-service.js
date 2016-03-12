@@ -22,8 +22,10 @@ function getCsrfCookie() {
     if (parts.length === 2) {
         // Take the second part of cookie string (with the value we need)
         // then take everything before ';'
-        return parts.pop().split(';').shift();
+        return parts.pop().split(';')[0];
     }
+
+    return null;
 }
 
 /**

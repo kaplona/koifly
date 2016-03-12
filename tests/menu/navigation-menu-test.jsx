@@ -1,13 +1,11 @@
 'use strict';
 
 require('../../src/test-dom')();
-
 var React = require('react/addons');
-var BottomMenu = require('../../src/components/common/menu/bottom-menu');
-
-var NavigationItem = require('../../src/components/common/menu/navigation-item');
-
 var expect = require('chai').expect;
+
+var NavigationMenu = require('../../src/components/common/menu/navigation-menu');
+var NavigationItem = require('../../src/components/common/menu/navigation-item');
 
 
 
@@ -17,14 +15,13 @@ describe('BottomMenu component', () => {
     var Simulate = TestUtils.Simulate;
 
     var component;
-    var renderedDOMElement;
 
     var defaults = {
         mobileClassName: 'x-mobile'
     };
 
     it('renders default class and doesn\'t highlight any navigation items', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu />);
         let className = React.findDOMNode(component).className;
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
@@ -37,14 +34,14 @@ describe('BottomMenu component', () => {
     });
 
     it('renders mobile class if required', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu isMobile={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu isMobile={ true } />);
         let className = React.findDOMNode(component).className;
 
         expect(className).to.contain(defaults.mobileClassName);
     });
 
     it('highlights only flights navigation item', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu isFlightView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu isFlightView={ true } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', true);
@@ -54,7 +51,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only sites navigation item', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu isSiteView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu isSiteView={ true } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
@@ -64,7 +61,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only gliders navigation item', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu isGliderView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu isGliderView={ true } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
@@ -74,7 +71,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only pilot navigation item', () => {
-        component = TestUtils.renderIntoDocument(<BottomMenu isPilotView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu isPilotView={ true } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);

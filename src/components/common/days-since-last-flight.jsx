@@ -8,7 +8,13 @@ require('./days-since.less');
 var DaysSinceLastFlight = React.createClass({
 
     propTypes: {
-        days: React.PropTypes.number
+        days: React.PropTypes.number.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            days: 0
+        };
     },
 
     render: function() {

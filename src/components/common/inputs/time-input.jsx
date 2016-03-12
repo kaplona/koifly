@@ -9,19 +9,13 @@ var ValidationError = require('../section/validation-error');
 var TimeInput = React.createClass({
 
     propTypes: {
-        hours: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]),
-        minutes: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]),
+        hours: React.PropTypes.string.isRequired,
+        minutes: React.PropTypes.string.isRequired,
         labelText: React.PropTypes.string,
-        errorMessage: React.PropTypes.string,
-        errorMessageHours: React.PropTypes.string,
-        errorMessageMinutes: React.PropTypes.string,
-        onChange: React.PropTypes.func
+        errorMessage: React.PropTypes.string, // server-side validation
+        errorMessageHours: React.PropTypes.string, // front-end validation
+        errorMessageMinutes: React.PropTypes.string, // front-end validation
+        onChange: React.PropTypes.func.isRequired
     },
 
     handleUserInput: function(inputName) {
@@ -31,7 +25,7 @@ var TimeInput = React.createClass({
     renderErrorMessage: function() {
         if (this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes) {
             var errorText = this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes;
-            return <ValidationError text={ errorText } />;
+            return <ValidationError message={ errorText } />;
         }
     },
 

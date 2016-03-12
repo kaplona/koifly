@@ -2,10 +2,10 @@
 
 var _ = require('lodash');
 
-var MessageTemplates = require('./../constants/messages-templates');
+var MessageTemplates = require('../constants/messages-templates');
 var normalizeError = require('../../errors/normalize-error');
 var Pilot = require('../../orm/pilots');
-var sendAuthTokenToPilot = require('./../helpers/send-auth-token');
+var sendAuthTokenToPilot = require('../helpers/send-auth-token');
 
 
 

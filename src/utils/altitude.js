@@ -14,7 +14,7 @@ var Altitude = {
      * @returns {string} name of current user's altitude units
      */
     getUserAltitudeUnit: function() {
-        return DataService.data.pilot.altitudeUnit;
+        return DataService.store.pilot.altitudeUnit;
     },
 
     /**
@@ -23,7 +23,7 @@ var Altitude = {
      * @returns {number} altitude in pilot's altitude units
      */
     getAltitudeInPilotUnits: function(altitude) {
-        var increment = this.meterConverter[DataService.data.pilot.altitudeUnit];
+        var increment = this.meterConverter[DataService.store.pilot.altitudeUnit];
         return Math.round(parseFloat(altitude) * increment);
     },
 
@@ -34,8 +34,8 @@ var Altitude = {
      * @returns {number} altitude in given units
      */
     getAltitudeInGivenUnits: function(altitude, units) {
-        var increment = this.meterConverter[units];
-        return Math.round(parseFloat(altitude) * increment);
+        var multiplier = this.meterConverter[units];
+        return Math.round(parseFloat(altitude) * multiplier);
     },
 
     /**
@@ -51,15 +51,15 @@ var Altitude = {
      */
     getAltitudeInMeters: function(nextValue, previousValue, units) {
         var previousFilteredVal = this.getAltitudeInPilotUnits(previousValue);
-        if (nextValue != previousFilteredVal || units != DataService.data.pilot.altitudeUnit) {
-            return parseFloat(nextValue) / this.meterConverter[units];
+        if (nextValue !== previousFilteredVal || units !== DataService.store.pilot.altitudeUnit) {
+            return nextValue / this.meterConverter[units];
         }
         return previousValue;
     },
 
     /**
      * Gets all available for using altitude units
-     * @returns {array} list of altitude units
+     * @returns {Array} list of altitude units
      */
     getAltitudeUnitsList: function() {
         return Object.keys(this.meterConverter);
@@ -69,10 +69,10 @@ var Altitude = {
      * Gets all available for using altitude units
      * in {value: value, text: text} format
      * for using in dropdown component
-     * @returns {array} list of altitude units objects
+     * @returns {Array} list of altitude units objects
      */
     getAltitudeUnitsValueTextList: function() {
-        return Object.keys(this.meterConverter).map((unitName) => {
+        return this.getAltitudeUnitsList().map((unitName) => {
             return {
                 value: unitName,
                 text: unitName

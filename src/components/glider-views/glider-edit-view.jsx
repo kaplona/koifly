@@ -3,29 +3,31 @@
 var React = require('react');
 var History = require('react-router').History;
 var _ = require('lodash');
+
 var GliderModel = require('../../models/glider');
 var Validation = require('../../utils/validation');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var BottomMenu = require('../common/menu/bottom-menu');
-var BottomButtons = require('../common/buttons/bottom-buttons');
-var Section = require('../common/section/section');
-var SectionTitle = require('../common/section/section-title');
-var SectionRow = require('../common/section/section-row');
-var SectionButton = require('../common/buttons/section-button');
-var TextInput = require('./../common/inputs/text-input');
-var TimeInput = require('./../common/inputs/time-input');
-var RemarksInput = require('./../common/inputs/remarks-input');
-var Loader = require('./../common/loader');
+
 var Button = require('../common/buttons/button');
-var ErrorBox = require('./../common/notice/error-box');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+var ErrorBox = require('../common/notice/error-box');
 var ErrorTypes = require('../../errors/error-types');
+var Loader = require('../common/loader');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var RemarksInput = require('../common/inputs/remarks-input');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var TextInput = require('../common/inputs/text-input');
+var TimeInput = require('../common/inputs/time-input');
+var View = require('../common/view');
 
 
 var GliderEditView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({
+        params: React.PropTypes.shape({ // url args
             gliderId: React.PropTypes.string
         })
     },
@@ -91,14 +93,13 @@ var GliderEditView = React.createClass({
     },
 
     handleSavingError: function(error) {
-        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_ERROR) {
             this.updateErrorState(error.errors);
-        } else {
-            newError = error;
+            error = null;
         }
+        
         this.setState({
-            savingError: newError,
+            savingError: error,
             deletingError: null,
             isSaving: false,
             isDeleting: false
@@ -165,12 +166,13 @@ var GliderEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
+                <NavigationMenu isGliderView={ true } />
+                
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
@@ -204,22 +206,23 @@ var GliderEditView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
+                <NavigationMenu isGliderView={ true } />
+                
                 <Loader />
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
 
-    renderDeleteSectionButton: function() {
+    renderMobileDeleteButton: function() {
         if (this.props.params.gliderId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <SectionButton
-                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                <MobileButton
+                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
                     buttonStyle='warning'
                     onClick={ this.handleDeleteGlider }
                     isEnabled={ isEnabled }
@@ -233,7 +236,7 @@ var GliderEditView = React.createClass({
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
                 <Button
-                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
                     buttonStyle='warning'
                     onClick={ this.handleDeleteGlider }
                     isEnabled={ isEnabled }
@@ -246,7 +249,7 @@ var GliderEditView = React.createClass({
         var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <Button
-                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -259,7 +262,7 @@ var GliderEditView = React.createClass({
         var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <Button
-                text='Cancel'
+                caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ this.handleCancelEditing }
                 isEnabled={ isEnabled }
@@ -281,12 +284,13 @@ var GliderEditView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <TopMenu
-                    leftText='Cancel'
-                    rightText='Save'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
+                    rightButtonCaption='Save'
                     onLeftClick={ this.handleCancelEditing }
                     onRightClick={ this.handleSubmit }
                     />
+                <NavigationMenu isGliderView={ true } />
 
                 <form>
                     { this.renderSavingError() }
@@ -338,7 +342,7 @@ var GliderEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <BottomButtons
+                        <DesktopBottomGrid
                             leftElements={ [
                                 this.renderSaveButton(),
                                 this.renderCancelButton()
@@ -347,18 +351,16 @@ var GliderEditView = React.createClass({
                             />
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    <MobileButton
+                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
                         isEnabled={ isEnabled }
                         />
 
-                    { this.renderDeleteSectionButton() }
+                    { this.renderMobileDeleteButton() }
                 </form>
-
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     }

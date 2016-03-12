@@ -3,13 +3,13 @@
 require('../../src/test-dom')();
 
 var React = require('react/addons');
-var BottomButtons = require('../../src/components/common/buttons/bottom-buttons');
+var DesktopBottomGrid = require('../../src/components/common/grids/desktop-bottom-grid');
 
 var expect = require('chai').expect;
 
 
 
-describe('BottomButtons component', () => {
+describe('DesktopBottomGrid component', () => {
 
     var TestUtils = React.addons.TestUtils;
 
@@ -17,7 +17,7 @@ describe('BottomButtons component', () => {
     var renderedDomElement;
 
     var defaults = {
-        containerClass: 'bottom-buttons',
+        containerClass: 'bottom-grid',
         leftElementsClass: 'left-elements',
         rightElementClass: 'right-element'
     };
@@ -30,7 +30,7 @@ describe('BottomButtons component', () => {
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <BottomButtons
+            <DesktopBottomGrid
                 leftElements={ [
                     <div>{ mocks.leftElement1Text }</div>,
                     <div>{ mocks.leftElement2Text }</div>

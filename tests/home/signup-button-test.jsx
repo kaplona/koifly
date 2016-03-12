@@ -17,12 +17,12 @@ describe('SignupButton component', () => {
     var renderedDOMElement;
 
     var mocks = {
-        buttonCapture: 'test button text'
+        buttonCaption: 'test button text'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <SignupButton capture={ mocks.buttonCapture } />
+            <SignupButton caption={ mocks.buttonCaption } />
         );
 
         renderedDOMElement = React.findDOMNode(component);
@@ -30,6 +30,6 @@ describe('SignupButton component', () => {
 
     it('renders button with proper capture', () => {
         expect(renderedDOMElement).to.be.instanceof(window.HTMLAnchorElement);
-        expect(renderedDOMElement).to.have.property('textContent', mocks.buttonCapture);
+        expect(renderedDOMElement).to.have.property('textContent', mocks.buttonCaption);
     });
 });

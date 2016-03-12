@@ -8,7 +8,13 @@ require('./section-title.less');
 var SectionTitle = React.createClass({
 
     propTypes: {
-        isSubtitle: React.PropTypes.bool
+        isSubtitle: React.PropTypes.bool.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            isSubtitle: false
+        };
     },
 
     render: function() {

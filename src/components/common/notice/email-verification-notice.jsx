@@ -9,7 +9,7 @@ var Notice = require('./notice');
 var EmailVerificationNotice = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string,
+        text: React.PropTypes.string.isRequired,
         type: React.PropTypes.string,
         onClose: React.PropTypes.func
     },

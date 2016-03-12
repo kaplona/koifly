@@ -8,8 +8,8 @@ var KoiflyError = require('../errors/error');
 var Util = require('../utils/util');
 
 var DataService = require('../services/data-service');
-var SiteModel = require('./site');
 var GliderModel = require('./glider');
+var SiteModel = require('./site');
 
 
 var FlightModel = {
@@ -79,14 +79,14 @@ var FlightModel = {
             return loadingError;
         }
 
-        return _.map(DataService.data.flights, (flight, flightId) => {
+        return _.map(DataService.store.flights, (flight, flightId) => {
             return this.getFlightOutput(flightId);
         });
     },
 
     /**
      * Prepare data to show to user
-     * @param {number} flightId
+     * @param {string} flightId
      * @returns {object|null} - flight
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
@@ -98,27 +98,20 @@ var FlightModel = {
         }
 
         // Get required flight from Data Service helper
-        var flight = DataService.data.flights[flightId];
-
-        var date = flight.date.substring(0, 10);
-        var siteName = SiteModel.getSiteNameById(flight.siteId); // null if site doesn't exist
-        var gliderName = GliderModel.getGliderNameById(flight.gliderId); // null if glider doesn't exist
-        var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
-        var altitudeAboveLaunch = this.getAltitudeAboveLaunches(flight.siteId, flight.altitude);
-        var altitudeUnit = Altitude.getUserAltitudeUnit();
-
+        var flight = DataService.store.flights[flightId];
+        
         return {
-            id: flightId,
-            date: date,
+            id: flight.id,
+            date: flight.date.substring(0, 10),
             flightNum: flight.flightNum,
             flightNumYear: flight.flightNumYear,
             flightNumDay: flight.flightNumDay,
             siteId: flight.siteId,
-            siteName: siteName,
-            gliderName: gliderName,
-            altitude: altitude,
-            altitudeAboveLaunch: altitudeAboveLaunch,
-            altitudeUnit: altitudeUnit,
+            siteName: SiteModel.getSiteNameById(flight.siteId), // null if site doesn't exist,
+            gliderName: GliderModel.getGliderNameById(flight.gliderId), // null if glider doesn't exist
+            altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
+            altitudeAboveLaunch: this.getAltitudeAboveLaunches(flight.siteId, flight.altitude),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
             airtime: flight.airtime,
             remarks: flight.remarks
         };
@@ -142,24 +135,17 @@ var FlightModel = {
         }
 
         // Get required flight from Data Service helper
-        var flight = DataService.data.flights[flightId];
-
-        var date = flight.date.substring(0, 10);
-        var altitude = Altitude.getAltitudeInPilotUnits(flight.altitude);
-        var altitudeUnit = Altitude.getUserAltitudeUnit();
-        var hours = Math.floor(flight.airtime / 60);
-        var minutes = flight.airtime % 60;
+        var flight = DataService.store.flights[flightId];
 
         return {
-            id: flightId,
-            date: date,
-            siteId: flight.siteId,
-            altitude: altitude,
-            altitudeUnit: altitudeUnit,
-            airtime: flight.airtime,
-            hours: hours,
-            minutes: minutes,
-            gliderId: flight.gliderId,
+            id: flight.id,
+            date: flight.date.substring(0, 10),
+            siteId: (flight.siteId === null) ? null : flight.siteId.toString(),
+            altitude: Altitude.getAltitudeInPilotUnits(flight.altitude).toString(),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
+            gliderId: (flight.gliderId === null) ? null : flight.gliderId.toString(),
+            hours: Math.floor(flight.airtime / 60).toString(),
+            minutes: (flight.airtime % 60).toString(),
             remarks: flight.remarks
         };
     },
@@ -182,18 +168,19 @@ var FlightModel = {
 
         if (lastFlight.siteId) {
             var siteAltitude = SiteModel.getLaunchAltitudeById(lastFlight.siteId);
-            siteAltitude = siteAltitude ? siteAltitude : 0;
+            siteAltitude = siteAltitude || 0;
         }
 
         return {
             date: Util.today(),
-            siteId: lastFlight.siteId, // null if no sites yet otherwise last added site id
-            altitude: siteAltitude,
+            // null if no sites yet otherwise last added site id
+            siteId: (lastFlight.siteId === null) ? null : lastFlight.siteId.toString(),
+            altitude: siteAltitude.toString(),
             altitudeUnit: Altitude.getUserAltitudeUnit(),
-            airtime: 0,
-            hours: 0,
-            minutes: 0,
-            gliderId: lastFlight.gliderId, // null if no sites yet otherwise last added glider id
+            // null if no sites yet otherwise last added glider id
+            gliderId: (lastFlight.gliderId === null) ? null : lastFlight.gliderId.toString(),
+            hours: '0',
+            minutes: '0',
             remarks: ''
         };
     },
@@ -207,15 +194,15 @@ var FlightModel = {
      */
     checkForLoadingErrors: function(flightId) {
         // Check for loading errors
-        if (DataService.data.loadingError !== null) {
+        if (DataService.store.loadingError !== null) {
             DataService.loadData();
-            return { error: DataService.data.loadingError };
+            return { error: DataService.store.loadingError };
         // Check if data was loaded
-        } else if (DataService.data.flights === null) {
+        } else if (DataService.store.flights === null) {
             DataService.loadData();
             return null;
         // Check if required id exists
-        } else if (flightId && DataService.data.flights[flightId] === undefined) {
+        } else if (flightId && DataService.store.flights[flightId] === undefined) {
             return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
@@ -227,7 +214,7 @@ var FlightModel = {
      * @returns {object|null} - last flight or null if no flights yet
      */
     getLastFlight: function() {
-        return _.reduce(DataService.data.flights, (currentLastFlight, flight) => {
+        return _.reduce(DataService.store.flights, (currentLastFlight, flight) => {
             if (currentLastFlight === null || currentLastFlight.flightNum < flight.flightNum) {
                 return flight;
             }
@@ -241,7 +228,7 @@ var FlightModel = {
      */
     saveFlight: function(newFlight) {
         newFlight = this.setFlightInput(newFlight);
-        return DataService.changeFlight(newFlight);
+        return DataService.saveFlight(newFlight);
     },
 
     /**
@@ -256,16 +243,17 @@ var FlightModel = {
         newFlight = this.setDefaultValues(newFlight);
 
         // Create a flight only with fields which will be send to the server
-        var flight = {};
-        flight.id = newFlight.id;
-        flight.date = newFlight.date;
-        flight.siteId = newFlight.siteId;
-        flight.gliderId = newFlight.gliderId;
-        flight.airtime = parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes);
-        flight.remarks = newFlight.remarks;
+        var flight = {
+            id: newFlight.id,
+            date: newFlight.date,
+            siteId: (newFlight.siteId === null) ? null : parseInt(newFlight.siteId),
+            gliderId: (newFlight.gliderId === null) ? null : parseInt(newFlight.gliderId),
+            airtime: parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes),
+            remarks: newFlight.remarks
+        };
 
-        var currentAltitude = (newFlight.id !== undefined) ? DataService.data.flights[newFlight.id].altitude : 0;
-        var nextAltitude = newFlight.altitude;
+        var currentAltitude = (newFlight.id !== undefined) ? DataService.store.flights[newFlight.id].altitude : 0;
+        var nextAltitude = parseInt(newFlight.altitude);
         var nextAltitudeUnit = newFlight.altitudeUnit;
         flight.altitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
@@ -298,7 +286,7 @@ var FlightModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteFlight: function(flightId) {
-        return DataService.changeFlight({ id: flightId, see: false });
+        return DataService.saveFlight({ id: flightId, see: false });
     },
 
 
@@ -322,7 +310,7 @@ var FlightModel = {
     },
 
     getNumberOfFlights: function() {
-        return Object.keys(DataService.data.flights).length;
+        return Object.keys(DataService.store.flights).length;
     },
 
     getNumberOfFlightsThisYear: function() {
@@ -351,7 +339,7 @@ var FlightModel = {
             total: 0,
             thisYear: 0
         };
-        _.each(DataService.data.flights, (flight) => {
+        _.each(DataService.store.flights, (flight) => {
             if (flight.gliderId === gliderId) {
                 numberOfFlights.total++;
 
@@ -376,7 +364,7 @@ var FlightModel = {
             total: 0,
             thisYear: 0
         };
-        _.each(DataService.data.flights, (flight) => {
+        _.each(DataService.store.flights, (flight) => {
             if (flight.siteId === siteId) {
                 numberOfFlights.total++;
 
@@ -393,7 +381,7 @@ var FlightModel = {
      */
     getNumberOfVisitedSites: function() {
         var sitesVisited = [];
-        _.each(DataService.data.flights, (flight) => {
+        _.each(DataService.store.flights, (flight) => {
             if (flight.siteId !== null &&
                 sitesVisited.indexOf(flight.siteId) === -1
             ) {
@@ -408,7 +396,7 @@ var FlightModel = {
      */
     getNumberOfUsedGliders: function() {
         var glidersUsed = [];
-        _.each(DataService.data.flights, (flight) => {
+        _.each(DataService.store.flights, (flight) => {
             if (flight.gliderId !== null &&
                 glidersUsed.indexOf(flight.gliderId) === -1
             ) {
@@ -422,7 +410,7 @@ var FlightModel = {
      * @returns {number} - airtime of all flights recorded in App
      */
     getTotalAirtime: function() {
-        return _.sum(DataService.data.flights, 'airtime');
+        return _.sum(DataService.store.flights, 'airtime');
     },
 
     /**
@@ -431,7 +419,7 @@ var FlightModel = {
      */
     getGliderAirtime: function(gliderId) {
         gliderId = parseInt(gliderId);
-        return _.sum(DataService.data.flights, (flight) => {
+        return _.sum(DataService.store.flights, (flight) => {
             if (flight.gliderId === gliderId) {
                 return flight.airtime;
             }

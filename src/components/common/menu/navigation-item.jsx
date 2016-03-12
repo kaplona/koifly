@@ -8,11 +8,17 @@ require('./navigation-item.less');
 var NavigationItem = React.createClass({
 
     propTypes: {
-        iconFileName: React.PropTypes.string,
-        text: React.PropTypes.string,
-        itemsNumber: React.PropTypes.number,
-        isActive: React.PropTypes.bool,
-        onClick: React.PropTypes.func
+        iconFileName: React.PropTypes.string.isRequired,
+        label: React.PropTypes.string.isRequired,
+        itemsNumber: React.PropTypes.number.isRequired,
+        isActive: React.PropTypes.bool.isRequired,
+        onClick: React.PropTypes.func.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            isActive: false
+        };
     },
 
     render: function() {
@@ -28,7 +34,7 @@ var NavigationItem = React.createClass({
                 <div className='icon'>
                     <img src={ imgSrc } width='25px' />
                 </div>
-                { this.props.text }
+                { this.props.label }
             </div>
         );
     }

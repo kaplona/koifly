@@ -2,17 +2,19 @@
 
 var React = require('react');
 var History = require('react-router').History;
+
 var SiteModel = require('../../models/site');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var TopButtons = require('../common/buttons/top-buttons');
-var BottomMenu = require('../common/menu/bottom-menu');
-var Section = require('../common/section/section');
-var StaticMap = require('./../common/maps/static-map');
-var Loader = require('./../common/loader');
-var Switcher = require('../common/switcher');
+
 var Button = require('../common/buttons/button');
-var ErrorBox = require('./../common/notice/error-box');
+var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Section = require('../common/section/section');
+var StaticMap = require('../common/maps/static-map');
+var Switcher = require('../common/switcher');
+var View = require('../common/view');
 
 
 var SiteListMapView = React.createClass({
@@ -55,23 +57,23 @@ var SiteListMapView = React.createClass({
     },
 
     renderAddSiteButton: function() {
-        return <Button text='Add Site' onClick={ this.handleSiteAdding }/>;
+        return <Button caption='Add Site' onClick={ this.handleSiteAdding } />;
     },
 
     renderSwitcher: function() {
         return (
             <Switcher
-                leftText = 'List'
-                rightText = 'Map'
-                onLeftClick = { this.handleToListView }
-                initialPosition = 'right'
+                leftButtonCaption='List'
+                rightButtonCaption='Map'
+                onLeftClick={ this.handleToListView }
+                initialPosition='right'
                 />
         );
     },
 
     renderMap: function() {
         var siteList = this.state.sites;
-        return (siteList !== null) ? <StaticMap markers={ siteList } isFullScreen={ true } /> : <Loader />;
+        return siteList ? <StaticMap sites={ siteList } isFullScreen={ true } /> : <Loader />;
     },
 
     render: function() {
@@ -83,23 +85,23 @@ var SiteListMapView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <MobileTopMenu
+                    header='Sites'
+                    leftButtonCaption='List'
+                    rightButtonCaption='Add'
+                    onLeftClick={ this.handleToListView }
+                    onRightClick={ this.handleSiteAdding }
+                    />
+                <NavigationMenu isSiteView={ true } />
+                
                 <Section isFullScreen={ true }>
-                    <TopMenu
-                        headerText='Sites'
-                        leftText='List'
-                        rightText='Add'
-                        onLeftClick={ this.handleToListView }
-                        onRightClick={ this.handleSiteAdding }
-                        />
-
-                    <TopButtons
+                    <DesktopTopGrid
                         leftElement={ this.renderAddSiteButton() }
                         middleElement={ this.renderSwitcher() }
                         />
 
                     { content }
                 </Section>
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

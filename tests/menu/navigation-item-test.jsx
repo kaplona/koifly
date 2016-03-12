@@ -28,7 +28,7 @@ describe('NavigationItem component', () => {
 
     var mocks = {
         iconFileName: 'test-file.gif',
-        navigationItemText: 'test text',
+        itemLabel: 'test label',
         itemsNumber: 3,
         handleClick: Sinon.spy()
     };
@@ -39,7 +39,7 @@ describe('NavigationItem component', () => {
             component = TestUtils.renderIntoDocument(
                 <NavigationItem
                     iconFileName={ mocks.iconFileName }
-                    text={ mocks.navigationItemText }
+                    label={ mocks.itemLabel }
                     itemsNumber={ mocks.itemsNumber }
                     onClick={ mocks.handleClick }
                     />
@@ -52,7 +52,7 @@ describe('NavigationItem component', () => {
             let imgSrc = renderedDOMElement.querySelector('img');
 
             expect(renderedDOMElement).to.have.property('className', `${defaults.itemClassName}${mocks.itemsNumber}`);
-            expect(renderedDOMElement).to.have.property('textContent', mocks.navigationItemText);
+            expect(renderedDOMElement).to.have.property('textContent', mocks.itemLabel);
             expect(imgSrc)
                 .to.have.property('src')
                 .that.contain(mocks.iconFileName);
@@ -71,7 +71,7 @@ describe('NavigationItem component', () => {
             component = TestUtils.renderIntoDocument(
                 <NavigationItem
                     iconFileName={ mocks.iconFileName }
-                    text={ mocks.navigationItemText }
+                    label={ mocks.itemLabel }
                     itemsNumber={ mocks.itemsNumber }
                     isActive={ true }
                     onClick={ mocks.handleClick }

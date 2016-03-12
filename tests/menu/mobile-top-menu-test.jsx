@@ -1,19 +1,18 @@
 'use strict';
 
 require('../../src/test-dom')();
-
 var React = require('react/addons');
-var TopMenu = require('../../src/components/common/menu/top-menu');
-
 var Chai = require('chai');
 var expect = Chai.expect;
 var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
+var MobileTopMenu = require('../../src/components/common/menu/mobile-top-menu');
 
 
-describe('TopMenu component', () => {
+
+describe('MobileTopMenu component', () => {
 
     var TestUtils = React.addons.TestUtils;
     var Simulate = TestUtils.Simulate;
@@ -28,8 +27,8 @@ describe('TopMenu component', () => {
 
     var mocks = {
         headerText: 'test header text',
-        leftText: 'test left text',
-        rightText: 'test right text',
+        leftButtonCaption: 'test left capture',
+        rightButtonCaption: 'test right capture',
         handleLeftClick: Sinon.spy(),
         handleRightClick: Sinon.spy()
     };
@@ -37,10 +36,10 @@ describe('TopMenu component', () => {
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <TopMenu
-                headerText={ mocks.headerText }
-                leftText={ mocks.leftText }
-                rightText={ mocks.rightText }
+            <MobileTopMenu
+                header={ mocks.headerText }
+                leftButtonCaption={ mocks.leftButtonCaption }
+                rightButtonCaption={ mocks.rightButtonCaption }
                 onLeftClick={ mocks.handleLeftClick }
                 onRightClick={ mocks.handleRightClick }
                 />
@@ -53,8 +52,8 @@ describe('TopMenu component', () => {
         let rightNavigationElement = React.findDOMNode(component.refs[defaults.rightNavigationRef]);
 
         expect(headerElement).to.have.property('textContent', mocks.headerText);
-        expect(leftNavigationElement).to.have.property('textContent', mocks.leftText);
-        expect(rightNavigationElement).to.have.property('textContent', mocks.rightText);
+        expect(leftNavigationElement).to.have.property('textContent', mocks.leftButtonCaption);
+        expect(rightNavigationElement).to.have.property('textContent', mocks.rightButtonCaption);
     });
 
     it('triggers right onClick event when navigation element clicked', () => {

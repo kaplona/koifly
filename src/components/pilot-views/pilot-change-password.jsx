@@ -5,23 +5,23 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
-var PilotModel = require('../../models/pilot');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
+var PilotModel = require('../../models/pilot');
 
-var BottomMenu = require('../common/menu/bottom-menu');
-var BottomButtons = require('../common/buttons/bottom-buttons');
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
-var EmailVerificationNotice = require('./../common/notice/email-verification-notice');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+var EmailVerificationNotice = require('../common/notice/email-verification-notice');
 var ErrorBox = require('../common/notice/error-box');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
 var Notice = require('../common/notice/notice');
 var PasswordInput = require('../common/inputs/password-input');
 var Section = require('../common/section/section');
-var SectionButton = require('../common/buttons/section-button');
 var SectionRow = require('../common/section/section-row');
 var SectionTitle = require('../common/section/section-title');
-var TopMenu = require('../common/menu/top-menu');
 var View = require('../common/view');
 
 
@@ -31,9 +31,9 @@ var PilotChangePassword = React.createClass({
 
     getInitialState: function() {
         return {
-            password: null,
-            newPassword: null,
-            passwordConfirm: null,
+            password: '',
+            newPassword: '',
+            passwordConfirm: '',
             error: null,
             isSaving: false,
             successNotice: false,
@@ -130,7 +130,7 @@ var PilotChangePassword = React.createClass({
     renderSaveButton: function() {
         return (
             <Button
-                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -142,7 +142,7 @@ var PilotChangePassword = React.createClass({
     renderCancelButton: function() {
         return (
             <Button
-                text='Cancel'
+                caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ () => this.handleLinkTo('/pilot') }
                 isEnabled={ !this.state.isSaving }
@@ -160,17 +160,19 @@ var PilotChangePassword = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.error }>
-                <TopMenu
-                    leftText='Back'
-                    rightText='Save'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
+                    rightButtonCaption='Save'
                     onLeftClick={ () => this.handleLinkTo('/pilot') }
                     onRightClick={ this.handleSubmit }
                     />
+                <NavigationMenu isPilotView={ true } />
 
                 <CompactContainer>
                 <form>
                     { this.renderEmailVerificationNotice() }
                     { this.renderError() }
+                    
                     <Section>
                         <SectionTitle>Change Password</SectionTitle>
 
@@ -201,7 +203,7 @@ var PilotChangePassword = React.createClass({
                                 />
                         </SectionRow>
 
-                        <BottomButtons
+                        <DesktopBottomGrid
                             leftElements={ [
                                 this.renderSaveButton(),
                                 this.renderCancelButton()
@@ -213,22 +215,20 @@ var PilotChangePassword = React.createClass({
                         </SectionRow>
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    <MobileButton
+                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
                         isEnabled={ isEnabled }
                         />
 
-                    <SectionButton
-                        text='Forgot Password?'
+                    <MobileButton
+                        caption='Forgot Password?'
                         onClick={ () => this.handleLinkTo('/reset-password') }
                         />
                 </form>
                 </CompactContainer>
-
-                <BottomMenu isPilotView={ true } />
             </View>
         );
     }

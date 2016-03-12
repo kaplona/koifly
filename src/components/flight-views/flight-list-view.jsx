@@ -5,16 +5,16 @@ var History = require('react-router').History;
 
 var FlightModel = require('../../models/flight');
 
-var BottomMenu = require('../common/menu/bottom-menu');
 var Button = require('../common/buttons/button');
-var ErrorBox = require('./../common/notice/error-box');
-var FirstAdding = require('./../common/first-adding');
-var Loader = require('./../common/loader');
+var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
+var FirstAdding = require('../common/first-adding');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
-var Table = require('./../common/table');
-var TopButtons = require('../common/buttons/top-buttons');
-var TopMenu = require('../common/menu/top-menu');
-var View = require('./../common/view');
+var Table = require('../common/table');
+var View = require('../common/view');
 
 
 var FlightListView = React.createClass({
@@ -63,11 +63,11 @@ var FlightListView = React.createClass({
     },
 
     renderAddFlightButton: function() {
-        return <Button text='Add Flight' onClick={ this.handleFlightAdding }/>;
+        return <Button caption='Add Flight' onClick={ this.handleFlightAdding } />;
     },
 
     renderLoader: function() {
-        return (this.state.flights === null) ? <Loader /> : '';
+        return (this.state.flights === null) ? <Loader /> : null;
     },
 
     renderTable: function() {
@@ -93,13 +93,11 @@ var FlightListView = React.createClass({
                 defaultSortingDirection: false
             }
         ];
-
-        var rows = (this.state.flights !== null) ? this.state.flights : [];
-
+        
         return (
             <Table
                 columns={ columns }
-                rows={ rows }
+                rows={ this.state.flights || [] }
                 initialSortingField='date'
                 onRowClick={ this.handleRowClick }
                 />
@@ -119,22 +117,22 @@ var FlightListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <MobileTopMenu
+                    header='Flights'
+                    rightButtonCaption='Add'
+                    onRightClick={ this.handleFlightAdding }
+                    />
+                <NavigationMenu isFlightView={ true } />
+                
                 <Section>
-                    <TopMenu
-                        headerText='Flights'
-                        rightText='Add'
-                        onRightClick={ this.handleFlightAdding }
-                        />
-
-                    <TopButtons
+                    <DesktopTopGrid
                         leftElement={ this.renderAddFlightButton() }
                         />
 
                     { content }
+                    
                     { this.renderLoader() }
                 </Section>
-
-                <BottomMenu isFlightView={ true } />
             </View>
         );
     }

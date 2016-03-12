@@ -25,13 +25,13 @@ describe('Button component', () => {
 
     var defaults = {
         type: 'button',
-        className: 'button'
+        className: 'button',
+        mobileClassName: 'mobile-button'
     };
 
     var mocks = {
-        buttonText: 'test button',
-        buttonStyle: 'primary',
-        className: 'section-button'
+        buttonCaption: 'test button',
+        buttonStyle: 'primary'
     };
 
     describe('Defaults and behavior testing (real DOM)', () => {
@@ -42,7 +42,7 @@ describe('Button component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <Button
-                    text={ mocks.buttonText }
+                    caption={ mocks.buttonCaption }
                     buttonStyle={ mocks.buttonStyle }
                     onClick={ handleClick }
                     />
@@ -53,7 +53,7 @@ describe('Button component', () => {
 
         it('renders an input element with proper text', () => {
             expect(renderedDOMElement).to.be.instanceof(window.HTMLInputElement);
-            expect(renderedDOMElement).to.have.property('value', mocks.buttonText);
+            expect(renderedDOMElement).to.have.property('value', mocks.buttonCaption);
         });
 
         it('renders an input type button which is enabled', () => {
@@ -95,9 +95,9 @@ describe('Button component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <Button
-                    text={ mocks.buttonText }
+                    caption={ mocks.buttonCaption }
                     type='submit'
-                    className={ mocks.className }
+                    isMobile={ true }
                     isEnabled={ false }
                     onClick={ handleClick }
                     />
@@ -117,7 +117,7 @@ describe('Button component', () => {
         it('renders a button which css class we want', () => {
             let className = renderedDOMElement.className;
 
-            expect(className).to.equal(mocks.className);
+            expect(className).to.equal(defaults.mobileClassName);
         });
 
         it('doesn\'t trigger onClick handler once clicked', () => {
@@ -139,7 +139,7 @@ describe('Button component', () => {
 
             renderer.render(
                 <Button
-                    text={ mocks.buttonText }
+                    caption={ mocks.buttonCaption }
                     buttonStyle={ mocks.buttonStyle }
                     onClick={ handleClick }
                     />

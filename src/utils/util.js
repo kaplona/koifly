@@ -95,7 +95,8 @@ var Util = {
         return (val * 1 % 1) === 0;
     },
 
-    isNumberWithin: function(number, min, max) {
+    isNumberWithin: function(val, min, max) {
+        var number = val * 1;
         if (min !== undefined && number < min) {
             return false;
         }

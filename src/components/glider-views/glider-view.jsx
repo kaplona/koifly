@@ -4,25 +4,27 @@ var React = require('react');
 var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
-var Util = require('../../utils/util');
+
 var GliderModel = require('../../models/glider');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var BottomMenu = require('../common/menu/bottom-menu');
+var Util = require('../../utils/util');
+
 var BreadCrumbs = require('../common/bread-crumbs');
-var Section = require('../common/section/section');
-var SectionTitle = require('../common/section/section-title');
-var SectionRow = require('../common/section/section-row');
-var RowContent = require('../common/section/row-content');
-var RemarksRow = require('../common/section/remarks-row');
-var Loader = require('../common/loader');
 var ErrorBox = require('../common/notice/error-box');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var RemarksRow = require('../common/section/remarks-row');
+var RowContent = require('../common/section/row-content');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var View = require('../common/view');
 
 
 var GliderView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({
+        params: React.PropTypes.shape({ // url args
             gliderId: React.PropTypes.string.isRequired
         })
     },
@@ -59,12 +61,13 @@ var GliderView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    leftText='Back'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
                     onLeftClick={ this.handleToGliderList }
                     />
+                <NavigationMenu isGliderView={ true } />
+                
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
@@ -72,12 +75,13 @@ var GliderView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Back'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
                     onLeftClick={ this.handleToGliderList }
                     />
+                <NavigationMenu isGliderView={ true } />
+                
                 <Loader />
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     },
@@ -93,12 +97,13 @@ var GliderView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Back'
-                    rightText='Edit'
+                <MobileTopMenu
+                    leftButtonCaption='Back'
+                    rightButtonCaption='Edit'
                     onLeftClick={ this.handleToGliderList }
                     onRightClick={ this.handleGliderEditing }
                     />
+                <NavigationMenu isGliderView={ true } />
 
                 <Section onEditClick={ this.handleGliderEditing } >
                     <BreadCrumbs
@@ -152,8 +157,6 @@ var GliderView = React.createClass({
                     <RemarksRow value={ this.state.glider.remarks } />
 
                 </Section>
-
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     }

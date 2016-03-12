@@ -3,31 +3,33 @@
 var React = require('react');
 var History = require('react-router').History;
 var _ = require('lodash');
+
 var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 var Validation = require('../../utils/validation');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var BottomMenu = require('../common/menu/bottom-menu');
-var BottomButtons = require('../common/buttons/bottom-buttons');
+
+var AltitudeInput = require('../common/inputs/altitude-input');
+var Button = require('../common/buttons/button');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+var ErrorBox = require('../common/notice/error-box');
+var ErrorTypes = require('../../errors/error-types');
+var InteractiveMap = require('../common/maps/interactive-map');
+var Linkish = require('../common/linkish');
+var Loader = require('../common/loader');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var RemarksInput = require('../common/inputs/remarks-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
-var SectionButton = require('../common/buttons/section-button');
-var InteractiveMap = require('./../common/maps/interactive-map');
-var TextInput = require('./../common/inputs/text-input');
-var AltitudeInput = require('./../common/inputs/altitude-input');
-var RemarksInput = require('./../common/inputs/remarks-input');
-var Loader = require('./../common/loader');
-var Linkish = require('./../common/linkish');
-var Button = require('../common/buttons/button');
-var ErrorBox = require('./../common/notice/error-box');
-var ErrorTypes = require('../../errors/error-types');
+var TextInput = require('../common/inputs/text-input');
+var View = require('../common/view');
 
 
 var SiteEditView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({
+        params: React.PropTypes.shape({ // url args
             siteId: React.PropTypes.string
         })
     },
@@ -39,7 +41,6 @@ var SiteEditView = React.createClass({
             site: null,
             errors: _.clone(SiteEditView.formFields),
             isMapShown: false,
-            //markerPosition: null,
             loadingError: null,
             savingError: null,
             deletingError: null,
@@ -101,14 +102,13 @@ var SiteEditView = React.createClass({
     },
 
     handleSavingError: function(error) {
-        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_ERROR) {
             this.updateErrorState(error.errors);
-        } else {
-            newError = error;
+            error = null;
         }
+
         this.setState({
-            savingError: newError,
+            savingError: error,
             deletingError: null,
             isSaving: false,
             isDeleting: false
@@ -140,7 +140,7 @@ var SiteEditView = React.createClass({
         }
 
         // Fetch site
-        var site = SiteModel.getSiteOutput(this.props.params.siteId);
+        var site = SiteModel.getSiteEditOutput(this.props.params.siteId);
 
         // Check for errors
         if (site !== null && site.error) {
@@ -196,12 +196,13 @@ var SiteEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-                <BottomMenu isSiteView={ true } />
+                <NavigationMenu isSiteView={ true } />
+                
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
             </View>
         );
     },
@@ -235,22 +236,23 @@ var SiteEditView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
+                <NavigationMenu isSiteView={ true } />
+                
                 <Loader />
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     },
 
-    renderDeleteSectionButton: function() {
+    renderMobileDeleteButton: function() {
         if (this.props.params.siteId) {
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
-                <SectionButton
-                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                <MobileButton
+                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
                     buttonStyle='warning'
                     onClick={ this.handleDeleteSite }
                     isEnabled={ isEnabled }
@@ -264,7 +266,7 @@ var SiteEditView = React.createClass({
             var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
             return (
                 <Button
-                    text={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
                     buttonStyle='warning'
                     onClick={ this.handleDeleteSite }
                     isEnabled={ isEnabled }
@@ -277,7 +279,7 @@ var SiteEditView = React.createClass({
         var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <Button
-                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -290,7 +292,7 @@ var SiteEditView = React.createClass({
         var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         return (
             <Button
-                text='Cancel'
+                caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ this.handleCancelEditing }
                 isEnabled={ isEnabled }
@@ -303,13 +305,12 @@ var SiteEditView = React.createClass({
             return null;
         }
 
-        var markerId = this.props.params.siteId ? this.props.params.siteId : 'new';
         var markerPosition = this.getMarkerPosition();
 
         if (markerPosition !== null) {
             return (
                 <InteractiveMap
-                    markerId={ markerId }
+                    markerId={ this.props.params.siteId }
                     center={ markerPosition }
                     zoomLevel={ Map.zoomLevel.site }
                     markerPosition={ markerPosition }
@@ -324,8 +325,7 @@ var SiteEditView = React.createClass({
 
         return (
             <InteractiveMap
-                markerId={ markerId }
-                markerPosition={ markerPosition }
+                markerId={ this.props.params.siteId }
                 location={ this.state.site.location }
                 launchAltitude={ this.state.site.launchAltitude }
                 altitudeUnit={ this.state.site.altitudeUnit }
@@ -350,16 +350,18 @@ var SiteEditView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <TopMenu
-                    leftText={ this.state.isMapShown ? 'Back' : 'Cancel' }
-                    rightText='Save'
+                <MobileTopMenu
+                    leftButtonCaption={ this.state.isMapShown ? 'Back' : 'Cancel' }
+                    rightButtonCaption='Save'
                     onLeftClick={ this.handleCancelEditing }
                     onRightClick={ this.handleSubmit }
                     />
+                <NavigationMenu isSiteView={ true } />
 
                 <form>
                     { this.renderSavingError() }
                     { this.renderDeletingError() }
+                    
                     <Section>
                         <SectionRow>
                             <TextInput
@@ -412,7 +414,7 @@ var SiteEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <BottomButtons
+                        <DesktopBottomGrid
                             leftElements={ [
                                 this.renderSaveButton(),
                                 this.renderCancelButton()
@@ -424,18 +426,16 @@ var SiteEditView = React.createClass({
 
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    <MobileButton
+                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
                         isEnabled={ isEnabled }
                         />
 
-                    { this.renderDeleteSectionButton() }
+                    { this.renderMobileDeleteButton() }
                 </form>
-
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

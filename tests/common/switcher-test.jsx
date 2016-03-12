@@ -29,8 +29,8 @@ describe('Switcher component', () => {
     };
 
     var mocks = {
-        leftText: 'left test text',
-        rightText: 'right test text',
+        leftButtonCaption: 'left test caption',
+        rightButtonCaption: 'right test caption',
         handleLeftClick: Sinon.spy(),
         handleRightClick: Sinon.spy()
     };
@@ -40,8 +40,8 @@ describe('Switcher component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Switcher
-                    leftText={ mocks.leftText }
-                    rightText={ mocks.rightText }
+                    leftButtonCaption={ mocks.leftButtonCaption }
+                    rightButtonCaption={ mocks.rightButtonCaption }
                     onLeftClick={ mocks.handleLeftClick }
                     onRightClick={ mocks.handleRightClick }
                     initialPosition={ defaults.leftPosition }
@@ -59,8 +59,8 @@ describe('Switcher component', () => {
             let switcherParts = renderedDOMElement.children;
 
             expect(switcherParts).to.have.lengthOf(2);
-            expect(switcherParts[0]).to.have.property('textContent', mocks.leftText);
-            expect(switcherParts[1]).to.have.property('textContent', mocks.rightText);
+            expect(switcherParts[0]).to.have.property('textContent', mocks.leftButtonCaption);
+            expect(switcherParts[1]).to.have.property('textContent', mocks.rightButtonCaption);
 
             expect(switcherParts[0])
                 .to.have.property('className')
@@ -107,8 +107,8 @@ describe('Switcher component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Switcher
-                    leftText={ mocks.leftText }
-                    rightText={ mocks.rightText }
+                    leftButtonCaption={ mocks.leftButtonCaption }
+                    rightButtonCaption={ mocks.rightButtonCaption }
                     onLeftClick={ mocks.handleLeftClick }
                     onRightClick={ mocks.handleRightClick }
                     initialPosition={ defaults.rightPosition }

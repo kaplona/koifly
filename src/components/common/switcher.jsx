@@ -8,8 +8,8 @@ require('./switcher.less');
 var Switcher = React.createClass({
 
     propTypes: {
-        leftText: React.PropTypes.string.isRequired,
-        rightText: React.PropTypes.string.isRequired,
+        leftButtonCaption: React.PropTypes.string.isRequired,
+        rightButtonCaption: React.PropTypes.string.isRequired,
         onLeftClick: React.PropTypes.func,
         onRightClick: React.PropTypes.func,
         initialPosition: React.PropTypes.oneOf(['left', 'right']).isRequired
@@ -33,11 +33,11 @@ var Switcher = React.createClass({
     render: function() {
         return (
             <div className='switcher' onClick={ this.handleClick }>
-                <div className={ this.state.isLeftPosition ? 'active' : '' }>
-                    { this.props.leftText }
+                <div className={ this.state.isLeftPosition ? 'active' : null }>
+                    { this.props.leftButtonCaption }
                 </div>
-                <div className={ this.state.isLeftPosition ? '' : 'active' }>
-                    { this.props.rightText }
+                <div className={ this.state.isLeftPosition ? null : 'active' }>
+                    { this.props.rightButtonCaption }
                 </div>
             </div>
         );

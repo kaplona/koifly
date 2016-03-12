@@ -3,12 +3,12 @@
 var _ = require('lodash');
 
 var BcryptPromise = require('../../utils/bcrypt-promise');
+var getPilotValuesForFrontend = require('../helpers/get-pilot-values');
 var MessageTemplates = require('../constants/messages-templates');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
 var Pilot = require('../../orm/pilots');
-var getPilotValuesForFrontend = require('./../helpers/get-pilot-values');
 var sendAuthTokenToPilot = require('../helpers/send-auth-token');
 var setAuthCookie = require('../helpers/set-auth-cookie');
 

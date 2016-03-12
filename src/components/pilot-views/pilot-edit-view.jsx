@@ -3,23 +3,25 @@
 var React = require('react');
 var History = require('react-router').History;
 var _ = require('lodash');
+
+var Altitude = require('../../utils/altitude');
 var PilotModel = require('../../models/pilot');
 var Validation = require('../../utils/validation');
-var Altitude = require('../../utils/altitude');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var BottomMenu = require('../common/menu/bottom-menu');
-var BottomButtons = require('../common/buttons/bottom-buttons');
-var Section = require('../common/section/section');
-var SectionTitle = require('../common/section/section-title');
-var SectionRow = require('../common/section/section-row');
-var TextInput = require('./../common/inputs/text-input');
-var TimeInput = require('./../common/inputs/time-input');
-var DropDown = require('./../common/inputs/dropdown-input');
-var Loader = require('./../common/loader');
+
 var Button = require('../common/buttons/button');
-var ErrorBox = require('./../common/notice/error-box');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+var DropdownInput = require('../common/inputs/dropdown-input');
+var ErrorBox = require('../common/notice/error-box');
 var ErrorTypes = require('../../errors/error-types');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var TextInput = require('../common/inputs/text-input');
+var TimeInput = require('../common/inputs/time-input');
+var View = require('../common/view');
 
 
 var PilotEditView = React.createClass({
@@ -66,14 +68,13 @@ var PilotEditView = React.createClass({
     },
 
     handleSavingError: function(error) {
-        var newError = null;
         if (error.type === ErrorTypes.VALIDATION_ERROR) {
             this.updateErrorState(error.errors);
-        } else {
-            newError = error;
+            error = null;
         }
+        
         this.setState({
-            savingError: newError,
+            savingError: error,
             isSaving: false
         });
     },
@@ -126,12 +127,13 @@ var PilotEditView = React.createClass({
     renderError: function() {
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-                <BottomMenu isPilotView={ true } />
+                <NavigationMenu isPilotView={ true } />
+                
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
             </View>
         );
     },
@@ -152,12 +154,13 @@ var PilotEditView = React.createClass({
     renderLoader: function() {
         return (
             <View onDataModified={ this.handleDataModified }>
-                <TopMenu
-                    leftText='Cancel'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
                     onLeftClick={ this.handleCancelEditing }
                     />
+                <NavigationMenu isPilotView={ true } />
+                
                 <Loader />
-                <BottomMenu isPilotView={ true } />
             </View>
         );
     },
@@ -165,7 +168,7 @@ var PilotEditView = React.createClass({
     renderSaveButton: function() {
         return (
             <Button
-                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -177,7 +180,7 @@ var PilotEditView = React.createClass({
     renderCancelButton: function() {
         return (
             <Button
-                text='Cancel'
+                caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ this.handleCancelEditing }
                 isEnabled={ !this.state.isSaving }
@@ -199,15 +202,17 @@ var PilotEditView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ processingError }>
-                <TopMenu
-                    leftText='Cancel'
-                    rightText='Save'
+                <MobileTopMenu
+                    leftButtonCaption='Cancel'
+                    rightButtonCaption='Save'
                     onLeftClick={ this.handleCancelEditing }
                     onRightClick={ this.handleSubmit }
                     />
+                <NavigationMenu isPilotView={ true } />
 
                 <form>
                     { this.renderSavingError() }
+                    
                     <Section>
                         <SectionTitle>
                             { this.state.pilot.email }
@@ -255,7 +260,7 @@ var PilotEditView = React.createClass({
                         </SectionTitle>
 
                         <SectionRow isLast={ true }>
-                            <DropDown
+                            <DropdownInput
                                 selectedValue={ this.state.pilot.altitudeUnit }
                                 options={ altitudeUnitsList }
                                 labelText='Altitude units:'
@@ -265,7 +270,7 @@ var PilotEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <BottomButtons
+                        <DesktopBottomGrid
                             leftElements={ [
                                 this.renderSaveButton(),
                                 this.renderCancelButton()
@@ -273,8 +278,6 @@ var PilotEditView = React.createClass({
                             />
                     </Section>
                 </form>
-
-                <BottomMenu isPilotView={ true } />
             </View>
         );
     }

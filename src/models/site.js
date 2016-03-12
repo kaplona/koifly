@@ -69,14 +69,14 @@ var SiteModel = {
             return loadingError;
         }
 
-        return _.map(DataService.data.sites, (site, siteId) => {
+        return _.map(DataService.store.sites, (site, siteId) => {
             return this.getSiteOutput(siteId);
         });
     },
 
     /**
      * Prepare data to show to user
-     * @param {number} siteId
+     * @param {string} siteId
      * @returns {object|null} - site
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
@@ -87,35 +87,58 @@ var SiteModel = {
             return loadingError;
         }
 
-        if (siteId === undefined) {
-            return this.getNewSiteOutput();
-        }
-
         // require FlightModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
 
         // Get required site from Data Service helper
-        var site = DataService.data.sites[siteId];
+        var site = DataService.store.sites[siteId];
 
+        // var { total, thisYear } = FlightModel.getNumberOfFlightsAtSite(siteId);
         var flightNumObj = FlightModel.getNumberOfFlightsAtSite(siteId);
         var flightNum = flightNumObj.total;
         var flightNumThisYear = flightNumObj.thisYear;
 
-        var coordinates = this.formCoordinatesOutput(site.coordinates);
-        var altitude = Altitude.getAltitudeInPilotUnits(site.launchAltitude);
-        var altitudeUnit = Altitude.getUserAltitudeUnit();
-
         return {
-            id: siteId,
+            id: site.id,
             name: site.name,
             location: site.location,
-            coordinates: coordinates,
-            launchAltitude: altitude,
-            altitudeUnit: altitudeUnit,
+            coordinates: this.formCoordinatesOutput(site.coordinates),
+            launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
             flightNum: flightNum,
             flightNumThisYear: flightNumThisYear,
-            remarks: site.remarks,
-            locationSort: site.location.toUpperCase()
+            remarks: site.remarks
+        };
+    },
+
+    /**
+     * Prepare data to show to user
+     * @param {string} siteId
+     * @returns {object|null} - site
+     * null - if no data in front end
+     * error object - if data wasn't loaded due to error
+     */
+    getSiteEditOutput: function(siteId) {
+        var loadingError = this.checkForLoadingErrors(siteId);
+        if (loadingError !== false) {
+            return loadingError;
+        }
+
+        if (siteId === undefined) {
+            return this.getNewSiteOutput();
+        }
+        
+        // Get required site from Data Service helper
+        var site = DataService.store.sites[siteId];
+        
+        return {
+            id: site.id,
+            name: site.name,
+            location: site.location,
+            coordinates: this.formCoordinatesOutput(site.coordinates),
+            launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude).toString(),
+            altitudeUnit: Altitude.getUserAltitudeUnit(),
+            remarks: site.remarks
         };
     },
 
@@ -130,7 +153,7 @@ var SiteModel = {
             name: '',
             location: '',
             coordinates: '', // TODO default local coordinates
-            launchAltitude: 0,
+            launchAltitude: '0',
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: ''
         };
@@ -145,15 +168,15 @@ var SiteModel = {
      */
     checkForLoadingErrors: function(siteId) {
         // Check for loading errors
-        if (DataService.data.loadingError !== null) {
+        if (DataService.store.loadingError !== null) {
             DataService.loadData();
-            return { error: DataService.data.loadingError };
+            return { error: DataService.store.loadingError };
         // Check if data was loaded
-        } else if (DataService.data.sites === null) {
+        } else if (DataService.store.sites === null) {
             DataService.loadData();
             return null;
         // Check if required id exists
-        } else if (siteId && DataService.data.sites[siteId] === undefined) {
+        } else if (siteId && DataService.store.sites[siteId] === undefined) {
             return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
@@ -165,7 +188,7 @@ var SiteModel = {
      */
     saveSite: function(newSite) {
         newSite = this.setSiteInput(newSite);
-        return DataService.changeSite(newSite);
+        return DataService.saveSite(newSite);
     },
 
     /**
@@ -180,15 +203,16 @@ var SiteModel = {
         newSite = this.setDefaultValues(newSite);
 
         // Create a site only with fields which will be send to the server
-        var site = {};
-        site.id = newSite.id;
-        site.name = newSite.name;
-        site.location = newSite.location;
-        site.coordinates = this.formCoordinatesInput(newSite.coordinates);
-        site.remarks = newSite.remarks;
+        var site = {
+            id: newSite.id,
+            name: newSite.name,
+            location: newSite.location,
+            coordinates: this.formCoordinatesInput(newSite.coordinates),
+            remarks: newSite.remarks
+        };
 
-        var currentAltitude = (newSite.id !== undefined) ? DataService.data.sites[newSite.id].launchAltitude : 0;
-        var nextAltitude = newSite.launchAltitude;
+        var currentAltitude = (newSite.id !== undefined) ? DataService.store.sites[newSite.id].launchAltitude : 0;
+        var nextAltitude = parseInt(newSite.launchAltitude);
         var nextAltitudeUnit = newSite.altitudeUnit;
         site.launchAltitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
@@ -221,11 +245,11 @@ var SiteModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteSite: function(siteId) {
-        return DataService.changeSite({ id: siteId, see: false });
+        return DataService.saveSite({ id: siteId, see: false });
     },
 
     getLatLngCoordinates: function(siteId) {
-        return DataService.data.sites[siteId] ? DataService.data.sites[siteId].coordinates : null;
+        return DataService.store.sites[siteId] ? DataService.store.sites[siteId].coordinates : null;
     },
 
     /**
@@ -254,7 +278,7 @@ var SiteModel = {
     },
 
     getNumberOfSites: function() {
-        return Object.keys(DataService.data.sites).length;
+        return Object.keys(DataService.store.sites).length;
     },
 
     /**
@@ -262,25 +286,25 @@ var SiteModel = {
      * @returns {string|null} - site's name or null if no site with given id
      */
     getSiteNameById: function(id) {
-        return DataService.data.sites[id] ? DataService.data.sites[id].name : null;
+        return DataService.store.sites[id] ? DataService.store.sites[id].name : null;
     },
 
     /**
      * @returns {number|null} - id of last created site or null if no sites yet
      */
     getLastAddedId: function() {
-        if (_.isEmpty(DataService.data.sites)) {
+        if (_.isEmpty(DataService.store.sites)) {
             return null;
         }
 
-        var lastAddedSite = _.max(DataService.data.sites, (site) => {
+        var lastAddedSite = _.max(DataService.store.sites, (site) => {
             return Date.parse(site.createdAt);
         });
         return lastAddedSite.id;
     },
 
     getLaunchAltitudeById: function(id) {
-        return DataService.data.sites[id].launchAltitude;
+        return DataService.store.sites[id].launchAltitude;
     },
 
     /**
@@ -288,13 +312,13 @@ var SiteModel = {
      * @returns {Array} - array of objects where value is site id, text is site name
      */
     getSiteValueTextList: function() {
-        return _.map(DataService.data.sites, (site, siteId) => {
+        return _.map(DataService.store.sites, (site, siteId) => {
             return { value: siteId, text: site.name };
         });
     },
 
     getSiteIdsList: function() {
-        return Object.keys(DataService.data.sites);
+        return Object.keys(DataService.store.sites);
     },
 
     getValidationConfig: function() {

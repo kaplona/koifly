@@ -8,7 +8,7 @@ var Home = require('../../components/home-page/home.jsx');
 var About = React.createClass({
 
     propTypes: {
-        isLoggedIn: React.PropTypes.bool
+        isLoggedIn: React.PropTypes.bool.isRequired
     },
 
     render: function() {

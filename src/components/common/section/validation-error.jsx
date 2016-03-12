@@ -8,13 +8,13 @@ require('./validation-error.less');
 var ValidationError = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string.isRequired
+        message: React.PropTypes.string.isRequired
     },
 
     render: function() {
         return (
             <div className='validation-error'>
-                { this.props.text }
+                { this.props.message }
             </div>
         );
     }

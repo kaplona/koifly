@@ -8,7 +8,7 @@ require('./linkish.less');
 var Linkish = React.createClass({
 
     propTypes: {
-        onClick: React.PropTypes.func
+        onClick: React.PropTypes.func.isRequired
     },
 
     handleClick: function() {

@@ -2,42 +2,42 @@
 
 var React = require('react');
 
-require('./top-menu.less');
+require('./mobile-top-menu.less');
 
 
-var TopMenu = React.createClass({
+var MobileTopMenu = React.createClass({
 
     propTypes: {
-        headerText: React.PropTypes.string,
-        leftText: React.PropTypes.string,
-        rightText: React.PropTypes.string,
+        header: React.PropTypes.string,
+        leftButtonCaption: React.PropTypes.string,
+        rightButtonCaption: React.PropTypes.string,
         onLeftClick: React.PropTypes.func,
         onRightClick: React.PropTypes.func
     },
 
     render: function() {
         return (
-            <div className='top-menu'>
+            <div className='mobile-top-menu'>
                 <div
                     className='top-navigation'
                     onClick={ this.props.onLeftClick }
                     ref='left-navigation'
                     >
-                    { this.props.leftText }
+                    { this.props.leftButtonCaption }
                 </div>
                 <div className='header'>
-                    { this.props.headerText }
+                    { this.props.header }
                 </div>
                 <div
                     className='top-navigation'
                     onClick={ this.props.onRightClick }
                     ref='right-navigation'
                     >
-                    { this.props.rightText }
+                    { this.props.rightButtonCaption }
                 </div>
             </div>
         );
     }
 });
 
-module.exports = TopMenu;
+module.exports = MobileTopMenu;

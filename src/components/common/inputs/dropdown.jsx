@@ -4,7 +4,7 @@ var React = require('react');
 var _ = require('lodash');
 
 
-var DropDown = React.createClass({
+var Dropdown = React.createClass({
 
     propTypes: {
         selectedValue: React.PropTypes.oneOfType([
@@ -53,7 +53,7 @@ var DropDown = React.createClass({
 
         return (
             <select
-                className={ this.props.className ? this.props.className : null }
+                className={ this.props.className || null }
                 value={ this.props.selectedValue }
                 onChange={ this.handleUserInput }
                 ref='selectInput'
@@ -65,4 +65,4 @@ var DropDown = React.createClass({
 });
 
 
-module.exports = DropDown;
+module.exports = Dropdown;

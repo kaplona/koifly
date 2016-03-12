@@ -15,7 +15,7 @@ if (process.env.BROWSER) {
 var Home = React.createClass({
 
     propTypes: {
-        isLoggedIn: React.PropTypes.bool
+        isLoggedIn: React.PropTypes.bool.isRequired
     },
 
     render: function() {

@@ -33,7 +33,7 @@ describe('StaticMap component', () => {
     var mocks = {
         mapCenter: { lat: 56.78, lng: 34.567 },
         mapZoomLevel: 4,
-        markerList: [
+        sites: [
             {
                 id: 42,
                 name: 'first name',
@@ -95,7 +95,7 @@ describe('StaticMap component', () => {
                 <StaticMap
                     center={ mocks.mapCenter }
                     zoomLevel={ mocks.mapZoomLevel }
-                    markers={ mocks.markerList }
+                    sites={ mocks.sites }
                     />
             );
         });
@@ -118,14 +118,14 @@ describe('StaticMap component', () => {
             expect(Map.createMap).to.have.been.calledWith(mapContainer, mocks.mapCenter, mocks.mapZoomLevel);
 
             expect(Map.createMarker).to.have.been.calledThrice;
-            expect(Map.createMarker.getCall(0)).to.have.been.calledWith(mocks.markerList[0].id);
-            expect(Map.createMarker.getCall(1)).to.have.been.calledWith(mocks.markerList[1].id);
-            expect(Map.createMarker.getCall(2)).to.have.been.calledWith(mocks.markerList[2].id);
+            expect(Map.createMarker.getCall(0)).to.have.been.calledWith(mocks.sites[0].id);
+            expect(Map.createMarker.getCall(1)).to.have.been.calledWith(mocks.sites[1].id);
+            expect(Map.createMarker.getCall(2)).to.have.been.calledWith(mocks.sites[2].id);
 
             expect(Map.createInfowindow).to.have.been.calledThrice;
-            expect(Map.createInfowindow.getCall(0)).to.have.been.calledWith(mocks.markerList[0].id);
-            expect(Map.createInfowindow.getCall(1)).to.have.been.calledWith(mocks.markerList[1].id);
-            expect(Map.createInfowindow.getCall(2)).to.have.been.calledWith(mocks.markerList[2].id);
+            expect(Map.createInfowindow.getCall(0)).to.have.been.calledWith(mocks.sites[0].id);
+            expect(Map.createInfowindow.getCall(1)).to.have.been.calledWith(mocks.sites[1].id);
+            expect(Map.createInfowindow.getCall(2)).to.have.been.calledWith(mocks.sites[2].id);
 
             // Check that second parameter (infowindow content) contains site information
             let infowindowContents = [
@@ -134,31 +134,31 @@ describe('StaticMap component', () => {
                 Map.createInfowindow.getCall(2).args[1]
             ];
 
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].id);
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].name);
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].location);
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].launchAltitude);
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].altitudeUnit);
-            expect(infowindowContents[0]).to.contain(mocks.markerList[0].coordinates);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].id);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].name);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].location);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].launchAltitude);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].altitudeUnit);
+            expect(infowindowContents[0]).to.contain(mocks.sites[0].coordinates);
 
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].id);
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].name);
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].location);
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].launchAltitude);
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].altitudeUnit);
-            expect(infowindowContents[1]).to.contain(mocks.markerList[1].coordinates);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].id);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].name);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].location);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].launchAltitude);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].altitudeUnit);
+            expect(infowindowContents[1]).to.contain(mocks.sites[1].coordinates);
 
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].id);
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].name);
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].location);
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].launchAltitude);
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].altitudeUnit);
-            expect(infowindowContents[2]).to.contain(mocks.markerList[2].coordinates);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].id);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].name);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].location);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].launchAltitude);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].altitudeUnit);
+            expect(infowindowContents[2]).to.contain(mocks.sites[2].coordinates);
 
             expect(Map.bindMarkerAndInfowindow).to.have.been.calledThrice;
-            expect(Map.bindMarkerAndInfowindow.getCall(0)).to.have.been.calledWith(mocks.markerList[0].id);
-            expect(Map.bindMarkerAndInfowindow.getCall(1)).to.have.been.calledWith(mocks.markerList[1].id);
-            expect(Map.bindMarkerAndInfowindow.getCall(2)).to.have.been.calledWith(mocks.markerList[2].id);
+            expect(Map.bindMarkerAndInfowindow.getCall(0)).to.have.been.calledWith(mocks.sites[0].id);
+            expect(Map.bindMarkerAndInfowindow.getCall(1)).to.have.been.calledWith(mocks.sites[1].id);
+            expect(Map.bindMarkerAndInfowindow.getCall(2)).to.have.been.calledWith(mocks.sites[2].id);
         });
     });
 
@@ -180,7 +180,6 @@ describe('StaticMap component', () => {
                 <StaticMap
                     center={ mocks.mapCenter }
                     zoomLevel={ mocks.mapZoomLevel }
-                    markers={ mocks.markerList }
                     isFullScreen={ true }
                     />
             );

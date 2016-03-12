@@ -7,21 +7,21 @@ var Link = Router.Link;
 
 var DataService = require('../../services/data-service');
 
-var Button = require('./../common/buttons/button');
-var BottomButtons = require('./../common/buttons/bottom-buttons');
-var BottomMenu = require('./../common/menu/bottom-menu');
-var CompactContainer = require('./../common/compact-container');
-var Description = require('./../common/section/description');
+var Button = require('../common/buttons/button');
+var CompactContainer = require('../common/compact-container');
+var Description = require('../common/section/description');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
-var Notice = require('./../common/notice/notice');
-var PasswordInput = require('./../common/inputs/password-input');
-var Section = require('./../common/section/section');
-var SectionButton = require('./../common/buttons/section-button');
-var SectionRow = require('./../common/section/section-row');
-var SectionTitle = require('./../common/section/section-title');
-var TextInput = require('./../common/inputs/text-input');
-var TopMenu = require('./../common/menu/top-menu');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Notice = require('../common/notice/notice');
+var PasswordInput = require('../common/inputs/password-input');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
+var TextInput = require('../common/inputs/text-input');
 
 
 var Signup = React.createClass({
@@ -30,9 +30,9 @@ var Signup = React.createClass({
 
     getInitialState: function() {
         return {
-            email: null,
-            password: null,
-            passwordConfirm: null,
+            email: '',
+            password: '',
+            passwordConfirm: '',
             isSubscribed: false,
             error: null,
             isSaving: false
@@ -109,7 +109,7 @@ var Signup = React.createClass({
     renderSendButton: function() {
         return (
             <Button
-                text={ this.state.isSending ? 'Sending...' : 'Sign up' }
+                caption={ this.state.isSending ? 'Sending...' : 'Sign up' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -121,15 +121,15 @@ var Signup = React.createClass({
     render: function() {
         return (
             <div>
-                <TopMenu
-                    headerText='Koifly'
-                    rightText='Log In'
+                <MobileTopMenu
+                    header='Koifly'
+                    rightButtonCaption='Log In'
                     onRightClick={ this.handleToLogin }
                     />
+                <NavigationMenu isMobile={ true } />
 
                 <CompactContainer>
                 <form>
-
                     { this.renderError() }
 
                     <Section>
@@ -177,15 +177,15 @@ var Signup = React.createClass({
                             </Description>
                         </SectionRow>
 
-                        <BottomButtons leftElements={ [ this.renderSendButton() ] } />
+                        <DesktopBottomGrid leftElements={ [ this.renderSendButton() ] } />
 
                         <SectionRow isDesktopOnly={ true } isLast={ true } >
                             <Link to='/login'>Have an Account? Log in now!</Link>
                         </SectionRow>
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSending ? 'Saving...' : 'Sign Up' }
+                    <MobileButton
+                        caption={ this.state.isSending ? 'Saving...' : 'Sign Up' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
@@ -193,8 +193,6 @@ var Signup = React.createClass({
                         />
                 </form>
                 </CompactContainer>
-
-                <BottomMenu isMobile={ true } />
             </div>
         );
     }

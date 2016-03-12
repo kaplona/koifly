@@ -11,18 +11,15 @@ var ValidationError = require('../section/validation-error');
 var AltitudeInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]),
+        inputValue: React.PropTypes.string.isRequired,
         selectedAltitudeUnit: React.PropTypes.string,
-        inputName: React.PropTypes.string,
+        inputName: React.PropTypes.string.isRequired,
         labelText: React.PropTypes.oneOfType([
             React.PropTypes.string,
             React.PropTypes.element
         ]),
         errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func
+        onChange: React.PropTypes.func.isRequired
     },
 
     getDefaultProps: function() {
@@ -44,7 +41,7 @@ var AltitudeInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError text={ this.props.errorMessage } />;
+            return <ValidationError message={ this.props.errorMessage } />;
         }
     },
 

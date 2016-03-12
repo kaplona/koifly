@@ -1,15 +1,14 @@
 'use strict';
 
 require('../../src/test-dom')();
-
 var React = require('react/addons');
-var TopButtons = require('../../src/components/common/buttons/top-buttons');
-
 var expect = require('chai').expect;
 
+var DesktopTopGrid = require('../../src/components/common/grids/desktop-top-grid');
 
 
-describe('TopButtons component', () => {
+
+describe('DesktopTopGrid component', () => {
 
     var TestUtils = React.addons.TestUtils;
 
@@ -17,7 +16,7 @@ describe('TopButtons component', () => {
     var renderedDomElement;
 
     var defaults = {
-        containerClass: 'top-buttons',
+        containerClass: 'top-grid',
         leftElementClass: 'left-element',
         middleElementClass: 'middle-element',
         rightElementClass: 'right-element'
@@ -31,7 +30,7 @@ describe('TopButtons component', () => {
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <TopButtons
+            <DesktopTopGrid
                 leftElement={ <div>{ mocks.leftElementText }</div> }
                 middleElement={ <div>{ mocks.middleElementText }</div> }
                 rightElement={ <div>{ mocks.rightElementText }</div> }

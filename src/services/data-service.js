@@ -10,7 +10,7 @@ var DataService = {
 
     lastModified: null,
 
-    data: {
+    store: {
         pilot: null,
         flights: null,
         sites: null,
@@ -25,7 +25,7 @@ var DataService = {
             method: 'get',
             params: { lastModified: this.lastModified },
             onSuccess: (serverResponse) => this.setData(serverResponse),
-            onFailure: (serverResponse) => this.setError(serverResponse)
+            onFailure: (error) => this.setError(error)
         });
     },
 
@@ -54,7 +54,7 @@ var DataService = {
                 data: data,
                 onSuccess: (serverResponse) => {
                     this.setData(serverResponse);
-                    resolve('success');
+                    resolve(); // success
                 },
                 onFailure: reject
             });
@@ -62,16 +62,16 @@ var DataService = {
     },
 
 
-    createPilot: function(newPilot) {
+    createPilot: function(pilotCredentials) {
         return new Promise((resolve, reject) => {
             ajaxService({
                 url: '/api/signup',
                 method: 'post',
-                data: newPilot,
+                data: pilotCredentials,
                 onSuccess: (newPilotInfo) => {
                     this.setPilotInfo(newPilotInfo);
                     this.setEmptyData();
-                    resolve('success');
+                    resolve(); // success
                 },
                 onFailure: reject
             });
@@ -89,7 +89,7 @@ var DataService = {
                 data: _.extend({}, newPilot, { lastModified: this.lastModified }),
                 onSuccess: (serverResponse) => {
                     this.setData(serverResponse);
-                    resolve('success');
+                    resolve(); // success
                 },
                 onFailure: reject
             });
@@ -141,7 +141,7 @@ var DataService = {
                 },
                 onSuccess: (serverResponse) => {
                     this.setData(serverResponse);
-                    resolve('success');
+                    resolve(); // success
                 },
                 onFailure: reject
             });
@@ -150,9 +150,9 @@ var DataService = {
 
 
     setEmptyData: function() {
-        _.each(this.data, (value, key) => {
+        _.each(this.store, (value, key) => {
             if (key !== 'loadingError' && key !== 'pilot') {
-                this.data[key] = {};
+                this.store[key] = {};
             }
         });
         console.log('set empty data');
@@ -160,8 +160,8 @@ var DataService = {
     },
 
     clearData: function() {
-        _.each(this.data, (value, key) => {
-            this.data[key] = null;
+        _.each(this.store, (value, key) => {
+            this.store[key] = null;
         });
         this.lastModified = null;
         PubSub.emit('dataModified');
@@ -169,7 +169,7 @@ var DataService = {
 
     setData: function(serverResponse) {
         // If we got a valid response there were no errors
-        this.data.loadingError = null;
+        this.store.loadingError = null;
         // If we got new data update front-end data
         if (this.lastModified === null ||
             this.lastModified < serverResponse.lastModified
@@ -180,7 +180,7 @@ var DataService = {
             this.lastModified = serverResponse.lastModified;
              _.each(serverResponse, (data, dataType) => {
                  // if we have such data type update data
-                 if (this.data[dataType] !== undefined) {
+                 if (this.store[dataType] !== undefined) {
                      if (dataType === 'pilot') {
                          this.setPilotInfo(data);
                      } else {
@@ -192,51 +192,51 @@ var DataService = {
             this.setFlightNumbers(serverResponse.flights);
         }
         // DEV
-        console.log('current data', this.data);
+        console.log('current data', this.store);
 
         PubSub.emit('dataModified');
     },
 
     setError: function(error) {
-        if (this.data.loadingError === null ||
-            this.data.loadingError.type !== error.type
+        if (this.store.loadingError === null ||
+            this.store.loadingError.type !== error.type
         ) {
-            this.data.loadingError = error;
+            this.store.loadingError = error;
             PubSub.emit('dataModified');
         }
     },
 
     setPilotInfo: function(newPilotInfo) {
         // If loading data the first time => create a data storage object
-        if (this.data.pilot === null) {
-            this.data.pilot = {};
+        if (this.store.pilot === null) {
+            this.store.pilot = {};
         }
-        this.data.pilot = _.extend(this.data.pilot, newPilotInfo);
+        this.store.pilot = _.extend(this.store.pilot, newPilotInfo);
     },
 
     setDataItems: function(newData, dataType) {
         // If loading data the first time => create a data storage object
-        if (this.data[dataType] === null) {
-            this.data[dataType] = {};
+        if (this.store[dataType] === null) {
+            this.store[dataType] = {};
         }
         for (var i = 0; i < newData.length; i++) {
             // If item is visible => update or add to the data object
             if (newData[i].see) {
-                this.data[dataType][newData[i].id] = newData[i];
+                this.store[dataType][newData[i].id] = newData[i];
             // If item is deleted => remove it from data object
-            } else if (this.data[dataType][newData[i].id]) {
-                delete this.data[dataType][newData[i].id];
+            } else if (this.store[dataType][newData[i].id]) {
+                delete this.store[dataType][newData[i].id];
             }
         }
     },
 
     setFlightNumbers: function(newFlights) {
         // If no flights records yet or no new flights added
-        if (_.isEmpty(this.data.flights) || _.isEmpty(newFlights)) {
+        if (_.isEmpty(this.store.flights) || _.isEmpty(newFlights)) {
             return null;
         }
 
-        var sortedFlights = _.sortBy(this.data.flights, (flight) => {
+        var sortedFlights = _.sortBy(this.store.flights, (flight) => {
             return [flight.date, flight.createdAt];
         });
 
@@ -251,7 +251,7 @@ var DataService = {
             flightId = sortedFlights[flightNum].id;
 
             // Add flight number field to this flight (+1 - array indexes start from 0)
-            this.data.flights[flightId].flightNum = this.data.pilot.initialFlightNum + flightNum + 1;
+            this.store.flights[flightId].flightNum = this.store.pilot.initialFlightNum + flightNum + 1;
 
             flightYear = sortedFlights[flightNum].date.substring(0, 4);
             if (iteratedYear !== flightYear) {
@@ -260,13 +260,13 @@ var DataService = {
             }
             flightNumYear++;
             // Add year-flight-number field to this flight
-            this.data.flights[flightId].flightNumYear = flightNumYear;
+            this.store.flights[flightId].flightNumYear = flightNumYear;
 
             flightDay = sortedFlights[flightNum].date.substring(0, 10);
             // if there was only one flight on previous day erase day-flight-number field of that flight
             if (iteratedDay !== flightDay && flightNumDay === 1) {
                 var previousFlightId = sortedFlights[flightNum - 1].id;
-                this.data.flights[previousFlightId].flightNumDay = null;
+                this.store.flights[previousFlightId].flightNumDay = null;
             }
             if (iteratedDay !== flightDay) {
                 iteratedDay = flightDay;
@@ -274,25 +274,25 @@ var DataService = {
             }
             flightNumDay++;
             // Add day-flight-number field to this flight
-            this.data.flights[flightId].flightNumDay = flightNumDay;
+            this.store.flights[flightId].flightNumDay = flightNumDay;
         }
     },
 
 
-    changePilotInfo: function(newPilotInfo) {
-        return this.sendData(newPilotInfo, 'pilot');
+    savePilotInfo: function(pilotInfo) {
+        return this.sendData(pilotInfo, 'pilot');
     },
 
-    changeFlight: function(newFlight) {
-        return this.sendData(newFlight, 'flight');
+    saveFlight: function(flight) {
+        return this.sendData(flight, 'flight');
     },
 
-    changeSite: function(newSites) {
-        return this.sendData(newSites, 'site');
+    saveSite: function(site) {
+        return this.sendData(site, 'site');
     },
 
-    changeGlider: function(newGlider) {
-        return this.sendData(newGlider, 'glider');
+    saveGlider: function(glider) {
+        return this.sendData(glider, 'glider');
     }
 };
 

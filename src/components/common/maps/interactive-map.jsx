@@ -12,33 +12,26 @@ require('./map.less');
 var InteractiveMap = React.createClass({
 
     propTypes: {
-        markerId:  React.PropTypes.oneOfType([
-            React.PropTypes.object, // null
-            React.PropTypes.number,
-            React.PropTypes.string
-        ]),
+        markerId:  React.PropTypes.number.isRequired,
         center: React.PropTypes.shape({
             lat: React.PropTypes.number,
             lng: React.PropTypes.number
-        }),
-        zoomLevel: React.PropTypes.number,
+        }).isRequired,
+        zoomLevel: React.PropTypes.number.isRequired,
         markerPosition: React.PropTypes.shape({
             lat: React.PropTypes.number,
             lng: React.PropTypes.number
-        }),
-        location: React.PropTypes.string,
-        launchAltitude: React.PropTypes.oneOfType([
-            React.PropTypes.number,
-            React.PropTypes.string
-        ]),
-        altitudeUnit: React.PropTypes.string,
+        }).isRequired,
+        location: React.PropTypes.string.isRequired,
+        launchAltitude: React.PropTypes.string.isRequired,
+        altitudeUnit: React.PropTypes.string.isRequired,
         onDataApply: React.PropTypes.func.isRequired,
         onMapClose: React.PropTypes.func.isRequired
     },
 
     getDefaultProps: function() {
         return {
-            markerId: 'new',
+            markerId: 0,
             center: Map.center.region, // TODO current location or last added site
             zoomLevel: Map.zoomLevel.region,
             markerPosition: Map.outOfMapCoordinates,

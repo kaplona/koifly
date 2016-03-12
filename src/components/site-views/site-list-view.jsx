@@ -2,18 +2,20 @@
 
 var React = require('react');
 var History = require('react-router').History;
+
 var SiteModel = require('../../models/site');
-var View = require('../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var TopButtons = require('../common/buttons/top-buttons');
-var BottomMenu = require('../common/menu/bottom-menu');
-var Section = require('../common/section/section');
-var Table = require('../common/table');
-var Switcher = require('../common/switcher');
+
 var Button = require('../common/buttons/button');
-var Loader = require('../common/loader');
-var FirstAdding = require('../common/first-adding');
+var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var ErrorBox = require('../common/notice/error-box');
+var FirstAdding = require('../common/first-adding');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Section = require('../common/section/section');
+var Switcher = require('../common/switcher');
+var Table = require('../common/table');
+var View = require('../common/view');
 
 
 var SiteListView = React.createClass({
@@ -58,7 +60,7 @@ var SiteListView = React.createClass({
     },
 
     renderLoader: function() {
-        return (this.state.sites === null) ? <Loader /> : '';
+        return (this.state.sites === null) ? <Loader /> : null;
     },
 
     renderNoSitesYet: function() {
@@ -70,16 +72,16 @@ var SiteListView = React.createClass({
     },
 
     renderAddSiteButton: function() {
-        return <Button text='Add Site' onClick={ this.handleSiteAdding }/>;
+        return <Button caption='Add Site' onClick={ this.handleSiteAdding } />;
     },
 
     renderSwitcher: function() {
         return (
             <Switcher
-                leftText = 'List'
-                rightText = 'Map'
-                onRightClick = { this.handleToMapView }
-                initialPosition = 'left'
+                leftButtonCaption='List'
+                rightButtonCaption='Map'
+                onRightClick={ this.handleToMapView }
+                initialPosition='left'
                 />
         );
     },
@@ -106,7 +108,7 @@ var SiteListView = React.createClass({
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.sites }
+                rows={ this.state.sites || [] }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />
@@ -126,16 +128,17 @@ var SiteListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <MobileTopMenu
+                    header='Sites'
+                    leftButtonCaption='Map'
+                    rightButtonCaption='Add'
+                    onLeftClick={ this.handleToMapView }
+                    onRightClick={ this.handleSiteAdding }
+                    />
+                <NavigationMenu isSiteView={ true } />
+                
                 <Section>
-                    <TopMenu
-                        headerText='Sites'
-                        leftText='Map'
-                        rightText='Add'
-                        onLeftClick={ this.handleToMapView }
-                        onRightClick={ this.handleSiteAdding }
-                        />
-
-                    <TopButtons
+                    <DesktopTopGrid
                         leftElement={ this.renderAddSiteButton() }
                         middleElement={ this.renderSwitcher() }
                         />
@@ -143,8 +146,6 @@ var SiteListView = React.createClass({
                     { content }
                     { this.renderLoader() }
                 </Section>
-
-                <BottomMenu isSiteView={ true } />
             </View>
         );
     }

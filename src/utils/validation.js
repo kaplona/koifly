@@ -1,8 +1,9 @@
 'use strict';
 
 var _ = require('lodash');
+
+var ErrorMessages = require('../errors/error-messages');
 var Util = require('./util');
-var ErrorMessages = require('./../errors/error-messages');
 
 
 var Validation = {

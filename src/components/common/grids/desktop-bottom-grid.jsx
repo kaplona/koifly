@@ -3,10 +3,10 @@
 var React = require('react');
 var _ = require('lodash');
 
-require('./bottom-buttons.less');
+require('./desktop-bottom-grid.less');
 
 
-var BottomButtons = React.createClass({
+var DesktopBottomGrid = React.createClass({
 
     propTypes: {
         leftElements: React.PropTypes.arrayOf(React.PropTypes.element),
@@ -19,7 +19,7 @@ var BottomButtons = React.createClass({
         });
 
         return (
-            <div className='bottom-buttons'>
+            <div className='bottom-grid'>
                 <div className='left-elements'>
                     { leftElements }
                 </div>
@@ -33,4 +33,4 @@ var BottomButtons = React.createClass({
 });
 
 
-module.exports = BottomButtons;
+module.exports = DesktopBottomGrid;

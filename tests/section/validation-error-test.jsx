@@ -17,20 +17,18 @@ describe('ValidationError component', () => {
     var renderedDOMElement;
 
     var mocks = {
-        errorText: 'test error text'
+        errorMessage: 'test error message'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <ValidationError
-                text={ mocks.errorText }
-                />
+            <ValidationError message={ mocks.errorMessage } />
         );
 
         renderedDOMElement = React.findDOMNode(component);
     });
 
     it('renders parsed props text', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.errorText);
+        expect(renderedDOMElement).to.have.property('textContent', mocks.errorMessage);
     });
 });

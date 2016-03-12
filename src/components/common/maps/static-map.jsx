@@ -17,30 +17,25 @@ var StaticMap = React.createClass({
         center: React.PropTypes.shape({
             lat: React.PropTypes.number,
             lng: React.PropTypes.number
-        }),
-        zoomLevel: React.PropTypes.number,
-        markers:  React.PropTypes.arrayOf(React.PropTypes.shape({
-            id: React.PropTypes.oneOfType([
-                React.PropTypes.number,
-                React.PropTypes.string
-            ]),
+        }).isRequired,
+        zoomLevel: React.PropTypes.number.isRequired,
+        sites:  React.PropTypes.arrayOf(React.PropTypes.shape({
+            id: React.PropTypes.number,
             name: React.PropTypes.string,
             location: React.PropTypes.string,
-            launchAltitude: React.PropTypes.oneOfType([
-                React.PropTypes.number,
-                React.PropTypes.string
-            ]),
+            launchAltitude: React.PropTypes.number,
             altitudeUnit: React.PropTypes.string,
             coordinates: React.PropTypes.string
-        })),
-        isFullScreen: React.PropTypes.bool
+        })).isRequired,
+        isFullScreen: React.PropTypes.bool.isRequired
     },
 
     getDefaultProps: function() {
         return {
             center: Map.center.region, // TODO current location or last added site
             zoomLevel: Map.zoomLevel.region,
-            markers: []
+            sites: [],
+            isFullScreen: false
         };
     },
 
@@ -73,12 +68,12 @@ var StaticMap = React.createClass({
         var markerId, markerPosition, infowindowContent, infowindowOnClickFunc;
         var mapContainer = this.refs.map.getDOMNode();
         Map.createMap(mapContainer, this.props.center, this.props.zoomLevel);
-        for (var i = 0; i < this.props.markers.length; i++) {
-            if (this.props.markers[i].coordinates) {
-                markerId = this.props.markers[i].id;
+        for (var i = 0; i < this.props.sites.length; i++) {
+            if (this.props.sites[i].coordinates) {
+                markerId = this.props.sites[i].id;
                 markerPosition = SiteModel.getLatLngCoordinates(markerId);
                 Map.createMarker(markerId, markerPosition, false);
-                infowindowContent = this.composeInfowindowMessage(this.props.markers[i]);
+                infowindowContent = this.composeInfowindowMessage(this.props.sites[i]);
                 infowindowOnClickFunc = ((siteId) => {
                     return () => this.handleToSite(siteId);
                 })(markerId);
@@ -104,7 +99,7 @@ var StaticMap = React.createClass({
     render: function() {
         var className = this.props.isFullScreen ? 'map_container x-full-screen' : 'map_container';
 
-        return <div className={ className } ref='map'/>;
+        return <div className={ className } ref='map' />;
     }
 });
 

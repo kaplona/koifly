@@ -11,7 +11,7 @@ var Notice = React.createClass({
         type: React.PropTypes.string,
         onClick: React.PropTypes.func, // if not provided button won't be rendered no matter if buttonText or isButtonEnabled present
         buttonText: React.PropTypes.string,
-        isButtonEnabled: React.PropTypes.bool,
+        isButtonEnabled: React.PropTypes.bool.isRequired,
         onClose: React.PropTypes.func // if not provided close-button won't be rendered
     },
 

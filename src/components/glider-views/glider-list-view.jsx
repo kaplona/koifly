@@ -2,17 +2,19 @@
 
 var React = require('react');
 var History = require('react-router').History;
+
 var GliderModel = require('../../models/glider');
-var View = require('./../common/view');
-var TopMenu = require('../common/menu/top-menu');
-var TopButtons = require('../common/buttons/top-buttons');
-var BottomMenu = require('../common/menu/bottom-menu');
+
+var Button = require('../common/buttons/button');
+var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
+var FirstAdding = require('../common/first-adding');
+var Loader = require('../common/loader');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
 var Table = require('../common/table');
-var Button = require('../common/buttons/button');
-var Loader = require('./../common/loader');
-var FirstAdding = require('./../common/first-adding');
-var ErrorBox = require('./../common/notice/error-box');
+var View = require('../common/view');
 
 
 var GliderListView = React.createClass({
@@ -53,7 +55,7 @@ var GliderListView = React.createClass({
     },
 
     renderLoader: function() {
-        return (this.state.gliders === null) ? <Loader /> : '';
+        return (this.state.gliders === null) ? <Loader /> : null;
     },
 
     renderNoGlidersYet: function() {
@@ -65,7 +67,7 @@ var GliderListView = React.createClass({
     },
 
     renderAddGliderButton: function() {
-        return <Button text='Add Glider' onClick={ this.handleGliderAdding }/>;
+        return <Button caption='Add Glider' onClick={ this.handleGliderAdding } />;
     },
 
     renderTable: function() {
@@ -90,7 +92,7 @@ var GliderListView = React.createClass({
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.gliders }
+                rows={ this.state.gliders || [] }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />
@@ -110,22 +112,21 @@ var GliderListView = React.createClass({
 
         return (
             <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+                <MobileTopMenu
+                    header='Gliders'
+                    rightButtonCaption='Add'
+                    onRightClick={ this.handleGliderAdding }
+                    />
+                <NavigationMenu isGliderView={ true } />
+                
                 <Section>
-                    <TopMenu
-                        headerText='Gliders'
-                        rightText='Add'
-                        onRightClick={ this.handleGliderAdding }
-                        />
-
-                    <TopButtons
+                    <DesktopTopGrid
                         leftElement={ this.renderAddGliderButton() }
                         />
 
                     { content }
                     { this.renderLoader() }
                 </Section>
-
-                <BottomMenu isGliderView={ true } />
             </View>
         );
     }

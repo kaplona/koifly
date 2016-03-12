@@ -8,19 +8,19 @@ require('./button.less');
 var Button = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string,
-        type: React.PropTypes.string,
-        className: React.PropTypes.string,
-        buttonStyle: React.PropTypes.string,
-        onClick: React.PropTypes.func,
-        isEnabled: React.PropTypes.bool
+        caption: React.PropTypes.string.isRequired,
+        type: React.PropTypes.oneOf(['button', 'submit']).isRequired,
+        buttonStyle: React.PropTypes.oneOf(['primary', 'secondary', 'warning']),
+        onClick: React.PropTypes.func.isRequired,
+        isEnabled: React.PropTypes.bool.isRequired,
+        isMobile: React.PropTypes.bool.isRequired
     },
 
     getDefaultProps: function() {
         return {
             type: 'button',
-            className: 'button',
-            isEnabled: true
+            isEnabled: true,
+            isMobile: false
         };
     },
 
@@ -31,7 +31,7 @@ var Button = React.createClass({
     },
 
     render: function() {
-        var className = this.props.className;
+        var className = this.props.isMobile ? 'mobile-button' : 'button';
         if (this.props.buttonStyle) {
             className += ' x-' + this.props.buttonStyle;
         }
@@ -41,7 +41,7 @@ var Button = React.createClass({
                 className={ className }
                 type={ this.props.type }
                 disabled={ !this.props.isEnabled }
-                value={ this.props.text }
+                value={ this.props.caption }
                 onClick={ this.handleClick }
                 />
         );

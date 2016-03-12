@@ -12,7 +12,13 @@ var ErrorBox = React.createClass({
             message: React.PropTypes.string
         }).isRequired,
         onTryAgain: React.PropTypes.func,
-        isTrying: React.PropTypes.bool
+        isTrying: React.PropTypes.bool.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            isTrying: false
+        };
     },
 
     render: function() {

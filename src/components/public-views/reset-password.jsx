@@ -5,25 +5,25 @@ var History = require('react-router').History;
 
 var DataService = require('../../services/data-service');
 
-var BottomButtons = require('./../common/buttons/bottom-buttons');
-var BottomMenu = require('./../common/menu/bottom-menu');
-var Button = require('./../common/buttons/button');
-var CompactContainer = require('./../common/compact-container');
+var Button = require('../common/buttons/button');
+var CompactContainer = require('../common/compact-container');
+var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
-var Notice = require('./../common/notice/notice');
-var PasswordInput = require('./../common/inputs/password-input');
-var Section = require('./../common/section/section');
-var SectionButton = require('./../common/buttons/section-button');
-var SectionRow = require('./../common/section/section-row');
-var SectionTitle = require('./../common/section/section-title');
-var TopMenu = require('./../common/menu/top-menu');
+var MobileButton = require('../common/buttons/mobile-button');
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Notice = require('../common/notice/notice');
+var PasswordInput = require('../common/inputs/password-input');
+var Section = require('../common/section/section');
+var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
 
 
 var ResetPassword = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({
+        params: React.PropTypes.shape({ // url args
             pilotId: React.PropTypes.string.isRequired,
             authToken: React.PropTypes.string.isRequired
         })
@@ -33,8 +33,8 @@ var ResetPassword = React.createClass({
 
     getInitialState: function() {
         return {
-            password: null,
-            passwordConfirm: null,
+            password: '',
+            passwordConfirm: '',
             error: null,
             isSaving: false,
             successNotice: false
@@ -103,7 +103,7 @@ var ResetPassword = React.createClass({
     renderSaveButton: function() {
         return (
             <Button
-                text={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
@@ -119,15 +119,15 @@ var ResetPassword = React.createClass({
 
         return (
             <div>
-                <TopMenu
-                    headerText='Koifly'
-                    rightText='Log in'
+                <MobileTopMenu
+                    header='Koifly'
+                    rightButtonCaption='Log in'
                     onRightClick={ this.handleToLogin }
                     />
+                <NavigationMenu isMobile={ true } />
 
                 <CompactContainer>
                 <form>
-
                     { this.renderError() }
 
                     <Section>
@@ -152,11 +152,11 @@ var ResetPassword = React.createClass({
                                 />
                         </SectionRow>
 
-                        <BottomButtons leftElements={ [ this.renderSaveButton() ] } />
+                        <DesktopBottomGrid leftElements={ [ this.renderSaveButton() ] } />
                     </Section>
 
-                    <SectionButton
-                        text={ this.state.isSaving ? 'Saving ...' : 'Save' }
+                    <MobileButton
+                        caption={ this.state.isSaving ? 'Saving ...' : 'Save' }
                         type='submit'
                         buttonStyle='primary'
                         onClick={ this.handleSubmit }
@@ -164,8 +164,6 @@ var ResetPassword = React.createClass({
                         />
                 </form>
                 </CompactContainer>
-
-                <BottomMenu isMobile={ true } />
             </div>
         );
     }

@@ -8,8 +8,15 @@ require('./section-row.less');
 var SectionRow = React.createClass({
 
     propTypes: {
-        isLast: React.PropTypes.bool,
-        isDesktopOnly: React.PropTypes.bool
+        isLast: React.PropTypes.bool.isRequired,
+        isDesktopOnly: React.PropTypes.bool.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            isLast: false,
+            isDesktopOnly: false
+        };
     },
 
     render: function() {

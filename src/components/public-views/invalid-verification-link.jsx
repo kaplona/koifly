@@ -2,9 +2,10 @@
 
 var React = require('react');
 var History = require('react-router').History;
-var TopMenu = require('./../common/menu/top-menu');
-var BottomMenu = require('./../common/menu/bottom-menu');
-var Notice = require('./../common/notice/notice');
+
+var MobileTopMenu = require('../common/menu/mobile-top-menu');
+var NavigationMenu = require('../common/menu/navigation-menu');
+var Notice = require('../common/notice/notice');
 
 
 var InvalidVerificationLink = React.createClass({
@@ -18,13 +19,14 @@ var InvalidVerificationLink = React.createClass({
     render: function() {
         return (
             <div>
-                <TopMenu
-                    headerText='Koifly'
-                    rightText='Log in'
+                <MobileTopMenu
+                    header='Koifly'
+                    rightButtonCaption='Log in'
                     onRightClick={ this.handleToLogin }
                     />
+                <NavigationMenu />
+                
                 <Notice text='Verification link is invalid or expired' type='error' />
-                <BottomMenu />
             </div>
         );
     }

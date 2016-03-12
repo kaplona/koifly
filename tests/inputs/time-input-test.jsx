@@ -122,7 +122,7 @@ describe('TimeInput component', () => {
             let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
             let highlightedInputs = React.findDOMNode(component).querySelectorAll(`input.${defaults.errorClassName}`);
 
-            expect(errorMessage).to.have.deep.property('props.text', mocks.errorMessage);
+            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
             expect(highlightedInputs).to.have.lengthOf(2);
         });
 
@@ -141,7 +141,7 @@ describe('TimeInput component', () => {
             let hoursClassName = React.findDOMNode(component.refs[defaults.hoursInputName]).className;
             let minutesClassName = React.findDOMNode(component.refs[defaults.minutesInputName]).className;
 
-            expect(errorMessage).to.have.deep.property('props.text', mocks.errorMessageHours);
+            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessageHours);
             expect(hoursClassName).to.contain(defaults.errorClassName);
             expect(minutesClassName).to.not.contain(defaults.errorClassName);
         });
@@ -161,7 +161,7 @@ describe('TimeInput component', () => {
             let hoursClassName = React.findDOMNode(component.refs[defaults.hoursInputName]).className;
             let minutesClassName = React.findDOMNode(component.refs[defaults.minutesInputName]).className;
 
-            expect(errorMessage).to.have.deep.property('props.text', mocks.errorMessageMinutes);
+            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessageMinutes);
             expect(hoursClassName).to.not.contain(defaults.errorClassName);
             expect(minutesClassName).to.contain(defaults.errorClassName);
         });
