@@ -26,15 +26,6 @@ var PilotModel = {
                 field: 'Initial Flight #'
             }
         },
-        initialAirtime: {
-            method: 'number',
-            rules: {
-                min: 0,
-                round: true,
-                defaultVal: 0,
-                field: 'Initial Airtime'
-            }
-        },
         hours:  {
             method: 'number',
             rules: {

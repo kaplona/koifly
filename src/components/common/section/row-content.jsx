@@ -2,7 +2,7 @@
 
 var React = require('react');
 var Label = require('./label');
-var Value = require('./value-container');
+var ValueContainer = require('./value-container');
 
 
 var RowContent = React.createClass({
@@ -20,7 +20,7 @@ var RowContent = React.createClass({
         return (
             <div>
                 <Label>{ this.props.label }</Label>
-                <Value>{ this.props.value }</Value>
+                <ValueContainer>{ this.props.value }</ValueContainer>
             </div>
         );
     }

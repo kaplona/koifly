@@ -30,15 +30,6 @@ var FlightModel = {
                 field: 'Altitude'
             }
         },
-        airtime: {
-            method: 'number',
-            rules: {
-                min: 0,
-                round: true,
-                defaultVal: 0,
-                field: 'Airtime'
-            }
-        },
         hours: {
             method: 'number',
             rules: {
