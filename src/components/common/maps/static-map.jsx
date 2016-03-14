@@ -9,8 +9,6 @@ const CENTER = require('../../../constants/map-constants').CENTER;
 const PROP_TYPES = require('../../../constants/prop-types');
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
-var SiteModel = require('../../../models/site');
-
 require('./map.less');
 
 
@@ -27,7 +25,8 @@ var StaticMap = React.createClass({
             location: string,
             launchAltitude: number,
             altitudeUnit: string,
-            coordinates: string
+            coordinates: string,
+            latLng: PROP_TYPES.coordinates
         })).isRequired,
         isFullScreen: bool.isRequired,
         mapFacadePromise: PROP_TYPES.promise.isRequired
@@ -65,9 +64,9 @@ var StaticMap = React.createClass({
         mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
 
         for (var i = 0; i < this.props.sites.length; i++) {
-            if (this.props.sites[i].coordinates) {
+            if (this.props.sites[i].latLng) {
                 markerId = this.props.sites[i].id;
-                markerPosition = SiteModel.getLatLngCoordinates(markerId);
+                markerPosition = this.props.sites[i].latLng;
 
                 mapFacade.createMarker(markerId, markerPosition);
 

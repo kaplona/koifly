@@ -63,7 +63,7 @@ var InteractiveMap = React.createClass({
         mapFacade.bindMarkerAndInfowindow(this.props.markerId);
         mapFacade.addSearchBarControl(this.props.markerId);
 
-        if (this.props.markerPosition !== null) {
+        if (this.props.markerPosition !== OUT_OF_MAP_COORDINATES) {
             mapFacade
                 .getPositionInfoPromise(this.props.markerPosition)
                 .then((positionInfo) => {

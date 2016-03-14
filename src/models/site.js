@@ -103,6 +103,7 @@ var SiteModel = {
             name: site.name,
             location: site.location,
             coordinates: this.formCoordinatesOutput(site.coordinates),
+            latLng: site.coordinates,
             launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             flightNum: flightNum,

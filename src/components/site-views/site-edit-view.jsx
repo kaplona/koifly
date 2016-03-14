@@ -319,20 +319,6 @@ var SiteEditView = React.createClass({
                 onDataApply: this.handleInputChange,
                 onMapClose: this.handleMapHide
             });
-            
-            // return (
-            //     <InteractiveMap
-            //         markerId={ this.props.params.siteId }
-            //         center={ markerPosition }
-            //         zoomLevel={ Map.zoomLevel.site }
-            //         markerPosition={ markerPosition }
-            //         location={ this.state.site.location }
-            //         launchAltitude={ this.state.site.launchAltitude }
-            //         altitudeUnit={ this.state.site.altitudeUnit }
-            //         onDataApply={ this.handleInputChange }
-            //         onMapClose={ this.handleMapHide }
-            //         />
-            // );
         }
 
         return InteractiveMap.create({
@@ -343,17 +329,6 @@ var SiteEditView = React.createClass({
             onDataApply: this.handleInputChange,
             onMapClose: this.handleMapHide
         });
-        
-        // return (
-        //     <InteractiveMap
-        //         markerId={ this.props.params.siteId }
-        //         location={ this.state.site.location }
-        //         launchAltitude={ this.state.site.launchAltitude }
-        //         altitudeUnit={ this.state.site.altitudeUnit }
-        //         onDataApply={ this.handleInputChange }
-        //         onMapClose={ this.handleMapHide }
-        //         />
-        // );
     },
 
     render: function() {
