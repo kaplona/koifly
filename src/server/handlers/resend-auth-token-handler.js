@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-var MessageTemplates = require('../constants/messages-templates');
+var EmailMessageTemplates = require('../../constants/email-message-templates');
 var normalizeError = require('../../errors/normalize-error');
 var Pilot = require('../../orm/pilots');
 var sendAuthTokenToPilot = require('../helpers/send-auth-token');
@@ -20,7 +20,7 @@ var resendAuthTokenHandler = function(request, reply) {
     Pilot
         .findById(request.auth.credentials.userId)
         .then((pilot) => {
-            return sendAuthTokenToPilot(pilot, MessageTemplates.EMAIL_VERIFICATION, '/email-verification');
+            return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
         })
         .then(() => {
             reply(JSON.stringify('success'));

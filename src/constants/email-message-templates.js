@@ -1,7 +1,7 @@
 'use strict';
 
 
-var MessageTemplates = {
+var EmailMessageTemplates = {
 
     PASSWORD_CHANGE: {
         from: 'Koifly <noreply@koifly.com>',
@@ -77,4 +77,4 @@ var MessageTemplates = {
 };
 
 
-module.exports = MessageTemplates;
+module.exports = EmailMessageTemplates;

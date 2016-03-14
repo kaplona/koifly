@@ -26,8 +26,6 @@ var sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
 var signupHandler = require('./server/handlers/signup-handler');
 var verifyAuthToken = require('./server/helpers/verify-auth-token');
 
-var MessageTemplates = require('./server/constants/messages-templates');
-
 const COOKIE_PASSWORD = require('./secrets').cookiePassword;
 const COOKIE_LIFETIME = require('./secrets').cookieLifeTime;
 

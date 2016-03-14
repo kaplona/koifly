@@ -4,7 +4,7 @@ var React = require('react');
 var History = require('react-router').History;
 var _ = require('lodash');
 
-var Map = require('../../utils/map');
+const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 var SiteModel = require('../../models/site');
 var Validation = require('../../utils/validation');
 
@@ -308,31 +308,52 @@ var SiteEditView = React.createClass({
         var markerPosition = this.getMarkerPosition();
 
         if (markerPosition !== null) {
-            return (
-                <InteractiveMap
-                    markerId={ this.props.params.siteId }
-                    center={ markerPosition }
-                    zoomLevel={ Map.zoomLevel.site }
-                    markerPosition={ markerPosition }
-                    location={ this.state.site.location }
-                    launchAltitude={ this.state.site.launchAltitude }
-                    altitudeUnit={ this.state.site.altitudeUnit }
-                    onDataApply={ this.handleInputChange }
-                    onMapClose={ this.handleMapHide }
-                    />
-            );
+            return InteractiveMap.create({
+                markerId: this.state.site.id,
+                center: markerPosition,
+                zoomLevel: ZOOM_LEVEL.site,
+                markerPosition: markerPosition,
+                location: this.state.site.location,
+                launchAltitude: this.state.site.launchAltitude,
+                altitudeUnit: this.state.site.altitudeUnit,
+                onDataApply: this.handleInputChange,
+                onMapClose: this.handleMapHide
+            });
+            
+            // return (
+            //     <InteractiveMap
+            //         markerId={ this.props.params.siteId }
+            //         center={ markerPosition }
+            //         zoomLevel={ Map.zoomLevel.site }
+            //         markerPosition={ markerPosition }
+            //         location={ this.state.site.location }
+            //         launchAltitude={ this.state.site.launchAltitude }
+            //         altitudeUnit={ this.state.site.altitudeUnit }
+            //         onDataApply={ this.handleInputChange }
+            //         onMapClose={ this.handleMapHide }
+            //         />
+            // );
         }
 
-        return (
-            <InteractiveMap
-                markerId={ this.props.params.siteId }
-                location={ this.state.site.location }
-                launchAltitude={ this.state.site.launchAltitude }
-                altitudeUnit={ this.state.site.altitudeUnit }
-                onDataApply={ this.handleInputChange }
-                onMapClose={ this.handleMapHide }
-                />
-        );
+        return InteractiveMap.create({
+            markerId: this.state.site.id,
+            location: this.state.site.location,
+            launchAltitude: this.state.site.launchAltitude,
+            altitudeUnit: this.state.site.altitudeUnit,
+            onDataApply: this.handleInputChange,
+            onMapClose: this.handleMapHide
+        });
+        
+        // return (
+        //     <InteractiveMap
+        //         markerId={ this.props.params.siteId }
+        //         location={ this.state.site.location }
+        //         launchAltitude={ this.state.site.launchAltitude }
+        //         altitudeUnit={ this.state.site.altitudeUnit }
+        //         onDataApply={ this.handleInputChange }
+        //         onMapClose={ this.handleMapHide }
+        //         />
+        // );
     },
 
     render: function() {

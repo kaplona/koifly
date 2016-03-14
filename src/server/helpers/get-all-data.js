@@ -5,7 +5,7 @@ var _ = require('lodash');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var getPilotValuesForFrontend = require('./get-pilot-values');
-const SCOPES = require('../../orm/orm-constants').SCOPES;
+const SCOPES = require('../../constants/orm-constants').SCOPES;
 
 var Flight = require('../../orm/flights');
 var Site = require('../../orm/sites');

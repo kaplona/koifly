@@ -5,7 +5,8 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
-var Map = require('../../utils/map');
+const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
+
 var SiteModel = require('../../models/site');
 
 var BreadCrumbs = require('../common/bread-crumbs');
@@ -89,13 +90,11 @@ var SiteView = React.createClass({
 
     renderMap: function() {
         if (this.state.site.coordinates) {
-            return (
-                <StaticMap
-                    center={ SiteModel.getLatLngCoordinates(this.state.site.id) }
-                    zoomLevel={ Map.zoomLevel.site }
-                    sites={ [ this.state.site ] }
-                    />
-            );
+            return StaticMap.create({
+                center: SiteModel.getLatLngCoordinates(this.state.site.id),
+                zoomLevel: ZOOM_LEVEL.site,
+                sites: [ this.state.site ]
+            });
         }
     },
 

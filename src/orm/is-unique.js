@@ -1,6 +1,6 @@
 'use strict';
 
-const SCOPES = require('./orm-constants').SCOPES;
+const SCOPES = require('../constants/orm-constants').SCOPES;
 var ErrorMessages = require('../errors/error-messages');
 
 

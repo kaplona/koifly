@@ -57,7 +57,6 @@ var PilotView = React.createClass({
                 loadingError: null
             });
         }
-        console.log('handleDataModified => ', pilot);
     },
 
     renderError: function() {

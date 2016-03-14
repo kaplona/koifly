@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 var BcryptPromise = require('../../utils/bcrypt-promise');
-var MessageTemplates = require('../constants/messages-templates');
+var EmailMessageTemplates = require('../../constants/email-message-templates');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
@@ -63,7 +63,7 @@ var changePasswordHandler = function(request, reply) {
             // Send email notification to user
             // so he has opportunity to reset password
             // if it wasn't he who change the pass at the first place
-            sendAuthTokenToPilot(pilot, MessageTemplates.PASSWORD_CHANGE, '/reset-password/');
+            sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password/');
             return setAuthCookie(request, pilot.id, pilot.password);
         })
         .then(() => {

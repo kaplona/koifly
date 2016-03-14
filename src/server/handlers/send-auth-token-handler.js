@@ -4,7 +4,7 @@ var _ = require('lodash');
 
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
-var MessageTemplates = require('../constants/messages-templates');
+var EmailMessageTemplates = require('../../constants/email-message-templates');
 var normalizeError = require('../../errors/normalize-error');
 var Pilot = require('../../orm/pilots');
 var sendAuthTokenToPilot = require('../helpers/send-auth-token');
@@ -31,12 +31,12 @@ var sendAuthTokenHandler = function(request, reply) {
     var path;
 
     if (request.path === '/api/one-time-login') {
-        emailMessage = MessageTemplates.ONE_TIME_LOGIN;
+        emailMessage = EmailMessageTemplates.ONE_TIME_LOGIN;
         path = '/email-verification';
     }
 
     if (request.path === '/api/initiate-reset-password') {
-        emailMessage = MessageTemplates.PASSWORD_RESET;
+        emailMessage = EmailMessageTemplates.PASSWORD_RESET;
         path = '/reset-password';
     }
 

@@ -2,7 +2,7 @@
 
 var Sequelize = require('sequelize');
 
-const SCOPES = require('./orm-constants').SCOPES;
+const SCOPES = require('../constants/orm-constants').SCOPES;
 var ErrorMessages = require('../errors/error-messages');
 var isValidId = require('./is-valid-id');
 var sequelize = require('./sequelize');

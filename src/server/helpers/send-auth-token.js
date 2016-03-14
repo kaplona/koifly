@@ -12,11 +12,11 @@ var SendMail = require('./send-mail');
  * saves its hash in DB for future comparison,
  * sends email with a link which contains pilot id and generated token
  * @param {object} pilot - sequelize pilot instance
- * @param {object} MessageTemplate - one of MessageTemplates
+ * @param {object} EmailMessageTemplate
  * @param {string} path - link that will be included in email
  * @returns {Promise}
  */
-var sendAuthTokenToPilot = function(pilot, MessageTemplate, path) {
+var sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
     var authToken = generateToken();
     // Create hash out of token to store in DB since it's a password equivalent
     return BcryptPromise
@@ -35,7 +35,7 @@ var sendAuthTokenToPilot = function(pilot, MessageTemplate, path) {
             var templateData = {
                 url: DOMAIN + path + '/' + pilot.id + '/' + authToken
             };
-            return SendMail(pilot.email, MessageTemplate, templateData);
+            return SendMail(pilot.email, EmailMessageTemplate, templateData);
         });
 };
 

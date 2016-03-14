@@ -5,8 +5,9 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
+const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
+
 var FlightModel = require('../../models/flight');
-var Map = require('../../utils/map');
 var SiteModel = require('../../models/site');
 var Util = require('../../utils/util');
 
@@ -99,13 +100,11 @@ var FlightView = React.createClass({
 
         var site = SiteModel.getSiteOutput(siteId);
         
-        return (
-            <StaticMap
-                center={ siteCoordinates }
-                zoomLevel={ Map.zoomLevel.site }
-                sites={ [ site ] }
-                />
-        );
+        return StaticMap.create({
+            center: siteCoordinates,
+            zoomLevel: ZOOM_LEVEL.site,
+            sites: [ site ]
+        });
     },
 
     render: function() {

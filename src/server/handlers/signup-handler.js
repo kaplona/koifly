@@ -4,7 +4,7 @@ var _ = require('lodash');
 
 var BcryptPromise = require('../../utils/bcrypt-promise');
 var getPilotValuesForFrontend = require('../helpers/get-pilot-values');
-var MessageTemplates = require('../constants/messages-templates');
+var EmailMessageTemplates = require('../../constants/email-message-templates');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
@@ -51,7 +51,7 @@ var signupHandler = function(request, reply) {
         })
         .then(() => {
             // Send user email with auth verification token
-            return sendAuthTokenToPilot(pilot, MessageTemplates.EMAIL_VERIFICATION, '/email/');
+            return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email/');
         })
         .then(() => {
             // Reply with pilot info since it's the only user's data yet
