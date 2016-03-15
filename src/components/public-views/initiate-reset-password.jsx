@@ -3,7 +3,7 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 
 var Button = require('../common/buttons/button');
@@ -55,7 +55,7 @@ var InitiateResetPassword = React.createClass({
             error: null
         });
 
-        DataService.initiateResetPassword(this.state.email).then(() => {
+        dataService.sendInitiateResetPasswordEmail(this.state.email).then(() => {
             this.setState({
                 isSending: false,
                 isEmailSent: true

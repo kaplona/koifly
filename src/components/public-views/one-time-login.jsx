@@ -3,7 +3,7 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -49,7 +49,7 @@ var OneTimeLogin = React.createClass({
         });
 
         var lastSentEmailAddress = this.state.email;
-        DataService.oneTimeLogin(this.state.email).then(() => {
+        dataService.sendOneTimeLoginEmail(this.state.email).then(() => {
             this.setState({
                 isSending: false,
                 lastSentEmailAddress: lastSentEmailAddress

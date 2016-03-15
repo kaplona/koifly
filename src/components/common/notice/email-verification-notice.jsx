@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var DataService = require('../../../services/data-service');
+var dataService = require('../../../services/data-service');
 var PilotModel = require('../../../models/pilot');
 var Notice = require('./notice');
 
@@ -34,7 +34,7 @@ var EmailVerificationNotice = React.createClass({
 
     handleEmailVerification: function() {
         this.setState({ isSending: true });
-        DataService.sendVerificationEmail().then(() => {
+        dataService.sendVerificationEmail().then(() => {
             this.setState({ isEmailSent: true });
         });
     },

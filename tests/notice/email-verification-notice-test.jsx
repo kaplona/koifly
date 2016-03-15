@@ -9,7 +9,7 @@ var then = require('../../src/utils/then');
 var expect = require('chai').expect;
 var Sinon = require('sinon');
 
-var DataService = require('../../src/services/data-service');
+var dataService = require('../../src/services/data-service');
 var PilotModel = require('../../src/models/pilot');
 
 var EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
@@ -41,7 +41,7 @@ describe('EmailVerificationNotice component', () => {
 
     describe('Defaults testing', () => {
         before(() => {
-            Sinon.stub(DataService, 'sendVerificationEmail', () => {
+            Sinon.stub(dataService, 'sendVerificationEmail', () => {
                 return Promise.resolve();
             });
 
@@ -59,7 +59,7 @@ describe('EmailVerificationNotice component', () => {
         });
 
         after(() => {
-            DataService.sendVerificationEmail.restore();
+            dataService.sendVerificationEmail.restore();
             PilotModel.getEmailAddress.restore();
         });
 

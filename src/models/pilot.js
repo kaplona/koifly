@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-var DataService = require('../services/data-service');
+var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 
 
@@ -62,7 +62,7 @@ var PilotModel = {
         var FlightModel = require('./flight');
 
         // Get pilot info from Data Service helper
-        var pilot = DataService.store.pilot;
+        var pilot = dataService.store.pilot;
 
         var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
         var flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
@@ -97,7 +97,7 @@ var PilotModel = {
         }
 
         // Get pilot info from Data Service helper
-        var pilot = DataService.store.pilot;
+        var pilot = dataService.store.pilot;
 
         return {
             email: pilot.email,
@@ -117,12 +117,12 @@ var PilotModel = {
      */
     checkForLoadingErrors: function() {
         // Check for loading errors
-        if (DataService.store.loadingError !== null) {
-            DataService.loadData();
-            return { error: DataService.store.loadingError };
+        if (dataService.loadingError !== null) {
+            dataService.initiateStore();
+            return { error: dataService.loadingError };
         // Check if data was loaded
-        } else if (DataService.store.pilot === null) {
-            DataService.loadData();
+        } else if (dataService.store.pilot === null) {
+            dataService.initiateStore();
             return null;
         }
         return false;
@@ -151,7 +151,7 @@ var PilotModel = {
      */
     savePilotInfo: function(newPilotInfo) {
         newPilotInfo = this.setPilotInput(newPilotInfo);
-        return DataService.savePilotInfo(newPilotInfo);
+        return dataService.savePilotInfo(newPilotInfo);
     },
 
     /**
@@ -195,27 +195,23 @@ var PilotModel = {
     },
 
     /**
-     * Takes only current and next password from new pilot info
-     * sends it to the server
-     * @param {object} newPilotInfo
+     * Sends passwords to the server
+     * @param {string} currentPassword
+     * @param {string} nextPassword
      * @returns {Promise} - if saving was successful or not
      */
-    changePassword: function(newPilotInfo) {
-        var passwords = {
-            currentPassword: newPilotInfo.password,
-            nextPassword: newPilotInfo.newPassword
-        };
-        return DataService.changePassword(passwords);
+    changePassword: function(currentPassword, nextPassword) {
+        return dataService.changePassword(currentPassword, nextPassword);
     },
 
     /**
      * @returns {string|null} - email address or null if no pilot information in front end yet
      */
     getEmailAddress: function() {
-        if (DataService.store.pilot === null) {
+        if (dataService.store.pilot === null) {
             return null;
         }
-        return DataService.store.pilot.email;
+        return dataService.store.pilot.email;
     },
     
     getValidationConfig: function() {
@@ -227,10 +223,10 @@ var PilotModel = {
      * null - if no information about pilot yet
      */
     getUserActivationStatus: function() {
-        if (DataService.store.pilot === null) {
+        if (dataService.store.pilot === null) {
             return null;
         }
-        return DataService.store.pilot.isActivated;
+        return dataService.store.pilot.isActivated;
     },
 
     /**
@@ -240,24 +236,24 @@ var PilotModel = {
      * null - if data hasn't been loaded from the server yet
      */
     getActivationNoticeStatus: function() {
-        if (DataService.store.pilot === null) {
+        if (dataService.store.pilot === null) {
             return null;
         }
-        return !DataService.store.pilot.isActivationNoticeHidden && !DataService.store.pilot.isActivated;
+        return !dataService.store.pilot.isActivationNoticeHidden && !dataService.store.pilot.isActivated;
     },
 
     hideActivationNotice: function() {
-        if (DataService.store.pilot !== null) {
-            DataService.store.pilot.isActivationNoticeHidden = true;
+        if (dataService.store.pilot !== null) {
+            dataService.store.pilot.isActivationNoticeHidden = true;
         }
     },
 
     isLoggedIn: function() {
-        return (DataService.store.pilot && DataService.store.error !== ErrorTypes.AUTHENTICATION_ERROR);
+        return (dataService.store.pilot && dataService.loadingError !== ErrorTypes.AUTHENTICATION_ERROR);
     },
 
     logout: function() {
-        DataService.logout();
+        dataService.logout();
     }
 };
 

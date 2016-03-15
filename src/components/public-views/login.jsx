@@ -5,7 +5,7 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -65,7 +65,7 @@ var Login = React.createClass({
             email: this.state.email,
             password: this.state.password
         };
-        DataService.loginPilot(pilotCredentials).then(() => {
+        dataService.loginPilot(pilotCredentials).then(() => {
             this.handleLogin();
         }).catch((error) => {
             // DEV

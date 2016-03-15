@@ -99,7 +99,7 @@ var StaticMap = React.createClass({
 
         return (
             <div>
-                <div className={ className } ref='map'/>;
+                <div className={ className } ref='map'/>
             </div>
         );
     }

@@ -37,7 +37,7 @@ describe('Header component', () => {
 
     describe('Defaults testing', () => {
         before(() => {
-            Sinon.stub(DataService, 'sendVerificationEmail', () => {
+            Sinon.stub(dataService, 'sendVerificationEmail', () => {
                 return Promise.resolve();
             });
 
@@ -53,7 +53,7 @@ describe('Header component', () => {
         });
 
         after(() => {
-            DataService.sendVerificationEmail.restore();
+            dataService.sendVerificationEmail.restore();
         });
 
         it('sets default state and renders notice with proper props', () => {

@@ -237,6 +237,7 @@ MapFacade.prototype.getAddressPromise = function(latLng) {
                 // Retrieve the second result (less detailed compare to the first one)
                 if (results[1]) {
                     resolve(results[1].address_components);
+                    return;
                 }
             }
             resolve(UNKNOWN_ADDRESS);
@@ -257,6 +258,7 @@ MapFacade.prototype.getElevationPromise = function(latLng) {
                 // Retrieve the first result
                 if (results[0] && Util.isNumber(results[0].elevation)) {
                     resolve(results[0].elevation);
+                    return;
                 }
             }
             resolve(UNKNOWN_ELEVATION);

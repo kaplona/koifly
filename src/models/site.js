@@ -3,7 +3,7 @@
 var _ = require('lodash');
 
 var Altitude = require('../utils/altitude');
-var DataService = require('../services/data-service');
+var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 var KoiflyError = require('../errors/error');
 
@@ -69,7 +69,7 @@ var SiteModel = {
             return loadingError;
         }
 
-        return _.map(DataService.store.sites, (site, siteId) => {
+        return _.map(dataService.store.sites, (site, siteId) => {
             return this.getSiteOutput(siteId);
         });
     },
@@ -91,7 +91,7 @@ var SiteModel = {
         var FlightModel = require('./flight');
 
         // Get required site from Data Service helper
-        var site = DataService.store.sites[siteId];
+        var site = dataService.store.sites[siteId];
 
         // var { total, thisYear } = FlightModel.getNumberOfFlightsAtSite(siteId);
         var flightNumObj = FlightModel.getNumberOfFlightsAtSite(siteId);
@@ -130,7 +130,7 @@ var SiteModel = {
         }
         
         // Get required site from Data Service helper
-        var site = DataService.store.sites[siteId];
+        var site = dataService.store.sites[siteId];
         
         return {
             id: site.id,
@@ -169,15 +169,15 @@ var SiteModel = {
      */
     checkForLoadingErrors: function(siteId) {
         // Check for loading errors
-        if (DataService.store.loadingError !== null) {
-            DataService.loadData();
-            return { error: DataService.store.loadingError };
+        if (dataService.loadingError !== null) {
+            dataService.initiateStore();
+            return { error: dataService.loadingError };
         // Check if data was loaded
-        } else if (DataService.store.sites === null) {
-            DataService.loadData();
+        } else if (dataService.store.sites === null) {
+            dataService.initiateStore();
             return null;
         // Check if required id exists
-        } else if (siteId && DataService.store.sites[siteId] === undefined) {
+        } else if (siteId && dataService.store.sites[siteId] === undefined) {
             return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
@@ -189,7 +189,7 @@ var SiteModel = {
      */
     saveSite: function(newSite) {
         newSite = this.setSiteInput(newSite);
-        return DataService.saveSite(newSite);
+        return dataService.saveSite(newSite);
     },
 
     /**
@@ -212,7 +212,7 @@ var SiteModel = {
             remarks: newSite.remarks
         };
 
-        var currentAltitude = (newSite.id !== undefined) ? DataService.store.sites[newSite.id].launchAltitude : 0;
+        var currentAltitude = (newSite.id !== undefined) ? dataService.store.sites[newSite.id].launchAltitude : 0;
         var nextAltitude = parseInt(newSite.launchAltitude);
         var nextAltitudeUnit = newSite.altitudeUnit;
         site.launchAltitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
@@ -246,11 +246,11 @@ var SiteModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteSite: function(siteId) {
-        return DataService.saveSite({ id: siteId, see: false });
+        return dataService.saveSite({ id: siteId, see: false });
     },
 
     getLatLngCoordinates: function(siteId) {
-        return DataService.store.sites[siteId] ? DataService.store.sites[siteId].coordinates : null;
+        return dataService.store.sites[siteId] ? dataService.store.sites[siteId].coordinates : null;
     },
 
     /**
@@ -279,7 +279,7 @@ var SiteModel = {
     },
 
     getNumberOfSites: function() {
-        return Object.keys(DataService.store.sites).length;
+        return Object.keys(dataService.store.sites).length;
     },
 
     /**
@@ -287,25 +287,25 @@ var SiteModel = {
      * @returns {string|null} - site's name or null if no site with given id
      */
     getSiteNameById: function(id) {
-        return DataService.store.sites[id] ? DataService.store.sites[id].name : null;
+        return dataService.store.sites[id] ? dataService.store.sites[id].name : null;
     },
 
     /**
      * @returns {number|null} - id of last created site or null if no sites yet
      */
     getLastAddedId: function() {
-        if (_.isEmpty(DataService.store.sites)) {
+        if (_.isEmpty(dataService.store.sites)) {
             return null;
         }
 
-        var lastAddedSite = _.max(DataService.store.sites, (site) => {
+        var lastAddedSite = _.max(dataService.store.sites, (site) => {
             return Date.parse(site.createdAt);
         });
         return lastAddedSite.id;
     },
 
     getLaunchAltitudeById: function(id) {
-        return DataService.store.sites[id].launchAltitude;
+        return dataService.store.sites[id].launchAltitude;
     },
 
     /**
@@ -313,13 +313,13 @@ var SiteModel = {
      * @returns {Array} - array of objects where value is site id, text is site name
      */
     getSiteValueTextList: function() {
-        return _.map(DataService.store.sites, (site, siteId) => {
+        return _.map(dataService.store.sites, (site, siteId) => {
             return { value: siteId, text: site.name };
         });
     },
 
     getSiteIdsList: function() {
-        return Object.keys(DataService.store.sites);
+        return Object.keys(dataService.store.sites);
     },
 
     getValidationConfig: function() {

@@ -2,7 +2,7 @@
 
 var _ = require('lodash');
 
-var DataService = require('../services/data-service');
+var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 var KoiflyError = require('../errors/error');
 
@@ -68,7 +68,7 @@ var GliderModel = {
             return loadingError;
         }
 
-        return _.map(DataService.store.gliders, (glider, gliderId) => {
+        return _.map(dataService.store.gliders, (glider, gliderId) => {
             return this.getGliderOutput(gliderId);
         });
     },
@@ -90,7 +90,7 @@ var GliderModel = {
         var FlightModel = require('./flight');
 
         // Get required glider from Data Service helper
-        var glider = DataService.store.gliders[gliderId];
+        var glider = dataService.store.gliders[gliderId];
 
         var flightNumObj = FlightModel.getNumberOfFlightsOnGlider(gliderId);
         var trueFlightNum = glider.initialFlightNum + flightNumObj.total;
@@ -126,7 +126,7 @@ var GliderModel = {
         }
 
         // Get required glider from Data Service helper
-        var glider = DataService.store.gliders[gliderId];
+        var glider = dataService.store.gliders[gliderId];
 
         return {
             id: glider.id,
@@ -163,15 +163,15 @@ var GliderModel = {
      */
     checkForLoadingErrors: function(gliderId) {
         // Check for loading errors
-        if (DataService.store.loadingError !== null) {
-            DataService.loadData();
-            return { error: DataService.store.loadingError };
+        if (dataService.loadingError !== null) {
+            dataService.initiateStore();
+            return { error: dataService.loadingError };
         // Check if data was loaded
-        } else if (DataService.store.gliders === null) {
-            DataService.loadData();
+        } else if (dataService.store.gliders === null) {
+            dataService.initiateStore();
             return null;
         // Check if required id exists
-        } else if (gliderId && DataService.store.gliders[gliderId] === undefined) {
+        } else if (gliderId && dataService.store.gliders[gliderId] === undefined) {
             return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
         }
         return false;
@@ -183,7 +183,7 @@ var GliderModel = {
      */
     saveGlider: function(newGlider) {
         newGlider = this.setGliderInput(newGlider);
-        return DataService.saveGlider(newGlider);
+        return dataService.saveGlider(newGlider);
     },
 
     /**
@@ -233,11 +233,11 @@ var GliderModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteGlider: function(gliderId) {
-        return DataService.saveGlider({ id: gliderId, see: false });
+        return dataService.saveGlider({ id: gliderId, see: false });
     },
 
     getNumberOfGliders: function() {
-        return Object.keys(DataService.store.gliders).length;
+        return Object.keys(dataService.store.gliders).length;
     },
 
     /**
@@ -245,18 +245,18 @@ var GliderModel = {
      * @returns {string|null} - glider's name or null if no glider with given id
      */
     getGliderNameById: function(id) {
-        return DataService.store.gliders[id] ? DataService.store.gliders[id].name : null;
+        return dataService.store.gliders[id] ? dataService.store.gliders[id].name : null;
     },
 
     /**
      * @returns {number|null} - id of last created glider or null if no gliders yet
      */
     getLastAddedId: function() {
-        if (_.isEmpty(DataService.store.gliders)) {
+        if (_.isEmpty(dataService.store.gliders)) {
             return null;
         }
 
-        var lastAddedGlider = _.max(DataService.store.gliders, (glider) => {
+        var lastAddedGlider = _.max(dataService.store.gliders, (glider) => {
             return Date.parse(glider.createdAt);
         });
         return lastAddedGlider.id;
@@ -267,13 +267,13 @@ var GliderModel = {
      * @returns {Array} - array of objects where value is glider id, text is site name
      */
     getGliderValueTextList: function() {
-        return _.map(DataService.store.gliders, (glider, gliderId) => {
+        return _.map(dataService.store.gliders, (glider, gliderId) => {
             return { value: gliderId, text: glider.name };
         });
     },
 
     getGliderIdsList: function() {
-        return Object.keys(DataService.store.gliders);
+        return Object.keys(dataService.store.gliders);
     },
 
     getValidationConfig: function() {

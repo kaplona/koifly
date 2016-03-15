@@ -3,7 +3,7 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -57,7 +57,7 @@ var ResetPassword = React.createClass({
             var password = this.state.password;
             var pilotId = this.props.params.pilotId;
             var authToken = this.props.params.authToken;
-            DataService.resetPassword(password, pilotId, authToken).then(() => {
+            dataService.resetPassword(password, pilotId, authToken).then(() => {
                 this.setState({ successNotice: true });
             }).catch((error) => {
                 this.handleSavingError(error);

@@ -59,7 +59,7 @@ var PilotChangePassword = React.createClass({
             });
 
             PilotModel
-                .changePassword(this.state)
+                .changePassword(this.state.password, this.state.newPassword)
                 .then(() => {
                     this.setState({
                         successNotice: true,

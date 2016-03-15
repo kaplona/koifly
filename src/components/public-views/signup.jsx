@@ -5,7 +5,7 @@ var Router = require('react-router');
 var History = Router.History;
 var Link = Router.Link;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -60,7 +60,7 @@ var Signup = React.createClass({
             isSubscribed: this.state.isSubscribed
         };
 
-        DataService.createPilot(pilotCredentials).then(() => {
+        dataService.createPilot(pilotCredentials).then(() => {
             this.history.pushState(null, '/pilot');
         }).catch((error) => {
             this.handleSavingError(error);

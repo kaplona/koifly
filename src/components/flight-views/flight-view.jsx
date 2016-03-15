@@ -116,10 +116,8 @@ var FlightView = React.createClass({
             return this.renderLoader();
         }
 
-        var flightName = this.state.flight.date;
-        if (this.state.flight.flightNumDay) {
-            flightName += '(' + this.state.flight.flightNumDay + ')';
-        }
+        var flightName = this.state.flight.date + ' (' + this.state.flight.flightNumDay + '/' + this.state.flight.numOfFlightsThatDay + ')';
+        
 
         return (
             <View onDataModified={ this.handleDataModified }>

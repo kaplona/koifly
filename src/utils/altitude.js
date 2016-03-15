@@ -1,6 +1,6 @@
 'use strict';
 
-var DataService = require('../services/data-service');
+var dataService = require('../services/data-service');
 
 
 var Altitude = {
@@ -14,7 +14,7 @@ var Altitude = {
      * @returns {string} name of current user's altitude units
      */
     getUserAltitudeUnit: function() {
-        return DataService.store.pilot.altitudeUnit;
+        return dataService.store.pilot.altitudeUnit;
     },
 
     /**
@@ -23,7 +23,7 @@ var Altitude = {
      * @returns {number} altitude in pilot's altitude units
      */
     getAltitudeInPilotUnits: function(altitude) {
-        var increment = this.meterConverter[DataService.store.pilot.altitudeUnit];
+        var increment = this.meterConverter[dataService.store.pilot.altitudeUnit];
         return Math.round(parseFloat(altitude) * increment);
     },
 
@@ -51,7 +51,7 @@ var Altitude = {
      */
     getAltitudeInMeters: function(nextValue, previousValue, units) {
         var previousFilteredVal = this.getAltitudeInPilotUnits(previousValue);
-        if (nextValue !== previousFilteredVal || units !== DataService.store.pilot.altitudeUnit) {
+        if (nextValue !== previousFilteredVal || units !== dataService.store.pilot.altitudeUnit) {
             return nextValue / this.meterConverter[units];
         }
         return previousValue;

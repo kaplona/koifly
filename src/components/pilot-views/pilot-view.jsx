@@ -3,7 +3,7 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var DataService = require('../../services/data-service');
+var dataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 var Util = require('../../utils/util');
 
@@ -42,8 +42,8 @@ var PilotView = React.createClass({
         this.history.pushState(null, '/pilot/edit/change-password');
     },
 
-    handleLogOut: function() {
-        DataService.logOut();
+    handleLogout: function() {
+        dataService.logout();
         this.history.pushState(null, '/');
     },
 
@@ -169,7 +169,7 @@ var PilotView = React.createClass({
                 <MobileButton
                     caption='Log Out'
                     buttonStyle='warning'
-                    onClick={ this.handleLogOut }
+                    onClick={ this.handleLogout }
                     />
             </View>
         );
