@@ -9,11 +9,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var FirstAdding = require('../../src/components/common/first-adding');
+var EmptyList = require('../../src/components/common/empty-list');
 
 
 
-describe('FirstAdding component', () => {
+describe('EmptyList component', () => {
 
     var TestUtils = React.addons.TestUtils;
     var Simulate = TestUtils.Simulate;
@@ -22,14 +22,14 @@ describe('FirstAdding component', () => {
     var renderedDOMElement;
 
     var mocks = {
-        dataType: 'test type',
+        itemsName: 'test type',
         handleAdding: Sinon.spy()
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <FirstAdding
-                dataType={ mocks.dataType }
+            <EmptyList
+                ofWhichItems={ mocks.itemsName }
                 onAdding={ mocks.handleAdding }
                 />
         );
@@ -42,7 +42,7 @@ describe('FirstAdding component', () => {
 
         expect(children[0])
             .to.have.property('textContent')
-            .that.contain(mocks.dataType);
+            .that.contain(mocks.itemsName);
     });
 
     it('triggers onAdding once button clicked', () => {

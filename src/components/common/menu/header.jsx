@@ -11,19 +11,19 @@ require('./header.less');
 var Header = React.createClass({
 
     getInitialState: function() {
-        return { isLoggedIn: PilotModel.isLoggedIn() };
+        return { isLoggedIn: false };
     },
 
     componentDidMount: function() {
-        PubSub.on('dataModified', this.handleDataModified, this);
-        this.handleDataModified();
+        PubSub.on('storeModified', this.handleStoreModified, this);
+        this.handleStoreModified();
     },
 
     componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.handleDataModified, this);
+        PubSub.removeListener('storeModified', this.handleStoreModified, this);
     },
 
-    handleDataModified: function() {
+    handleStoreModified: function() {
         this.setState({ isLoggedIn: PilotModel.isLoggedIn() });
     },
 

@@ -1,7 +1,7 @@
 'use strict';
 
 
-var DataServiceConstants = {
+const DataServiceConstants = {
     
     TIMEOUT: 6000
 };

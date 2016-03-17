@@ -31,7 +31,7 @@ var PilotView = React.createClass({
         };
     },
 
-    handlePilotEditing: function() {
+    handleEditPilotInfo: function() {
         this.history.pushState(null, '/pilot/edit');
     },
 
@@ -47,7 +47,7 @@ var PilotView = React.createClass({
         this.history.pushState(null, '/');
     },
 
-    handleDataModified: function() {
+    handleStoreModified: function() {
         var pilot = PilotModel.getPilotOutput();
         if (pilot !== null && pilot.error) {
             this.setState({ loadingError: pilot.error });
@@ -59,26 +59,22 @@ var PilotView = React.createClass({
         }
     },
 
-    renderError: function() {
+    renderLayout: function(children) {
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu header='Pilot' />
-                <NavigationMenu isPilotView={ true } />
-                
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
+                <NavigationMenu currentView={ PilotModel.getModelKey() } />
+                { children }
             </View>
         );
     },
 
+    renderError: function() {
+        return this.renderLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+    },
+
     renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu header='Pilot' />
-                <NavigationMenu isPilotView={ true } />
-                
-                <Loader />
-            </View>
-        );
+        return this.renderLayout(<Loader />);
     },
 
     render: function() {
@@ -90,18 +86,18 @@ var PilotView = React.createClass({
             return this.renderLoader();
         }
 
-        var airtimeTotal = Util.hoursMinutes(this.state.pilot.airtimeTotal);
+        var { airtimeTotal, flightNumThisYear, flightNumTotal } = this.state.pilot;
 
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onStoreModified={ this.handleStoreModified }>
                 <MobileTopMenu
                     header='Pilot'
                     rightButtonCaption='Edit'
-                    onRightClick={ this.handlePilotEditing }
+                    onRightClick={ this.handleEditPilotInfo }
                     />
-                <NavigationMenu isPilotView={ true } />
+                <NavigationMenu currentView={ PilotModel.getModelKey() } />
 
-                <Section onEditClick={ this.handlePilotEditing }>
+                <Section onEditClick={ this.handleEditPilotInfo }>
                     <SectionTitle>
                         <div>{ this.state.pilot.userName }</div>
                         <div>{ this.state.pilot.email }</div>
@@ -110,19 +106,14 @@ var PilotView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ [
-                                this.state.pilot.flightNumTotal,
-                                '( this year:',
-                                this.state.pilot.flightNumThisYear,
-                                ')'
-                            ].join(' ') }
+                            value={ `${flightNumTotal} ( this year: ${flightNumThisYear} )` }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ airtimeTotal }
+                            value={ Util.hoursMinutes(airtimeTotal) }
                             />
                     </SectionRow>
                     

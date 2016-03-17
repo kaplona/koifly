@@ -1,15 +1,12 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+// var History = require('react-router').History;
 
+var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
 
-var Button = require('../common/buttons/button');
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var FirstAdding = require('../common/first-adding');
-var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
@@ -18,61 +15,20 @@ var Table = require('../common/table');
 var View = require('../common/view');
 
 
+
 var SiteListView = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ listViewMixin(SiteModel.getModelKey()) ], // already includes history mixin
 
     getInitialState: function() {
         return {
-            sites: null,
+            items: null,
             loadingError: null
         };
     },
 
-    handleRowClick: function(siteId) {
-        this.history.pushState(null, '/site/' + siteId);
-    },
-
     handleToMapView: function() {
         this.history.pushState(null, '/sites/map');
-    },
-
-    handleSiteAdding: function() {
-        this.history.pushState(null, '/site/0/edit');
-    },
-
-    handleDataModified: function() {
-        var sites = SiteModel.getSitesArray();
-        if (sites !== null && sites.error) {
-            this.setState({ loadingError: sites.error });
-        } else {
-            this.setState({
-                sites: sites,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        if (this.state.loadingError !== null) {
-            return <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>;
-        }
-    },
-
-    renderLoader: function() {
-        return (this.state.sites === null) ? <Loader /> : null;
-    },
-
-    renderNoSitesYet: function() {
-        if (this.state.sites instanceof Array &&
-            this.state.sites.length === 0
-        ) {
-            return <FirstAdding dataType='sites' onAdding={ this.handleSiteAdding } />;
-        }
-    },
-
-    renderAddSiteButton: function() {
-        return <Button caption='Add Site' onClick={ this.handleSiteAdding } />;
     },
 
     renderSwitcher: function() {
@@ -108,7 +64,7 @@ var SiteListView = React.createClass({
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.sites || [] }
+                rows={ this.state.items || [] }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />
@@ -119,7 +75,7 @@ var SiteListView = React.createClass({
         var content = this.renderError();
 
         if (!content) {
-            content = this.renderNoSitesYet();
+            content = this.renderEmptyList();
         }
 
         if (!content) {
@@ -127,19 +83,19 @@ var SiteListView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu
                     header='Sites'
                     leftButtonCaption='Map'
                     rightButtonCaption='Add'
                     onLeftClick={ this.handleToMapView }
-                    onRightClick={ this.handleSiteAdding }
+                    onRightClick={ this.handleAddItem }
                     />
-                <NavigationMenu isSiteView={ true } />
+                <NavigationMenu currentView={ SiteModel.getModelKey() } />
                 
                 <Section>
                     <DesktopTopGrid
-                        leftElement={ this.renderAddSiteButton() }
+                        leftElement={ this.renderAddItemButton() }
                         middleElement={ this.renderSwitcher() }
                         />
 

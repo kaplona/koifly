@@ -29,7 +29,7 @@ describe('Header component', () => {
     var defaults = {
         loginText: 'Log In',
         logoutText: 'Log Out',
-        eventToListen: 'dataModified'
+        eventToListen: 'storeModified'
     };
 
     var mocks = {
@@ -40,9 +40,10 @@ describe('Header component', () => {
     before(() => {
         mocks.pilotLogout = Sinon.stub(PilotModel, 'logout');
 
-        Sinon.stub(PilotModel, 'isLoggedIn', () => {
-            return false;
-        });
+        Sinon
+            .stub(PilotModel, 'isLoggedIn')
+            .returns(true)
+            .onFirstCall().returns(false); // will be called with initial render
 
         component = TestUtils.renderIntoDocument(
             <Header />
@@ -65,15 +66,7 @@ describe('Header component', () => {
         expect(mocks.pilotLogout).to.not.be.called;
     });
 
-    it('changes state when dataModified event emitted', (done) => {
-        // here we restore PilotModel isLoggedIn method
-        // in order to stub it again but with other function that returns true
-        // emitting event should trigger setState of Header component and rerender it
-        PilotModel.isLoggedIn.restore();
-        Sinon.stub(PilotModel, 'isLoggedIn', () => {
-            return true;
-        });
-
+    it('changes state when storeModified event emitted', (done) => {
         expect(component).to.have.deep.property('state.isLoggedIn', false);
 
         PubSub.emit(defaults.eventToListen);

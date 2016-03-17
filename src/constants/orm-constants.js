@@ -1,7 +1,7 @@
 'use strict';
 
 
-var OrmConstants = {
+const OrmConstants = {
         SCOPES: {
             all: null,
             visible: 'see'

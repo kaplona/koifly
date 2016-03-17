@@ -2,12 +2,18 @@
 
 var _ = require('lodash');
 
+var BaseModel = require('./base-model');
 var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 var KoiflyError = require('../errors/error');
 
 
 var GliderModel = {
+
+    keys: {
+        single: 'glider',
+        plural: 'gliders'
+    },
 
     formValidationConfig: {
         name: {
@@ -56,23 +62,25 @@ var GliderModel = {
         }
     },
 
+    
     /**
      * Prepare data to show to user
      * @returns {array|null|object} - array of gliders
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getGlidersArray: function() {
+    getListOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
         return _.map(dataService.store.gliders, (glider, gliderId) => {
-            return this.getGliderOutput(gliderId);
+            return this.getItemOutput(gliderId);
         });
     },
 
+    
     /**
      * Prepare data to show to user
      * @param {string} gliderId
@@ -80,7 +88,7 @@ var GliderModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getGliderOutput: function(gliderId) {
+    getItemOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors(gliderId);
         if (loadingError !== false) {
             return loadingError;
@@ -108,6 +116,7 @@ var GliderModel = {
         };
     },
 
+    
     /**
      * Prepare data to show to user
      * @param {number} gliderId
@@ -115,14 +124,14 @@ var GliderModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getGliderEditOutput: function(gliderId) {
+    getEditOutput: function(gliderId) {
         var loadingError = this.checkForLoadingErrors(gliderId);
         if (loadingError !== false) {
             return loadingError;
         }
 
         if (gliderId === undefined) {
-            return this.getNewGliderOutput();
+            return this.getNewItemOutput();
         }
 
         // Get required glider from Data Service helper
@@ -138,13 +147,14 @@ var GliderModel = {
         };
     },
 
+    
     /**
      * Prepare data to show to user
      * @returns {object|null} - glider
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getNewGliderOutput: function() {
+    getNewItemOutput: function() {
         return {
             name: '',
             initialFlightNum: '0',
@@ -153,6 +163,7 @@ var GliderModel = {
             remarks: ''
         };
     },
+    
 
     /**
      * @param {number} gliderId
@@ -176,15 +187,7 @@ var GliderModel = {
         }
         return false;
     },
-
-    /**
-     * @param {object} newGlider
-     * @returns {Promise} - if saving was successful or not
-     */
-    saveGlider: function(newGlider) {
-        newGlider = this.setGliderInput(newGlider);
-        return dataService.saveGlider(newGlider);
-    },
+    
 
     /**
      * Fills empty fields with their defaults
@@ -193,7 +196,7 @@ var GliderModel = {
      * @param {object} newGlider
      * @returns {object} - glider ready to send to the server
      */
-    setGliderInput: function(newGlider) {
+    getDataForServer: function(newGlider) {
         // Set default values to empty fields
         newGlider = this.setDefaultValues(newGlider);
 
@@ -206,6 +209,7 @@ var GliderModel = {
             remarks: newGlider.remarks
         };
     },
+    
 
     /**
      * Walks through new glider and replace all empty values with default ones
@@ -227,19 +231,13 @@ var GliderModel = {
         });
         return _.extend({}, newGlider, fieldsToReplace);
     },
-
-    /**
-     * @param {number} gliderId
-     * @returns {Promise} - if deleting was successful or not
-     */
-    deleteGlider: function(gliderId) {
-        return dataService.saveGlider({ id: gliderId, see: false });
-    },
+    
 
     getNumberOfGliders: function() {
         return Object.keys(dataService.store.gliders).length;
     },
 
+    
     /**
      * @param {number} id
      * @returns {string|null} - glider's name or null if no glider with given id
@@ -247,6 +245,7 @@ var GliderModel = {
     getGliderNameById: function(id) {
         return dataService.store.gliders[id] ? dataService.store.gliders[id].name : null;
     },
+    
 
     /**
      * @returns {number|null} - id of last created glider or null if no gliders yet
@@ -262,24 +261,20 @@ var GliderModel = {
         return lastAddedGlider.id;
     },
 
+    
     /**
      * This gliders presentation is needed for dropdowns
-     * @returns {Array} - array of objects where value is glider id, text is site name
+     * @returns {Array} - array of objects where value is glider id, text is glider name
      */
     getGliderValueTextList: function() {
         return _.map(dataService.store.gliders, (glider, gliderId) => {
             return { value: gliderId, text: glider.name };
         });
-    },
-
-    getGliderIdsList: function() {
-        return Object.keys(dataService.store.gliders);
-    },
-
-    getValidationConfig: function() {
-        return this.formValidationConfig;
     }
 };
+
+
+GliderModel = _.extend({}, BaseModel, GliderModel);
 
 
 module.exports = GliderModel;

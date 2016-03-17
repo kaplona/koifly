@@ -1,19 +1,16 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
-var Link = Router.Link;
+var Link = require('react-router').Link;
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
+var itemViewMixin = require('../mixins/item-view-mixin');
 var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
 var Util = require('../../utils/util');
 
 var BreadCrumbs = require('../common/bread-crumbs');
-var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksRow = require('../common/section/remarks-row');
@@ -25,80 +22,35 @@ var StaticMap = require('../common/maps/static-map');
 var View = require('../common/view');
 
 
+
+var { shape, string } = React.PropTypes;
+
 var FlightView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({ // url args
-            flightId: React.PropTypes.string.isRequired
-        })
+        params: shape({ // url args
+            id: string.isRequired
+        }).isRequired
     },
 
-    mixins: [ History ],
+    mixins: [ itemViewMixin(FlightModel.getModelKey()) ],
 
     getInitialState: function() {
         return {
-            flight: null,
+            item: null,
             loadingError: null
         };
     },
 
-    handleToFlightList: function() {
-        this.history.pushState(null, '/flights');
-    },
-
-    handleFlightEditing: function() {
-        this.history.pushState(null, '/flight/' + this.props.params.flightId + '/edit');
-    },
-
-    handleDataModified: function() {
-        var flight = FlightModel.getFlightOutput(this.props.params.flightId);
-        if (flight !== null && flight.error) {
-            this.setState({ loadingError: flight.error });
-        } else {
-            this.setState({
-                flight: flight,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToFlightList }
-                    />
-                <NavigationMenu isFlightView={ true } />
-                
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            </View>
-        );
-    },
-
-    renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToFlightList }
-                    />
-                <NavigationMenu isFlightView={ true } />
-                
-                <Loader />
-            </View>
-        );
-    },
-
     renderMap: function() {
-        var siteId = this.state.flight.siteId;
+        var siteId = this.state.item.siteId;
         var siteCoordinates = SiteModel.getLatLngCoordinates(siteId);
         // this flight has no site or the site has no coordinates
         if (siteCoordinates === null) {
             return null;
         }
 
-        var site = SiteModel.getSiteOutput(siteId);
+        var site = SiteModel.getItemOutput(siteId);
         
         return StaticMap.create({
             center: siteCoordinates,
@@ -112,24 +64,24 @@ var FlightView = React.createClass({
             return this.renderError();
         }
 
-        if (this.state.flight === null) {
+        if (this.state.item === null) {
             return this.renderLoader();
         }
 
-        var flightName = this.state.flight.date + ' (' + this.state.flight.flightNumDay + '/' + this.state.flight.numOfFlightsThatDay + ')';
+        var { date, flightNum, flightNumDay, numOfFlightsThatDay, flightNumYear } = this.state.item;
+        var flightName = `${date} (${flightNumDay}/${numOfFlightsThatDay})`;
         
-
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onStoreModified={ this.handleStoreModified }>
                 <MobileTopMenu
                     leftButtonCaption='Back'
                     rightButtonCaption='Edit'
-                    onLeftClick={ this.handleToFlightList }
-                    onRightClick={ this.handleFlightEditing }
+                    onLeftClick={ this.handleToListView }
+                    onRightClick={ this.handleEditItem }
                     />
-                <NavigationMenu isFlightView={ true } />
+                <NavigationMenu currentView={ FlightModel.getModelKey() } />
 
-                <Section onEditClick={ this.handleFlightEditing }>
+                <Section onEditClick={ this.handleEditItem }>
                     <BreadCrumbs
                         elements={ [
                             <Link to='/flights'>Flights</Link>,
@@ -138,51 +90,46 @@ var FlightView = React.createClass({
                         />
 
                     <SectionTitle>
-                        <div>{ Util.formatDate(this.state.flight.date) }</div>
-                        <div>{ this.state.flight.siteName }</div>
+                        <div>{ Util.formatDate(this.state.item.date) }</div>
+                        <div>{ this.state.item.siteName }</div>
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
                             label='Flight number:'
-                            value={ [
-                                this.state.flight.flightNum,
-                                '(',
-                                Util.addOrdinalSuffix(this.state.flight.flightNumYear),
-                                'for the year )'
-                            ].join(' ') }
+                            value={ `${flightNum} ( ${Util.addOrdinalSuffix(flightNumYear)} for the year )` }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Max altitude:'
-                            value={ this.state.flight.altitude + ' ' + this.state.flight.altitudeUnit }
+                            value={ `${this.state.item.altitude} ${this.state.item.altitudeUnit}` }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Above the launch:'
-                            value={ this.state.flight.altitudeAboveLaunch + ' ' + this.state.flight.altitudeUnit }
+                            value={ `${this.state.item.altitudeAboveLaunch} ${this.state.item.altitudeUnit}` }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.hoursMinutes(this.state.flight.airtime) }
+                            value={ Util.hoursMinutes(this.state.item.airtime) }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Glider:'
-                            value={ this.state.flight.gliderName }
+                            value={ this.state.item.gliderName }
                             />
                     </SectionRow>
 
-                    <RemarksRow value={ this.state.flight.remarks } />
+                    <RemarksRow value={ this.state.item.remarks } />
 
                     { this.renderMap() }
                 </Section>

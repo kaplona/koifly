@@ -1,13 +1,12 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+// var History = require('react-router').History;
 
+var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
 
-var Button = require('../common/buttons/button');
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
@@ -19,45 +18,17 @@ var View = require('../common/view');
 
 var SiteListMapView = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ listViewMixin(SiteModel.getModelKey()) ], // already includes history mixin
 
     getInitialState: function() {
         return {
-            sites: null,
+            items: null,
             loadingError: null
         };
     },
 
     handleToListView: function() {
         this.history.pushState(null, '/sites/');
-    },
-
-    handleSiteAdding: function() {
-        this.history.pushState(null, '/site/0/edit');
-    },
-
-    handleDataModified: function() {
-        var sites = SiteModel.getSitesArray();
-        if (sites !== null && sites.error) {
-            this.setState({ loadingError: sites.error });
-        } else {
-            this.setState({
-                sites: sites,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        if (this.state.loadingError !== null) {
-            return (
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            );
-        }
-    },
-
-    renderAddSiteButton: function() {
-        return <Button caption='Add Site' onClick={ this.handleSiteAdding } />;
     },
 
     renderSwitcher: function() {
@@ -72,8 +43,7 @@ var SiteListMapView = React.createClass({
     },
 
     renderMap: function() {
-        var siteList = this.state.sites;
-
+        var siteList = this.state.items;
         return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader />;
     },
 
@@ -85,19 +55,19 @@ var SiteListMapView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu
                     header='Sites'
                     leftButtonCaption='List'
                     rightButtonCaption='Add'
                     onLeftClick={ this.handleToListView }
-                    onRightClick={ this.handleSiteAdding }
+                    onRightClick={ this.handleAddItem }
                     />
-                <NavigationMenu isSiteView={ true } />
+                <NavigationMenu currentView={ SiteModel.getModelKey() } />
                 
                 <Section isFullScreen={ true }>
                     <DesktopTopGrid
-                        leftElement={ this.renderAddSiteButton() }
+                        leftElement={ this.renderAddItemButton() }
                         middleElement={ this.renderSwitcher() }
                         />
 

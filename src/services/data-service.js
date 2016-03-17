@@ -20,6 +20,11 @@ var DataService = function() {
 };
 
 
+DataService.prototype.getStoreContent = function(storeKey) {
+    return this.store[storeKey];
+};
+
+
 /**
  * Requests for all user data and populates store with it
  */
@@ -59,7 +64,7 @@ DataService.prototype.logout = function() {
  * @param {string} dataType - one of 'flight', 'site', 'glider', 'pilot'
  * @returns {Promise} - if request was successful
  */
-DataService.prototype.sendData = function(data, dataType) {
+DataService.prototype.saveData = function(data, dataType) {
     data = {
         data: data,
         dataType: dataType,
@@ -179,7 +184,7 @@ DataService.prototype.setEmptyStore = function() {
         }
     });
 
-    PubSub.emit('dataModified');
+    PubSub.emit('storeModified');
 };
 
 
@@ -193,7 +198,7 @@ DataService.prototype.clearStore = function() {
     this.lastModified = null;
     this.loadingError = null;
 
-    PubSub.emit('dataModified');
+    PubSub.emit('storeModified');
 };
 
 
@@ -226,7 +231,7 @@ DataService.prototype.populateStore =  function(serverResponse) {
     // DEV
     console.log('current data', this.store);
 
-    PubSub.emit('dataModified');
+    PubSub.emit('storeModified');
 };
 
 
@@ -240,7 +245,7 @@ DataService.prototype.setLoadingError = function(error) {
     ) {
         this.loadingError = error;
 
-        PubSub.emit('dataModified');
+        PubSub.emit('storeModified');
     }
 };
 
@@ -283,19 +288,19 @@ DataService.prototype.setDataItems = function(newData, storeKey) {
 
 
 DataService.prototype.savePilotInfo = function(pilotInfo) {
-    return this.sendData(pilotInfo, 'pilot');
+    return this.saveData(pilotInfo, 'pilot');
 };
 
-DataService.prototype.saveFlight = function(flight) {
-    return this.sendData(flight, 'flight');
+DataService.prototype.saveItem = function(flight) {
+    return this.saveData(flight, 'flight');
 };
 
 DataService.prototype.saveSite = function(site) {
-    return this.sendData(site, 'site');
+    return this.saveData(site, 'site');
 };
 
 DataService.prototype.saveGlider = function(glider) {
-    return this.sendData(glider, 'glider');
+    return this.saveData(glider, 'glider');
 };
 
 

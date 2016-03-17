@@ -45,6 +45,23 @@ var PilotChangePassword = React.createClass({
         PilotModel.hideActivationNotice();
     },
 
+    handleStoreModified: function() {
+        PilotModel.hideActivationNotice();
+        this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
+    },
+
+    handleInputChange: function(inputName, inputValue) {
+        this.setState({ [inputName]: inputValue });
+    },
+
+    handleToPilotView: function() {
+        this.history.pushState(null, '/pilot');
+    },
+
+    handleToResetPassword: function() {
+        this.history.pushState(null, '/reset-password');
+    },
+
     handleSubmit: function(event) {
         if (event) {
             event.preventDefault();
@@ -74,25 +91,11 @@ var PilotChangePassword = React.createClass({
         }
     },
 
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
-    handleLinkTo: function(link) {
-        this.history.pushState(null, link);
-    },
-
     handleSavingError: function(error) {
         this.setState({
             error: error,
             isSaving: false
         });
-    },
-
-    handleDataModified: function() {
-        console.log('=> pilot: data modified');
-        PilotModel.hideActivationNotice();
-        this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
     },
 
     validateForm: function() {
@@ -144,7 +147,7 @@ var PilotChangePassword = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ () => this.handleLinkTo('/pilot') }
+                onClick={ () => this.handleToPilotView() }
                 isEnabled={ !this.state.isSaving }
                 />
         );
@@ -159,14 +162,14 @@ var PilotChangePassword = React.createClass({
         var isEnabled = this.state.isUserActivated && !this.state.isSaving;
 
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.error }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.error }>
                 <MobileTopMenu
                     leftButtonCaption='Back'
                     rightButtonCaption='Save'
-                    onLeftClick={ () => this.handleLinkTo('/pilot') }
+                    onLeftClick={ () => this.handleToPilotView() }
                     onRightClick={ this.handleSubmit }
                     />
-                <NavigationMenu isPilotView={ true } />
+                <NavigationMenu currentView={ PilotModel.getModelKey() } />
 
                 <CompactContainer>
                 <form>
@@ -225,7 +228,7 @@ var PilotChangePassword = React.createClass({
 
                     <MobileButton
                         caption='Forgot Password?'
-                        onClick={ () => this.handleLinkTo('/reset-password') }
+                        onClick={ () => this.handleToResetPassword() }
                         />
                 </form>
                 </CompactContainer>

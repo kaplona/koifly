@@ -1,22 +1,16 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 var _ = require('lodash');
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
+
+var editViewMixin = require('../mixins/edit-view-mixin');
 var SiteModel = require('../../models/site');
-var Validation = require('../../utils/validation');
 
 var AltitudeInput = require('../common/inputs/altitude-input');
-var Button = require('../common/buttons/button');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorBox = require('../common/notice/error-box');
-var ErrorTypes = require('../../errors/error-types');
 var InteractiveMap = require('../common/maps/interactive-map');
 var Linkish = require('../common/linkish');
-var Loader = require('../common/loader');
-var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
@@ -26,20 +20,23 @@ var TextInput = require('../common/inputs/text-input');
 var View = require('../common/view');
 
 
+
+var { shape, string } = React.PropTypes;
+
 var SiteEditView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({ // url args
-            siteId: React.PropTypes.string
+        params: shape({ // url args
+            id: string
         })
     },
 
-    mixins: [ History ],
+    mixins: [ editViewMixin(SiteModel.getModelKey()) ],
 
     getInitialState: function() {
         return {
-            site: null,
-            errors: _.clone(SiteEditView.formFields),
+            item: null,
+            validationErrors: _.clone(SiteEditView.formFields),
             isMapShown: false,
             loadingError: null,
             savingError: null,
@@ -47,81 +44,6 @@ var SiteEditView = React.createClass({
             isSaving: false,
             isDeleting: false
         };
-    },
-
-    handleSubmit: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        this.setState({ isMapShown: false });
-        var validationResponse = this.validateForm();
-        this.updateErrorState(validationResponse);
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({ isSaving: true });
-
-            SiteModel.saveSite(this.state.site).then(() => {
-                this.handleCancelEditing();
-            }).catch((error) => {
-                this.handleSavingError(error);
-            });
-        }
-    },
-
-    handleDeleteSite: function() {
-        var alertMessage = 'We will delete this site from all flight records';
-
-        if (window.confirm(alertMessage)) {
-            this.setState({ isDeleting: true });
-            SiteModel.deleteSite(this.props.params.siteId).then(() => {
-                this.history.pushState(null, '/sites');
-            }).catch((error) => {
-                this.handleDeletingError(error);
-            });
-        }
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        var newSite = _.extend({}, this.state.site, { [inputName]: inputValue });
-        this.setState({ site: newSite }, function() {
-            var validationResponse = this.validateForm(true);
-            this.updateErrorState(validationResponse);
-        });
-    },
-
-    handleCancelEditing: function() {
-        if (this.state.isMapShown) {
-            this.handleMapHide();
-        } else {
-            this.history.pushState(
-                null,
-                this.props.params.siteId ? ('/site/' + this.props.params.siteId) : '/sites'
-            );
-        }
-    },
-
-    handleSavingError: function(error) {
-        if (error.type === ErrorTypes.VALIDATION_ERROR) {
-            this.updateErrorState(error.errors);
-            error = null;
-        }
-
-        this.setState({
-            savingError: error,
-            deletingError: null,
-            isSaving: false,
-            isDeleting: false
-        });
-    },
-
-    handleDeletingError: function(error) {
-        this.setState({
-            deletingError: error,
-            savingError: null,
-            isDeleting: false,
-            isSaving: false
-        });
     },
 
     handleMapShow: function() {
@@ -132,172 +54,16 @@ var SiteEditView = React.createClass({
         this.setState({ isMapShown: false });
     },
 
-    handleDataModified: function() {
-        // If waiting for server response
-        // ignore any other data updates
-        if (this.state.isSaving || this.state.isDeleting) {
-            return;
-        }
-
-        // Fetch site
-        var site = SiteModel.getSiteEditOutput(this.props.params.siteId);
-
-        // Check for errors
-        if (site !== null && site.error) {
-            this.setState({ loadingError: site.error });
-            return;
-        }
-
-        // If there is user input in the form
-        // erase processing errors
-        // need this for handling successful authentication
-        if (this.state.site !== null) {
-            this.setState({
-                savingError: null,
-                deletingError: null
-            });
-            return;
-        }
-
-        //var markerPosition = (site !== null) ? SiteModel.getLatLngCoordinates(this.props.params.siteId) : null;
-        this.setState({
-            site: site,
-            //markerPosition: markerPosition,
-            loadingError: null
-        });
-    },
-
-    validateForm: function(isSoft) {
-        var validationResponse = Validation.validateForm(
-            SiteModel.getValidationConfig(),
-            this.state.site,
-            isSoft
-        );
-        return validationResponse;
-    },
-
-    updateErrorState: function(newErrors) {
-        var newErrorState = _.extend({}, SiteEditView.formFields, newErrors);
-        this.setState({ errors: newErrorState });
-    },
-
     getMarkerPosition: function() {
-        if (this.state.site.coordinates.trim() !== '') {
+        if (this.state.item.coordinates.trim() !== '') {
             // Hard validation in order to check coordinates format
             var validationRespond = this.validateForm();
             if (validationRespond === true || validationRespond.coordinates === undefined) {
                 // Change user input in { lat: 56.56734543, lng: 123.4567543 } format
-                return SiteModel.formCoordinatesInput(this.state.site.coordinates);
+                return SiteModel.formCoordinatesInput(this.state.item.coordinates);
             }
         }
         return null;
-    },
-
-    renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    leftButtonCaption='Cancel'
-                    onLeftClick={ this.handleCancelEditing }
-                    />
-                <NavigationMenu isSiteView={ true } />
-                
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
-            </View>
-        );
-    },
-
-    renderSavingError: function() {
-        if (this.state.savingError) {
-            var isTrying = (this.state.isSaving || this.state.isDeleting);
-            return (
-                <ErrorBox
-                    error={ this.state.savingError }
-                    onTryAgain={ this.handleSubmit }
-                    isTrying={ isTrying }
-                    />
-            );
-        }
-    },
-
-    renderDeletingError: function() {
-        if (this.state.deletingError) {
-            var isTrying = (this.state.isSaving || this.state.isDeleting);
-            return (
-                <ErrorBox
-                    error={ this.state.deletingError }
-                    onTryAgain={ this.handleDeleteSite }
-                    isTrying={ isTrying }
-                    />
-            );
-        }
-    },
-
-    renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Cancel'
-                    onLeftClick={ this.handleCancelEditing }
-                    />
-                <NavigationMenu isSiteView={ true } />
-                
-                <Loader />
-            </View>
-        );
-    },
-
-    renderMobileDeleteButton: function() {
-        if (this.props.params.siteId) {
-            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-            return (
-                <MobileButton
-                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
-                    buttonStyle='warning'
-                    onClick={ this.handleDeleteSite }
-                    isEnabled={ isEnabled }
-                    />
-            );
-        }
-    },
-
-    renderDeleteButton: function() {
-        if (this.props.params.siteId) {
-            var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-            return (
-                <Button
-                    caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
-                    buttonStyle='warning'
-                    onClick={ this.handleDeleteSite }
-                    isEnabled={ isEnabled }
-                    />
-            );
-        }
-    },
-
-    renderSaveButton: function() {
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-        return (
-            <Button
-                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
-                type='submit'
-                buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ isEnabled }
-                />
-        );
-    },
-
-    renderCancelButton: function() {
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
-        return (
-            <Button
-                caption='Cancel'
-                buttonStyle='secondary'
-                onClick={ this.handleCancelEditing }
-                isEnabled={ isEnabled }
-                />
-        );
     },
 
     renderMap: function() {
@@ -307,25 +73,14 @@ var SiteEditView = React.createClass({
 
         var markerPosition = this.getMarkerPosition();
 
-        if (markerPosition !== null) {
-            return InteractiveMap.create({
-                markerId: this.state.site.id,
-                center: markerPosition,
-                zoomLevel: ZOOM_LEVEL.site,
-                markerPosition: markerPosition,
-                location: this.state.site.location,
-                launchAltitude: this.state.site.launchAltitude,
-                altitudeUnit: this.state.site.altitudeUnit,
-                onDataApply: this.handleInputChange,
-                onMapClose: this.handleMapHide
-            });
-        }
-
         return InteractiveMap.create({
-            markerId: this.state.site.id,
-            location: this.state.site.location,
-            launchAltitude: this.state.site.launchAltitude,
-            altitudeUnit: this.state.site.altitudeUnit,
+            markerId: this.state.item.id,
+            center: markerPosition || undefined,
+            zoomLevel: markerPosition ? ZOOM_LEVEL.site : ZOOM_LEVEL.region,
+            markerPosition: markerPosition || undefined,
+            location: this.state.item.location,
+            launchAltitude: this.state.item.launchAltitude,
+            altitudeUnit: this.state.item.altitudeUnit,
             onDataApply: this.handleInputChange,
             onMapClose: this.handleMapHide
         });
@@ -336,55 +91,52 @@ var SiteEditView = React.createClass({
             return this.renderError();
         }
 
-        if (this.state.site === null) {
+        if (this.state.item === null) {
             return this.renderLoader();
         }
 
-        var processingError = this.state.savingError ? this.state.savingError : this.state.deletingError;
-        var isEnabled = (!this.state.isSaving && !this.state.isDeleting);
         var mapLink = <Linkish onClick={ this.handleMapShow }>or use a map</Linkish>;
 
         return (
-            <View onDataModified={ this.handleDataModified } error={ processingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
                 <MobileTopMenu
                     leftButtonCaption={ this.state.isMapShown ? 'Back' : 'Cancel' }
-                    rightButtonCaption='Save'
-                    onLeftClick={ this.handleCancelEditing }
-                    onRightClick={ this.handleSubmit }
+                    rightButtonCaption={ this.state.isMapShown ? null : 'Save' }
+                    onLeftClick={ this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit }
+                    onRightClick={ this.state.isMapShown ? null : this.handleSubmit }
                     />
-                <NavigationMenu isSiteView={ true } />
+                <NavigationMenu currentView={ SiteModel.getModelKey() } />
 
                 <form>
-                    { this.renderSavingError() }
-                    { this.renderDeletingError() }
+                    { this.renderProcessingError() }
                     
                     <Section>
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.site.name }
+                                inputValue={ this.state.item.name }
                                 labelText={ <span>Name<sup>*</sup>:</span> }
                                 inputName='name'
-                                errorMessage={ this.state.errors.name }
+                                errorMessage={ this.state.validationErrors.name }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
 
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.site.location }
+                                inputValue={ this.state.item.location }
                                 labelText='Location:'
                                 inputName='location'
-                                errorMessage={ this.state.errors.location }
+                                errorMessage={ this.state.validationErrors.location }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
 
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.site.coordinates }
+                                inputValue={ this.state.item.coordinates }
                                 labelText='Coordinates:'
                                 inputName='coordinates'
-                                errorMessage={ this.state.errors.coordinates }
+                                errorMessage={ this.state.validationErrors.coordinates }
                                 onChange={ this.handleInputChange }
                                 afterComment={ mapLink }
                                 />
@@ -392,45 +144,32 @@ var SiteEditView = React.createClass({
 
                         <SectionRow>
                             <AltitudeInput
-                                inputValue={ this.state.site.launchAltitude }
-                                selectedAltitudeUnit={ this.state.site.altitudeUnit }
+                                inputValue={ this.state.item.launchAltitude }
+                                selectedAltitudeUnit={ this.state.item.altitudeUnit }
                                 labelText='Launch altitude:'
                                 inputName='launchAltitude'
-                                errorMessage={ this.state.errors.launchAltitude }
+                                errorMessage={ this.state.validationErrors.launchAltitude }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
 
                         <SectionRow isLast={ true }>
                             <RemarksInput
-                                inputValue={ this.state.site.remarks }
+                                inputValue={ this.state.item.remarks }
                                 labelText='Remarks:'
-                                errorMessage={ this.state.errors.remarks }
+                                errorMessage={ this.state.validationErrors.remarks }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
 
-                        <DesktopBottomGrid
-                            leftElements={ [
-                                this.renderSaveButton(),
-                                this.renderCancelButton()
-                            ] }
-                            rightElement={ this.renderDeleteButton() }
-                            />
+                        { this.renderDesktopButtons() }
 
                         { this.renderMap() }
 
                     </Section>
 
-                    <MobileButton
-                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
-                        type='submit'
-                        buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ isEnabled }
-                        />
+                    { this.renderMobileButtons() }
 
-                    { this.renderMobileDeleteButton() }
                 </form>
             </View>
         );

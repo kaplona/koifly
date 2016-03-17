@@ -31,55 +31,14 @@ var PilotEditView = React.createClass({
     getInitialState: function() {
         return {
             pilot: null,
-            errors: _.clone(PilotEditView.formFields),
+            validationErrors: _.clone(PilotEditView.formFields),
             loadingError: null,
             savingError: null,
             isSaving: false
         };
     },
 
-    handleSubmit: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        var validationResponse = this.validateForm();
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({ isSaving: true });
-
-            PilotModel.savePilotInfo(this.state.pilot).then(() => {
-                this.history.pushState(null, '/pilot');
-            }).catch((error) => {
-                this.handleSavingError(error);
-            });
-        }
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        var newPilotInfo = _.extend({}, this.state.pilot, { [inputName]: inputValue });
-        this.setState({ pilot: newPilotInfo }, function() {
-            this.validateForm(true);
-        });
-    },
-
-    handleCancelEditing: function() {
-        this.history.pushState(null, '/pilot');
-    },
-
-    handleSavingError: function(error) {
-        if (error.type === ErrorTypes.VALIDATION_ERROR) {
-            this.updateErrorState(error.errors);
-            error = null;
-        }
-        
-        this.setState({
-            savingError: error,
-            isSaving: false
-        });
-    },
-
-    handleDataModified: function() {
+    handleStoreModified: function() {
         // If waiting for server response
         // ignore any other data updates
         if (this.state.isSaving) {
@@ -87,18 +46,11 @@ var PilotEditView = React.createClass({
         }
 
         // Fetch pilot info
-        var pilot = PilotModel.getPilotEditOutput();
+        var pilot = PilotModel.getEditOutput();
 
         // Check for errors
         if (pilot !== null && pilot.error) {
             this.setState({ loadingError: pilot.error });
-            return;
-        }
-        // If there is user input in the form
-        // erase saving error
-        // need this for handling successful authentication
-        if (this.state.pilot !== null) {
-            this.setState({ savingError: null });
             return;
         }
 
@@ -108,61 +60,92 @@ var PilotEditView = React.createClass({
         });
     },
 
+    handleInputChange: function(inputName, inputValue) {
+        var newPilotInfo = _.extend({}, this.state.pilot, { [inputName]: inputValue });
+        this.setState({ pilot: newPilotInfo }, function() {
+            this.updateValidationErrors(this.validateForm(true));
+        });
+    },
+
+    handleCancelEdit: function() {
+        this.history.pushState(null, '/pilot');
+    },
+
+    handleSubmit: function(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        var validationResponse = this.validateForm();
+        this.updateValidationErrors(validationResponse);
+        // If no errors
+        if (validationResponse === true) {
+            this.setState({ isSaving: true });
+
+            PilotModel.savePilotInfo(this.state.pilot).then(() => {
+                this.handleCancelEdit();
+            }).catch((error) => {
+                this.handleSavingError(error);
+            });
+        }
+    },
+
+    handleSavingError: function(error) {
+        if (error.type === ErrorTypes.VALIDATION_ERROR) {
+            this.updateValidationErrors(error.errors);
+            error = null;
+        }
+        
+        this.setState({
+            savingError: error,
+            isSaving: false
+        });
+    },
 
     validateForm: function(isSoft) {
-        var validationResponse = Validation.validateForm(
+        return Validation.validateForm(
             PilotModel.getValidationConfig(),
             this.state.pilot,
             isSoft
         );
-        this.updateErrorState(validationResponse);
-        return validationResponse;
     },
 
-    updateErrorState: function(newErrors) {
+    updateValidationErrors: function(newErrors) {
         var newErrorState = _.extend({}, PilotEditView.formFields, newErrors);
         this.setState({ errors: newErrorState });
     },
 
-    renderError: function() {
+    renderLayout: function(children) {
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu
                     leftButtonCaption='Cancel'
-                    onLeftClick={ this.handleCancelEditing }
+                    onLeftClick={ this.handleCancelEdit }
                     />
-                <NavigationMenu isPilotView={ true } />
-                
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
+                <NavigationMenu currentView={ PilotModel.getModelKey() } />
+                { children }
             </View>
         );
+    },
+
+    renderLoader: function() {
+        return this.renderLayout(<Loader />);
+    },
+
+    renderError: function() {
+        return this.renderLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
     },
 
     renderSavingError: function() {
         if (this.state.savingError) {
-            var isTrying = this.state.isSaving;
             return (
                 <ErrorBox
                     error={ this.state.savingError }
                     onTryAgain={ this.handleSubmit }
-                    isTrying={ isTrying }
+                    isTrying={ this.state.isSaving }
                     />
             );
         }
-    },
-
-    renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Cancel'
-                    onLeftClick={ this.handleCancelEditing }
-                    />
-                <NavigationMenu isPilotView={ true } />
-                
-                <Loader />
-            </View>
-        );
     },
 
     renderSaveButton: function() {
@@ -182,7 +165,7 @@ var PilotEditView = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ this.handleCancelEditing }
+                onClick={ this.handleCancelEdit }
                 isEnabled={ !this.state.isSaving }
                 />
         );
@@ -197,18 +180,15 @@ var PilotEditView = React.createClass({
             return this.renderLoader();
         }
 
-        var processingError = this.state.savingError ? this.state.savingError : null;
-        var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
-
         return (
-            <View onDataModified={ this.handleDataModified } error={ processingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.savingError }>
                 <MobileTopMenu
                     leftButtonCaption='Cancel'
                     rightButtonCaption='Save'
-                    onLeftClick={ this.handleCancelEditing }
+                    onLeftClick={ this.handleCancelEdit }
                     onRightClick={ this.handleSubmit }
                     />
-                <NavigationMenu isPilotView={ true } />
+                <NavigationMenu currentView={ PilotModel.getModelKey() } />
 
                 <form>
                     { this.renderSavingError() }
@@ -223,7 +203,7 @@ var PilotEditView = React.createClass({
                                 inputValue={ this.state.pilot.userName }
                                 labelText='Name:'
                                 inputName='userName'
-                                errorMessage={ this.state.errors.userName }
+                                errorMessage={ this.state.validationErrors.userName }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
@@ -238,7 +218,7 @@ var PilotEditView = React.createClass({
                                 labelText='Number of flights:'
                                 inputName='initialFlightNum'
                                 isNumber={ true }
-                                errorMessage={ this.state.errors.initialFlightNum }
+                                errorMessage={ this.state.validationErrors.initialFlightNum }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
@@ -248,9 +228,11 @@ var PilotEditView = React.createClass({
                                 hours={ this.state.pilot.hours }
                                 minutes={ this.state.pilot.minutes }
                                 labelText='Airtime:'
-                                errorMessage={ this.state.errors.initialAirtime }
-                                errorMessageHours={ this.state.errors.hours }
-                                errorMessageMinutes={ this.state.errors.minutes }
+                                errorMessage={
+                                    this.state.validationErrors.initialAirtime ||
+                                    this.state.validationErrors.hours ||
+                                    this.state.validationErrors.minutes
+                                }
                                 onChange={ this.handleInputChange }
                                 />
                         </SectionRow>
@@ -262,10 +244,10 @@ var PilotEditView = React.createClass({
                         <SectionRow isLast={ true }>
                             <DropdownInput
                                 selectedValue={ this.state.pilot.altitudeUnit }
-                                options={ altitudeUnitsList }
+                                options={ Altitude.getAltitudeUnitsValueTextList() }
                                 labelText='Altitude units:'
                                 inputName='altitudeUnit'
-                                errorMessage={ this.state.errors.altitudeUnit }
+                                errorMessage={ this.state.validationErrors.altitudeUnit }
                                 onChangeFunc={ this.handleInputChange }
                                 />
                         </SectionRow>

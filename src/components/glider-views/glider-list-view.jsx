@@ -1,15 +1,11 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 
+var listViewMixin = require('../mixins/list-view-mixin');
 var GliderModel = require('../../models/glider');
 
-var Button = require('../common/buttons/button');
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var FirstAdding = require('../common/first-adding');
-var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
@@ -17,57 +13,16 @@ var Table = require('../common/table');
 var View = require('../common/view');
 
 
+
 var GliderListView = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ listViewMixin(GliderModel.getModelKey()) ],
 
     getInitialState: function() {
         return {
-            gliders: null,
+            items: null,
             loadingError: null
         };
-    },
-
-    handleGliderAdding: function() {
-        this.history.pushState(null, '/glider/0/edit');
-    },
-
-    handleRowClick: function(gliderId) {
-        this.history.pushState(null, '/glider/' + gliderId);
-    },
-
-    handleDataModified: function() {
-        var gliders = GliderModel.getGlidersArray();
-        if (gliders !== null && gliders.error) {
-            this.setState({ loadingError: gliders.error });
-        } else {
-            this.setState({
-                gliders: gliders,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        if (this.state.loadingError !== null) {
-            return <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>;
-        }
-    },
-
-    renderLoader: function() {
-        return (this.state.gliders === null) ? <Loader /> : null;
-    },
-
-    renderNoGlidersYet: function() {
-        if (this.state.gliders instanceof Array &&
-            this.state.gliders.length === 0
-        ) {
-            return <FirstAdding dataType='gliders' onAdding={ this.handleGliderAdding } />;
-        }
-    },
-
-    renderAddGliderButton: function() {
-        return <Button caption='Add Glider' onClick={ this.handleGliderAdding } />;
     },
 
     renderTable: function() {
@@ -92,7 +47,7 @@ var GliderListView = React.createClass({
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.gliders || [] }
+                rows={ this.state.items || [] }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />
@@ -103,7 +58,7 @@ var GliderListView = React.createClass({
         var content = this.renderError();
 
         if (!content) {
-            content = this.renderNoGlidersYet();
+            content = this.renderEmptyList();
         }
 
         if (!content) {
@@ -111,20 +66,21 @@ var GliderListView = React.createClass({
         }
 
         return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu
                     header='Gliders'
                     rightButtonCaption='Add'
-                    onRightClick={ this.handleGliderAdding }
+                    onRightClick={ this.handleAddItem }
                     />
-                <NavigationMenu isGliderView={ true } />
+                <NavigationMenu currentView={ GliderModel.getModelKey() } />
                 
                 <Section>
                     <DesktopTopGrid
-                        leftElement={ this.renderAddGliderButton() }
+                        leftElement={ this.renderAddItemButton() }
                         />
 
                     { content }
+                    
                     { this.renderLoader() }
                 </Section>
             </View>

@@ -1,16 +1,13 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
-var Link = Router.Link;
+var Link = require('react-router').Link;
 
+var itemViewMixin = require('../mixins/item-view-mixin');
 var GliderModel = require('../../models/glider');
 var Util = require('../../utils/util');
 
 var BreadCrumbs = require('../common/bread-crumbs');
-var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksRow = require('../common/section/remarks-row');
@@ -21,69 +18,24 @@ var SectionTitle = require('../common/section/section-title');
 var View = require('../common/view');
 
 
+
+var { shape, string } = React.PropTypes;
+
 var GliderView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({ // url args
-            gliderId: React.PropTypes.string.isRequired
+        params: shape({ // url args
+            id: string.isRequired
         })
     },
 
-    mixins: [ History ],
+    mixins: [ itemViewMixin(GliderModel.getModelKey()) ],
 
     getInitialState: function() {
         return {
-            glider: null,
+            item: null,
             loadingError: null
         };
-    },
-
-    handleToGliderList: function() {
-        this.history.pushState(null, '/gliders');
-    },
-
-    handleGliderEditing: function() {
-        this.history.pushState(null, '/glider/' + this.props.params.gliderId + '/edit');
-    },
-
-    handleDataModified: function() {
-        var glider = GliderModel.getGliderOutput(this.props.params.gliderId);
-        if (glider !== null && glider.error) {
-            this.setState({ loadingError: glider.error });
-        } else {
-            this.setState({
-                glider: glider,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToGliderList }
-                    />
-                <NavigationMenu isGliderView={ true } />
-                
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified }/>
-            </View>
-        );
-    },
-
-    renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToGliderList }
-                    />
-                <NavigationMenu isGliderView={ true } />
-                
-                <Loader />
-            </View>
-        );
     },
 
     render: function() {
@@ -91,48 +43,45 @@ var GliderView = React.createClass({
             return this.renderError();
         }
 
-        if (this.state.glider === null) {
+        if (this.state.item === null) {
             return this.renderLoader();
         }
 
+        var { trueFlightNum, flightNumThisYear } = this.state.item;
+
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onStoreModified={ this.handleStoreModified }>
                 <MobileTopMenu
                     leftButtonCaption='Back'
                     rightButtonCaption='Edit'
-                    onLeftClick={ this.handleToGliderList }
-                    onRightClick={ this.handleGliderEditing }
+                    onLeftClick={ this.handleToListView }
+                    onRightClick={ this.handleEditItem }
                     />
-                <NavigationMenu isGliderView={ true } />
+                <NavigationMenu currentView={ GliderModel.getModelKey() } />
 
-                <Section onEditClick={ this.handleGliderEditing } >
+                <Section onEditClick={ this.handleEditItem } >
                     <BreadCrumbs
                         elements={ [
                             <Link to='/gliders'>Gliders</Link>,
-                            this.state.glider.name
+                            this.state.item.name
                         ] }
                         />
 
                     <SectionTitle>
-                        { this.state.glider.name }
+                        { this.state.item.name }
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
                             label='Total flights:'
-                            value={ [
-                                this.state.glider.trueFlightNum,
-                                '( this year:',
-                                this.state.glider.flightNumThisYear,
-                                ')'
-                            ].join(' ') }
+                            value={ `${trueFlightNum} ( this year: ${flightNumThisYear} )` }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Total airtime:'
-                            value={ Util.hoursMinutes(this.state.glider.trueAirtime) }
+                            value={ Util.hoursMinutes(this.state.item.trueAirtime) }
                             />
                     </SectionRow>
 
@@ -143,18 +92,18 @@ var GliderView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ this.state.glider.initialFlightNum }
+                            value={ this.state.item.initialFlightNum }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.hoursMinutes(this.state.glider.initialAirtime) }
+                            value={ Util.hoursMinutes(this.state.item.initialAirtime) }
                             />
                     </SectionRow>
 
-                    <RemarksRow value={ this.state.glider.remarks } />
+                    <RemarksRow value={ this.state.item.remarks } />
 
                 </Section>
             </View>

@@ -37,7 +37,7 @@ describe('View component', () => {
         childClassName: 'testChild',
         authError: { type: ErrorTypes.AUTHENTICATION_ERROR },
         notAuthError: { type: 'notAuthError' },
-        handleDataModified: Sinon.spy(),
+        handleStoreModified: Sinon.spy(),
         handleHideNotice: null
     };
 
@@ -54,7 +54,7 @@ describe('View component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <View
-                    onDataModified={ mocks.handleDataModified }
+                    onStoreModified={ mocks.handleStoreModified }
                     error={ mocks.notAuthError }
                     >
                     { mocks.childText }
@@ -80,14 +80,14 @@ describe('View component', () => {
         });
 
         it('requests for store data once component was mounted', () => {
-            expect(mocks.handleDataModified).to.have.been.calledOnce;
+            expect(mocks.handleStoreModified).to.have.been.calledOnce;
         });
 
         it('requests for store data again when store-was-modified event emitted', (done) => {
-            PubSub.emit('dataModified');
+            PubSub.emit('storeModified');
 
             then(() => {
-                expect(mocks.handleDataModified).to.have.been.calledTwice;
+                expect(mocks.handleStoreModified).to.have.been.calledTwice;
                 // component called PilotModel.getActivationNoticeStatus which returned true on second call
                 expect(component).to.have.deep.property('state.isActivationNotice', true);
 
@@ -125,7 +125,7 @@ describe('View component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <View
-                    onDataModified={ mocks.handleDataModified }
+                    onStoreModified={ mocks.handleStoreModified }
                     error={ mocks.authError }
                     >
                     <div className={ mocks.childClassName } >{ mocks.childText }</div>

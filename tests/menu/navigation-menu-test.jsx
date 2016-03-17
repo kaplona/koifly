@@ -4,6 +4,11 @@ require('../../src/test-dom')();
 var React = require('react/addons');
 var expect = require('chai').expect;
 
+var FlightModel = require('../../src/models/flight');
+var GliderModel = require('../../src/models/glider');
+var SiteModel = require('../../src/models/site');
+var PilotModel = require('../../src/models/pilot');
+
 var NavigationMenu = require('../../src/components/common/menu/navigation-menu');
 var NavigationItem = require('../../src/components/common/menu/navigation-item');
 
@@ -12,7 +17,6 @@ var NavigationItem = require('../../src/components/common/menu/navigation-item')
 describe('BottomMenu component', () => {
 
     var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
 
@@ -41,7 +45,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only flights navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu isFlightView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ FlightModel.getModelKey() } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', true);
@@ -51,7 +55,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only sites navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu isSiteView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ SiteModel.getModelKey() } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
@@ -61,7 +65,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only gliders navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu isGliderView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ GliderModel.getModelKey() } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
@@ -71,7 +75,7 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only pilot navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu isPilotView={ true } />);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ PilotModel.getModelKey() } />);
         let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);

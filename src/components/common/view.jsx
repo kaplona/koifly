@@ -13,7 +13,7 @@ var Login = require('../public-views/login');
 var View = React.createClass({
 
     propTypes: {
-        onDataModified: React.PropTypes.func.isRequired,
+        onStoreModified: React.PropTypes.func.isRequired,
         error: React.PropTypes.object
     },
 
@@ -24,16 +24,16 @@ var View = React.createClass({
     },
 
     componentDidMount: function() {
-        PubSub.on('dataModified', this.handleDataModified, this);
-        this.handleDataModified();
+        PubSub.on('storeModified', this.handleStoreModified, this);
+        this.handleStoreModified();
     },
 
     componentWillUnmount: function() {
-        PubSub.removeListener('dataModified', this.handleDataModified, this);
+        PubSub.removeListener('storeModified', this.handleStoreModified, this);
     },
 
-    handleDataModified: function() {
-        this.props.onDataModified();
+    handleStoreModified: function() {
+        this.props.onStoreModified();
         this.setState({ isActivationNotice: PilotModel.getActivationNoticeStatus() });
     },
 

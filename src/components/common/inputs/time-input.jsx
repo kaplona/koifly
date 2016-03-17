@@ -12,9 +12,7 @@ var TimeInput = React.createClass({
         hours: React.PropTypes.string.isRequired,
         minutes: React.PropTypes.string.isRequired,
         labelText: React.PropTypes.string,
-        errorMessage: React.PropTypes.string, // server-side validation
-        errorMessageHours: React.PropTypes.string, // front-end validation
-        errorMessageMinutes: React.PropTypes.string, // front-end validation
+        errorMessage: React.PropTypes.string,
         onChange: React.PropTypes.func.isRequired
     },
 
@@ -23,20 +21,15 @@ var TimeInput = React.createClass({
     },
 
     renderErrorMessage: function() {
-        if (this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes) {
-            var errorText = this.props.errorMessage || this.props.errorMessageHours || this.props.errorMessageMinutes;
-            return <ValidationError message={ errorText } />;
+        if (this.props.errorMessage) {
+            return <ValidationError message={ this.props.errorMessage } />;
         }
     },
 
     render: function() {
-        var hoursErrorClass = '';
-        var minutesErrorClass = '';
-        if (this.props.errorMessage || this.props.errorMessageHours) {
-            hoursErrorClass = ' x-error';
-        }
-        if (this.props.errorMessage || this.props.errorMessageMinutes) {
-            minutesErrorClass = ' x-error';
+        var inputClassName = 'col-of-four input x-number';
+        if (this.props.errorMessage) {
+            inputClassName += ' x-error';
         }
 
         return (
@@ -49,7 +42,7 @@ var TimeInput = React.createClass({
 
                 <InputContainer>
                     <input
-                        className={ 'col-of-four input x-number' + hoursErrorClass }
+                        className={ inputClassName }
                         value={ this.props.hours }
                         type='text'
                         pattern='[0-9]*'
@@ -59,7 +52,7 @@ var TimeInput = React.createClass({
                     <div className='mobile col-of-four'>h</div>
                     <div className='desktop col-of-four'>hours</div>
                     <input
-                        className={ 'col-of-four input x-number' + minutesErrorClass }
+                        className={ inputClassName }
                         value={ this.props.minutes }
                         type='text'
                         pattern='[0-9]*'

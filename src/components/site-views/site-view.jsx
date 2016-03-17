@@ -1,17 +1,14 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
-var Link = Router.Link;
+var Link = require('react-router').Link;
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
+var itemViewMixin = require('../mixins/item-view-mixin');
 var SiteModel = require('../../models/site');
 
 var BreadCrumbs = require('../common/bread-crumbs');
-var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksRow = require('../common/section/remarks-row');
@@ -23,77 +20,32 @@ var StaticMap = require('../common/maps/static-map');
 var View = require('../common/view');
 
 
+
+var { shape, string } = React.PropTypes;
+
 var SiteView = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({ // url args
-            siteId: React.PropTypes.string.isRequired
+        params: shape({ // url args
+            id: string.isRequired
         })
     },
 
-    mixins: [ History ],
+    mixins: [ itemViewMixin(SiteModel.getModelKey()) ],
 
     getInitialState: function() {
         return {
-            site: null,
+            item: null,
             loadingError: null
         };
     },
 
-    handleToSiteList: function() {
-        this.history.pushState(null, '/sites');
-    },
-
-    handleSiteEditing: function() {
-        this.history.pushState(null, '/site/' + this.props.params.siteId + '/edit');
-    },
-
-    handleDataModified: function() {
-        var site = SiteModel.getSiteOutput(this.props.params.siteId);
-        if (site !== null && site.error) {
-            this.setState({ loadingError: site.error });
-        } else {
-            this.setState({
-                site: site,
-                loadingError: null
-            });
-        }
-    },
-
-    renderError: function() {
-        return (
-            <View onDataModified={ this.handleDataModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToSiteList }
-                    />
-                <NavigationMenu isSiteView={ true } />
-
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataModified } />
-            </View>
-        );
-    },
-
-    renderLoader: function() {
-        return (
-            <View onDataModified={ this.handleDataModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    onLeftClick={ this.handleToSiteList }
-                    />
-                <NavigationMenu isSiteView={ true } />
-
-                <Loader />
-            </View>
-        );
-    },
-
     renderMap: function() {
-        if (this.state.site.coordinates) {
+        if (this.state.item.coordinates) {
             return StaticMap.create({
-                center: SiteModel.getLatLngCoordinates(this.state.site.id),
+                center: SiteModel.getLatLngCoordinates(this.state.item.id),
                 zoomLevel: ZOOM_LEVEL.site,
-                sites: [ this.state.site ]
+                sites: [ this.state.item ]
             });
         }
     },
@@ -103,66 +55,63 @@ var SiteView = React.createClass({
             return this.renderError();
         }
 
-        if (this.state.site === null) {
+        if (this.state.item === null) {
             return this.renderLoader();
         }
 
+        var { flightNum, flightNumThisYear } = this.state.item;
+
         return (
-            <View onDataModified={ this.handleDataModified }>
+            <View onStoreModified={ this.handleStoreModified }>
                 <MobileTopMenu
                     leftButtonCaption='Back'
                     rightButtonCaption='Edit'
-                    onLeftClick={ this.handleToSiteList }
-                    onRightClick={ this.handleSiteEditing }
+                    onLeftClick={ this.handleToListView }
+                    onRightClick={ this.handleEditItem }
                     />
-                <NavigationMenu isSiteView={ true } />
+                <NavigationMenu currentView={ SiteModel.getModelKey() } />
 
-                <Section onEditClick={ this.handleSiteEditing }>
+                <Section onEditClick={ this.handleEditItem }>
                     <BreadCrumbs
                         elements={ [
                             <Link to='/sites'>Sites</Link>,
-                            this.state.site.name
+                            this.state.item.name
                         ] }
                         />
 
                     <SectionTitle>
-                        { this.state.site.name }
+                        { this.state.item.name }
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
                             label='Location:'
-                            value={ this.state.site.location }
+                            value={ this.state.item.location }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Launch altitude:'
-                            value={ this.state.site.launchAltitude + ' ' + this.state.site.altitudeUnit }
+                            value={ this.state.item.launchAltitude + ' ' + this.state.item.altitudeUnit }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Coordinates:'
-                            value={ this.state.site.coordinates }
+                            value={ this.state.item.coordinates }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ [
-                                this.state.site.flightNum,
-                                '( this year:',
-                                this.state.site.flightNumThisYear,
-                                ')'
-                            ].join(' ') }
+                            value={ `${flightNum} ( this year: ${flightNumThisYear} )` }
                             />
                     </SectionRow>
 
-                    <RemarksRow value={ this.state.site.remarks } />
+                    <RemarksRow value={ this.state.item.remarks } />
 
                     { this.renderMap() }
                 </Section>

@@ -73,8 +73,8 @@ var AjaxService = {
             });
 
             // If request failed
-            ajaxRequest.addEventListener('error', () => options.onFailure(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
-            ajaxRequest.addEventListener('timeout', () => options.onFailure(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
+            ajaxRequest.addEventListener('error', () => reject(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
+            ajaxRequest.addEventListener('timeout', () => reject(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
 
             // Open and send request
             ajaxRequest.open(options.method, options.url);

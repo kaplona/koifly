@@ -3,16 +3,22 @@
 var _ = require('lodash');
 
 var Altitude = require('../utils/altitude');
+var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 var KoiflyError = require('../errors/error');
 var Util = require('../utils/util');
 
-var dataService = require('../services/data-service');
+var BaseModel = require('./base-model');
 var GliderModel = require('./glider');
 var SiteModel = require('./site');
 
 
 var FlightModel = {
+    
+    keys: {
+        single: 'flight',
+        plural: 'flights'
+    },
 
     formValidationConfig: {
         date: {
@@ -57,6 +63,7 @@ var FlightModel = {
             }
         }
     },
+    
 
     /**
      * Prepare data to show to user
@@ -64,16 +71,17 @@ var FlightModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getFlightsArray: function() {
+    getListOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
         return _.map(dataService.store.flights, (flight, flightId) => {
-            return this.getFlightOutput(flightId);
+            return this.getItemOutput(flightId);
         });
     },
+    
 
     /**
      * Prepare data to show to user
@@ -82,7 +90,7 @@ var FlightModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getFlightOutput: function(flightId) {
+    getItemOutput: function(flightId) {
         var loadingError = this.checkForLoadingErrors(flightId);
         if (loadingError !== false) {
             return loadingError;
@@ -110,6 +118,7 @@ var FlightModel = {
             remarks: flight.remarks
         };
     },
+    
 
     /**
      * Prepare data to show to user
@@ -118,14 +127,14 @@ var FlightModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getFlightEditOutput: function(flightId) {
+    getEditOutput: function(flightId) {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
         if (flightId === undefined) {
-            return this.getNewFlightOutput();
+            return this.getNewItemOutput();
         }
 
         // Get required flight from Data Service helper
@@ -143,6 +152,7 @@ var FlightModel = {
             remarks: flight.remarks
         };
     },
+    
 
     /**
      * Prepare data to show to user
@@ -150,7 +160,7 @@ var FlightModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getNewFlightOutput: function() {
+    getNewItemOutput: function() {
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties
@@ -179,6 +189,7 @@ var FlightModel = {
         };
     },
 
+    
     /**
      * @param {number} flightId
      * @returns {false|null|object}
@@ -201,6 +212,7 @@ var FlightModel = {
         }
         return false;
     },
+    
 
     /**
      * Finds target flight number out of all flights, out of flights that year, out of flights that day
@@ -247,6 +259,7 @@ var FlightModel = {
 
         return flightNumbers;
     },
+    
 
     /**
      * Searches for a flight with the largest flight number
@@ -268,15 +281,7 @@ var FlightModel = {
 
         return lastFlight;
     },
-
-    /**
-     * @param {object} newFlight
-     * @returns {Promise} - if saving was successful or not
-     */
-    saveFlight: function(newFlight) {
-        newFlight = this.setFlightInput(newFlight);
-        return dataService.saveFlight(newFlight);
-    },
+    
 
     /**
      * Fills empty fields with their defaults
@@ -285,7 +290,7 @@ var FlightModel = {
      * @param {object} newFlight
      * @returns {object} - flight ready to send to the server
      */
-    setFlightInput: function(newFlight) {
+    getDataForServer: function(newFlight) {
         // Set default values to empty fields
         newFlight = this.setDefaultValues(newFlight);
 
@@ -306,6 +311,7 @@ var FlightModel = {
 
         return flight;
     },
+    
 
     /**
      * Walks through new flight and replace all empty values with default ones
@@ -328,14 +334,6 @@ var FlightModel = {
         return _.extend({}, newFlight, fieldsToReplace);
     },
 
-    /**
-     * @param {number} flightId
-     * @returns {Promise} - if deleting was successful or not
-     */
-    deleteFlight: function(flightId) {
-        return dataService.saveFlight({ id: flightId, see: false });
-    },
-
 
     /**
      * @param {number|null} siteId
@@ -347,6 +345,7 @@ var FlightModel = {
         var altitudeDiff = parseFloat(flightAltitude) - parseFloat(siteAltitude);
         return Altitude.getAltitudeInPilotUnits(altitudeDiff);
     },
+    
 
     /**
      * @returns {string|null} - date of the last flight or null if no flights yet
@@ -355,10 +354,12 @@ var FlightModel = {
         var lastFlight = this.getLastFlight();
         return (lastFlight !== null) ? lastFlight.date : null;
     },
+    
 
     getNumberOfFlights: function() {
         return Object.keys(dataService.store.flights).length;
     },
+    
 
     getNumberOfFlightsThisYear: function() {
         var date = new Date();
@@ -373,6 +374,7 @@ var FlightModel = {
 
         return numberOfFlights;
     },
+    
 
     /**
      * @param {number|string} gliderId
@@ -398,6 +400,7 @@ var FlightModel = {
         });
         return numberOfFlights;
     },
+    
 
     /**
      * @param {number|string} siteId
@@ -424,6 +427,7 @@ var FlightModel = {
         return numberOfFlights;
     },
 
+    
     /**
      * @returns {number} - number of sites for which pilot has flight record in App
      */
@@ -439,6 +443,7 @@ var FlightModel = {
         return sitesVisited.length;
     },
 
+    
     /**
      * @returns {number} - number of gliders which pilot used and has flight record in App
      */
@@ -454,6 +459,7 @@ var FlightModel = {
         return glidersUsed.length;
     },
 
+    
     /**
      * @returns {number} - airtime of all flights recorded in App
      */
@@ -461,6 +467,7 @@ var FlightModel = {
         return _.sum(dataService.store.flights, 'airtime');
     },
 
+    
     /**
      * @param {number|string} gliderId
      * @returns {number} - airtime for given glider recorded in App
@@ -472,12 +479,11 @@ var FlightModel = {
                 return flight.airtime;
             }
         });
-    },
-
-    getValidationConfig: function() {
-        return this.formValidationConfig;
     }
 };
+
+
+FlightModel = _.extend({}, BaseModel, FlightModel);
 
 
 module.exports = FlightModel;

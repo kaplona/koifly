@@ -56,17 +56,17 @@ function mainApp() {
                     <IndexRoute component={ FlightListView } />
                     <Route path='/flights' component={ FlightListView } />
                     <Route path='/flight/0/edit' component={ FlightEditView } />
-                    <Route path='/flight/:flightId/edit' component={ FlightEditView } />
-                    <Route path='/flight/:flightId' component={ FlightView } />
+                    <Route path='/flight/:id/edit' component={ FlightEditView } />
+                    <Route path='/flight/:id' component={ FlightView } />
                     <Route path='/sites/map' component={ SiteListMapView } />
                     <Route path='/sites' component={ SiteListView } />
                     <Route path='/site/0/edit' component={ SiteEditView } />
-                    <Route path='/site/:siteId/edit' component={ SiteEditView } />
-                    <Route path='/site/:siteId' component={ SiteView } />
+                    <Route path='/site/:id/edit' component={ SiteEditView } />
+                    <Route path='/site/:id' component={ SiteView } />
                     <Route path='/gliders' component={ GliderListView } />
                     <Route path='/glider/0/edit' component={ GliderEditView } />
-                    <Route path='/glider/:gliderId/edit' component={ GliderEditView } />
-                    <Route path='/glider/:gliderId' component={ GliderView } />
+                    <Route path='/glider/:id/edit' component={ GliderEditView } />
+                    <Route path='/glider/:id' component={ GliderView } />
                     <Route path='/pilot/edit/change-password' component={ PilotChangePassword } />
                     <Route path='/pilot/edit' component={ PilotEditView } />
                     <Route path='/pilot' component={ PilotView } />

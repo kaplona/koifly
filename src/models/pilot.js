@@ -46,6 +46,21 @@ var PilotModel = {
         }
     },
 
+    isActivationNoticeHidden: false,
+    
+    
+    getModelKey: function() {
+        return 'pilot';
+    },
+
+    getStoreContent: function() {
+        return dataService.getStoreContent(this.getModelKey());
+    },
+
+    getValidationConfig: function() {
+        return this.formValidationConfig;
+    },
+
     /**
      * Prepare data to show to user
      * @returns {object|null} - pilot info
@@ -90,7 +105,7 @@ var PilotModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getPilotEditOutput: function() {
+    getEditOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
@@ -150,8 +165,8 @@ var PilotModel = {
      * @returns {Promise} - if saving was successful or not
      */
     savePilotInfo: function(newPilotInfo) {
-        newPilotInfo = this.setPilotInput(newPilotInfo);
-        return dataService.savePilotInfo(newPilotInfo);
+        newPilotInfo = this.getDataForServer(newPilotInfo);
+        return dataService.saveData(newPilotInfo, this.getModelKey());
     },
 
     /**
@@ -161,7 +176,7 @@ var PilotModel = {
      * @param {object} newPilotInfo
      * @returns {object} - pilot info ready to send to the server
      */
-    setPilotInput: function(newPilotInfo) {
+    getDataForServer: function(newPilotInfo) {
         newPilotInfo = this.setDefaultValues(newPilotInfo);
 
         // Return only fields which will be send to the server
@@ -213,10 +228,6 @@ var PilotModel = {
         }
         return dataService.store.pilot.email;
     },
-    
-    getValidationConfig: function() {
-        return this.formValidationConfig;
-    },
 
     /**
      * @returns {boolean|null} - is pilot's email was verified,
@@ -239,13 +250,11 @@ var PilotModel = {
         if (dataService.store.pilot === null) {
             return null;
         }
-        return !dataService.store.pilot.isActivationNoticeHidden && !dataService.store.pilot.isActivated;
+        return !dataService.store.pilot.isActivated && !this.isActivationNoticeHidden;
     },
 
     hideActivationNotice: function() {
-        if (dataService.store.pilot !== null) {
-            dataService.store.pilot.isActivationNoticeHidden = true;
-        }
+        this.isActivationNoticeHidden = true;
     },
 
     isLoggedIn: function() {

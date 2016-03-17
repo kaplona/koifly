@@ -38,9 +38,7 @@ describe('TimeInput component', () => {
         nextHoursValue: '2',
         nextMinutesValue: '45',
         labelText: 'Test label',
-        errorMessage: 'general error message',
-        errorMessageHours: 'hours error message',
-        errorMessageMinutes: 'minutes error message',
+        errorMessage: 'test error message',
         handleInputChange: Sinon.spy()
     };
 
@@ -108,7 +106,8 @@ describe('TimeInput component', () => {
 
 
     describe('Error message testing', () => {
-        it('renders error when general errorMessage provided', () => {
+
+        before(() => {
             component = TestUtils.renderIntoDocument(
                 <TimeInput
                     hours={ mocks.hoursValue }
@@ -118,52 +117,14 @@ describe('TimeInput component', () => {
                     onChange={ mocks.handleInputChange }
                     />
             );
+        });
 
+        it('renders error when general errorMessage provided', () => {
             let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
             let highlightedInputs = React.findDOMNode(component).querySelectorAll(`input.${defaults.errorClassName}`);
 
             expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
             expect(highlightedInputs).to.have.lengthOf(2);
-        });
-
-        it('renders hours error when hours errorMessage provided', () => {
-            component = TestUtils.renderIntoDocument(
-                <TimeInput
-                    hours={ mocks.hoursValue }
-                    minutes={ mocks.minutesValue }
-                    labelText={ mocks.labelText }
-                    errorMessageHours={ mocks.errorMessageHours }
-                    onChange={ mocks.handleInputChange }
-                    />
-            );
-
-            let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
-            let hoursClassName = React.findDOMNode(component.refs[defaults.hoursInputName]).className;
-            let minutesClassName = React.findDOMNode(component.refs[defaults.minutesInputName]).className;
-
-            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessageHours);
-            expect(hoursClassName).to.contain(defaults.errorClassName);
-            expect(minutesClassName).to.not.contain(defaults.errorClassName);
-        });
-
-        it('renders minutes error when minutes errorMessage provided', () => {
-            component = TestUtils.renderIntoDocument(
-                <TimeInput
-                    hours={ mocks.hoursValue }
-                    minutes={ mocks.minutesValue }
-                    labelText={ mocks.labelText }
-                    errorMessageMinutes={ mocks.errorMessageMinutes }
-                    onChange={ mocks.handleInputChange }
-                    />
-            );
-
-            let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
-            let hoursClassName = React.findDOMNode(component.refs[defaults.hoursInputName]).className;
-            let minutesClassName = React.findDOMNode(component.refs[defaults.minutesInputName]).className;
-
-            expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessageMinutes);
-            expect(hoursClassName).to.not.contain(defaults.errorClassName);
-            expect(minutesClassName).to.contain(defaults.errorClassName);
         });
     });
 });

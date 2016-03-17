@@ -3,12 +3,18 @@
 var _ = require('lodash');
 
 var Altitude = require('../utils/altitude');
+var BaseModel = require('./base-model');
 var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 var KoiflyError = require('../errors/error');
 
 
 var SiteModel = {
+
+    keys: {
+        single: 'site',
+        plural: 'sites'
+    },
 
     formValidationConfig: {
         name: {
@@ -56,6 +62,7 @@ var SiteModel = {
             }
         }
     },
+    
 
     /**
      * Prepare data to show to user
@@ -63,16 +70,17 @@ var SiteModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getSitesArray: function() {
+    getListOutput: function() {
         var loadingError = this.checkForLoadingErrors();
         if (loadingError !== false) {
             return loadingError;
         }
 
         return _.map(dataService.store.sites, (site, siteId) => {
-            return this.getSiteOutput(siteId);
+            return this.getItemOutput(siteId);
         });
     },
+    
 
     /**
      * Prepare data to show to user
@@ -81,7 +89,7 @@ var SiteModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getSiteOutput: function(siteId) {
+    getItemOutput: function(siteId) {
         var loadingError = this.checkForLoadingErrors(siteId);
         if (loadingError !== false) {
             return loadingError;
@@ -111,6 +119,7 @@ var SiteModel = {
             remarks: site.remarks
         };
     },
+    
 
     /**
      * Prepare data to show to user
@@ -119,14 +128,14 @@ var SiteModel = {
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getSiteEditOutput: function(siteId) {
+    getEditOutput: function(siteId) {
         var loadingError = this.checkForLoadingErrors(siteId);
         if (loadingError !== false) {
             return loadingError;
         }
 
         if (siteId === undefined) {
-            return this.getNewSiteOutput();
+            return this.getNewItemOutput();
         }
         
         // Get required site from Data Service helper
@@ -143,13 +152,14 @@ var SiteModel = {
         };
     },
 
+    
     /**
      * Prepare data to show to user
      * @returns {object|null} - site
      * null - if no data in front end
      * error object - if data wasn't loaded due to error
      */
-    getNewSiteOutput: function() {
+    getNewItemOutput: function() {
         return {
             name: '',
             location: '',
@@ -160,6 +170,7 @@ var SiteModel = {
         };
     },
 
+    
     /**
      * @param {number} siteId
      * @returns {false|null|object}
@@ -183,14 +194,6 @@ var SiteModel = {
         return false;
     },
 
-    /**
-     * @param {object} newSite
-     * @returns {Promise} - if saving was successful or not
-     */
-    saveSite: function(newSite) {
-        newSite = this.setSiteInput(newSite);
-        return dataService.saveSite(newSite);
-    },
 
     /**
      * Fills empty fields with their defaults
@@ -199,7 +202,7 @@ var SiteModel = {
      * @param {object} newSite
      * @returns {object} - site ready to send to the server
      */
-    setSiteInput: function(newSite) {
+    getDataForServer: function(newSite) {
         // Set default values to empty fields
         newSite = this.setDefaultValues(newSite);
 
@@ -219,6 +222,7 @@ var SiteModel = {
 
         return site;
     },
+    
 
     /**
      * Walks through new site and replace all empty values with default ones
@@ -240,19 +244,13 @@ var SiteModel = {
         });
         return _.extend({}, newSite, fieldsToReplace);
     },
-
-    /**
-     * @param {number} siteId
-     * @returns {Promise} - if deleting was successful or not
-     */
-    deleteSite: function(siteId) {
-        return dataService.saveSite({ id: siteId, see: false });
-    },
+    
 
     getLatLngCoordinates: function(siteId) {
         return dataService.store.sites[siteId] ? dataService.store.sites[siteId].coordinates : null;
     },
 
+    
     /**
      * @param {object} coordinates - object with latitude and longitude ({ lat: ..., lng: ... })
      * @returns {string} - string representation of coordinates
@@ -265,6 +263,7 @@ var SiteModel = {
         return outputString;
     },
 
+    
     /**
      * @param {string} validString - string representation of coordinates
      * @returns {object} - coordinates object with latitude and longitude ({ lat: ..., lng: ... })
@@ -278,10 +277,12 @@ var SiteModel = {
         return { lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1]) };
     },
 
+    
     getNumberOfSites: function() {
         return Object.keys(dataService.store.sites).length;
     },
 
+    
     /**
      * @param {number} id
      * @returns {string|null} - site's name or null if no site with given id
@@ -290,6 +291,7 @@ var SiteModel = {
         return dataService.store.sites[id] ? dataService.store.sites[id].name : null;
     },
 
+    
     /**
      * @returns {number|null} - id of last created site or null if no sites yet
      */
@@ -303,11 +305,13 @@ var SiteModel = {
         });
         return lastAddedSite.id;
     },
+    
 
     getLaunchAltitudeById: function(id) {
         return dataService.store.sites[id].launchAltitude;
     },
 
+    
     /**
      * This sites presentation is needed for dropdowns
      * @returns {Array} - array of objects where value is site id, text is site name
@@ -316,16 +320,11 @@ var SiteModel = {
         return _.map(dataService.store.sites, (site, siteId) => {
             return { value: siteId, text: site.name };
         });
-    },
-
-    getSiteIdsList: function() {
-        return Object.keys(dataService.store.sites);
-    },
-
-    getValidationConfig: function() {
-        return this.formValidationConfig;
     }
 };
+
+
+SiteModel = _.extend({}, BaseModel, SiteModel);
 
 
 module.exports = SiteModel;
