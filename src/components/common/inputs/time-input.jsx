@@ -5,6 +5,8 @@ var Label = require('../section/label');
 var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
+require('./four-input-elements.less');
+
 
 var TimeInput = React.createClass({
 

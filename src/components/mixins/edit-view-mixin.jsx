@@ -26,6 +26,17 @@ var editViewMixin = function(modelKey) {
 
         mixins: [ History ],
 
+        getInitialState: function() {
+            return {
+                item: null,
+                loadingError: null,
+                savingError: null,
+                deletingError: null,
+                isSaving: false,
+                isDeleting: false
+            };
+        },
+
         handleStoreModified: function() {
             // If waiting for server response
             // ignore any other data updates
@@ -79,7 +90,7 @@ var editViewMixin = function(modelKey) {
                         this.handleCancelEdit();
                     })
                     .catch((error) => {
-                        this.handleProcessingError(error, true);
+                        this.updateProcessingError(error, true);
                     });
             }
         },
@@ -95,7 +106,7 @@ var editViewMixin = function(modelKey) {
                         this.history.pushState(null, `/${Model.keys.plural}`);
                     })
                     .catch((error) => {
-                        this.handleProcessingError(error);
+                        this.updateProcessingError(error);
                     });
             }
         },
@@ -108,7 +119,7 @@ var editViewMixin = function(modelKey) {
             );
         },
 
-        handleProcessingError: function(error, isSaving) {
+        updateProcessingError: function(error, isSaving) {
             if (error.type === ErrorTypes.VALIDATION_ERROR) {
                 this.updateValidationErrors(error.errors);
                 error = null;
@@ -135,28 +146,32 @@ var editViewMixin = function(modelKey) {
         },
 
         getProcessingError: function() {
-            return this.state.savingError || this.state.deletingError || false;
+            return this.state.savingError || this.state.deletingError || null;
+        },
+        
+        renderNavigationMenu: function() {
+            return <NavigationMenu currentView={ Model.getModelKey() } />;
         },
 
-        renderLayout: function(children) {
+        renderSimpleLayout: function(children) {
             return (
                 <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                     <MobileTopMenu
                         leftButtonCaption='Cancel'
                         onLeftClick={ this.handleCancelEdit }
                         />
-                    <NavigationMenu currentView={ Model.getModelKey() } />
+                    { this.renderNavigationMenu() }
                     { children }
                 </View>
             );
         },
 
         renderLoader: function() {
-            return this.renderLayout(<Loader />);
+            return this.renderSimpleLayout(<Loader />);
         },
 
         renderError: function() {
-            return this.renderLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+            return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
         },
         
         renderProcessingError: function() {

@@ -1,12 +1,11 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
-var Link = Router.Link;
 
 var dataService = require('../../services/data-service');
+var PublicViewMixin = require('../mixins/public-view-mixin');
 
+var AppLink = require('../common/app-link');
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
 var Description = require('../common/section/description');
@@ -15,8 +14,6 @@ var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
-var Notice = require('../common/notice/notice');
 var PasswordInput = require('../common/inputs/password-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
@@ -24,9 +21,10 @@ var SectionTitle = require('../common/section/section-title');
 var TextInput = require('../common/inputs/text-input');
 
 
+
 var Signup = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ PublicViewMixin ],
 
     getInitialState: function() {
         return {
@@ -35,8 +33,12 @@ var Signup = React.createClass({
             passwordConfirm: '',
             isSubscribed: false,
             error: null,
-            isSaving: false
+            isSending: false
         };
+    },
+
+    handleCheckboxChange: function() {
+        this.setState({ isSubscribed: !this.state.isSubscribed });
     },
 
     handleSubmit: function(event) {
@@ -46,11 +48,11 @@ var Signup = React.createClass({
 
         var validationResponse = this.validateForm();
         if (validationResponse !== true) {
-            return this.handleSavingError(validationResponse);
+            return this.updateError(validationResponse);
         }
 
         this.setState({
-            isSaving: true,
+            isSending: true,
             error: null
         });
 
@@ -60,35 +62,19 @@ var Signup = React.createClass({
             isSubscribed: this.state.isSubscribed
         };
 
-        dataService.createPilot(pilotCredentials).then(() => {
-            this.history.pushState(null, '/pilot');
-        }).catch((error) => {
-            this.handleSavingError(error);
-        });
-    },
-
-    handleToLogin: function() {
-        this.history.pushState(null, '/login');
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
-    handleCheckboxChange: function() {
-        this.setState({ isSubscribed: !this.state.isSubscribed });
-    },
-
-    handleSavingError: function(error) {
-        this.setState({
-            error: error,
-            isSaving: false
-        });
+        dataService
+            .createPilot(pilotCredentials)
+            .then(() => {
+                this.handleToPilotView();
+            })
+            .catch((error) => {
+                this.updateError(error);
+            });
     },
 
     validateForm: function() {
-        if (this.state.email === null || this.state.email.trim() === '' ||
-            this.state.password === null || this.state.password.trim() === ''
+        if (!this.state.email || this.state.email.trim() === '' ||
+            !this.state.password || this.state.password.trim() === ''
         ) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
@@ -100,10 +86,18 @@ var Signup = React.createClass({
         return true;
     },
 
-    renderError: function() {
-        if (this.state.error !== null) {
-            return <Notice type='error' text={ this.state.error.message } />;
-        }
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Koifly'
+                rightButtonCaption='Log In'
+                onRightClick={ this.handleToLogin }
+                />
+        );
+    },
+
+    renderDesktopButtons: function() {
+        return <DesktopBottomGrid leftElements={ [ this.renderSendButton() ] } />;
     },
 
     renderSendButton: function() {
@@ -118,80 +112,82 @@ var Signup = React.createClass({
         );
     },
 
+    renderMobileButtons: function() {
+        return (
+            <MobileButton
+                caption={ this.state.isSending ? 'Saving...' : 'Sign Up' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSending }
+                />
+        );
+    },
+
     render: function() {
         return (
             <div>
-                <MobileTopMenu
-                    header='Koifly'
-                    rightButtonCaption='Log In'
-                    onRightClick={ this.handleToLogin }
-                    />
-                <NavigationMenu isMobile={ true } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <CompactContainer>
-                <form>
-                    { this.renderError() }
+                    <form>
+                        { this.renderError() }
 
-                    <Section>
+                        <Section>
 
-                        <SectionTitle>Sign up</SectionTitle>
+                            <SectionTitle>Sign up</SectionTitle>
 
-                        <SectionRow>
-                            <TextInput
-                                inputValue={ this.state.email }
-                                labelText='Email:'
-                                inputName='email'
-                                onChange={ this.handleInputChange }
-                                />
-                            <Description>
-                                Your email will be used only for authorisation and won't be seen by anyone else
-                            </Description>
-                        </SectionRow>
-
-                        <SectionRow>
-                            <PasswordInput
-                                inputValue={ this.state.password }
-                                labelText='Password:'
-                                inputName='password'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow isLast={ true }>
-                            <PasswordInput
-                                inputValue={ this.state.passwordConfirm }
-                                labelText='Confirm password:'
-                                inputName='passwordConfirm'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow isLast={ true }>
-                            <Description>
-                                <input
-                                    type='checkbox'
-                                    checked={ this.state.isSubscribed }
-                                    onClick={ this.handleCheckboxChange }
+                            <SectionRow>
+                                <TextInput
+                                    inputValue={ this.state.email }
+                                    labelText='Email:'
+                                    inputName='email'
+                                    onChange={ this.handleInputChange }
                                     />
-                                Yes, let me know once new features will be added
-                            </Description>
-                        </SectionRow>
+                                <Description>
+                                    Your email will be used only for authorisation and won't be seen by anyone else
+                                </Description>
+                            </SectionRow>
 
-                        <DesktopBottomGrid leftElements={ [ this.renderSendButton() ] } />
+                            <SectionRow>
+                                <PasswordInput
+                                    inputValue={ this.state.password }
+                                    labelText='Password:'
+                                    inputName='password'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
 
-                        <SectionRow isDesktopOnly={ true } isLast={ true } >
-                            <Link to='/login'>Have an Account? Log in now!</Link>
-                        </SectionRow>
-                    </Section>
+                            <SectionRow isLast={ true }>
+                                <PasswordInput
+                                    inputValue={ this.state.passwordConfirm }
+                                    labelText='Confirm password:'
+                                    inputName='passwordConfirm'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
 
-                    <MobileButton
-                        caption={ this.state.isSending ? 'Saving...' : 'Sign Up' }
-                        type='submit'
-                        buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ !this.state.isSaving }
-                        />
-                </form>
+                            <SectionRow isLast={ true }>
+                                <Description>
+                                    <input
+                                        type='checkbox'
+                                        checked={ this.state.isSubscribed }
+                                        onChange={ this.handleCheckboxChange }
+                                        />
+                                    Yes, let me know once new features will be added
+                                </Description>
+                            </SectionRow>
+
+                            { this.renderDesktopButtons() }
+
+                            <SectionRow isDesktopOnly={ true } isLast={ true } >
+                                <AppLink onClick={ this.handleToLogin }>Have an Account? Log in now!</AppLink>
+                            </SectionRow>
+                        </Section>
+
+                        { this.renderMobileButtons() }
+                    </form>
                 </CompactContainer>
             </div>
         );

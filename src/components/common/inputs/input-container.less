@@ -42,10 +42,10 @@
   input, select {
     .border-box();
 
-    height: @row-height * 0.9;
     outline: none; // no blue glowing around input
 
     @media (max-width: (@medium-viewport - 1)) {
+      height: @row-height;
       width: 90%;
       padding: @row-height * 0.3;
       border: none;
@@ -53,6 +53,7 @@
     }
 
     @media (min-width: @medium-viewport) {
+      height: @row-height * 0.9;
       padding: @row-height * 0.2;
       border: 1px solid @mild-base;
       border-radius: 5px;
@@ -72,54 +73,4 @@
       max-width: @text-input-width;
     }
   }
-
-
-    .col-of-four {
-      &:extend(.column);
-
-      @media (min-width: @medium-viewport) {
-        &.mobile {
-          display: none;
-        }
-
-        &.desktop {
-          padding: @row-height * 0.2;
-        }
-      }
-
-      @media (max-width: (@medium-viewport - 1)) {
-        &.desktop {
-          display: none;
-        }
-
-        &.input {
-          .column-width(0.25);
-        }
-
-        &.mobile {
-          .column-width(0.19);
-
-          padding: @row-height * 0.3 0;
-          text-align: center;
-        }
-      }
-    }
-
-    .col-of-two {
-      &:extend(.column);
-
-      @media (min-width: @medium-viewport) {
-        margin-right: @row-height * 0.2;
-      }
-
-      @media (max-width: (@medium-viewport - 1)) {
-        .column-width(0.45);
-
-        &.second {
-          position: absolute;
-          top: 0;
-          right: 0;
-        }
-      }
-    }
 }

@@ -12,10 +12,10 @@ var AltitudeInput = require('../common/inputs/altitude-input');
 var DateInput = require('../common/inputs/date-input');
 var DropdownInput = require('../common/inputs/dropdown-input');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
 var TimeInput = require('../common/inputs/time-input');
 var View = require('../common/view');
 
@@ -35,14 +35,19 @@ var FlightEditView = React.createClass({
 
     getInitialState: function() {
         return {
-            item: null,
-            validationErrors: _.clone(FlightEditView.formFields),
-            loadingError: null,
-            savingError: null,
-            deletingError: null,
-            isSaving: false,
-            isDeleting: false
+            validationErrors: _.clone(FlightEditView.formFields)
         };
+    },
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                leftButtonCaption='Cancel'
+                rightButtonCaption='Save'
+                onLeftClick={ this.handleCancelEdit }
+                onRightClick={ this.handleSubmit }
+                />
+        );
     },
 
     render: function() {
@@ -59,18 +64,17 @@ var FlightEditView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
-                <MobileTopMenu
-                    leftButtonCaption='Cancel'
-                    rightButtonCaption='Save'
-                    onLeftClick={ this.handleCancelEdit }
-                    onRightClick={ this.handleSubmit }
-                    />
-                <NavigationMenu currentView={ FlightModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
 
                     <Section>
+                        <SectionTitle>
+                            Flight Edit
+                        </SectionTitle>
+                        
                         <SectionRow>
                             <DateInput
                                 inputValue={ this.state.item.date }

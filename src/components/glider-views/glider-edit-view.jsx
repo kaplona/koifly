@@ -7,7 +7,6 @@ var editViewMixin = require('../mixins/edit-view-mixin');
 var GliderModel = require('../../models/glider');
 
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
@@ -32,14 +31,19 @@ var GliderEditView = React.createClass({
 
     getInitialState: function() {
         return {
-            item: null,
-            validationErrors: _.clone(GliderEditView.formFields),
-            loadingError: null,
-            savingError: null,
-            deletingError: null,
-            isSaving: false,
-            isDeleting: false
+            validationErrors: _.clone(GliderEditView.formFields)
         };
+    },
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                leftButtonCaption='Cancel'
+                rightButtonCaption='Save'
+                onLeftClick={ this.handleCancelEdit }
+                onRightClick={ this.handleSubmit }
+                />
+        );
     },
 
     render: function() {
@@ -53,18 +57,17 @@ var GliderEditView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
-                <MobileTopMenu
-                    leftButtonCaption='Cancel'
-                    rightButtonCaption='Save'
-                    onLeftClick={ this.handleCancelEdit }
-                    onRightClick={ this.handleSubmit }
-                    />
-                <NavigationMenu currentView={ GliderModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
 
                     <Section>
+                        <SectionTitle>
+                            Glider Edit
+                        </SectionTitle>
+
                         <SectionRow>
                             <TextInput
                                 inputValue={ this.state.item.name }

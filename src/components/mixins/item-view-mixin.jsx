@@ -19,6 +19,13 @@ var itemViewMixin = function(modelKey) {
 
         mixins: [ History ],
 
+        getInitialState: function() {
+            return {
+                item: null,
+                loadingError: null
+            };
+        },
+
         handleStoreModified: function() {
             var storeContent = Model.getItemOutput(this.props.params.id);
             if (storeContent !== null && storeContent.error) {
@@ -38,26 +45,30 @@ var itemViewMixin = function(modelKey) {
         handleEditItem: function() {
             this.history.pushState(null, `/${Model.keys.single}/${this.props.params.id}/edit`);
         },
+
+        renderNavigationMenu: function() {
+            return <NavigationMenu currentView={ Model.getModelKey() } />;
+        },
         
-        renderLayout: function(children) {
+        renderSimpleLayout: function(children) {
             return (
                 <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                     <MobileTopMenu
                         leftButtonCaption='Back'
                         onLeftClick={ this.handleToListView }
                         />
-                    <NavigationMenu currentView={ Model.getModelKey() } />
+                    { this.renderNavigationMenu() }
                     { children }
                 </View>
             );
         },
 
         renderLoader: function() {
-            return this.renderLayout(<Loader />);
+            return this.renderSimpleLayout(<Loader />);
         },
 
         renderError: function() {
-            return this.renderLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+            return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
         }
     };
 };

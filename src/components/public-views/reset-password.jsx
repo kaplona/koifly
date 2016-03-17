@@ -1,9 +1,9 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 
 var dataService = require('../../services/data-service');
+var PublicViewMixin = require('../mixins/public-view-mixin');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -12,12 +12,12 @@ var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var Notice = require('../common/notice/notice');
 var PasswordInput = require('../common/inputs/password-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
 var SectionTitle = require('../common/section/section-title');
+
 
 
 var ResetPassword = React.createClass({
@@ -29,14 +29,14 @@ var ResetPassword = React.createClass({
         })
     },
 
-    mixins: [ History ],
+    mixins: [ PublicViewMixin ],
 
     getInitialState: function() {
         return {
             password: '',
             passwordConfirm: '',
             error: null,
-            isSaving: false,
+            isSending: false,
             successNotice: false
         };
     },
@@ -50,40 +50,29 @@ var ResetPassword = React.createClass({
         // If no errors
         if (validationResponse === true) {
             this.setState({
-                isSaving: true,
+                isSending: true,
                 error: null
             });
 
             var password = this.state.password;
             var pilotId = this.props.params.pilotId;
             var authToken = this.props.params.authToken;
-            dataService.resetPassword(password, pilotId, authToken).then(() => {
-                this.setState({ successNotice: true });
-            }).catch((error) => {
-                this.handleSavingError(error);
-            });
+            dataService
+                .resetPassword(password, pilotId, authToken)
+                .then(() => {
+                    this.setState({ successNotice: true });
+                })
+                .catch((error) => {
+                    this.updateError(error);
+                });
+            
         } else {
-            this.handleSavingError(validationResponse);
+            this.updateError(validationResponse);
         }
     },
 
-    handleToLogin: function() {
-        this.history.pushState(null, '/login');
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
-    handleSavingError: function(error) {
-        this.setState({
-            error: error,
-            isSaving: false
-        });
-    },
-
     validateForm: function() {
-        if (this.state.password === null || this.state.password.trim() === '') {
+        if (!this.state.password || this.state.password.trim() === '') {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
 
@@ -94,20 +83,40 @@ var ResetPassword = React.createClass({
         return true;
     },
 
-    renderError: function() {
-        if (this.state.error !== null) {
-            return <Notice type='error' text={ this.state.error.message } />;
-        }
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Koifly'
+                rightButtonCaption='Log in'
+                onRightClick={ this.handleToLogin }
+                />
+        );
+    },
+    
+    renderDesktopButtons: function() {
+        return <DesktopBottomGrid leftElements={ [ this.renderSaveButton() ] } />;
     },
 
     renderSaveButton: function() {
         return (
             <Button
-                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={ this.state.isSending ? 'Saving...' : 'Save' }
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSaving }
+                isEnabled={ !this.state.isSending }
+                />
+        );
+    },
+    
+    renderMobileButtons: function() {
+        return (
+            <MobileButton
+                caption={ this.state.isSending ? 'Saving ...' : 'Save' }
+                type='submit'
+                buttonStyle='primary'
+                onClick={ this.handleSubmit }
+                isEnabled={ !this.state.isSending }
                 />
         );
     },
@@ -119,50 +128,40 @@ var ResetPassword = React.createClass({
 
         return (
             <div>
-                <MobileTopMenu
-                    header='Koifly'
-                    rightButtonCaption='Log in'
-                    onRightClick={ this.handleToLogin }
-                    />
-                <NavigationMenu isMobile={ true } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <CompactContainer>
-                <form>
-                    { this.renderError() }
-
-                    <Section>
-
-                        <SectionTitle>Reset Password</SectionTitle>
-
-                        <SectionRow>
-                            <PasswordInput
-                                inputValue={ this.state.password }
-                                labelText='New Password:'
-                                inputName='password'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow isLast={ true }>
-                            <PasswordInput
-                                inputValue={ this.state.passwordConfirm }
-                                labelText='Confirm password:'
-                                inputName='passwordConfirm'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <DesktopBottomGrid leftElements={ [ this.renderSaveButton() ] } />
-                    </Section>
-
-                    <MobileButton
-                        caption={ this.state.isSaving ? 'Saving ...' : 'Save' }
-                        type='submit'
-                        buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ !this.state.isSaving }
-                        />
-                </form>
+                    <form>
+                        { this.renderError() }
+    
+                        <Section>
+    
+                            <SectionTitle>Reset Password</SectionTitle>
+    
+                            <SectionRow>
+                                <PasswordInput
+                                    inputValue={ this.state.password }
+                                    labelText='New Password:'
+                                    inputName='password'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            <SectionRow isLast={ true }>
+                                <PasswordInput
+                                    inputValue={ this.state.passwordConfirm }
+                                    labelText='Confirm password:'
+                                    inputName='passwordConfirm'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            { this.renderDesktopButtons() }
+                        </Section>
+    
+                        { this.renderMobileButtons() }
+                    </form>
                 </CompactContainer>
             </div>
         );

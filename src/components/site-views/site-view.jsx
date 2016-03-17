@@ -10,7 +10,6 @@ var SiteModel = require('../../models/site');
 
 var BreadCrumbs = require('../common/bread-crumbs');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksRow = require('../common/section/remarks-row');
 var RowContent = require('../common/section/row-content');
 var Section = require('../common/section/section');
@@ -32,12 +31,16 @@ var SiteView = React.createClass({
     },
 
     mixins: [ itemViewMixin(SiteModel.getModelKey()) ],
-
-    getInitialState: function() {
-        return {
-            item: null,
-            loadingError: null
-        };
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                leftButtonCaption='Back'
+                rightButtonCaption='Edit'
+                onLeftClick={ this.handleToListView }
+                onRightClick={ this.handleEditItem }
+                />
+        );
     },
 
     renderMap: function() {
@@ -63,13 +66,8 @@ var SiteView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    rightButtonCaption='Edit'
-                    onLeftClick={ this.handleToListView }
-                    onRightClick={ this.handleEditItem }
-                    />
-                <NavigationMenu currentView={ SiteModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <Section onEditClick={ this.handleEditItem }>
                     <BreadCrumbs

@@ -1,0 +1,35 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.input-container .col-of-four {
+  &:extend(.column);
+
+  @media (min-width: @medium-viewport) {
+    &.mobile {
+      display: none;
+    }
+
+    &.desktop {
+      padding: @row-height * 0.2;
+    }
+  }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    &.desktop {
+      display: none;
+    }
+
+    &.input {
+      .column-width(0.25);
+    }
+
+    &.mobile {
+      .column-width(0.19);
+
+      padding: @row-height * 0.3 0;
+      text-align: center;
+    }
+  }
+}

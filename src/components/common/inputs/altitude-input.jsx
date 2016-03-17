@@ -7,6 +7,8 @@ var InputContainer = require('./input-container');
 var Dropdown = require('./dropdown');
 var ValidationError = require('../section/validation-error');
 
+require('./two-input-elements.less');
+
 
 var AltitudeInput = React.createClass({
 

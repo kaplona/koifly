@@ -1,0 +1,22 @@
+
+@import (reference) '../../constants';
+@import (reference) '../../general';
+
+
+.input-container .col-of-two {
+  &:extend(.column);
+
+  @media (min-width: @medium-viewport) {
+    margin-right: @row-height * 0.2;
+  }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    .column-width(0.45);
+
+    &.second {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+  }
+}

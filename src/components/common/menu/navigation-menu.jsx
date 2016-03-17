@@ -19,7 +19,7 @@ var { bool, string } = React.PropTypes;
 var NavigationMenu = React.createClass({
 
     propTypes: {
-        currentView: string.isRequired,
+        currentView: string,
         isMobile: bool.isRequired
     },
 

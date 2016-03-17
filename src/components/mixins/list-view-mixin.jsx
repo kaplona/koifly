@@ -7,6 +7,7 @@ var Button = require('../common/buttons/button');
 var EmptyList = require('../common/empty-list');
 var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
+var NavigationMenu = require('../common/menu/navigation-menu');
 
 
 var listViewMixin = function(modelKey) {
@@ -17,6 +18,13 @@ var listViewMixin = function(modelKey) {
     return {
 
         mixins: [ History ],
+
+        getInitialState: function() {
+            return {
+                items: null,
+                loadingError: null
+            };
+        },
 
         handleStoreModified: function() {
             var storeContent = Model.getListOutput();
@@ -37,6 +45,10 @@ var listViewMixin = function(modelKey) {
 
         handleAddItem: function() {
             this.history.pushState(null, `/${Model.keys.single}/0/edit`);
+        },
+        
+        renderNavigationMenu: function() {
+            return <NavigationMenu currentView={ Model.getModelKey() } />;
         },
 
         renderError: function() {

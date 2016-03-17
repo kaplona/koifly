@@ -9,13 +9,13 @@ var editViewMixin = require('../mixins/edit-view-mixin');
 var SiteModel = require('../../models/site');
 
 var AltitudeInput = require('../common/inputs/altitude-input');
+var AppLink = require('../common/app-link');
 var InteractiveMap = require('../common/maps/interactive-map');
-var Linkish = require('../common/linkish');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
+var SectionTitle = require('../common/section/section-title');
 var TextInput = require('../common/inputs/text-input');
 var View = require('../common/view');
 
@@ -35,14 +35,7 @@ var SiteEditView = React.createClass({
 
     getInitialState: function() {
         return {
-            item: null,
-            validationErrors: _.clone(SiteEditView.formFields),
-            isMapShown: false,
-            loadingError: null,
-            savingError: null,
-            deletingError: null,
-            isSaving: false,
-            isDeleting: false
+            validationErrors: _.clone(SiteEditView.formFields)
         };
     },
 
@@ -64,6 +57,17 @@ var SiteEditView = React.createClass({
             }
         }
         return null;
+    },
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                leftButtonCaption={ this.state.isMapShown ? 'Back' : 'Cancel' }
+                rightButtonCaption={ this.state.isMapShown ? null : 'Save' }
+                onLeftClick={ this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit }
+                onRightClick={ this.state.isMapShown ? null : this.handleSubmit }
+                />
+        );
     },
 
     renderMap: function() {
@@ -95,22 +99,21 @@ var SiteEditView = React.createClass({
             return this.renderLoader();
         }
 
-        var mapLink = <Linkish onClick={ this.handleMapShow }>or use a map</Linkish>;
+        var mapLink = <AppLink onClick={ this.handleMapShow }>or use a map</AppLink>;
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
-                <MobileTopMenu
-                    leftButtonCaption={ this.state.isMapShown ? 'Back' : 'Cancel' }
-                    rightButtonCaption={ this.state.isMapShown ? null : 'Save' }
-                    onLeftClick={ this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit }
-                    onRightClick={ this.state.isMapShown ? null : this.handleSubmit }
-                    />
-                <NavigationMenu currentView={ SiteModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
                     
                     <Section>
+                        <SectionTitle>
+                            Site Edit
+                        </SectionTitle>
+                        
                         <SectionRow>
                             <TextInput
                                 inputValue={ this.state.item.name }

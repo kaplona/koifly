@@ -7,7 +7,6 @@ var FlightModel = require('../../models/flight');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
 var Table = require('../common/table');
 var View = require('../common/view');
@@ -17,12 +16,15 @@ var View = require('../common/view');
 var FlightListView = React.createClass({
 
     mixins: [ listViewMixin(FlightModel.getModelKey()) ],
-
-    getInitialState: function() {
-        return {
-            items: null,
-            loadingError: null
-        };
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Flights'
+                rightButtonCaption='Add'
+                onRightClick={ this.handleAddItem }
+                />
+        );
     },
   
     renderTable: function() {
@@ -72,22 +74,15 @@ var FlightListView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    header='Flights'
-                    rightButtonCaption='Add'
-                    onRightClick={ this.handleAddItem }
-                    />
-                <NavigationMenu currentView={ FlightModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
                 
                 <Section>
-                    <DesktopTopGrid
-                        leftElement={ this.renderAddItemButton() }
-                        />
-
+                    <DesktopTopGrid leftElement={ this.renderAddItemButton() } />
                     { content }
-                    
                     { this.renderLoader() }
                 </Section>
+                
             </View>
         );
     }

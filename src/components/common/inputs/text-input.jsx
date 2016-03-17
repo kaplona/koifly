@@ -5,6 +5,8 @@ var Label = require('../section/label');
 var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
+require('./after-comment.less');
+
 
 var TextInput = React.createClass({
 
@@ -40,6 +42,16 @@ var TextInput = React.createClass({
         }
     },
 
+    renderAfterComment: function() {
+        if (this.props.afterComment) {
+            return (
+                <div className='after-comment'>
+                    { this.props.afterComment }
+                </div>
+            );
+        }
+    },
+
     render: function() {
         var className = this.props.isNumber ? 'x-number' : 'x-text';
         if (this.props.errorMessage) {
@@ -63,7 +75,7 @@ var TextInput = React.createClass({
                         onChange={ this.handleUserInput }
                         ref='input'
                         />
-                    { this.props.afterComment }
+                    { this.renderAfterComment() }
                 </InputContainer>
             </div>
         );

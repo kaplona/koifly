@@ -7,7 +7,6 @@ var GliderModel = require('../../models/glider');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
 var Table = require('../common/table');
 var View = require('../common/view');
@@ -18,11 +17,14 @@ var GliderListView = React.createClass({
 
     mixins: [ listViewMixin(GliderModel.getModelKey()) ],
 
-    getInitialState: function() {
-        return {
-            items: null,
-            loadingError: null
-        };
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Gliders'
+                rightButtonCaption='Add'
+                onRightClick={ this.handleAddItem }
+                />
+        );
     },
 
     renderTable: function() {
@@ -67,22 +69,15 @@ var GliderListView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    header='Gliders'
-                    rightButtonCaption='Add'
-                    onRightClick={ this.handleAddItem }
-                    />
-                <NavigationMenu currentView={ GliderModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
                 
                 <Section>
-                    <DesktopTopGrid
-                        leftElement={ this.renderAddItemButton() }
-                        />
-
+                    <DesktopTopGrid leftElement={ this.renderAddItemButton() } />
                     { content }
-                    
                     { this.renderLoader() }
                 </Section>
+                
             </View>
         );
     }

@@ -5,8 +5,10 @@ var History = require('react-router').History;
 
 var dataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
+var PublicLinksMixin = require('../mixins/public-links-mixin');
 var Util = require('../../utils/util');
 
+var AppLink = require('../common/app-link');
 var DaysSinceLastFlight = require('../common/days-since-last-flight');
 var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
@@ -22,7 +24,7 @@ var View = require('../common/view');
 
 var PilotView = React.createClass({
 
-    mixins: [ History ],
+    mixins: [History, PublicLinksMixin],
 
     getInitialState: function() {
         return {
@@ -35,16 +37,13 @@ var PilotView = React.createClass({
         this.history.pushState(null, '/pilot/edit');
     },
 
-    handleChangePassword: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
+    handleChangePassword: function() {
         this.history.pushState(null, '/pilot/edit/change-password');
     },
 
     handleLogout: function() {
         dataService.logout();
-        this.history.pushState(null, '/');
+        this.handleToHomePage();
     },
 
     handleStoreModified: function() {
@@ -59,22 +58,53 @@ var PilotView = React.createClass({
         }
     },
 
-    renderLayout: function(children) {
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Pilot'
+                rightButtonCaption='Edit'
+                onRightClick={ this.handleEditPilotInfo }
+                />
+        );
+    },
+
+    renderNavigationMenu: function() {
+        return <NavigationMenu currentView={ PilotModel.getModelKey() } />;
+    },
+
+    renderSimpleLayout: function(children) {
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu header='Pilot' />
-                <NavigationMenu currentView={ PilotModel.getModelKey() } />
+                { this.renderNavigationMenu() }
                 { children }
             </View>
         );
     },
 
     renderError: function() {
-        return this.renderLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+        return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
     },
 
     renderLoader: function() {
-        return this.renderLayout(<Loader />);
+        return this.renderSimpleLayout(<Loader />);
+    },
+
+    renderMobileButtons: function() {
+        return (
+            <div>
+                <MobileButton
+                    caption='Change Password'
+                    onClick={ this.handleChangePassword }
+                    />
+
+                <MobileButton
+                    caption='Log Out'
+                    buttonStyle='warning'
+                    onClick={ this.handleLogout }
+                    />
+            </div>
+        );
     },
 
     render: function() {
@@ -90,12 +120,8 @@ var PilotView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified }>
-                <MobileTopMenu
-                    header='Pilot'
-                    rightButtonCaption='Edit'
-                    onRightClick={ this.handleEditPilotInfo }
-                    />
-                <NavigationMenu currentView={ PilotModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <Section onEditClick={ this.handleEditPilotInfo }>
                     <SectionTitle>
@@ -147,21 +173,12 @@ var PilotView = React.createClass({
                     <SectionRow isDesktopOnly={ true } isLast={ true }>
                         <RowContent
                             label='Account password:'
-                            value={ <a href='/pilot/edit/change-password' onClick={ this.handleChangePassword }>Change password</a> }
+                            value={ <AppLink onClick={ this.handleChangePassword }> Change password </AppLink> }
                             />
                     </SectionRow>
                 </Section>
 
-                <MobileButton
-                    caption='Change Password'
-                    onClick={ this.handleChangePassword }
-                    />
-
-                <MobileButton
-                    caption='Log Out'
-                    buttonStyle='warning'
-                    onClick={ this.handleLogout }
-                    />
+                { this.renderMobileButtons() }
             </View>
         );
     }

@@ -1,9 +1,9 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 
 var dataService = require('../../services/data-service');
+var PublicViewMixin = require('../mixins/public-view-mixin');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -13,7 +13,6 @@ var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var Notice = require('../common/notice/notice');
 var Section = require('../common/section/section');
 var SectionRow = require('../common/section/section-row');
@@ -21,13 +20,14 @@ var SectionTitle = require('../common/section/section-title');
 var TextInput = require('../common/inputs/text-input');
 
 
+
 var OneTimeLogin = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ PublicViewMixin ],
 
     getInitialState: function() {
         return {
-            email: null,
+            email: '',
             error: null,
             isSending: false,
             lastSentEmailAddress: null
@@ -39,8 +39,8 @@ var OneTimeLogin = React.createClass({
             event.preventDefault();
         }
 
-        if (this.state.email === null || this.state.email.trim() === '') {
-            return this.handleError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
+        if (!this.state.email || this.state.email.trim() === '') {
+            return this.updateError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
         }
 
         this.setState({
@@ -48,34 +48,30 @@ var OneTimeLogin = React.createClass({
             error: null
         });
 
-        var lastSentEmailAddress = this.state.email;
-        dataService.sendOneTimeLoginEmail(this.state.email).then(() => {
-            this.setState({
-                isSending: false,
-                lastSentEmailAddress: lastSentEmailAddress
+        var emailAddress = this.state.email;
+        dataService
+            .sendOneTimeLoginEmail(emailAddress)
+            .then(() => {
+                this.setState({
+                    isSending: false,
+                    lastSentEmailAddress: emailAddress
+                });
+            })
+            .catch((error) => {
+                this.updateError(error);
             });
-        }).catch((error) => {
-            this.handleError(error);
-        });
     },
 
-    handleToLogin: function() {
-        this.history.pushState(null, '/login');
-    },
-
-    handleToSignup: function() {
-        this.history.pushState(null, '/signup');
-    },
-
-    handleInputChange: function(inputName, inputValue) {
-        this.setState({ [inputName]: inputValue });
-    },
-
-    handleError: function(error) {
-        this.setState({
-            error: error,
-            isSending: false
-        });
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Koifly'
+                leftButtonCaption='Back'
+                rightButtonCaption='Sign Up'
+                onLeftClick={ this.handleToLogin }
+                onRightClick={ this.handleToSignup }
+                />
+        );
     },
 
     renderNotice: function() {
@@ -84,11 +80,16 @@ var OneTimeLogin = React.createClass({
             return <Notice text={ noticeText } />;
         }
     },
-
-    renderError: function() {
-        if (this.state.error !== null) {
-            return <Notice type='error' text={ this.state.error.message } />;
-        }
+    
+    renderDesktopButtons: function() {
+        return (
+            <DesktopBottomGrid
+                leftElements={ [
+                    this.renderSendButton(),
+                    this.renderCancelButton()
+                ] }
+                />
+        );
     },
 
     renderSendButton: function() {
@@ -113,64 +114,61 @@ var OneTimeLogin = React.createClass({
                 />
         );
     },
+    
+    renderMobileButtons: function() {
+        return (
+            <div>
+                <MobileButton
+                    caption={ this.state.isSending ? 'Sending...' : 'Send' }
+                    type='submit'
+                    buttonStyle='primary'
+                    onClick={ this.handleSubmit }
+                    isEnabled={ !this.state.isSending }
+                    />
+
+                <MobileButton
+                    caption='Log In With Password'
+                    onClick={ this.handleToLogin }
+                    />
+            </div>
+        );
+    },
 
     render: function() {
         return (
             <div>
-                <MobileTopMenu
-                    header='Koifly'
-                    leftButtonCaption='Back'
-                    rightButtonCaption='Sign Up'
-                    onLeftClick={ this.handleToLogin }
-                    onRightClick={ this.handleToSignup }
-                    />
-                <NavigationMenu isMobile={ true } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <CompactContainer>
-                <form>
-                    { this.renderNotice() }
-                    { this.renderError() }
-
-                    <Section>
-
-                        <SectionTitle>Log in without password</SectionTitle>
-
-                        <SectionRow>
-                            <TextInput
-                                inputValue={ this.state.email }
-                                labelText='Email:'
-                                inputName='email'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow isLast={ true }>
-                            <Description>
-                                We will send you an email with a link, which will log in you into app
-                            </Description>
-                        </SectionRow>
-
-                        <DesktopBottomGrid
-                            leftElements={ [
-                                this.renderSendButton(),
-                                this.renderCancelButton()
-                            ] }
-                            />
-                    </Section>
-
-                    <MobileButton
-                        caption={ this.state.isSending ? 'Sending...' : 'Send' }
-                        type='submit'
-                        buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ !this.state.isSending }
-                        />
-
-                    <MobileButton
-                        caption='Log In With Password'
-                        onClick={ this.handleToLogin }
-                        />
-                </form>
+                    <form>
+                        { this.renderNotice() }
+                        { this.renderError() }
+    
+                        <Section>
+    
+                            <SectionTitle>Log in without password</SectionTitle>
+    
+                            <SectionRow>
+                                <TextInput
+                                    inputValue={ this.state.email }
+                                    labelText='Email:'
+                                    inputName='email'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            <SectionRow isLast={ true }>
+                                <Description>
+                                    We will send you an email with a link, which will log in you into app
+                                </Description>
+                            </SectionRow>
+    
+                            { this.renderDesktopButtons() }
+                        </Section>
+    
+                        { this.renderMobileButtons() }
+                    </form>
                 </CompactContainer>
             </div>
         );

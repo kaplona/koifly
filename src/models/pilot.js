@@ -7,6 +7,11 @@ var ErrorTypes = require('../errors/error-types');
 
 
 var PilotModel = {
+    
+    keys: {
+        single: 'pilot',
+        plural: 'pilot'
+    },
 
     formValidationConfig: {
         userName: {
@@ -50,7 +55,7 @@ var PilotModel = {
     
     
     getModelKey: function() {
-        return 'pilot';
+        return this.keys.single;
     },
 
     getStoreContent: function() {

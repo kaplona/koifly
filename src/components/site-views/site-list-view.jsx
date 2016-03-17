@@ -8,7 +8,6 @@ var SiteModel = require('../../models/site');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
 var Section = require('../common/section/section');
 var Switcher = require('../common/switcher');
 var Table = require('../common/table');
@@ -20,15 +19,20 @@ var SiteListView = React.createClass({
 
     mixins: [ listViewMixin(SiteModel.getModelKey()) ], // already includes history mixin
 
-    getInitialState: function() {
-        return {
-            items: null,
-            loadingError: null
-        };
-    },
-
     handleToMapView: function() {
         this.history.pushState(null, '/sites/map');
+    },
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                header='Sites'
+                leftButtonCaption='Map'
+                rightButtonCaption='Add'
+                onLeftClick={ this.handleToMapView }
+                onRightClick={ this.handleAddItem }
+                />
+        );
     },
 
     renderSwitcher: function() {
@@ -84,24 +88,18 @@ var SiteListView = React.createClass({
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                <MobileTopMenu
-                    header='Sites'
-                    leftButtonCaption='Map'
-                    rightButtonCaption='Add'
-                    onLeftClick={ this.handleToMapView }
-                    onRightClick={ this.handleAddItem }
-                    />
-                <NavigationMenu currentView={ SiteModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
                 
                 <Section>
                     <DesktopTopGrid
                         leftElement={ this.renderAddItemButton() }
                         middleElement={ this.renderSwitcher() }
                         />
-
                     { content }
                     { this.renderLoader() }
                 </Section>
+                
             </View>
         );
     }

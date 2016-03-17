@@ -1,14 +1,13 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
-var Link = Router.Link;
 
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var PilotModel = require('../../models/pilot');
+var PublicLinksMixin = require('../mixins/public-links-mixin');
 
+var AppLink = require('../common/app-link');
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
 var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
@@ -27,7 +26,7 @@ var View = require('../common/view');
 
 var PilotChangePassword = React.createClass({
 
-    mixins: [ History ],
+    mixins: [ PublicLinksMixin ],
 
     getInitialState: function() {
         return {
@@ -54,14 +53,6 @@ var PilotChangePassword = React.createClass({
         this.setState({ [inputName]: inputValue });
     },
 
-    handleToPilotView: function() {
-        this.history.pushState(null, '/pilot');
-    },
-
-    handleToResetPassword: function() {
-        this.history.pushState(null, '/reset-password');
-    },
-
     handleSubmit: function(event) {
         if (event) {
             event.preventDefault();
@@ -84,14 +75,14 @@ var PilotChangePassword = React.createClass({
                     });
                 })
                 .catch((error) => {
-                    this.handleSavingError(error);
+                    this.updateSavingError(error);
                 });
         } else {
-            this.handleSavingError(validationResponse);
+            this.updateSavingError(validationResponse);
         }
     },
 
-    handleSavingError: function(error) {
+    updateSavingError: function(error) {
         this.setState({
             error: error,
             isSaving: false
@@ -112,6 +103,10 @@ var PilotChangePassword = React.createClass({
         return true;
     },
 
+    isButtonsEnabled: function() {
+        return this.state.isUserActivated && !this.state.isSaving;
+    },
+
     renderEmailVerificationNotice: function() {
         // false comparison because isUserActivated can be null if no pilot info in front end yet
         if (this.state.isUserActivated === false) {
@@ -123,11 +118,37 @@ var PilotChangePassword = React.createClass({
             return <EmailVerificationNotice text={ noticeText } type='error' />;
         }
     },
+    
+    renderMobileTopMenu: function() {
+        return (
+            <MobileTopMenu
+                leftButtonCaption='Back'
+                rightButtonCaption='Save'
+                onLeftClick={ () => this.handleToPilotView() }
+                onRightClick={ this.handleSubmit }
+                />
+        );
+    },
+    
+    renderNavigationMenu: function() {
+        return <NavigationMenu currentView={ PilotModel.getModelKey() } />;
+    },
 
     renderError: function() {
         if (this.state.error !== null) {
             return <ErrorBox error={ this.state.error } />;
         }
+    },
+
+    renderDesktopButtons: function() {
+        return (
+            <DesktopBottomGrid
+                leftElements={ [
+                    this.renderSaveButton(),
+                    this.renderCancelButton()
+                ] }
+                />
+        );
     },
 
     renderSaveButton: function() {
@@ -137,7 +158,7 @@ var PilotChangePassword = React.createClass({
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSaving }
+                isEnabled={ this.isButtonsEnabled() }
                 />
         );
     },
@@ -148,8 +169,27 @@ var PilotChangePassword = React.createClass({
                 caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ () => this.handleToPilotView() }
-                isEnabled={ !this.state.isSaving }
+                isEnabled={ this.isButtonsEnabled() }
                 />
+        );
+    },
+    
+    renderMobileButtons: function() {
+        return (
+            <div>
+                <MobileButton
+                    caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    type='submit'
+                    buttonStyle='primary'
+                    onClick={ this.handleSubmit }
+                    isEnabled={ this.isButtonsEnabled() }
+                    />
+
+                <MobileButton
+                    caption='Forgot Password?'
+                    onClick={ () => this.handleToResetPassword() }
+                    />
+            </div>
         );
     },
 
@@ -158,79 +198,56 @@ var PilotChangePassword = React.createClass({
         if (this.state.successNotice) {
             return <Notice text='Your password was successfully changed' type='success' />;
         }
-
-        var isEnabled = this.state.isUserActivated && !this.state.isSaving;
-
+        
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.error }>
-                <MobileTopMenu
-                    leftButtonCaption='Back'
-                    rightButtonCaption='Save'
-                    onLeftClick={ () => this.handleToPilotView() }
-                    onRightClick={ this.handleSubmit }
-                    />
-                <NavigationMenu currentView={ PilotModel.getModelKey() } />
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
 
                 <CompactContainer>
-                <form>
-                    { this.renderEmailVerificationNotice() }
-                    { this.renderError() }
-                    
-                    <Section>
-                        <SectionTitle>Change Password</SectionTitle>
-
-                        <SectionRow>
-                            <PasswordInput
-                                inputValue={ this.state.password }
-                                labelText='Current Password:'
-                                inputName='password'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow>
-                            <PasswordInput
-                                inputValue={ this.state.newPassword }
-                                labelText='New Password:'
-                                inputName='newPassword'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <SectionRow isLast={ true }>
-                            <PasswordInput
-                                inputValue={ this.state.passwordConfirm }
-                                labelText='Confirm password:'
-                                inputName='passwordConfirm'
-                                onChange={ this.handleInputChange }
-                                />
-                        </SectionRow>
-
-                        <DesktopBottomGrid
-                            leftElements={ [
-                                this.renderSaveButton(),
-                                this.renderCancelButton()
-                            ] }
-                            />
-
-                        <SectionRow isDesktopOnly={ true } isLast={ true }>
-                            <Link to='/reset-password'>Forgot Password?</Link>
-                        </SectionRow>
-                    </Section>
-
-                    <MobileButton
-                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
-                        type='submit'
-                        buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ isEnabled }
-                        />
-
-                    <MobileButton
-                        caption='Forgot Password?'
-                        onClick={ () => this.handleToResetPassword() }
-                        />
-                </form>
+                    <form>
+                        { this.renderEmailVerificationNotice() }
+                        { this.renderError() }
+                        
+                        <Section>
+                            <SectionTitle>Change Password</SectionTitle>
+    
+                            <SectionRow>
+                                <PasswordInput
+                                    inputValue={ this.state.password }
+                                    labelText='Current Password:'
+                                    inputName='password'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            <SectionRow>
+                                <PasswordInput
+                                    inputValue={ this.state.newPassword }
+                                    labelText='New Password:'
+                                    inputName='newPassword'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            <SectionRow isLast={ true }>
+                                <PasswordInput
+                                    inputValue={ this.state.passwordConfirm }
+                                    labelText='Confirm password:'
+                                    inputName='passwordConfirm'
+                                    onChange={ this.handleInputChange }
+                                    />
+                            </SectionRow>
+    
+                            { this.renderDesktopButtons() }
+    
+                            <SectionRow isDesktopOnly={ true } isLast={ true }>
+                                <AppLink onClick={ this.handleToResetPassword }>Forgot Password?</AppLink>
+                            </SectionRow>
+                        </Section>
+    
+                        { this.renderMobileButtons() }
+                    </form>
                 </CompactContainer>
             </View>
         );
