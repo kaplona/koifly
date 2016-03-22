@@ -36,16 +36,15 @@ var PilotChangePassword = React.createClass({
             error: null,
             isSaving: false,
             successNotice: false,
-            isUserActivated: PilotModel.getUserActivationStatus()
+            isUserActivated: true
         };
     },
 
     componentWillMount: function() {
-        PilotModel.hideActivationNotice();
+        PilotModel.hideEmailVerificationNotice();
     },
 
     handleStoreModified: function() {
-        PilotModel.hideActivationNotice();
         this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
     },
 
@@ -108,8 +107,7 @@ var PilotChangePassword = React.createClass({
     },
 
     renderEmailVerificationNotice: function() {
-        // false comparison because isUserActivated can be null if no pilot info in front end yet
-        if (this.state.isUserActivated === false) {
+        if (!this.state.isUserActivated) {
             var noticeText = [
                 'You need to verify your email before changing your password.',
                 'Follow the link we sent you.'

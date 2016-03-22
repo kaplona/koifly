@@ -9,11 +9,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var Linkish = require('../../src/components/common/linkish');
+var AppLink = require('../../src/components/common/app-link');
 
 
 
-describe('Linkish component', () => {
+describe('AppLink component', () => {
 
     var TestUtils = React.addons.TestUtils;
     var Simulate = TestUtils.Simulate;
@@ -28,9 +28,9 @@ describe('Linkish component', () => {
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <Linkish onClick={ mocks.handleClick }>
+            <AppLink onClick={ mocks.handleClick }>
                 { mocks.childText }
-            </Linkish>
+            </AppLink>
         );
 
         renderedDOMElement = React.findDOMNode(component)

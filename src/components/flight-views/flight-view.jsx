@@ -47,7 +47,7 @@ var FlightView = React.createClass({
 
     renderMap: function() {
         var siteId = this.state.item.siteId;
-        var siteCoordinates = SiteModel.getLatLngCoordinates(siteId);
+        var siteCoordinates = SiteModel.getLatLng(siteId);
         // this flight has no site or the site has no coordinates
         if (siteCoordinates === null) {
             return null;

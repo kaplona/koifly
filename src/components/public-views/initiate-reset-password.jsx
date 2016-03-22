@@ -27,17 +27,11 @@ var InitiateResetPassword = React.createClass({
 
     getInitialState: function() {
         return {
-            email: '',
+            email: PilotModel.getEmailAddress() || '',
             error: null,
             isSending: false,
             lastSentEmailAddress: null
         };
-    },
-
-    componentDidMount: function() {
-        if (PilotModel.isLoggedIn()) {
-            this.setState({ email: PilotModel.getEmailAddress() });
-        }
     },
 
     handleSubmit: function(event) {

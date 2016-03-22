@@ -24,6 +24,10 @@ DataService.prototype.getStoreContent = function(storeKey) {
     return this.store[storeKey];
 };
 
+DataService.prototype.getLoadingError = function() {
+    return this.loadingError;
+};
+
 
 /**
  * Requests for all user data and populates store with it
@@ -31,12 +35,8 @@ DataService.prototype.getStoreContent = function(storeKey) {
 DataService.prototype.initiateStore = function() {
     AjaxService
         .get('/api/data', { lastModified: this.lastModified })
-        .then((serverResponse) => {
-            this.populateStore(serverResponse);
-        })
-        .catch((error) => {
-            this.setLoadingError(error);
-        });
+        .then(serverResponse => this.populateStore(serverResponse))
+        .catch((error) => this.setLoadingError(error));
 };
 
 
@@ -47,11 +47,8 @@ DataService.prototype.initiateStore = function() {
 DataService.prototype.logout = function() {
     AjaxService
         .post('/api/logout')
-        .then(() => {
-            this.clearStore();
-        }).catch(() => {
-            window.alert('Server error. Could not log out.');
-        });
+        .then(() => this.clearStore())
+        .catch(() => window.alert('Server error. Could not log out.'));
 };
 
 
@@ -73,9 +70,7 @@ DataService.prototype.saveData = function(data, dataType) {
 
     return AjaxService
         .post('/api/data', data)
-        .then((serverResponse) => {
-            this.populateStore(serverResponse);
-        });
+        .then(serverResponse => this.populateStore(serverResponse));
 };
 
 
@@ -114,9 +109,7 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
 
     return AjaxService
         .post('/api/login', data)
-        .then((serverResponse) => {
-            this.populateStore(serverResponse);
-        });
+        .then(serverResponse => this.populateStore(serverResponse));
 };
 
 
@@ -167,9 +160,7 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
 
     return AjaxService
         .post('/api/reset-password', data)
-        .then((serverResponse) => {
-            this.populateStore(serverResponse);
-        });
+        .then(serverResponse => this.populateStore(serverResponse));
 };
 
 
@@ -207,8 +198,12 @@ DataService.prototype.clearStore = function() {
  * @param {Object} serverResponse
  */
 DataService.prototype.populateStore =  function(serverResponse) {
+    var isStoreModified = false;
     // If we got a valid response there were no errors
-    this.loadingError = null;
+    if (this.loadingError) {
+        this.loadingError = null;
+        isStoreModified = true;
+    }
 
     // If we got new data update front-end store
     if (this.lastModified === null ||
@@ -227,11 +222,13 @@ DataService.prototype.populateStore =  function(serverResponse) {
                  this.setDataItems(data, storeKey);
              }
          });
-    }
-    // DEV
-    console.log('current data', this.store);
 
-    PubSub.emit('storeModified');
+        isStoreModified = true;
+    }
+
+    if (isStoreModified) {
+        PubSub.emit('storeModified');
+    }
 };
 
 
@@ -240,11 +237,14 @@ DataService.prototype.populateStore =  function(serverResponse) {
  * @param {Object} error
  */
 DataService.prototype.setLoadingError = function(error) {
+    // If server returns the same error we won't request for data again
+    // and we won't emit StoreModified event, so view won't rerender the same error
     if (this.loadingError === null ||
         this.loadingError.type !== error.type
     ) {
         this.loadingError = error;
-
+        // try to get data again
+        this.initiateStore();
         PubSub.emit('storeModified');
     }
 };
@@ -284,23 +284,6 @@ DataService.prototype.setDataItems = function(newData, storeKey) {
             delete this.store[storeKey][newData[i].id];
         }
     }
-};
-
-
-DataService.prototype.savePilotInfo = function(pilotInfo) {
-    return this.saveData(pilotInfo, 'pilot');
-};
-
-DataService.prototype.saveItem = function(flight) {
-    return this.saveData(flight, 'flight');
-};
-
-DataService.prototype.saveSite = function(site) {
-    return this.saveData(site, 'site');
-};
-
-DataService.prototype.saveGlider = function(glider) {
-    return this.saveData(glider, 'glider');
 };
 
 

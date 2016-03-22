@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 
+var BaseModel = require('./base-model');
 var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
 
@@ -51,20 +52,8 @@ var PilotModel = {
         }
     },
 
-    isActivationNoticeHidden: false,
+    isEmailVerificationNotice: false,
     
-    
-    getModelKey: function() {
-        return this.keys.single;
-    },
-
-    getStoreContent: function() {
-        return dataService.getStoreContent(this.getModelKey());
-    },
-
-    getValidationConfig: function() {
-        return this.formValidationConfig;
-    },
 
     /**
      * Prepare data to show to user
@@ -73,23 +62,20 @@ var PilotModel = {
      * error object - if data wasn't loaded due to error
      */
     getPilotOutput: function() {
-        var loadingError = this.checkForLoadingErrors();
-        if (loadingError !== false) {
-            return loadingError;
+        var pilot = this.getStoreContent();
+        if (!pilot || pilot.error) {
+            return pilot;
         }
 
         // require FlightModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
-
-        // Get pilot info from Data Service helper
-        var pilot = dataService.store.pilot;
 
         var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
         var flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
         var airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
         var siteNum = FlightModel.getNumberOfVisitedSites();
         var gliderNum = FlightModel.getNumberOfUsedGliders();
-        var daysSinceLastFlight = this.getDaysSinceLastFlight();
+        var daysSinceLastFlight = FlightModel.getDaysSinceLastFlight();
 
         return {
             email: pilot.email,
@@ -104,20 +90,18 @@ var PilotModel = {
         };
     },
 
+    
     /**
      * Prepare data to show to user
      * @returns {object|null} - pilot info
-     * null - if no data in front end
+     * null - if no data at front end
      * error object - if data wasn't loaded due to error
      */
     getEditOutput: function() {
-        var loadingError = this.checkForLoadingErrors();
-        if (loadingError !== false) {
-            return loadingError;
+        var pilot = this.getStoreContent();
+        if (!pilot || pilot.error) {
+            return pilot;
         }
-
-        // Get pilot info from Data Service helper
-        var pilot = dataService.store.pilot;
 
         return {
             email: pilot.email,
@@ -128,51 +112,7 @@ var PilotModel = {
             minutes: (pilot.initialAirtime % 60).toString()
         };
     },
-
-    /**
-     * @returns {false|null|object}
-     * false - if no errors
-     * null - if no errors but no data either
-     * error object - if error
-     */
-    checkForLoadingErrors: function() {
-        // Check for loading errors
-        if (dataService.loadingError !== null) {
-            dataService.initiateStore();
-            return { error: dataService.loadingError };
-        // Check if data was loaded
-        } else if (dataService.store.pilot === null) {
-            dataService.initiateStore();
-            return null;
-        }
-        return false;
-    },
-
-    /**
-     * @returns {number|null} - days passed since the last flight
-     */
-    getDaysSinceLastFlight: function() {
-        // require FlightModel here so as to avoid circle requirements
-        var FlightModel = require('./flight');
-
-        var lastFlightDate = FlightModel.getLastFlightDate();
-
-        if (lastFlightDate === null) {
-            return null;
-        }
-
-        var milisecondsSince = Date.now() - Date.parse(lastFlightDate);
-        return Math.floor(milisecondsSince / (24 * 60 * 60 * 1000));
-    },
-
-    /**
-     * @param {object} newPilotInfo
-     * @returns {Promise} - if saving was successful or not
-     */
-    savePilotInfo: function(newPilotInfo) {
-        newPilotInfo = this.getDataForServer(newPilotInfo);
-        return dataService.saveData(newPilotInfo, this.getModelKey());
-    },
+    
 
     /**
      * Fills empty fields with their defaults
@@ -193,26 +133,6 @@ var PilotModel = {
         };
     },
 
-    /**
-     * Walks through new pilot info and replace all empty values with default ones
-     * @param {object} newPilotInfo
-     * @returns {object} - with replaced empty fields
-     */
-    setDefaultValues: function(newPilotInfo) {
-        var fieldsToReplace = {};
-        _.each(this.formValidationConfig, (config, fieldName) => {
-            // If there is default value for the field which val is null or undefined or ''
-            if ((newPilotInfo[fieldName] === null ||
-                 newPilotInfo[fieldName] === undefined ||
-                (newPilotInfo[fieldName] + '').trim() === '') &&
-                 config.rules.defaultVal !== undefined
-            ) {
-                // Set it to its default value
-                fieldsToReplace[fieldName] = config.rules.defaultVal;
-            }
-        });
-        return _.extend({}, newPilotInfo, fieldsToReplace);
-    },
 
     /**
      * Sends passwords to the server
@@ -224,52 +144,64 @@ var PilotModel = {
         return dataService.changePassword(currentPassword, nextPassword);
     },
 
+
+    logout: function() {
+        dataService.logout();
+    },
+
+
+    isLoggedIn: function() {
+        var pilot = this.getStoreContent();
+        return (
+            pilot !== null &&
+            (!pilot.error || pilot.error.type !== ErrorTypes.AUTHENTICATION_ERROR)
+        );
+    },
+    
+
     /**
      * @returns {string|null} - email address or null if no pilot information in front end yet
      */
     getEmailAddress: function() {
-        if (dataService.store.pilot === null) {
+        var pilot = this.getStoreContent();
+        if (!pilot || pilot.error) {
             return null;
         }
-        return dataService.store.pilot.email;
+        return pilot.email;
     },
+    
 
     /**
-     * @returns {boolean|null} - is pilot's email was verified,
-     * null - if no information about pilot yet
+     * @returns {boolean} - is pilot's email verified,
+     * true - if no information about pilot yet,
+     * so he won't get email verification notice until we know for sure that email is not verified
      */
     getUserActivationStatus: function() {
-        if (dataService.store.pilot === null) {
-            return null;
+        var pilot = this.getStoreContent();
+        if (!pilot || pilot.error) {
+            return true;
         }
-        return dataService.store.pilot.isActivated;
+        return pilot.isActivated;
     },
+    
 
     /**
-     * @returns {boolean|null} - if show pilot notification about verifying his email,
-     * true - if pilot didn't confirmed his email
+     * @returns {boolean} - if email verification notice should be shown,
+     * true - if pilot didn't confirmed his email or no pilot info at front-end yet
      * false - if pilot confirmed his email or doesn't want to see notification about this
-     * null - if data hasn't been loaded from the server yet
      */
-    getActivationNoticeStatus: function() {
-        if (dataService.store.pilot === null) {
-            return null;
-        }
-        return !dataService.store.pilot.isActivated && !this.isActivationNoticeHidden;
+    getEmailVerificationNoticeStatus: function() {
+        return !this.getUserActivationStatus() && !this.isEmailVerificationNotice;
     },
+    
 
-    hideActivationNotice: function() {
-        this.isActivationNoticeHidden = true;
-    },
-
-    isLoggedIn: function() {
-        return (dataService.store.pilot && dataService.loadingError !== ErrorTypes.AUTHENTICATION_ERROR);
-    },
-
-    logout: function() {
-        dataService.logout();
+    hideEmailVerificationNotice: function() {
+        this.isEmailVerificationNotice = true;
     }
 };
+
+
+PilotModel = _.extend({}, BaseModel, PilotModel);
 
 
 module.exports = PilotModel;

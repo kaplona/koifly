@@ -6,6 +6,7 @@ var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var Section = require('../common/section/section');
@@ -34,6 +35,16 @@ var SiteListMapView = React.createClass({
         );
     },
 
+    renderError: function() {
+        return (
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+                <MobileTopMenu header='Sites' />
+                { this.renderNavigationMenu() }
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+            </View>
+        );
+    },
+
     renderSwitcher: function() {
         return (
             <Switcher
@@ -51,10 +62,8 @@ var SiteListMapView = React.createClass({
     },
 
     render: function() {
-        var content = this.renderError();
-
-        if (!content) {
-            content = this.renderMap();
+        if (this.state.loadingError !== null) {
+            return this.renderError();
         }
 
         return (
@@ -68,7 +77,7 @@ var SiteListMapView = React.createClass({
                         middleElement={ this.renderSwitcher() }
                         />
 
-                    { content }
+                    { this.renderMap() }
                 </Section>
             </View>
         );

@@ -46,7 +46,7 @@ var SiteView = React.createClass({
     renderMap: function() {
         if (this.state.item.coordinates) {
             return StaticMap.create({
-                center: SiteModel.getLatLngCoordinates(this.state.item.id),
+                center: SiteModel.getLatLng(this.state.item.id),
                 zoomLevel: ZOOM_LEVEL.site,
                 sites: [ this.state.item ]
             });

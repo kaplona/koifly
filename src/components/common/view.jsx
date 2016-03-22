@@ -19,7 +19,7 @@ var View = React.createClass({
 
     getInitialState: function() {
         return {
-            isActivationNotice: false
+            isEmailVerificationNotice: false
         };
     },
 
@@ -34,16 +34,16 @@ var View = React.createClass({
 
     handleStoreModified: function() {
         this.props.onStoreModified();
-        this.setState({ isActivationNotice: PilotModel.getActivationNoticeStatus() });
+        this.setState({ isEmailVerificationNotice: PilotModel.getEmailVerificationNoticeStatus() });
     },
 
     handleCloseNotice: function() {
-        PilotModel.hideActivationNotice();
-        this.setState({ isActivationNotice: false });
+        PilotModel.hideEmailVerificationNotice();
+        this.setState({ isEmailVerificationNotice: false });
     },
 
     renderNotice: function() {
-        if (this.state.isActivationNotice) {
+        if (this.state.isEmailVerificationNotice) {
             return <EmailVerificationNotice onClose={ this.handleCloseNotice } />;
         }
     },

@@ -20,7 +20,7 @@ var Login = require('../../src/components/public-views/login');
 
 
 
-describe('View component', () => {
+describe('View component.', () => {
 
     var TestUtils = React.addons.TestUtils;
     var Simulate = TestUtils.Simulate;
@@ -42,15 +42,15 @@ describe('View component', () => {
     };
 
 
-    describe('Defaults testing', () => {
+    describe('Defaults testing.', () => {
         before(() => {
 
             Sinon
-                .stub(PilotModel, 'getActivationNoticeStatus')
+                .stub(PilotModel, 'getEmailVerificationNoticeStatus')
                 .onFirstCall().returns(false)
                 .onSecondCall().returns(true);
 
-            mocks.handleHideNotice = Sinon.stub(PilotModel, 'hideActivationNotice');
+            mocks.handleHideNotice = Sinon.stub(PilotModel, 'hideEmailVerificationNotice');
 
             component = TestUtils.renderIntoDocument(
                 <View
@@ -65,15 +65,15 @@ describe('View component', () => {
         });
 
         after(() => {
-            PilotModel.getActivationNoticeStatus.restore();
-            PilotModel.hideActivationNotice.restore();
+            PilotModel.getEmailVerificationNoticeStatus.restore();
+            PilotModel.hideEmailVerificationNotice.restore();
         });
 
         it('sets default state and renders only parsed children', () => {
             let notices = TestUtils.scryRenderedComponentsWithType(component, EmailVerificationNotice);
             let loginForm = TestUtils.scryRenderedComponentsWithType(component, Login);
 
-            expect(component).to.have.deep.property('state.isActivationNotice', false);
+            expect(component).to.have.deep.property('state.isEmailVerificationNotice', false);
             expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
             expect(notices).to.have.lengthOf(0);
             expect(loginForm).to.have.lengthOf(0);
@@ -89,7 +89,7 @@ describe('View component', () => {
             then(() => {
                 expect(mocks.handleStoreModified).to.have.been.calledTwice;
                 // component called PilotModel.getActivationNoticeStatus which returned true on second call
-                expect(component).to.have.deep.property('state.isActivationNotice', true);
+                expect(component).to.have.deep.property('state.isEmailVerificationNotice', true);
 
                 done();
             });
@@ -110,7 +110,7 @@ describe('View component', () => {
             Simulate.click(closeButton);
 
             then(() => {
-                expect(component).to.have.deep.property('state.isActivationNotice', false);
+                expect(component).to.have.deep.property('state.isEmailVerificationNotice', false);
                 expect(mocks.handleHideNotice).to.have.been.calledOnce;
 
                 done();
@@ -121,7 +121,7 @@ describe('View component', () => {
 
     describe('Authentication error testing', () => {
         before(() => {
-            Sinon.stub(PilotModel, 'getActivationNoticeStatus');
+            Sinon.stub(PilotModel, 'getEmailVerificationNoticeStatus');
 
             component = TestUtils.renderIntoDocument(
                 <View
@@ -136,7 +136,7 @@ describe('View component', () => {
         });
 
         after(() => {
-            PilotModel.getActivationNoticeStatus.restore();
+            PilotModel.getEmailVerificationNoticeStatus.restore();
         });
 
         it('renders login form instead of parsed children', () => {

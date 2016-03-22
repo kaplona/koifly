@@ -6,6 +6,7 @@ var listViewMixin = require('../mixins/list-view-mixin');
 var FlightModel = require('../../models/flight');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var Section = require('../common/section/section');
 var Table = require('../common/table');
@@ -24,6 +25,16 @@ var FlightListView = React.createClass({
                 rightButtonCaption='Add'
                 onRightClick={ this.handleAddItem }
                 />
+        );
+    },
+
+    renderError: function() {
+        return (
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+                <MobileTopMenu header='Flights' />
+                { this.renderNavigationMenu() }
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+            </View>
         );
     },
   
@@ -62,11 +73,11 @@ var FlightListView = React.createClass({
     },
 
     render: function() {
-        var content = this.renderError();
-
-        if (!content) {
-            content = this.renderEmptyList();
+        if (this.state.loadingError !== null) {
+            return this.renderError();
         }
+        
+        var content = this.renderEmptyList();
 
         if (!content) {
             content = this.renderTable();

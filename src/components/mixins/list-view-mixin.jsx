@@ -5,7 +5,6 @@ var History = require('react-router').History;
 
 var Button = require('../common/buttons/button');
 var EmptyList = require('../common/empty-list');
-var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
 var NavigationMenu = require('../common/menu/navigation-menu');
 
@@ -49,12 +48,6 @@ var listViewMixin = function(modelKey) {
         
         renderNavigationMenu: function() {
             return <NavigationMenu currentView={ Model.getModelKey() } />;
-        },
-
-        renderError: function() {
-            if (this.state.loadingError !== null) {
-                return <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
-            }
         },
 
         renderLoader: function() {

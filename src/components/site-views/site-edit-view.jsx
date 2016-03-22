@@ -53,7 +53,7 @@ var SiteEditView = React.createClass({
             var validationRespond = this.validateForm();
             if (validationRespond === true || validationRespond.coordinates === undefined) {
                 // Change user input in { lat: 56.56734543, lng: 123.4567543 } format
-                return SiteModel.formCoordinatesInput(this.state.item.coordinates);
+                return SiteModel.stringToCoordinates(this.state.item.coordinates);
             }
         }
         return null;

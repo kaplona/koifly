@@ -1,12 +1,12 @@
 'use strict';
 
 var React = require('react');
-// var History = require('react-router').History;
 
 var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
+var ErrorBox = require('../common/notice/error-box');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var Section = require('../common/section/section');
 var Switcher = require('../common/switcher');
@@ -32,6 +32,16 @@ var SiteListView = React.createClass({
                 onLeftClick={ this.handleToMapView }
                 onRightClick={ this.handleAddItem }
                 />
+        );
+    },
+
+    renderError: function() {
+        return (
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+                <MobileTopMenu header='Sites' />
+                { this.renderNavigationMenu() }
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+            </View>
         );
     },
 
@@ -76,11 +86,11 @@ var SiteListView = React.createClass({
     },
 
     render: function() {
-        var content = this.renderError();
-
-        if (!content) {
-            content = this.renderEmptyList();
+        if (this.state.loadingError !== null) {
+            return this.renderError();
         }
+
+        var content = this.renderEmptyList();
 
         if (!content) {
             content = this.renderTable();

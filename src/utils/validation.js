@@ -121,7 +121,7 @@ var Validation = {
                 return true;
             }
 
-            // Repplace all degree characters by space
+            // Replace all degree characters by space
             var coord = formData[fieldName].replace(/°/g, ' ').trim();
 
             // Split user input by reg:

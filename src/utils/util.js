@@ -2,6 +2,7 @@
 
 
 var Util = {
+
     getMonthName: function(monthIndex) {
         var monthNames = {
             '01': 'Jan',
@@ -78,13 +79,7 @@ var Util = {
         }
 
         var dateParts = date.split('-');
-        var formattedDate = [
-            this.getMonthName(dateParts[1]),
-            parseInt(dateParts[2]) + ',',
-            dateParts[0]
-        ].join(' ');
-
-        return formattedDate;
+        return `${this.getMonthName(dateParts[1])} ${parseInt(dateParts[2])} , ${dateParts[0]}`;
     },
 
     isNumber: function(val) {
@@ -129,6 +124,78 @@ var Util = {
             return number + 'rd';
         }
         return number + 'th';
+    },
+
+
+    /**
+     * Answers if parsed string is defined, not null and doesn't consist only of spaces
+     * @param {null|string} [string]
+     * @returns {boolean} - if string has not empty value
+     */
+    isEmptyString: function(string) {
+        return (!string || (string + '').trim() === '');
+    },
+
+
+    /**
+     * @param {string} key
+     * @returns {function()} - iteratee for reduce to get list of unique values of certain field
+     */
+    uniqueValues: function(key) {
+        return (uniqueValues, nextItem) => {
+            if (nextItem[key] && uniqueValues.indexOf(nextItem[key]) === -1) {
+                uniqueValues.push(nextItem[key]);
+            }
+            return uniqueValues;
+        };
+    },
+
+
+    /**
+     * @param {string} valueKey
+     * @param {string} textKey
+     * @returns {function()} - iteratee for map to get value-text pairs
+     */
+    valueTextPairs: function(valueKey, textKey) {
+        return (item) => {
+            return {
+                value: item[valueKey].toString(),
+                text: item[textKey].toString()
+            };
+        };
+    },
+
+
+    /**
+     * @param {object|null} coordinates - object with latitude and longitude ({ lat: number, lng: number })
+     * @returns {string} - string representation of coordinates
+     */
+    coordinatesToString: function(coordinates) {
+        return coordinates ? `${coordinates.lat} ${coordinates.lng}` : '';
+    },
+
+
+    /**
+     * @param {string} string - string presentation of coordinates
+     * @returns {{lat: number, lng: number}|null} - coordinates or null if not valid coordinates string
+     */
+    stringToCoordinates: function(string) {
+        // Replace all degree characters by space
+        // Split user input by reg:
+        // any number of space | any number of ',' | space or ',' | any number of ',' | any number of space
+        string = string.replace(/°/g, ' ').trim();
+        var latLng = string.split(/\s*,*[,\s],*\s*/);
+
+        if (latLng.length === 2 &&
+            Util.isNumber(latLng[0]) &&
+            Util.isNumber(latLng[1]) &&
+            Util.isNumberWithin(latLng[0], -90, 90) &&
+            Util.isNumberWithin(latLng[1], -180, 180)
+        ) {
+            return { lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1]) };
+        }
+
+        return null;
     }
 };
 

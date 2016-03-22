@@ -1,11 +1,10 @@
 'use strict';
 
 var _ = require('lodash');
+var objectValues = require('object.values');
 
 var BaseModel = require('./base-model');
-var dataService = require('../services/data-service');
-var ErrorTypes = require('../errors/error-types');
-var KoiflyError = require('../errors/error');
+var Util = require('../utils/util');
 
 
 var GliderModel = {
@@ -70,13 +69,21 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getListOutput: function() {
-        var loadingError = this.checkForLoadingErrors();
-        if (loadingError !== false) {
-            return loadingError;
+        var storeContent = this.getStoreContent();
+        if (!storeContent || storeContent.error) {
+            return storeContent;
         }
 
-        return _.map(dataService.store.gliders, (glider, gliderId) => {
-            return this.getItemOutput(gliderId);
+        // require FlightModel here so as to avoid circle requirements
+        var FlightModel = require('./flight');
+
+        return objectValues(storeContent).map(glider => {
+            return {
+                id: glider.id,
+                name: glider.name,
+                trueFlightNum: glider.initialFlightNum + FlightModel.getNumberOfFlightsOnGlider(glider.id).total,
+                trueAirtime: glider.initialAirtime + FlightModel.getGliderAirtime(glider.id)
+            };
         });
     },
 
@@ -89,18 +96,15 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getItemOutput: function(gliderId) {
-        var loadingError = this.checkForLoadingErrors(gliderId);
-        if (loadingError !== false) {
-            return loadingError;
+        var glider = this.getStoreContent(gliderId);
+        if (!glider || glider.error) {
+            return glider;
         }
 
         // require FlightModel here so as to avoid circle requirements
         var FlightModel = require('./flight');
 
-        // Get required glider from Data Service helper
-        var glider = dataService.store.gliders[gliderId];
-
-        var flightNumObj = FlightModel.getNumberOfFlightsOnGlider(gliderId);
+        var flightNumObj = FlightModel.getNumberOfFlightsOnGlider(glider.id);
         var trueFlightNum = glider.initialFlightNum + flightNumObj.total;
         var flightNumThisYear = flightNumObj.thisYear;
 
@@ -111,7 +115,7 @@ var GliderModel = {
             initialFlightNum: glider.initialFlightNum,
             initialAirtime: glider.initialAirtime,
             trueFlightNum: trueFlightNum,
-            trueAirtime: glider.initialAirtime + FlightModel.getGliderAirtime(gliderId),
+            trueAirtime: glider.initialAirtime + FlightModel.getGliderAirtime(glider.id),
             flightNumThisYear: flightNumThisYear
         };
     },
@@ -125,17 +129,14 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getEditOutput: function(gliderId) {
-        var loadingError = this.checkForLoadingErrors(gliderId);
-        if (loadingError !== false) {
-            return loadingError;
-        }
-
         if (gliderId === undefined) {
             return this.getNewItemOutput();
         }
 
-        // Get required glider from Data Service helper
-        var glider = dataService.store.gliders[gliderId];
+        var glider = this.getStoreContent(gliderId);
+        if (!glider || glider.error) {
+            return glider;
+        }
 
         return {
             id: glider.id,
@@ -155,6 +156,11 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getNewItemOutput: function() {
+        var storeContent = this.getStoreContent();
+        if (!storeContent || storeContent.error) {
+            return storeContent;
+        }
+
         return {
             name: '',
             initialFlightNum: '0',
@@ -162,30 +168,6 @@ var GliderModel = {
             minutes: '0',
             remarks: ''
         };
-    },
-    
-
-    /**
-     * @param {number} gliderId
-     * @returns {false|null|object}
-     * false - if no errors
-     * null - if no errors but no data neither
-     * error object - if error (either general error or record required by user doesn't exist)
-     */
-    checkForLoadingErrors: function(gliderId) {
-        // Check for loading errors
-        if (dataService.loadingError !== null) {
-            dataService.initiateStore();
-            return { error: dataService.loadingError };
-        // Check if data was loaded
-        } else if (dataService.store.gliders === null) {
-            dataService.initiateStore();
-            return null;
-        // Check if required id exists
-        } else if (gliderId && dataService.store.gliders[gliderId] === undefined) {
-            return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
-        }
-        return false;
     },
     
 
@@ -209,41 +191,14 @@ var GliderModel = {
             remarks: newGlider.remarks
         };
     },
-    
+
 
     /**
-     * Walks through new glider and replace all empty values with default ones
-     * @param {object} newGlider
-     * @returns {object} - with replaced empty fields
-     */
-    setDefaultValues: function(newGlider) {
-        var fieldsToReplace = {};
-        _.each(this.formValidationConfig, (config, fieldName) => {
-            // If there is default value for the field which val is null or undefined or ''
-            if ((newGlider[fieldName] === null ||
-                 newGlider[fieldName] === undefined ||
-                (newGlider[fieldName] + '').trim() === '') &&
-                 config.rules.defaultVal !== undefined
-            ) {
-                // Set it to its default value
-                fieldsToReplace[fieldName] = config.rules.defaultVal;
-            }
-        });
-        return _.extend({}, newGlider, fieldsToReplace);
-    },
-    
-
-    getNumberOfGliders: function() {
-        return Object.keys(dataService.store.gliders).length;
-    },
-
-    
-    /**
-     * @param {number} id
+     * @param {number} gliderId - assumption: glider id exists
      * @returns {string|null} - glider's name or null if no glider with given id
      */
-    getGliderNameById: function(id) {
-        return dataService.store.gliders[id] ? dataService.store.gliders[id].name : null;
+    getGliderName: function(gliderId) {
+        return this.getStoreContent(gliderId).name;
     },
     
 
@@ -251,25 +206,21 @@ var GliderModel = {
      * @returns {number|null} - id of last created glider or null if no gliders yet
      */
     getLastAddedId: function() {
-        if (_.isEmpty(dataService.store.gliders)) {
+        var storeContent = this.getStoreContent();
+        if (_.isEmpty(storeContent)) {
             return null;
         }
 
-        var lastAddedGlider = _.max(dataService.store.gliders, (glider) => {
-            return Date.parse(glider.createdAt);
-        });
-        return lastAddedGlider.id;
+        return _.max(storeContent, glider => Date.parse(glider.createdAt)).id;
     },
 
     
     /**
-     * This gliders presentation is needed for dropdowns
+     * This presentation is required for dropdown options
      * @returns {Array} - array of objects where value is glider id, text is glider name
      */
     getGliderValueTextList: function() {
-        return _.map(dataService.store.gliders, (glider, gliderId) => {
-            return { value: gliderId, text: glider.name };
-        });
+        return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
     }
 };
 

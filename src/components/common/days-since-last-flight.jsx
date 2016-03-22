@@ -8,25 +8,26 @@ require('./days-since.less');
 var DaysSinceLastFlight = React.createClass({
 
     propTypes: {
-        days: React.PropTypes.number.isRequired
-    },
-
-    getDefaultProps: function() {
-        return {
-            days: 0
-        };
+        days: React.PropTypes.number
     },
 
     render: function() {
-        var daysSinceLastFlight;
+        var daysSinceLastFlight = 'No flights yet';
         if (this.props.days) {
             daysSinceLastFlight = this.props.days + ' days since last flight';
-        } else {
-            daysSinceLastFlight = 'no flights yet';
+        }
+        if (this.props.days === 0) {
+            daysSinceLastFlight = 'You had a blast today!';
+        }
+        
+        var twoWeeks = 14;
+        var className = 'days-since';
+        if (typeof this.props.days === 'number' && this.props.days < twoWeeks) {
+            className += ' x-green';
         }
 
         return (
-            <div className='days-since'>
+            <div className={ className }>
                 { daysSinceLastFlight }
             </div>
         );
