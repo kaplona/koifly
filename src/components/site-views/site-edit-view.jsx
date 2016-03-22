@@ -7,6 +7,7 @@ const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
 var editViewMixin = require('../mixins/edit-view-mixin');
 var SiteModel = require('../../models/site');
+var Util = require('../../utils/util');
 
 var AltitudeInput = require('../common/inputs/altitude-input');
 var AppLink = require('../common/app-link');
@@ -48,7 +49,7 @@ var SiteEditView = React.createClass({
     },
 
     getMarkerPosition: function() {
-        if (this.state.item.coordinates.trim() !== '') {
+        if (Util.isEmptyString(this.state.item.coordinates)) {
             // Hard validation in order to check coordinates format
             var validationRespond = this.validateForm();
             if (validationRespond === true || validationRespond.coordinates === undefined) {

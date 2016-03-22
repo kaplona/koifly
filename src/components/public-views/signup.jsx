@@ -4,6 +4,7 @@ var React = require('react');
 
 var dataService = require('../../services/data-service');
 var PublicViewMixin = require('../mixins/public-view-mixin');
+var Util = require('../../utils/util');
 
 var AppLink = require('../common/app-link');
 var Button = require('../common/buttons/button');
@@ -73,9 +74,7 @@ var Signup = React.createClass({
     },
 
     validateForm: function() {
-        if (!this.state.email || this.state.email.trim() === '' ||
-            !this.state.password || this.state.password.trim() === ''
-        ) {
+        if (Util.isEmptyString(this.state.email) || Util.isEmptyString(this.state.password)) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
 

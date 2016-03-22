@@ -6,6 +6,7 @@ var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var PilotModel = require('../../models/pilot');
 var PublicLinksMixin = require('../mixins/public-links-mixin');
+var Util = require('../../utils/util');
 
 var AppLink = require('../common/app-link');
 var Button = require('../common/buttons/button');
@@ -89,9 +90,7 @@ var PilotChangePassword = React.createClass({
     },
 
     validateForm: function() {
-        if (this.state.password === null || this.state.password.trim() === '' ||
-            this.state.newPassword === null || this.state.newPassword.trim() === ''
-        ) {
+        if (Util.isEmptyString(this.state.password) || Util.isEmptyString(this.state.newPassword)) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
 

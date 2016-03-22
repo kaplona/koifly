@@ -2,6 +2,7 @@
 
 const SCOPES = require('../constants/orm-constants').SCOPES;
 var ErrorMessages = require('../errors/error-messages');
+var Util = require('../utils/util');
 
 
 // mixed solution:
@@ -19,7 +20,7 @@ var isUnique = function(modelFileName, fieldName, msg) {
     return function(value, next) {
         // If value is undefined or null it should be checked by allowNull and defaultValue check
         // Here we just checks that user doesn't want to save an empty string
-        if (value.trim() !== '') {
+        if (!Util.isEmptyString(value)) {
             var Model = require('./' + modelFileName);
             var scope = (modelFileName === 'pilots') ? SCOPES.all : SCOPES.visible;
             // assuming that 'id' is primary key

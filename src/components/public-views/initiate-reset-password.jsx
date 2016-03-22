@@ -5,6 +5,7 @@ var React = require('react');
 var dataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 var PublicViewMixin = require('../mixins/public-view-mixin');
+var Util = require('../../utils/util');
 
 var Button = require('../common/buttons/button');
 var CompactContainer = require('../common/compact-container');
@@ -39,8 +40,9 @@ var InitiateResetPassword = React.createClass({
             event.preventDefault();
         }
 
-        if (!this.state.email || this.state.email.trim() === '') {
-            return this.updateError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
+        if (Util.isEmptyString(this.state.email)) {
+            this.updateError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
+            return;
         }
 
         this.setState({

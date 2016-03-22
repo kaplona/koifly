@@ -15,13 +15,13 @@ var Validation = {
         _.each(validationConfig, (config, fieldName) => {
             var validationResult = true;
 
-            // Check if field value is empty
-            if (this.isEmpty(formData[fieldName]) && !isSoft && config.isRequired) {
+            // It's error if required field is empty and it isn't soft validation mode
+            if (Util.isEmptyString(formData[fieldName]) && !isSoft && config.isRequired) {
                 validationResult = ErrorMessages.NOT_EMPTY.replace('%field', config.rules.field);
             }
 
-            // Otherwise call validation method for this field
-            if (!this.isEmpty(formData[fieldName])) {
+            // If field isn't empty check its value against its validation config
+            if (!Util.isEmptyString(formData[fieldName])) {
                 var methodName = config.method;
                 var rules = config.rules;
                 validationResult = this.methods[methodName](formData, fieldName, rules, isSoft);
@@ -33,11 +33,7 @@ var Validation = {
             }
         });
 
-        return _.isEmpty(errors) ? true : errors;
-    },
-
-    isEmpty: function(value) {
-        return (value === null || (value + '').trim() === '');
+        return _.isEmpty(errors) || errors;
     },
 
 
@@ -83,16 +79,7 @@ var Validation = {
 
             // If quality control failed
             if (!_.isEmpty(errors)) {
-                // Compose an error message
-                var errorMessage = rules.field + ' must be';
-                for (var i = 0; i < errors.length; i++) {
-                    errorMessage += errors[i];
-                    if ((i + 1) != errors.length) {
-                        errorMessage += ',';
-                    }
-                }
-                // Return the error
-                return errorMessage;
+                return rules.field + ' must be' + errors.join(',');
             }
 
             return true;
