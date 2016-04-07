@@ -39,7 +39,7 @@ var FlightView = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Back'
                 rightButtonCaption='Edit'
-                onLeftClick={ this.handleToListView }
+                onLeftClick={ this.handleGoToListView }
                 onRightClick={ this.handleEditItem }
                 />
         );
@@ -63,7 +63,7 @@ var FlightView = React.createClass({
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
+        if (this.state.loadingError) {
             return this.renderError();
         }
 

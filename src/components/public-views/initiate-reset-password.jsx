@@ -70,8 +70,8 @@ var InitiateResetPassword = React.createClass({
                 header='Koifly'
                 leftButtonCaption='Back'
                 rightButtonCaption='Sign Up'
-                onLeftClick={ () => this.handleToLogin() }
-                onRightClick={ () => this.handleToSignup() }
+                onLeftClick={ this.handleGoToLogin }
+                onRightClick={ this.handleGoToSignup }
                 />
         );
     },
@@ -111,7 +111,7 @@ var InitiateResetPassword = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ () => this.handleToPilotView() }
+                onClick={ this.handleGoToPilotView }
                 isEnabled={ !this.state.isSending }
                 />
         );

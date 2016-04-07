@@ -36,7 +36,7 @@ DataService.prototype.initiateStore = function() {
     AjaxService
         .get('/api/data', { lastModified: this.lastModified })
         .then(serverResponse => this.populateStore(serverResponse))
-        .catch((error) => this.setLoadingError(error));
+        .catch(error => this.setLoadingError(error));
 };
 
 
@@ -47,7 +47,10 @@ DataService.prototype.initiateStore = function() {
 DataService.prototype.logout = function() {
     AjaxService
         .post('/api/logout')
-        .then(() => this.clearStore())
+        .then(() => {
+            this.clearStore();
+            PubSub.emit('storeModified');
+        })
         .catch(() => window.alert('Server error. Could not log out.'));
 };
 
@@ -59,7 +62,7 @@ DataService.prototype.logout = function() {
  * then populates store with new data
  * @param {Object} data
  * @param {string} dataType - one of 'flight', 'site', 'glider', 'pilot'
- * @returns {Promise} - if request was successful
+ * @returns {Promise} - whether request was successful
  */
 DataService.prototype.saveData = function(data, dataType) {
     data = {
@@ -77,18 +80,20 @@ DataService.prototype.saveData = function(data, dataType) {
 /**
  *
  * @param {Object} pilotCredentials
- * @param {string} pilotCredentials.email
- * @param {string} pilotCredentials.password
- * @param {boolean} pilotCredentials.isSubscribed
+ *   @param {string} pilotCredentials.email
+ *   @param {string} pilotCredentials.password
+ *   @param {boolean} pilotCredentials.isSubscribed
  *
- * @returns {Promise} - if request was successful
+ * @returns {Promise} - whether request was successful
  */
 DataService.prototype.createPilot = function(pilotCredentials) {
     return AjaxService
         .post('/api/signup', pilotCredentials)
-        .then((newPilotInfo) => {
-            this.setPilotInfo(newPilotInfo);
-            this.setEmptyStore();
+        .then(newPilotInfo => {
+            this.clearStore();
+            this.addPilotInfo(newPilotInfo);
+            this.initializeStore();
+            PubSub.emit('storeModified');
         });
 };
 
@@ -96,10 +101,10 @@ DataService.prototype.createPilot = function(pilotCredentials) {
 /**
  *
  * @param {Object} pilotCredentials
- * @param {string} pilotCredentials.email
- * @param {string} pilotCredentials.password
+ *   @param {string} pilotCredentials.email
+ *   @param {string} pilotCredentials.password
  *
- * @returns {Promise} - if request was successful
+ * @returns {Promise} - whether request was successful
  */
 DataService.prototype.loginPilot = function(pilotCredentials) {
     // We are sending lastModified date along with user's credentials
@@ -117,7 +122,7 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
  *
  * @param {string} currentPassword
  * @param {string} nextPassword
- * @returns {Promise} - if request was successful
+ * @returns {Promise} - whether request was successful
  */
 DataService.prototype.changePassword = function(currentPassword, nextPassword) {
     var passwords = {
@@ -149,7 +154,7 @@ DataService.prototype.sendInitiateResetPasswordEmail = function(email) {
  * @param {string} nextPassword
  * @param {string} pilotId - taken from the url user got in his email
  * @param {string} authToken - taken from the url user got in his email
- * @returns {Promise} - if request was successful
+ * @returns {Promise} - whether request was successful
  */
 DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken) {
     var data = {
@@ -167,15 +172,16 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
 /**
  * Once new user signed up we don't query the DB for his data (because he has none)
  * instead we just mimic empty store at front-end
+ * store is null by default so models can distinguish between empty store and 'store is waiting for server response''
  */
-DataService.prototype.setEmptyStore = function() {
-    _.each(this.store, (value, key) => {
-        if (key !== 'pilot') {
-            this.store[key] = {};
-        }
-    });
-
-    PubSub.emit('storeModified');
+DataService.prototype.initializeStore = function() {
+    Object
+        .keys(this.store)
+        .forEach((key) => {
+            if (key !== 'pilot' && this.store[key] === null) {
+                this.store[key] = {};
+            }
+        });
 };
 
 
@@ -188,8 +194,6 @@ DataService.prototype.clearStore = function() {
     });
     this.lastModified = null;
     this.loadingError = null;
-
-    PubSub.emit('storeModified');
 };
 
 
@@ -198,28 +202,27 @@ DataService.prototype.clearStore = function() {
  * @param {Object} serverResponse
  */
 DataService.prototype.populateStore =  function(serverResponse) {
-    var isStoreModified = false;
-    // If we got a valid response there were no errors
-    if (this.loadingError) {
-        this.loadingError = null;
-        isStoreModified = true;
-    }
+    var isStoreModified = !!this.loadingError; // if store went from error to no-error, then it changed
 
-    // If we got new data update front-end store
+    // If we got a valid response, there were no errors
+    this.loadingError = null;
+
+    // If we got new data, update front-end store
     if (this.lastModified === null ||
         this.lastModified < serverResponse.lastModified
     ) {
         this.lastModified = serverResponse.lastModified;
+        this.initializeStore();
 
          _.each(serverResponse, (data, storeKey) => {
              if (storeKey === 'pilot') {
-                 this.setPilotInfo(data);
+                 this.addPilotInfo(data);
                  return;
              }
 
              // if we have such data type update data
              if (this.store[storeKey] !== undefined) {
-                 this.setDataItems(data, storeKey);
+                 this.addItems(storeKey, data);
              }
          });
 
@@ -254,7 +257,7 @@ DataService.prototype.setLoadingError = function(error) {
  *
  * @param {Object} pilotInfo - pilot info object received from the server
  */
-DataService.prototype.setPilotInfo = function(pilotInfo) {
+DataService.prototype.addPilotInfo = function(pilotInfo) {
     // If loading data the first time => create a store object
     // store is null by default so models can distinguish between empty store and 'store is waiting for server response''
     if (this.store.pilot === null) {
@@ -265,25 +268,21 @@ DataService.prototype.setPilotInfo = function(pilotInfo) {
 
 
 /**
- *
- * @param {Object} newData - received from the server
+ * Add items which exist in server side but not in front-end
+ * or delete items which were deleted in server side but not in front-end
  * @param {string} storeKey
+ * @param {Object[]} newItems - received from the server
  */
-DataService.prototype.setDataItems = function(newData, storeKey) {
-    // If loading data the first time => create a data storage object
-    // store is null by default so models can distinguish between empty store and 'store is waiting for server response''
-    if (this.store[storeKey] === null) {
-        this.store[storeKey] = {};
-    }
-    for (var i = 0; i < newData.length; i++) {
+DataService.prototype.addItems = function(storeKey, newItems) {
+    newItems.forEach(item => {
         // If item is visible => update/add to the store object
-        if (newData[i].see) {
-            this.store[storeKey][newData[i].id] = newData[i];
+        if (item.see) {
+            this.store[storeKey][item.id] = item;
         // If item is deleted => remove it from data object
-        } else if (this.store[storeKey][newData[i].id]) {
-            delete this.store[storeKey][newData[i].id];
+        } else if (this.store[storeKey][item.id]) {
+            delete this.store[storeKey][item.id];
         }
-    }
+    });
 };
 
 

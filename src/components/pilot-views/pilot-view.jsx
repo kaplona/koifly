@@ -28,7 +28,7 @@ var PilotView = React.createClass({
 
     getInitialState: function() {
         return {
-            pilot: null,
+            pilot: null, // no data received
             loadingError: null
         };
     },
@@ -43,12 +43,12 @@ var PilotView = React.createClass({
 
     handleLogout: function() {
         dataService.logout();
-        this.handleToHomePage();
+        this.handleGoToHomePage();
     },
 
     handleStoreModified: function() {
         var pilot = PilotModel.getPilotOutput();
-        if (pilot !== null && pilot.error) {
+        if (pilot && pilot.error) {
             this.setState({ loadingError: pilot.error });
         } else {
             this.setState({
@@ -108,7 +108,7 @@ var PilotView = React.createClass({
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
+        if (this.state.loadingError) {
             return this.renderError();
         }
 

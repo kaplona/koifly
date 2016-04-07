@@ -28,7 +28,7 @@ var editViewMixin = function(modelKey) {
 
         getInitialState: function() {
             return {
-                item: null,
+                item: null, // no data received
                 loadingError: null,
                 savingError: null,
                 deletingError: null,
@@ -37,6 +37,11 @@ var editViewMixin = function(modelKey) {
             };
         },
 
+        /**
+         * Once store data was modified or on initial rendering,
+         * requests for presentational data form the Model
+         * and updates component's state
+         */
         handleStoreModified: function() {
             // If waiting for server response
             // ignore any other data updates
@@ -48,7 +53,7 @@ var editViewMixin = function(modelKey) {
             var item = Model.getEditOutput(this.props.params.id);
 
             // Check for errors
-            if (item !== null && item.error) {
+            if (item && item.error) {
                 this.setState({ loadingError: item.error });
                 return;
             }
@@ -59,6 +64,11 @@ var editViewMixin = function(modelKey) {
             });
         },
 
+        /**
+         * Updates state which represents input values
+         * @param {string} inputName - key for this.state.item
+         * @param {string} inputValue
+         */
         handleInputChange: function(inputName, inputValue) {
             var newItem = _.extend({}, this.state.item, { [inputName]: inputValue });
             this.setState({ item: newItem }, () => {
@@ -86,12 +96,8 @@ var editViewMixin = function(modelKey) {
 
                 Model
                     .saveItem(this.state.item)
-                    .then(() => {
-                        this.handleCancelEdit();
-                    })
-                    .catch((error) => {
-                        this.updateProcessingError(error, true);
-                    });
+                    .then(() => this.handleCancelEdit())
+                    .catch(error => this.updateProcessingError(error, true));
             }
         },
 
@@ -102,12 +108,8 @@ var editViewMixin = function(modelKey) {
                 this.setState({ isDeleting: true });
                 Model
                     .deleteItem(this.props.params.id)
-                    .then(() => {
-                        this.history.pushState(null, `/${Model.keys.plural}`);
-                    })
-                    .catch((error) => {
-                        this.updateProcessingError(error);
-                    });
+                    .then(() => this.history.pushState(null, `/${Model.keys.plural}`))
+                    .catch(error => this.updateProcessingError(error));
             }
         },
 
@@ -119,6 +121,16 @@ var editViewMixin = function(modelKey) {
             );
         },
 
+        /**
+         * Updates state with received error
+         * marks that view finished processing saving/deleting operation
+         * @param {object} error
+         *   @param {string} error.type
+         *   @param {string} error.message
+         *   @param {string} [error.errors]
+         *
+         * @param {boolean} isSaving
+         */
         updateProcessingError: function(error, isSaving) {
             if (error.type === ErrorTypes.VALIDATION_ERROR) {
                 this.updateValidationErrors(error.errors);
@@ -133,14 +145,22 @@ var editViewMixin = function(modelKey) {
             });
         },
 
-        updateValidationErrors: function(errors) {
-            var validationErrors = _.extend({}, this.formFields, errors);
+        /**
+         * If validation errors changed, updates validation errors state
+         * @param {object} validationErrors - object where key is a form field name, value is error message
+         */
+        updateValidationErrors: function(validationErrors) {
+            validationErrors = _.extend({}, this.formFields, validationErrors);
 
             if (!_.isEqual(validationErrors, this.state.validationErrors)) {
                 this.setState({ validationErrors: validationErrors });
             }
         },
-        
+
+        /**
+         * Whether view is processing saving or deleting operation
+         * @returns {boolean} - true if processing, false - if not
+         */
         isProcessing: function() {
             return this.state.isSaving || this.state.isDeleting || false;
         },
@@ -171,7 +191,9 @@ var editViewMixin = function(modelKey) {
         },
 
         renderError: function() {
-            return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+            return this.renderSimpleLayout(
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+            );
         },
         
         renderProcessingError: function() {

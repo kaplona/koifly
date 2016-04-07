@@ -16,9 +16,9 @@ var AjaxService = {
      * Sends Ajax requests to the server,
      *
      * @param {Object} options
-     * @param {string} options.url
-     * @param {string} options.method - get or post
-     * @param {Object} [options.data] - for post requests
+     *   @param {string} options.url
+     *   @param {string} options.method - get or post
+     *   @param {Object} [options.data] - for post requests
      *
      * @param {boolean} [isRetry] - is used for csrf attacks,
      * each request to server shall have csrf cookie which value is send to the server along with the request

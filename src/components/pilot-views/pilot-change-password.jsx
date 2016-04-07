@@ -121,7 +121,7 @@ var PilotChangePassword = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Back'
                 rightButtonCaption='Save'
-                onLeftClick={ () => this.handleToPilotView() }
+                onLeftClick={ this.handleGoToPilotView }
                 onRightClick={ this.handleSubmit }
                 />
         );
@@ -132,7 +132,7 @@ var PilotChangePassword = React.createClass({
     },
 
     renderError: function() {
-        if (this.state.error !== null) {
+        if (this.state.error) {
             return <ErrorBox error={ this.state.error } />;
         }
     },
@@ -165,7 +165,7 @@ var PilotChangePassword = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ () => this.handleToPilotView() }
+                onClick={ this.handleGoToPilotView }
                 isEnabled={ this.isButtonsEnabled() }
                 />
         );
@@ -184,7 +184,7 @@ var PilotChangePassword = React.createClass({
 
                 <MobileButton
                     caption='Forgot Password?'
-                    onClick={ () => this.handleToResetPassword() }
+                    onClick={ this.handleGoToResetPassword }
                     />
             </div>
         );
@@ -239,7 +239,7 @@ var PilotChangePassword = React.createClass({
                             { this.renderDesktopButtons() }
     
                             <SectionRow isDesktopOnly={ true } isLast={ true }>
-                                <AppLink onClick={ this.handleToResetPassword }>Forgot Password?</AppLink>
+                                <AppLink onClick={ this.handleGoToResetPassword }>Forgot Password?</AppLink>
                             </SectionRow>
                         </Section>
     

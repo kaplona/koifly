@@ -65,12 +65,8 @@ var Signup = React.createClass({
 
         dataService
             .createPilot(pilotCredentials)
-            .then(() => {
-                this.handleToPilotView();
-            })
-            .catch((error) => {
-                this.updateError(error);
-            });
+            .then(() => this.handleGoToPilotView())
+            .catch(error => this.updateError(error));
     },
 
     validateForm: function() {
@@ -90,7 +86,7 @@ var Signup = React.createClass({
             <MobileTopMenu
                 header='Koifly'
                 rightButtonCaption='Log In'
-                onRightClick={ this.handleToLogin }
+                onRightClick={ this.handleGoToLogin }
                 />
         );
     },
@@ -181,7 +177,7 @@ var Signup = React.createClass({
                             { this.renderDesktopButtons() }
 
                             <SectionRow isDesktopOnly={ true } isLast={ true } >
-                                <AppLink onClick={ this.handleToLogin }>Have an Account? Log in now!</AppLink>
+                                <AppLink onClick={ this.handleGoToLogin }>Have an Account? Log in now!</AppLink>
                             </SectionRow>
                         </Section>
 

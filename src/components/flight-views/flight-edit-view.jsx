@@ -51,7 +51,7 @@ var FlightEditView = React.createClass({
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
+        if (this.state.loadingError) {
             return this.renderError();
         }
 

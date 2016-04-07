@@ -21,14 +21,20 @@ var itemViewMixin = function(modelKey) {
 
         getInitialState: function() {
             return {
-                item: null,
+                item: null, // no data received
                 loadingError: null
             };
         },
 
+        /**
+         * Once store data was modified or on initial rendering,
+         * requests for presentational data form the Model
+         * and updates component's state
+         */
         handleStoreModified: function() {
             var storeContent = Model.getItemOutput(this.props.params.id);
-            if (storeContent !== null && storeContent.error) {
+            
+            if (storeContent && storeContent.error) {
                 this.setState({ loadingError: storeContent.error });
             } else {
                 this.setState({
@@ -38,7 +44,7 @@ var itemViewMixin = function(modelKey) {
             }
         },
 
-        handleToListView: function() {
+        handleGoToListView: function() {
             this.history.pushState(null, `/${Model.keys.plural}`);
         },
 
@@ -55,7 +61,7 @@ var itemViewMixin = function(modelKey) {
                 <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                     <MobileTopMenu
                         leftButtonCaption='Back'
-                        onLeftClick={ this.handleToListView }
+                        onLeftClick={ this.handleGoToListView }
                         />
                     { this.renderNavigationMenu() }
                     { children }
@@ -68,7 +74,9 @@ var itemViewMixin = function(modelKey) {
         },
 
         renderError: function() {
-            return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+            return this.renderSimpleLayout(
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+            );
         }
     };
 };

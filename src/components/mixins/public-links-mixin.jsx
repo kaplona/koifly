@@ -7,31 +7,31 @@ var PublicLinksMixin = {
 
     mixins: [ History ],
 
-    handleToFlightLog: function() {
+    handleGoToFlightLog: function() {
         this.history.pushState(null, '/flights');
     },
 
-    handleToHomePage: function() {
+    handleGoToHomePage: function() {
         this.history.pushState(null, '/');
     },
 
-    handleToLogin: function() {
+    handleGoToLogin: function() {
         this.history.pushState(null, '/login');
     },
 
-    handleToOneTimeLogin: function() {
+    handleGoToOneTimeLogin: function() {
         this.history.pushState(null, '/one-time-login');
     },
 
-    handleToPilotView: function() {
+    handleGoToPilotView: function() {
         this.history.pushState(null, '/pilot');
     },
 
-    handleToResetPassword: function() {
+    handleGoToResetPassword: function() {
         this.history.pushState(null, '/reset-password');
     },
 
-    handleToSignup: function() {
+    handleGoToSignup: function() {
         this.history.pushState(null, '/signup');
     }
 };

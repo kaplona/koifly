@@ -53,7 +53,7 @@ var StaticMap = React.createClass({
         return false;
     },
 
-    handleToSite: function(siteId) {
+    handleGoToSiteView: function(siteId) {
         this.history.pushState(null, '/site/' + siteId);
     },
 
@@ -72,7 +72,7 @@ var StaticMap = React.createClass({
 
                 infowindowContent = this.composeInfowindowMessage(this.props.sites[i]);
                 infowindowOnClickFunc = ((siteId) => {
-                    return () => this.handleToSite(siteId);
+                    return () => this.handleGoToSiteView(siteId);
                 })(markerId);
 
                 mapFacade.createInfowindow(markerId, infowindowContent, infowindowOnClickFunc);

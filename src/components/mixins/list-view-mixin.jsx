@@ -20,15 +20,20 @@ var listViewMixin = function(modelKey) {
 
         getInitialState: function() {
             return {
-                items: null,
+                items: null, // no data received
                 loadingError: null
             };
         },
 
+        /**
+         * Once store data was modified or on initial rendering,
+         * requests for presentational data form the Model
+         * and updates component's state
+         */
         handleStoreModified: function() {
             var storeContent = Model.getListOutput();
 
-            if (storeContent !== null && storeContent.error) {
+            if (storeContent && storeContent.error) {
                 this.setState({ loadingError: storeContent.error });
             } else {
                 this.setState({
@@ -38,6 +43,9 @@ var listViewMixin = function(modelKey) {
             }
         },
 
+        /**
+         * @param {number} id - id of the item which page to open
+         */
         handleRowClick: function(id) {
             this.history.pushState(null, `/${Model.keys.single}/${id}`);
         },

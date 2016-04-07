@@ -1,20 +1,16 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
 
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var Notice = require('../common/notice/notice');
+var PublicLinksMixin = require('../mixins/public-links-mixin');
 
 
 var InvalidVerificationLink = React.createClass({
 
-    mixins: [ History ],
-
-    handleToLogin: function() {
-        this.history.pushState(null, '/login');
-    },
+    mixins: [ PublicLinksMixin ],
 
     render: function() {
         return (
@@ -22,7 +18,7 @@ var InvalidVerificationLink = React.createClass({
                 <MobileTopMenu
                     header='Koifly'
                     rightButtonCaption='Log in'
-                    onRightClick={ this.handleToLogin }
+                    onRightClick={ this.handleGoToLogin }
                     />
                 <NavigationMenu />
                 

@@ -19,7 +19,7 @@ var SiteListView = React.createClass({
 
     mixins: [ listViewMixin(SiteModel.getModelKey()) ], // already includes history mixin
 
-    handleToMapView: function() {
+    handleGoToMapView: function() {
         this.history.pushState(null, '/sites/map');
     },
     
@@ -29,7 +29,7 @@ var SiteListView = React.createClass({
                 header='Sites'
                 leftButtonCaption='Map'
                 rightButtonCaption='Add'
-                onLeftClick={ this.handleToMapView }
+                onLeftClick={ this.handleGoToMapView }
                 onRightClick={ this.handleAddItem }
                 />
         );
@@ -50,7 +50,7 @@ var SiteListView = React.createClass({
             <Switcher
                 leftButtonCaption='List'
                 rightButtonCaption='Map'
-                onRightClick={ this.handleToMapView }
+                onRightClick={ this.handleGoToMapView }
                 initialPosition='left'
                 />
         );
@@ -86,7 +86,7 @@ var SiteListView = React.createClass({
     },
 
     render: function() {
-        if (this.state.loadingError !== null) {
+        if (this.state.loadingError) {
             return this.renderError();
         }
 

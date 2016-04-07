@@ -79,7 +79,7 @@ var Login = React.createClass({
 
     handleLogin: function() {
         if (!this.props.isStayOnThisPage) {
-            this.handleToFlightLog();
+            this.handleGoToFlightLog();
         }
     },
 
@@ -97,8 +97,8 @@ var Login = React.createClass({
                 header='Koifly'
                 leftButtonCaption='About'
                 rightButtonCaption='Sign Up'
-                onLeftClick={ () => this.handleToHomePage() }
-                onRightClick={ () => this.handleToSignup() }
+                onLeftClick={ this.handleGoToHomePage }
+                onRightClick={ this.handleGoToSignup }
                 />
         );
     },
@@ -132,17 +132,17 @@ var Login = React.createClass({
 
                 <MobileButton
                     caption='Forgot Password?'
-                    onClick={ () => this.handleToResetPassword() }
+                    onClick={ this.handleGoToResetPassword }
                     />
 
                 <MobileButton
                     caption='Log In Without Password'
-                    onClick={ () => this.handleToOneTimeLogin() }
+                    onClick={ this.handleGoToOneTimeLogin }
                     />
 
                 <MobileButton
                     caption='Don&#39;t Have Account?'
-                    onClick={ () => this.handleToSignup() }
+                    onClick={ this.handleGoToSignup }
                     />
             </div>
         );
@@ -182,15 +182,15 @@ var Login = React.createClass({
                             { this.renderDesktopButtons() }
     
                             <SectionRow isDesktopOnly={ true } >
-                                <AppLink onClick={ this.handleToResetPassword }>Forgot Password?</AppLink>
+                                <AppLink onClick={ this.handleGoToResetPassword }>Forgot Password?</AppLink>
                             </SectionRow>
     
                             <SectionRow isDesktopOnly={ true } >
-                                <AppLink onClick={ this.handleToOneTimeLogin }>Log In Without Password</AppLink>
+                                <AppLink onClick={ this.handleGoToOneTimeLogin }>Log In Without Password</AppLink>
                             </SectionRow>
     
                             <SectionRow isDesktopOnly={ true } isLast={ true } >
-                                <AppLink onClick={ this.handleToSignup }>Sign up now!</AppLink>
+                                <AppLink onClick={ this.handleGoToSignup }>Sign up now!</AppLink>
                             </SectionRow>
                         </Section>
     

@@ -89,7 +89,7 @@ var ResetPassword = React.createClass({
             <MobileTopMenu
                 header='Koifly'
                 rightButtonCaption='Log in'
-                onRightClick={ this.handleToLogin }
+                onRightClick={ this.handleGoToLogin }
                 />
         );
     },
