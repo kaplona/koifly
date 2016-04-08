@@ -6,6 +6,7 @@ var getAllData = require('../helpers/get-all-data');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
+var sequelize = require('../../orm/sequelize');
 
 var Flight = require('../../orm/flights');
 var Glider = require('../../orm/gliders');
@@ -160,20 +161,27 @@ function saveSite(data, pilotId) {
         return Site.create(data);
     }
 
-    return Site
-        .findOne({ where: { id: data.id, pilotId: pilotId } })
-        .then((site) => {
-            if (!site || site.id.toString() !== data.id.toString()) {
-                throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
-            }
-            // TODO transactions
-            return site.update(data);
-        })
-        .then((newSite) => {
-            if (!newSite.see) {
-                return Flight.update({ siteId: null }, {where: {siteId: newSite.id} });
-            }
-        });
+    // Start transaction
+    // in order to delete glider with all its references in flight records
+    return sequelize.transaction(t => {
+        return Site
+            .findOne({ where: {id: data.id, pilotId: pilotId}, transaction: t })
+            .then((site) => {
+                if (!site || site.id.toString() !== data.id.toString()) {
+                    throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
+                }
+
+                return site.update(data, { transaction: t });
+            })
+            .then((site) => {
+                if (!site.see) {
+                    return Flight.update(
+                        { siteId: null },
+                        { where: {siteId: site.id}, transaction: t }
+                    );
+                }
+            });
+    });
 }
 
 
@@ -205,20 +213,27 @@ function saveGlider(data, pilotId) {
         return Glider.create(data);
     }
 
-    return Glider
-        .findOne({ where: { id: data.id, pilotId: pilotId } })
-        .then((glider) => {
-            if (!glider || glider.id.toString() !== data.id.toString()) {
-                throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
-            }
-            // TODO transactions
-            return glider.update(data);
-        })
-        .then((newGlider) => {
-            if (!newGlider.see) {
-                return Flight.update({ gliderId: null }, {where: {gliderId: newGlider.id} });
-            }
-        });
+    // Start transaction
+    // in order to delete glider with all its references in flight records
+    return sequelize.transaction(t => {
+        return Glider
+            .findOne({where: {id: data.id, pilotId: pilotId}, transaction: t})
+            .then((glider) => {
+                if (!glider || glider.id.toString() !== data.id.toString()) {
+                    throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
+                }
+
+                return glider.update(data, {transaction: t});
+            })
+            .then(glider => {
+                if (!glider.see) {
+                    return Flight.update(
+                        { gliderId: null },
+                        { where: {gliderId: glider.id}, transaction: t }
+                    );
+                }
+            });
+    });
 }
 
 

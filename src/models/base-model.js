@@ -69,7 +69,7 @@ var BaseModel = {
      * @returns {Promise} - if deleting was successful or not
      */
     deleteItem: function(itemId) {
-        return dataService.saveItem({ id: itemId, see: false }, this.getModelKey());
+        return dataService.saveData({ id: itemId, see: false }, this.getModelKey());
     },
 
 
@@ -80,7 +80,7 @@ var BaseModel = {
      */
     setDefaultValues: function(newItem) {
         var fieldsToReplace = {};
-        this.getValidationConfig().forEach((config, fieldName) => {
+        _.each(this.getValidationConfig(), (config, fieldName) => {
             // If there is default value for empty field - set it
             if (Util.isEmptyString(newItem[fieldName]) &&
                 config.rules.defaultVal !== undefined
