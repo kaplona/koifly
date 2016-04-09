@@ -16,10 +16,14 @@ var Glider = sequelize.define('glider', {
         primaryKey: true
     },
     name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: false,
         validate: {
-            isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider'))
+            isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider')),
+            len: {
+                args: [0, 100],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Glider Name').replace('%max', '100')
+            }
         }
     },
     initialFlightNum: {
@@ -48,7 +52,13 @@ var Glider = sequelize.define('glider', {
     },
     remarks: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: {
+                args: [0, 10000],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+            }
+        }
     },
     see: {
         type: Sequelize.BOOLEAN,

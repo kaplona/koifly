@@ -16,16 +16,26 @@ var Site = sequelize.define('site', {
         primaryKey: true
     },
     name: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(100),
         allowNull: false,
         validate: {
-            isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site'))
+            isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site')),
+            len: {
+                args: [0, 100],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Site Name').replace('%max', '100')
+            }
         }
     },
     location: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(1000),
         allowNull: false,
-        defaultValue: ''
+        defaultValue: '',
+        validate: {
+            len: {
+                args: [0, 1000],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Location').replace('%max', '1000')
+            }
+        }
     },
     launchAltitude: {
         type: Sequelize.FLOAT,
@@ -73,7 +83,13 @@ var Site = sequelize.define('site', {
     },
     remarks: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: {
+                args: [0, 10000],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+            }
+        }
     },
     see: {
         type: Sequelize.BOOLEAN,

@@ -20,7 +20,7 @@ var EmailVerificationNotice = React.createClass({
                 'We sent you email with verification link.',
                 'Please follow it to activate your account.',
                 'It is required for your records safety',
-                'since your email is the primary way to access application'
+                'since your email is the primary way to access the application'
             ].join(' ')
         };
     },

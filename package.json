@@ -23,6 +23,7 @@
     "webpack": "NODE_ENV=development  node --harmony src/scripts/make.js  &&  NODE_ENV=development  node --harmony src/webpackDevServer.js",
     "dev": "NODE_ENV=development      node --harmony src/scripts/make.js  &&  NODE_ENV=development  nodemon --harmony src/server.js",
     "make": "NODE_ENV=development     node --harmony src/scripts/make.js",
+    "db_init": "MYSQL_ADMIN=true      node --harmony src/orm/init.js",
     "lint": "eslint . --ext .js --ext .jsx",
     "test": "./node_modules/.bin/mocha --compilers jsx:babel-register --require ignore-styles ./tests/ --recursive"
   },

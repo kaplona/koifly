@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var AjaxService = require('./ajax-service');
+var ErrorTypes = require('../errors/error-types');
 var PubSub = require('../utils/pubsub');
 
 
@@ -246,8 +247,12 @@ DataService.prototype.setLoadingError = function(error) {
         this.loadingError.type !== error.type
     ) {
         this.loadingError = error;
+        
         // try to get data again
-        this.initiateStore();
+        if (error.type !== ErrorTypes.AUTHENTICATION_ERROR) {
+            this.initiateStore();
+        }
+        
         PubSub.emit('storeModified');
     }
 };

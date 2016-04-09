@@ -39,15 +39,11 @@ var InvalidVerificationLink = require('./components/public-views/invalid-verific
 
 var pageNotFound = require('./components/public-views/page-not-found');
 
-//var Test = require('./tests/test');
-//var dataService = require('./services/data-service');
 
 require('./components/koifly.less');
 
 
 function mainApp() {
-    //Test.runTests();
-    //DataService.initiateStore();
 
     React.render((
         <Router history={ createBrowserHistory() }>

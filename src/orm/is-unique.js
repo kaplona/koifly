@@ -23,10 +23,10 @@ var isUnique = function(modelFileName, fieldName, msg) {
         if (!Util.isEmptyString(value)) {
             var Model = require('./' + modelFileName);
             var scope = (modelFileName === 'pilots') ? SCOPES.all : SCOPES.visible;
+
             // assuming that 'id' is primary key
             var query = { id: { $ne: this.id } };
-            // emails are stored in lower case in DB
-            query[fieldName] = (fieldName === 'email') ? value.toLowerCase() : value;
+
             if (modelFileName !== 'pilots') {
                 query.pilotId = this.pilotId;
             }
@@ -34,7 +34,7 @@ var isUnique = function(modelFileName, fieldName, msg) {
             Model.scope(scope)
                 .findOne({
                     where: query,
-                    atributes: ['id']
+                    attributes: ['id']
                 })
                 .then((record) => {
                     if (record) {

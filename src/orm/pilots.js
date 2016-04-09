@@ -19,8 +19,14 @@ var Pilot = sequelize.define('pilot', {
         primaryKey: true
     },
     userName: {
-        type: Sequelize.STRING,
-        allowNull: true
+        type: Sequelize.STRING(100),
+        allowNull: true,
+        validate: {
+            len: {
+                args: [0, 100],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'User Name').replace('%max', '100')
+            }
+        }
     },
     email: {
         type: Sequelize.STRING,
@@ -68,12 +74,18 @@ var Pilot = sequelize.define('pilot', {
         validate: { isIn: [ ['meters', 'feet'] ] }
     },
     token: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING(64),
         allowNull: true,
-        defaultValue: null
+        defaultValue: null,
+        validate: {
+            len: {
+                args: [0, 64],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'token!!!').replace('%max', '64')
+            }
+        }
     },
     tokenExpirationTime: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT(14),
         allowNull: true,
         defaultValue: null
     },

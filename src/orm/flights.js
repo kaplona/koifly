@@ -19,7 +19,7 @@ var Flight = sequelize.define('flight', {
         primaryKey: true
     },
     date: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: false,
         validate: {
             isDate: { msg: ErrorMessages.DATE_FORMAT }
@@ -67,7 +67,13 @@ var Flight = sequelize.define('flight', {
     },
     remarks: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            len: {
+                args: [0, 10000],
+                msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+            }
+        }
     },
     see: {
         type: Sequelize.BOOLEAN,

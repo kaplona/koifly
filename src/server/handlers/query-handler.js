@@ -58,7 +58,7 @@ var queryHandler = function(request, reply) {
         .then((result) => {
             reply(result);
         })
-        .catch((err) => {
+        .catch((error) => {
             //DEV
             console.log('error => ', error);
 
@@ -76,7 +76,7 @@ var queryHandler = function(request, reply) {
  * @returns {Promise}
  */
 function saveData(dataType, data, pilot) {
-    var pilotId = pilot.getDataValue('id');
+    var pilotId = pilot.id;
     switch (dataType) {
         case 'flight':
             return saveFlight(data, pilotId);

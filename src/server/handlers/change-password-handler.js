@@ -63,7 +63,7 @@ var changePasswordHandler = function(request, reply) {
             // Send email notification to user
             // so he has opportunity to reset password
             // if it wasn't he who change the pass at the first place
-            sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password/');
+            sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password');
             return setAuthCookie(request, pilot.id, pilot.password);
         })
         .then(() => {

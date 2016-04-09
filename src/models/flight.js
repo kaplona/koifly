@@ -165,7 +165,8 @@ var FlightModel = {
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
-        
+
+        var siteAltitude;
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties
@@ -176,9 +177,9 @@ var FlightModel = {
         }
 
         if (lastFlight.siteId) {
-            var siteAltitude = SiteModel.getLaunchAltitude(lastFlight.siteId);
-            siteAltitude = siteAltitude || 0;
+            siteAltitude = SiteModel.getLaunchAltitude(lastFlight.siteId);
         }
+        siteAltitude = siteAltitude || 0;
 
         return {
             date: Util.today(),

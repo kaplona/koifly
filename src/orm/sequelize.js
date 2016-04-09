@@ -2,10 +2,18 @@
 
 var Sequelize = require('sequelize');
 
-const DATABASE = require('../secrets').database;
-const USER = require('../secrets').mysqlUser;
-const PASSWORD = require('../secrets').mysqlPassword;
-const HOST = require('../secrets').mysqlHost;
+var Secrets = require('../secrets').dbApp;
+
+console.log('---- init db -----');
+if (process.env.MYSQL_ADMIN) {
+    console.log('---- admin db -----');
+    Secrets = require('../secrets').dbAdmin;
+}
+
+const DATABASE = Secrets.database;
+const USER = Secrets.mysqlUser;
+const PASSWORD = Secrets.mysqlPassword;
+const HOST = Secrets.mysqlHost;
 
 
 var sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
