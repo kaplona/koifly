@@ -3,6 +3,10 @@
 
 var Util = {
 
+    /**
+     * @param {string} monthIndex - represents month number
+     * @returns {string} - short month name
+     */
     getMonthName: function(monthIndex) {
         var monthNames = {
             '01': 'Jan',
@@ -21,6 +25,10 @@ var Util = {
         return monthNames[monthIndex];
     },
 
+
+    /**
+     * @returns {string} - today date in yyyy-mm-dd format
+     */
     today: function() {
         var date = new Date();
         var dd = date.getDate();
@@ -38,69 +46,44 @@ var Util = {
         return yyyy + '-' + mm + '-' + dd;
     },
 
-    timeNow: function() {
-        var date = new Date();
-        var hour = date.getHours();
-        var min = date.getMinutes();
-        var sec = date.getSeconds();
 
-        if (hour < 10) {
-            hour = '0' + hour;
-        }
-
-        if (min < 10) {
-            min = '0' + min;
-        }
-
-        if (sec < 10) {
-            sec = '0' + sec;
-        }
-
-        return hour + ':' + min + ':' + sec;
-    },
-
+    /**
+     * @param {string} date
+     * @returns {boolean} - whether the parsed date in yyyy-mm-dd format
+     */
     isRightDateFormat: function(date) {
+        var dateElements = date.split('-');
+
         return (
-            date.length === 10 &&
-            date.substring(0, 4) >= 1900 &&
-            date.substring(0, 4) <= 2099 &&
-            date.substring(5, 7) >= 1 &&
-            date.substring(5, 7) <= 12 &&
-            date.substring(8) >= 1 &&
-            date.substring(8) <= 31 &&
-            date.substring(4, 5) === '-' &&
-            date.substring(7, 8) === '-'
+            dateElements.length === 3 &&
+            dateElements[0] >= 1900 &&
+            dateElements[0] <= 2099 &&
+            dateElements[1] >= 1 &&
+            dateElements[1] <= 12 &&
+            dateElements[2] >= 1 &&
+            dateElements[2] <= 31
         );
     },
 
+
+    /**
+     * @param {string} date - in yyyy-mm-dd format
+     * @returns {string} - date in 'Jan 23, 2016' format
+     */
     formatDate: function(date) {
         if (!this.isRightDateFormat(date)) {
             return null;
         }
 
-        var dateParts = date.split('-');
-        return `${this.getMonthName(dateParts[1])} ${parseInt(dateParts[2])} , ${dateParts[0]}`;
+        var dateElements = date.split('-');
+        return `${this.getMonthName(dateElements[1])} ${parseInt(dateElements[2])} , ${dateElements[0]}`;
     },
 
-    isNumber: function(val) {
-        return !isNaN(val * 1);
-    },
 
-    isInteger: function(val) {
-        return (val * 1 % 1) === 0;
-    },
-
-    isNumberWithin: function(val, min, max) {
-        var number = val * 1;
-        if (min !== undefined && number < min) {
-            return false;
-        }
-        if (max !== undefined && number > max) {
-            return false;
-        }
-        return true;
-    },
-
+    /**
+     * @param {number} timeInMinutes
+     * @returns {string} - time in '3 h 45 min' format
+     */
     hoursMinutes: function(timeInMinutes) {
         if (timeInMinutes < 60) {
             return timeInMinutes + ' min';
@@ -111,6 +94,11 @@ var Util = {
         return hours + ' h ' + minutes + ' min';
     },
 
+
+    /**
+     * @param {number} number
+     * @returns {string} - number with ordinal suffix like '1st' , '32nd' , '53rd' , '14th'
+     */
     addOrdinalSuffix: function(number) {
         var lastDigit = number % 10;
         var twoLastDigits = number % 100;
@@ -128,9 +116,45 @@ var Util = {
 
 
     /**
+     * @param {string|number} val
+     * @returns {boolean} - whether value is a number (or a string representing a number)
+     */
+    isNumber: function(val) {
+        return !isNaN(val * 1);
+    },
+
+
+    /**
+     * @param {string|number} val
+     * @returns {boolean} - whether value is an integer (or a string representing an integer)
+     */
+    isInteger: function(val) {
+        return (val * 1 % 1) === 0;
+    },
+
+
+    /**
+     * @param {string|number} val
+     * @param {number} min
+     * @param {number} max
+     * @returns {boolean} - whether value is a number within min and max limits (or a string representing a number)
+     */
+    isNumberWithin: function(val, min, max) {
+        var number = val * 1;
+        if (min !== undefined && number < min) {
+            return false;
+        }
+        if (max !== undefined && number > max) {
+            return false;
+        }
+        return true;
+    },
+
+
+    /**
      * Answers if parsed string is defined, not null and doesn't consist only of spaces
      * @param {null|string} [string]
-     * @returns {boolean} - if string has not empty value
+     * @returns {boolean} - whether string is empty
      */
     isEmptyString: function(string) {
         return (!string || (string + '').trim() === '');

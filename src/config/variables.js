@@ -14,6 +14,8 @@ var BUILD_DIRNAME = 'static/build';
 
 var SERVER_HOST = '0.0.0.0';
 var SERVER_PROTOCOL = 'http';
+var SERVER_PORT = 2000;
+var DEV_SERVER_PORT = 3000;
 var WEBPACK_DEV_SERVER_PORT = 3001;
 
 
@@ -62,7 +64,7 @@ if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
             host: SERVER_HOST,
-            port: 3000,
+            port: DEV_SERVER_PORT,
             protocol: 'http'
         },
         webpack: {
@@ -75,7 +77,7 @@ if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
             host: SERVER_HOST,
-            port: 2000,
+            port: SERVER_PORT,
             protocol: 'http'
         }
     });

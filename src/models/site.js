@@ -209,11 +209,11 @@ var SiteModel = {
 
 
     /**
-     * @param {number} siteId - assumption: site id exists
-     * @returns {{lat: number, lng: number}|null} - coordinates object or null if not specified
+     * @param {number|null} siteId - assumption: site id exists
+     * @returns {{lat: number, lng: number}|null} - coordinates object or null if siteId or coordinates are not specified
      */
     getLatLng: function(siteId) {
-        return this.getStoreContent(siteId).coordinates;
+        return siteId ? this.getStoreContent(siteId).coordinates : null;
     },
 
 
