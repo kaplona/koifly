@@ -21,7 +21,7 @@ var checkCsrfToken = function(request, reply) {
     var cookieCsrfToken = request.state.csrf;
 
     if (request.method === 'get') {
-        requestCsrfToken = request.query.csrf;
+        requestCsrfToken = JSON.parse(request.query.csrf);
     }
 
     if (request.method === 'post') {

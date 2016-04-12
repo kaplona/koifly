@@ -6,6 +6,8 @@ var PubSub = require('../../utils/pubsub');
 var ErrorTypes = require('../../errors/error-types');
 var PilotModel = require('../../models/pilot');
 
+const STORE_MODIFIED_EVENT = require('../../constants/data-service-constants').STORE_MODIFIED_EVENT;
+
 var EmailVerificationNotice = require('./notice/email-verification-notice');
 var Login = require('../public-views/login');
 
@@ -24,12 +26,12 @@ var View = React.createClass({
     },
 
     componentDidMount: function() {
-        PubSub.on('storeModified', this.handleStoreModified, this);
+        PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
         this.handleStoreModified();
     },
 
     componentWillUnmount: function() {
-        PubSub.removeListener('storeModified', this.handleStoreModified, this);
+        PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     },
 
     handleStoreModified: function() {

@@ -3,7 +3,9 @@
 
 const DataServiceConstants = {
     
-    TIMEOUT: 6000
+    TIMEOUT: 6000,
+
+    STORE_MODIFIED_EVENT: 'storeModified'
 };
 
 

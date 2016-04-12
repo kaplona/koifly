@@ -15,6 +15,8 @@ var AjaxService = {
     /**
      * Sends Ajax requests to the server,
      *
+     * @private
+     *
      * @param {Object} options
      *   @param {string} options.url
      *   @param {string} options.method - get or post
@@ -91,8 +93,8 @@ var AjaxService = {
     get: function(url, queryParams) {
         // Make valid query string from params object
         // Add csrf token to prevent csrf attack to the server
-        url = url + '?' + this.buildQuery(_.extend({}, queryParams, { csrf: getCsrfCookie() }));
-
+        url = url + '?' + this.buildQuery(_.extend({}, queryParams, { csrf: this.getCsrfCookie() }));
+        
         return this.send({ url: url, method: 'get' });
     },
 
@@ -105,13 +107,14 @@ var AjaxService = {
      */
     post: function(url, data = {}) {
         // Add csrf token to prevent csrf attack to the server
-        data.csrf = getCsrfCookie();
+        data.csrf = this.getCsrfCookie();
 
         return this.send({ url: url, method: 'post', data: data });
     },
 
 
     /**
+     * @private
      * @param {object} queryParams
      * @returns {string} - valid query string to add to url
      */
@@ -119,35 +122,39 @@ var AjaxService = {
         return Object
             .keys(queryParams)
             .map(key => {
-                key = key + '=' + JSON.stringify(queryParams[key]);
+                return key + '=' + JSON.stringify(queryParams[key]);
             })
             .join('&');
+    },
+
+
+    /**
+     * Idea from:
+     * http://stackoverflow.com/questions/10730362/get-cookie-by-name
+     *
+     * @private
+     * @returns {string|null} - csrf token or null if there is no such
+     */
+    getCsrfCookie: function() {
+        // Prepend '; ' to cookie string
+        // so as to have '; name=value; name=value;'
+        // in this case we are sure that 'csrf' is a full cookie name
+        var value = '; ' + document.cookie;
+
+        // divide cookie string into two parts,
+        // where the second one starts with the csrf cookie value
+        var parts = value.split('; csrf=');
+
+        // If there is a cookie with 'csrf' name
+        if (parts.length === 2) {
+            // Take the second part of cookie string (with the value we need)
+            // then take everything before ';'
+            return parts.pop().split(';')[0];
+        }
+
+        return null;
     }
 };
-
-
-// idea is from:
-// http://stackoverflow.com/questions/10730362/get-cookie-by-name
-
-function getCsrfCookie() {
-    // Prepend '; ' to cookie string
-    // so as to have '; name=value; name=value;'
-    // in this case we are sure that 'csrf' is a full cookie name
-    var value = '; ' + document.cookie;
-
-    // divide cookie string into two parts,
-    // where the second one starts with the csrf cookie value
-    var parts = value.split('; csrf=');
-
-    // If there is a cookie with 'csrf' name
-    if (parts.length === 2) {
-        // Take the second part of cookie string (with the value we need)
-        // then take everything before ';'
-        return parts.pop().split(';')[0];
-    }
-
-    return null;
-}
 
 
 module.exports = AjaxService;

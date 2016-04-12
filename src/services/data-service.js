@@ -2,8 +2,9 @@
 
 var _ = require('lodash');
 var AjaxService = require('./ajax-service');
-var ErrorTypes = require('../errors/error-types');
 var PubSub = require('../utils/pubsub');
+
+const STORE_MODIFIED_EVENT = require('../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 
 var DataService = function() {
@@ -18,6 +19,8 @@ var DataService = function() {
     };
 
     this.loadingError = null;
+
+    this.isRequestPending = false;
 };
 
 
@@ -32,12 +35,24 @@ DataService.prototype.getLoadingError = function() {
 
 /**
  * Requests for all user data and populates store with it
+ * @param {boolean} [isRetry] - whether it was the second try to get server data
  */
-DataService.prototype.initiateStore = function() {
+DataService.prototype.requestServerData = function(isRetry = false) {
+    if (this.isRequestPending) {
+        return;
+    }
+
+    this.isRequestPending = true;
     AjaxService
         .get('/api/data', { lastModified: this.lastModified })
-        .then(serverResponse => this.populateStore(serverResponse))
-        .catch(error => this.setLoadingError(error));
+        .then(serverResponse => {
+            this.isRequestPending = false;
+            this.populateStore(serverResponse);
+        })
+        .catch(error => {
+            this.isRequestPending = false;
+            this.setLoadingError(error, isRetry);
+        });
 };
 
 
@@ -50,7 +65,7 @@ DataService.prototype.logout = function() {
         .post('/api/logout')
         .then(() => {
             this.clearStore();
-            PubSub.emit('storeModified');
+            PubSub.emit(STORE_MODIFIED_EVENT);
         })
         .catch(() => window.alert('Server error. Could not log out.'));
 };
@@ -94,7 +109,7 @@ DataService.prototype.createPilot = function(pilotCredentials) {
             this.clearStore();
             this.addPilotInfo(newPilotInfo);
             this.initializeStore();
-            PubSub.emit('storeModified');
+            PubSub.emit(STORE_MODIFIED_EVENT);
         });
 };
 
@@ -231,7 +246,7 @@ DataService.prototype.populateStore =  function(serverResponse) {
     }
 
     if (isStoreModified) {
-        PubSub.emit('storeModified');
+        PubSub.emit(STORE_MODIFIED_EVENT);
     }
 };
 
@@ -239,21 +254,21 @@ DataService.prototype.populateStore =  function(serverResponse) {
 /**
  *
  * @param {Object} error
+ * @param {boolean} [isRetry] - whether it was the second try to get server data
  */
-DataService.prototype.setLoadingError = function(error) {
-    // If server returns the same error we won't request for data again
-    // and we won't emit StoreModified event, so view won't rerender the same error
+DataService.prototype.setLoadingError = function(error, isRetry) {
+    // If server returns the same error
+    // don't emit StoreModified event, so view won't rerender the same error
     if (this.loadingError === null ||
         this.loadingError.type !== error.type
     ) {
         this.loadingError = error;
-        
-        // try to get data again
-        if (error.type !== ErrorTypes.AUTHENTICATION_ERROR) {
-            this.initiateStore();
-        }
-        
-        PubSub.emit('storeModified');
+        PubSub.emit(STORE_MODIFIED_EVENT);
+    }
+
+    // try to get data again
+    if (!isRetry) {
+        this.requestServerData(true);
     }
 };
 

@@ -14,6 +14,8 @@ Chai.use(sinonChai);
 
 var PilotModel = require('../../src/models/pilot');
 
+const STORE_MODIFIED_EVENT = require('../../src/constants/data-service-constants').STORE_MODIFIED_EVENT;
+
 var Header = require('../../src/components/common/menu/header');
 var Link = require('react-router').Link;
 
@@ -28,8 +30,7 @@ describe('Header component', () => {
 
     var defaults = {
         loginText: 'Log In',
-        logoutText: 'Log Out',
-        eventToListen: 'storeModified'
+        logoutText: 'Log Out'
     };
 
     var mocks = {
@@ -69,7 +70,7 @@ describe('Header component', () => {
     it('changes state when storeModified event emitted', (done) => {
         expect(component).to.have.deep.property('state.isLoggedIn', false);
 
-        PubSub.emit(defaults.eventToListen);
+        PubSub.emit(STORE_MODIFIED_EVENT);
 
         then(() => {
             expect(component).to.have.deep.property('state.isLoggedIn', true);

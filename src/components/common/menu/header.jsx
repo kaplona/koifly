@@ -5,6 +5,8 @@ var Link = require('react-router').Link;
 var PubSub = require('../../../utils/pubsub');
 var PilotModel = require('../../../models/pilot');
 
+const STORE_MODIFIED_EVENT = require('../../../constants/data-service-constants').STORE_MODIFIED_EVENT;
+
 require('./header.less');
 
 
@@ -15,12 +17,12 @@ var Header = React.createClass({
     },
 
     componentDidMount: function() {
-        PubSub.on('storeModified', this.handleStoreModified, this);
+        PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
         this.handleStoreModified();
     },
 
     componentWillUnmount: function() {
-        PubSub.removeListener('storeModified', this.handleStoreModified, this);
+        PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     },
 
     handleStoreModified: function() {

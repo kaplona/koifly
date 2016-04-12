@@ -14,6 +14,8 @@ Chai.use(sinonChai);
 var ErrorTypes = require('../../src/errors/error-types');
 var PilotModel = require('../../src/models/pilot');
 
+const STORE_MODIFIED_EVENT = require('../../src/constants/data-service-constants').STORE_MODIFIED_EVENT;
+
 var View = require('../../src/components/common/view');
 var EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
 var Login = require('../../src/components/public-views/login');
@@ -84,7 +86,7 @@ describe('View component.', () => {
         });
 
         it('requests for store data again when store-was-modified event emitted', (done) => {
-            PubSub.emit('storeModified');
+            PubSub.emit(STORE_MODIFIED_EVENT);
 
             then(() => {
                 expect(mocks.handleStoreModified).to.have.been.calledTwice;

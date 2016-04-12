@@ -32,7 +32,7 @@ var BaseModel = {
         // No data has been received yet
         var storeContent = dataService.getStoreContent(this.keys.plural);
         if (!storeContent) {
-            dataService.initiateStore();
+            dataService.requestServerData();
             return null;
         }
 
