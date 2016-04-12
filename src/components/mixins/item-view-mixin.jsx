@@ -45,11 +45,14 @@ var itemViewMixin = function(modelKey) {
         },
 
         handleGoToListView: function() {
-            this.history.pushState(null, `/${Model.keys.plural}`);
+            this.history.pushState(null, `/${encodeURIComponent(Model.keys.plural)}`);
         },
 
         handleEditItem: function() {
-            this.history.pushState(null, `/${Model.keys.single}/${this.props.params.id}/edit`);
+            this.history.pushState(
+                null,
+                `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}/edit`
+            );
         },
 
         renderNavigationMenu: function() {

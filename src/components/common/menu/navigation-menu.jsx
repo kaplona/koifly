@@ -31,8 +31,8 @@ var NavigationMenu = React.createClass({
 
     mixins: [ History ],
 
-    handleLinkTo: function(link) {
-        this.history.pushState(null, link);
+    handleLinkTo: function(page) {
+        this.history.pushState(null, `/${encodeURIComponent(page)}`);
     },
 
     render: function() {
@@ -45,28 +45,28 @@ var NavigationMenu = React.createClass({
                     label='Flights'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.currentView === FlightModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('/flights') }
+                    onClick={ () => this.handleLinkTo('flights') }
                     />
                 <NavigationItem
                     iconFileName='mountains.png'
                     label='Sites'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.currentView === SiteModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('/sites') }
+                    onClick={ () => this.handleLinkTo('sites') }
                     />
                 <NavigationItem
                     iconFileName='glider.png'
                     label='Gliders'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.currentView === GliderModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('/gliders') }
+                    onClick={ () => this.handleLinkTo('gliders') }
                     />
                 <NavigationItem
                     iconFileName='person.png'
                     label='Pilot'
                     itemsNumber={ itemsNumber }
                     isActive={ this.props.currentView === PilotModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('/pilot') }
+                    onClick={ () => this.handleLinkTo('pilot') }
                     />
             </div>
         );

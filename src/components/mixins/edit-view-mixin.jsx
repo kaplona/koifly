@@ -77,10 +77,14 @@ var editViewMixin = function(modelKey) {
         },
 
         handleCancelEdit: function() {
-            this.history.pushState(
-                null,
-                this.props.params.id ? `/${Model.keys.single}/${this.props.params.id}` : `/${Model.keys.plural}`
-            );
+            var path;
+            if (this.props.params.id) {
+                path = `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}`;
+            } else {
+                path = `/${encodeURIComponent(Model.keys.plural)}`;
+            }
+            
+            this.history.pushState(null, path);
         },
 
         handleSubmit: function(event) {
@@ -108,7 +112,7 @@ var editViewMixin = function(modelKey) {
                 this.setState({ isDeleting: true });
                 Model
                     .deleteItem(this.props.params.id)
-                    .then(() => this.history.pushState(null, `/${Model.keys.plural}`))
+                    .then(() => this.history.pushState(null, `/${encodeURIComponent(Model.keys.plural)}`))
                     .catch(error => this.updateProcessingError(error));
             }
         },

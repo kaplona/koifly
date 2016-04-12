@@ -54,7 +54,7 @@ var StaticMap = React.createClass({
     },
 
     handleGoToSiteView: function(siteId) {
-        this.history.pushState(null, '/site/' + siteId);
+        this.history.pushState(null, `/site/${encodeURIComponent(siteId)}`);
     },
 
     createMap: function(mapFacade) {

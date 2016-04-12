@@ -47,11 +47,11 @@ var listViewMixin = function(modelKey) {
          * @param {number} id - id of the item which page to open
          */
         handleRowClick: function(id) {
-            this.history.pushState(null, `/${Model.keys.single}/${id}`);
+            this.history.pushState(null, `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(id)}`);
         },
 
         handleAddItem: function() {
-            this.history.pushState(null, `/${Model.keys.single}/0/edit`);
+            this.history.pushState(null, `/${encodeURIComponent(Model.keys.single)}/0/edit`);
         },
         
         renderNavigationMenu: function() {

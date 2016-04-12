@@ -116,13 +116,13 @@ var AjaxService = {
     /**
      * @private
      * @param {object} queryParams
-     * @returns {string} - valid query string to add to url
+     * @returns {string} - valid url query
      */
     buildQuery: function(queryParams) {
         return Object
             .keys(queryParams)
             .map(key => {
-                return key + '=' + JSON.stringify(queryParams[key]);
+                return encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(queryParams[key]));
             })
             .join('&');
     },
