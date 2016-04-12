@@ -51,11 +51,15 @@ var AjaxService = {
                 // DEV
                 console.log('server response:', serverResponse);
 
-                if (serverResponse.error && serverResponse.error.type === ErrorTypes.INVALID_CSRF_TOKEN) {
+                if (!serverResponse.error) {
+                    resolve(serverResponse);
+                    return;
+                }
+
+                if (serverResponse.error.type === ErrorTypes.INVALID_CSRF_TOKEN) {
                     if (isRetry) {
                         reject(new KoiflyError(ErrorTypes.DB_READ_ERROR));
                     } else {
-                        console.log('second try...');
                         AjaxService
                             .send(options, true)
                             .then(resolve)
@@ -64,12 +68,7 @@ var AjaxService = {
                     return;
                 }
 
-                if (serverResponse.error) {
-                    reject(serverResponse.error);
-                    return;
-                }
-
-                resolve(serverResponse);
+                reject(serverResponse.error);
             });
 
             // If request failed
@@ -78,27 +77,21 @@ var AjaxService = {
 
             // Open and send request
             ajaxRequest.open(options.method, options.url);
-            ajaxRequest.send(options.data);
+            ajaxRequest.send(options.data ? JSON.stringify(options.data) : null);
         });
     },
 
 
     /**
-     * Makes a query string from parsed params and send get request to the server
+     * Makes a query string from parsed query params and send get request to the server
      * @param {string} url
-     * @param {Object} [params]
+     * @param {Object} [queryParams]
      * @returns {Promise} - resolved with server respond or rejected with  server error
      */
-    get: function(url, params) {
+    get: function(url, queryParams) {
         // Make valid query string from params object
-        if (params) {
-            url += '?';
-            _.each(params, (value, key) => {
-                url += key + '=' + JSON.stringify(value) + '&';
-            });
-            // Add csrf token to prevent csrf attack to the server
-            url += 'csrf=' + getCsrfCookie();
-        }
+        // Add csrf token to prevent csrf attack to the server
+        url = url + '?' + this.buildQuery(_.extend({}, queryParams, { csrf: getCsrfCookie() }));
 
         return this.send({ url: url, method: 'get' });
     },
@@ -110,15 +103,25 @@ var AjaxService = {
      * @param {Object} [data]
      * @returns {Promise} - resolved with server respond or rejected with  server error
      */
-    post: function(url, data) {
+    post: function(url, data = {}) {
         // Add csrf token to prevent csrf attack to the server
-        // json stringify data before sending to the server
-        if (data) {
-            data.csrf = getCsrfCookie();
-            data = JSON.stringify(data);
-        }
+        data.csrf = getCsrfCookie();
 
         return this.send({ url: url, method: 'post', data: data });
+    },
+
+
+    /**
+     * @param {object} queryParams
+     * @returns {string} - valid query string to add to url
+     */
+    buildQuery: function(queryParams) {
+        return Object
+            .keys(queryParams)
+            .map(key => {
+                key = key + '=' + JSON.stringify(queryParams[key]);
+            })
+            .join('&');
     }
 };
 
