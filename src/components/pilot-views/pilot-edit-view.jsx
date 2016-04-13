@@ -40,7 +40,7 @@ var PilotEditView = React.createClass({
 
     render: function() {
         if (this.state.loadingError) {
-            return this.renderError();
+            return this.renderLoadingError();
         }
 
         if (this.state.item === null) {
@@ -48,7 +48,7 @@ var PilotEditView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
                 { this.renderNavigationMenu() }
 

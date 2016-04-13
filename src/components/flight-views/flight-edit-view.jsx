@@ -52,7 +52,7 @@ var FlightEditView = React.createClass({
 
     render: function() {
         if (this.state.loadingError) {
-            return this.renderError();
+            return this.renderLoadingError();
         }
 
         if (this.state.item === null) {
@@ -63,7 +63,7 @@ var FlightEditView = React.createClass({
         var gliders = GliderModel.getGliderValueTextList();
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
                 { this.renderNavigationMenu() }
 

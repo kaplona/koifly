@@ -93,7 +93,7 @@ var SiteEditView = React.createClass({
 
     render: function() {
         if (this.state.loadingError) {
-            return this.renderError();
+            return this.renderLoadingError();
         }
 
         if (this.state.item === null) {
@@ -103,7 +103,7 @@ var SiteEditView = React.createClass({
         var mapLink = <AppLink onClick={ this.handleMapShow }>or use a map</AppLink>;
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.getProcessingError() }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
                 { this.renderNavigationMenu() }
 

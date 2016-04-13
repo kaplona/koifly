@@ -30,8 +30,7 @@ var editViewMixin = function(modelKey) {
             return {
                 item: null, // no data received
                 loadingError: null,
-                savingError: null,
-                deletingError: null,
+                processingError: null,
                 isSaving: false,
                 isDeleting: false
             };
@@ -103,7 +102,7 @@ var editViewMixin = function(modelKey) {
             Model
                 .saveItem(this.state.item)
                 .then(() => this.handleCancelEdit())
-                .catch(error => this.updateProcessingError(error, true));
+                .catch(error => this.updateProcessingError(error));
         },
 
         handleDeleteItem: function() {
@@ -133,18 +132,15 @@ var editViewMixin = function(modelKey) {
          *   @param {string} error.type
          *   @param {string} error.message
          *   @param {string} [error.errors]
-         *
-         * @param {boolean} isSaving
          */
-        updateProcessingError: function(error, isSaving) {
+        updateProcessingError: function(error) {
             if (error.type === ErrorTypes.VALIDATION_ERROR) {
                 this.updateValidationErrors(error.errors);
                 error = null;
             }
 
             this.setState({
-                savingError: isSaving ? error : null,
-                deletingError: !isSaving ? error : null,
+                processingError: error,
                 isSaving: false,
                 isDeleting: false
             });
@@ -171,11 +167,8 @@ var editViewMixin = function(modelKey) {
          * @returns {boolean} - true if processing, false - if not
          */
         isProcessing: function() {
+            // the last false is for pilot-edit-view since it doesn't have state.isDeleting, user can't delete pilot
             return this.state.isSaving || this.state.isDeleting || false;
-        },
-
-        getProcessingError: function() {
-            return this.state.savingError || this.state.deletingError || null;
         },
         
         renderNavigationMenu: function() {
@@ -199,22 +192,15 @@ var editViewMixin = function(modelKey) {
             return this.renderSimpleLayout(<Loader />);
         },
 
-        renderError: function() {
+        renderLoadingError: function() {
             return this.renderSimpleLayout(
                 <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
             );
         },
         
         renderProcessingError: function() {
-            var processingError = this.getProcessingError();
-            if (processingError) {
-                return (
-                    <ErrorBox
-                        error={ processingError }
-                        onTryAgain={ this.state.savingError ? this.handleSubmit : this.handleDeleteItem }
-                        isTrying={ this.isProcessing() }
-                        />
-                );
+            if (this.state.processingError) {
+                return <ErrorBox error={ this.state.processingError } />;
             }
         },
         

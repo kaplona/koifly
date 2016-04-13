@@ -83,7 +83,9 @@ var PilotView = React.createClass({
     },
 
     renderError: function() {
-        return this.renderSimpleLayout(<ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />);
+        return this.renderSimpleLayout(
+            <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+        );
     },
 
     renderLoader: function() {

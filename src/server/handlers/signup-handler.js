@@ -51,9 +51,7 @@ var signupHandler = function(request, reply) {
         })
         .then(() => {
             // Send user email with auth verification token
-            return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
-        })
-        .then(() => {
+            sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
             // Reply with pilot info since it's the only user's data yet
             reply(getPilotValuesForFrontend(pilot));
         })
