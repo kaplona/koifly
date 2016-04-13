@@ -72,7 +72,7 @@ var editViewMixin = function(modelKey) {
         handleInputChange: function(inputName, inputValue) {
             var newItem = _.extend({}, this.state.item, { [inputName]: inputValue });
             this.setState({ item: newItem }, () => {
-                this.updateValidationErrors(this.validateForm(true));
+                this.updateValidationErrors(this.getValidationErrors(true));
             });
         },
 
@@ -92,17 +92,18 @@ var editViewMixin = function(modelKey) {
                 event.preventDefault();
             }
 
-            var validationResponse = this.validateForm();
-            this.updateValidationErrors(validationResponse);
-            // If no errors
-            if (validationResponse === true) {
-                this.setState({ isSaving: true });
-
-                Model
-                    .saveItem(this.state.item)
-                    .then(() => this.handleCancelEdit())
-                    .catch(error => this.updateProcessingError(error, true));
+            var validationErrors = this.getValidationErrors();
+            if (validationErrors) {
+                this.updateValidationErrors(validationErrors);
+                return;
             }
+            
+            // If no errors
+            this.setState({ isSaving: true });
+            Model
+                .saveItem(this.state.item)
+                .then(() => this.handleCancelEdit())
+                .catch(error => this.updateProcessingError(error, true));
         },
 
         handleDeleteItem: function() {
@@ -117,8 +118,8 @@ var editViewMixin = function(modelKey) {
             }
         },
 
-        validateForm: function(isSoft) {
-            return Validation.validateForm(
+        getValidationErrors: function(isSoft) {
+            return Validation.getValidationErrors(
                 Model.getValidationConfig(),
                 this.state.item,
                 isSoft
@@ -154,6 +155,10 @@ var editViewMixin = function(modelKey) {
          * @param {object} validationErrors - object where key is a form field name, value is error message
          */
         updateValidationErrors: function(validationErrors) {
+            if (!validationErrors) {
+                return;
+            }
+
             validationErrors = _.extend({}, this.formFields, validationErrors);
 
             if (!_.isEqual(validationErrors, this.state.validationErrors)) {

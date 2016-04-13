@@ -8,52 +8,69 @@ var Util = require('./util');
 
 var Validation = {
 
-    validateForm: function(validationConfig, formData, isSoft) {
-        var errors = {};
+    /**
+     * @param {object} validationConfig - config rules to check user inputs against { fieldName: rulesObj }
+     * @param {object} formData - data from html form { fieldName: userInput }
+     * @param {boolean} isSoft - if false - the validation is final, check for required empty fields is performed
+     * @returns {object|null} - object with validation error messages { fieldName: msg } or null if no errors found
+     */
+    getValidationErrors: function(validationConfig, formData, isSoft) {
+        var validationErrors = {};
 
         // For each field of given form
         _.each(validationConfig, (config, fieldName) => {
-            var validationResult = true;
+            var nextError = null;
 
             // It's error if required field is empty and it isn't soft validation mode
             if (Util.isEmptyString(formData[fieldName]) && !isSoft && config.isRequired) {
-                validationResult = ErrorMessages.NOT_EMPTY.replace('%field', config.rules.field);
+                nextError = ErrorMessages.NOT_EMPTY.replace('%field', config.rules.field);
             }
 
             // If field isn't empty check its value against its validation config
             if (!Util.isEmptyString(formData[fieldName])) {
                 var methodName = config.method;
                 var rules = config.rules;
-                validationResult = this.methods[methodName](formData, fieldName, rules, isSoft);
+                nextError = this.methods[methodName](formData, fieldName, rules, isSoft);
             }
 
             // If validation failed save error message for this field
-            if (validationResult != true) {
-                errors[fieldName] = validationResult;
+            if (nextError) {
+                validationErrors[fieldName] = nextError;
             }
         });
 
-        return _.isEmpty(errors) || errors;
+        return _.isEmpty(validationErrors) ? null : validationErrors;
     },
 
 
     // Validation methods return either true or error message
     methods: {
-
-        // Check if value is yyyy-mm-dd date format
+        
+        /**
+         * Check whether value is yyyy-mm-dd date format
+         * @param {object} formData - data from html form { fieldName: userInput }
+         * @param {string} fieldName
+         * @returns {string|null} - error message or null if validation passed
+         */
         date: function(formData, fieldName) {
 
             if (!Util.isRightDateFormat(formData[fieldName])) {
                 return ErrorMessages.DATE_FORMAT;
             }
 
-            return true;
+            return null;
         },
 
 
-        // Check if the value is a number
-        // additional quality checks:
-        // round number, number within min and max
+        /**
+         * Check if the value is a number
+         * additional quality checks:
+         * round number, number within min and max
+         * @param {object} formData - data from html form { fieldName: userInput }
+         * @param {string} fieldName
+         * @param {object} rules - validation rules to check user input against
+         * @returns {string|null} - error message or null if validation passed
+         */
         number: function(formData, fieldName, rules) {
 
             // If value is not a number
@@ -61,51 +78,66 @@ var Validation = {
                 return ErrorMessages.NUMBER.replace('%field', rules.field);
             }
 
-            var errors = [];
+            var errorElements = [];
 
             // Check number quality against each given rule
             if (rules.round && !Util.isInteger(formData[fieldName])) {
-                errors.push(' round number');
+                errorElements.push(' round number');
             }
 
             if (!Util.isNumberWithin(formData[fieldName], rules.min, rules.max)) {
                 if (rules.min !== undefined) {
-                    errors.push(' greater than ' + rules.min);
+                    errorElements.push(' greater than ' + rules.min);
                 }
                 if (rules.max !== undefined) {
-                    errors.push(' less than ' + rules.max);
+                    errorElements.push(' less than ' + rules.max);
                 }
             }
 
             // If quality control failed
-            if (!_.isEmpty(errors)) {
-                return rules.field + ' must be' + errors.join(',');
+            if (!_.isEmpty(errorElements)) {
+                return rules.field + ' must be' + errorElements.join(',');
             }
 
-            return true;
+            return null;
         },
 
-
-        // Check text length
+        
+        /**
+         * Check text length
+         * @param {object} formData - data from html form { fieldName: userInput }
+         * @param {string} fieldName
+         * @param {object} rules - validation rules to check user input against
+         * @returns {string|null} - error message or null if validation passed
+         */
         text: function(formData, fieldName, rules) {
             if (formData[fieldName].length > rules.maxLength) {
                 var errorMessage = ErrorMessages.MAX_LENGTH;
                 return errorMessage.replace('%field', rules.field).replace('%max', rules.maxLength);
             }
 
-            return true;
+            return null;
         },
 
 
-        // Examples acceptable values:
-        // 38.8897°, -77.0089°
-        // 45.455678 56.452332
-        // -15.0054 , -178.67
+        /**
+         * Examples acceptable values:
+         * 38.8897°, -77.0089°
+         * 45.455678 56.452332
+         * -15.0054 , -178.67
+         * @param {object} formData - data from html form { fieldName: userInput }
+         * @param {string} fieldName
+         * @param {object} rules - validation rules to check user input against
+         * @param {boolean} isSoft - if true - validation is not final,
+         * don't perform any check since user input might not be complete
+         *
+         * @returns {string|null} - error message or null if validation passed
+         */
         coordinates: function(formData, fieldName, rules, isSoft) {
             // Don't check the format for soft validation
             // so don't interrupt user from typing long coordinates input
             if (isSoft) {
-                return true;
+                return null;
             }
 
             // Replace all degree characters by space
@@ -122,7 +154,7 @@ var Validation = {
                     // If latitude and longitude are within given limits
                     if (Util.isNumberWithin(coordArray[0], rules.minLatitude, rules.maxLatitude) &&
                         Util.isNumberWithin(coordArray[1], rules.minLongitude, rules.maxLongitude)) {
-                            return true;
+                            return null;
                     }
                 }
             }

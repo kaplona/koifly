@@ -51,8 +51,8 @@ var SiteEditView = React.createClass({
     getMarkerPosition: function() {
         if (Util.isEmptyString(this.state.item.coordinates)) {
             // Hard validation in order to check coordinates format
-            var validationRespond = this.validateForm();
-            if (validationRespond === true || validationRespond.coordinates === undefined) {
+            var validationErrors = this.getValidationErrors();
+            if (!validationErrors || !validationErrors.coordinates) {
                 // Change user input in { lat: 56.56734543, lng: 123.4567543 } format
                 return SiteModel.stringToCoordinates(this.state.item.coordinates);
             }

@@ -47,11 +47,13 @@ var Signup = React.createClass({
             event.preventDefault();
         }
 
-        var validationResponse = this.validateForm();
-        if (validationResponse !== true) {
-            return this.updateError(validationResponse);
+        var validationError = this.getValidationError();
+        if (validationError) {
+            this.updateError(validationError);
+            return;
         }
 
+        // If no errors
         this.setState({
             isSending: true,
             error: null
@@ -69,7 +71,7 @@ var Signup = React.createClass({
             .catch(error => this.updateError(error));
     },
 
-    validateForm: function() {
+    getValidationError: function() {
         if (Util.isEmptyString(this.state.email) || Util.isEmptyString(this.state.password)) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
@@ -78,7 +80,7 @@ var Signup = React.createClass({
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'password and confirmed password must be the same');
         }
 
-        return true;
+        return null;
     },
 
     renderMobileTopMenu: function() {

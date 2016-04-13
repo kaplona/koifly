@@ -47,32 +47,28 @@ var ResetPassword = React.createClass({
             event.preventDefault();
         }
 
-        var validationResponse = this.validateForm();
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({
-                isSending: true,
-                error: null
-            });
-
-            var password = this.state.password;
-            var pilotId = this.props.params.pilotId;
-            var authToken = this.props.params.authToken;
-            dataService
-                .resetPassword(password, pilotId, authToken)
-                .then(() => {
-                    this.setState({ successNotice: true });
-                })
-                .catch((error) => {
-                    this.updateError(error);
-                });
-            
-        } else {
-            this.updateError(validationResponse);
+        var validationError = this.getValidationError();
+        if (validationError) {
+            this.updateError(validationError);
+            return;
         }
+        
+        // If no errors
+        this.setState({
+            isSending: true,
+            error: null
+        });
+
+        var password = this.state.password;
+        var pilotId = this.props.params.pilotId;
+        var authToken = this.props.params.authToken;
+        dataService
+            .resetPassword(password, pilotId, authToken)
+            .then(() => this.setState({ successNotice: true }))
+            .catch(error => this.updateError(error));
     },
 
-    validateForm: function() {
+    getValidationError: function() {
         if (Util.isEmptyString(this.state.password)) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
@@ -81,7 +77,7 @@ var ResetPassword = React.createClass({
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'password and confirmed password must be the same');
         }
 
-        return true;
+        return null;
     },
 
     renderMobileTopMenu: function() {

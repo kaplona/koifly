@@ -58,28 +58,27 @@ var PilotChangePassword = React.createClass({
             event.preventDefault();
         }
 
-        var validationResponse = this.validateForm();
-        // If no errors
-        if (validationResponse === true) {
-            this.setState({
-                isSaving: true,
-                error: null
-            });
-
-            PilotModel
-                .changePassword(this.state.password, this.state.newPassword)
-                .then(() => {
-                    this.setState({
-                        successNotice: true,
-                        isSaving: false
-                    });
-                })
-                .catch((error) => {
-                    this.updateSavingError(error);
-                });
-        } else {
-            this.updateSavingError(validationResponse);
+        var validationError = this.getValidationError();
+        if (validationError) {
+            this.updateError(validationError);
+            return;
         }
+        
+        // If no errors
+        this.setState({
+            isSaving: true,
+            error: null
+        });
+
+        PilotModel
+            .changePassword(this.state.password, this.state.newPassword)
+            .then(() => {
+                this.setState({
+                    successNotice: true,
+                    isSaving: false
+                });
+            })
+            .catch(error => this.updateSavingError(error));
     },
 
     updateSavingError: function(error) {
@@ -89,7 +88,7 @@ var PilotChangePassword = React.createClass({
         });
     },
 
-    validateForm: function() {
+    getValidationError: function() {
         if (Util.isEmptyString(this.state.password) || Util.isEmptyString(this.state.newPassword)) {
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
         }
@@ -98,7 +97,7 @@ var PilotChangePassword = React.createClass({
             return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'New password and confirmed password must be the same');
         }
 
-        return true;
+        return null;
     },
 
     isButtonsEnabled: function() {
