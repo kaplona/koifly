@@ -75,12 +75,17 @@ var SiteModel = {
             return storeContent;
         }
 
+        var altitudeUnit = Altitude.getUserAltitudeUnit();
+
         return objectValues(storeContent).map(site => {
             return {
                 id: site.id,
                 name: site.name,
                 location: site.location,
-                launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude)
+                launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
+                altitudeUnit: altitudeUnit,
+                coordinates: Util.coordinatesToString(site.coordinates),
+                latLng: site.coordinates
             };
         });
     },
