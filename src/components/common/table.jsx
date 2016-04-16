@@ -103,7 +103,7 @@ var Table = React.createClass({
                 var columnKey = this.props.columns[i].key;
                 rowToDisplay.push(
                     <td key={ 'cell-' + row.id + '-' + columnKey } >
-                        { (row[columnKey] !== null) ? row[columnKey] : '-' }
+                        { (row[columnKey] !== null) ? row[columnKey] : '—' }
                     </td>
                 );
             }

@@ -17,12 +17,13 @@ var AjaxService = {
      *
      * @private
      *
-     * @param {Object} options
+     * @param {object} options
      *   @param {string} options.url
      *   @param {string} options.method - get or post
-     *   @param {Object} [options.data] - for post requests
+     *   @param {object} [options.queryParams] - for get requests
+     *   @param {object} [options.data] - for post requests
      *
-     * @param {boolean} [isRetry] - is used for csrf attacks,
+     * @param {boolean} [isRetry] - is used to prevent csrf attacks,
      * each request to server shall have csrf cookie which value is send to the server along with the request
      * server compare the value received with the request and the cookie value
      * if they don't match it reset cookie (in case it was expired) and 'asks' front end to repeat request
@@ -30,6 +31,21 @@ var AjaxService = {
      * @returns {Promise} - resolved with server respond or rejected with  server error
      */
     send: function(options, isRetry) {
+
+        var url = options.url;
+        var data = options.data;
+        var csrfCookie = this.getCsrfCookie();
+
+        if (options.method === 'get') {
+            // Make valid query string from params object
+            // Add csrf token to prevent csrf attack to the server
+            url = url + '?' + this.buildQuery(_.extend({}, options.queryParams, { csrf: csrfCookie }));
+        }
+
+        if (options.method === 'post') {
+            // Add csrf token to prevent csrf attack to the server
+            data.csrf = csrfCookie;
+        }
 
         return new Promise((resolve, reject) => {
 
@@ -78,37 +94,28 @@ var AjaxService = {
             ajaxRequest.addEventListener('timeout', () => reject(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
 
             // Open and send request
-            ajaxRequest.open(options.method, options.url);
-            ajaxRequest.send(options.data ? JSON.stringify(options.data) : null);
+            ajaxRequest.open(options.method, url);
+            ajaxRequest.send(data ? JSON.stringify(data) : null);
         });
     },
 
 
     /**
-     * Makes a query string from parsed query params and send get request to the server
      * @param {string} url
      * @param {Object} [queryParams]
      * @returns {Promise} - resolved with server respond or rejected with  server error
      */
     get: function(url, queryParams) {
-        // Make valid query string from params object
-        // Add csrf token to prevent csrf attack to the server
-        url = url + '?' + this.buildQuery(_.extend({}, queryParams, { csrf: this.getCsrfCookie() }));
-        
-        return this.send({ url: url, method: 'get' });
+        return this.send({ url: url, method: 'get', queryParams: queryParams });
     },
 
 
     /**
-     *
      * @param {string} url
      * @param {Object} [data]
      * @returns {Promise} - resolved with server respond or rejected with  server error
      */
     post: function(url, data = {}) {
-        // Add csrf token to prevent csrf attack to the server
-        data.csrf = this.getCsrfCookie();
-
         return this.send({ url: url, method: 'post', data: data });
     },
 
