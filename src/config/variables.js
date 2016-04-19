@@ -1,8 +1,10 @@
 'use strict';
 
+var chalk = require('chalk');
 var deepExtend = require('deep-extend');
 var path = require('path');
-var chalk = require('chalk');
+var secrets = require('../secrets');
+
 
 // This and anything in config.paths must be absolute.
 var ROOT_PATH = path.resolve(__dirname, '../..');
@@ -12,9 +14,12 @@ var WEB_ROOT_DIRNAME = 'public';
 var ASSETS_DIRNAME = 'static';
 var BUILD_DIRNAME = 'static/build';
 
-var SERVER_HOST = '0.0.0.0';
-var SERVER_PROTOCOL = 'http';
-var SERVER_PORT = 2000;
+var SERVER_HOST = secrets.domain;
+var SERVER_PROTOCOL = secrets.protocol;
+var SERVER_PORT = secrets.port;
+
+var DEV_SERVER_HOST = '0.0.0.0';
+var DEV_SERVER_PROTOCOL = 'http';
 var DEV_SERVER_PORT = 3000;
 var WEBPACK_DEV_SERVER_PORT = 3001;
 
@@ -38,10 +43,7 @@ var config = {
         publicFiles: [
             'robots.txt',
             'favicon.ico'
-        ],
-        // rootUrl is overridden at bottom of file using data
-        // in config.server (example format: http://example.com/)
-        rootUrl: null
+        ]
     },
     webpack: {
         // Webpack bundle filename
@@ -63,13 +65,14 @@ var config = {
 if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
-            host: SERVER_HOST,
+            host: DEV_SERVER_HOST,
             port: DEV_SERVER_PORT,
-            protocol: 'http'
+            protocol: DEV_SERVER_PROTOCOL,
+            rootUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT
         },
         webpack: {
             port: WEBPACK_DEV_SERVER_PORT,
-            devServerUrl: SERVER_PROTOCOL + '://' + SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT
+            devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT
         }
     });
 
@@ -78,7 +81,8 @@ if (process.env.NODE_ENV === 'development') {
         server: {
             host: SERVER_HOST,
             port: SERVER_PORT,
-            protocol: 'http'
+            protocol: SERVER_PROTOCOL,
+            rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
         }
     });
 
@@ -88,14 +92,6 @@ if (process.env.NODE_ENV === 'development') {
     throw new Error(errorText);
 }
 
-
-config.server.rootUrl = [
-    config.server.protocol,
-    '://',
-    config.server.host,
-    ':',
-    config.server.port
-].join('');
 
 
 Object.freeze(config); // On a separate line because IntelliJ's JS code assistance is not very smart :(

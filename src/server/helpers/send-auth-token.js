@@ -1,6 +1,6 @@
 'use strict';
 
-const DOMAIN = require('../../secrets').domain;
+const ROOT_URL = require('../../config/variables').server.rootUrl;
 
 var BcryptPromise = require('../../utils/bcrypt-promise');
 var generateToken = require('./generate-token');
@@ -33,7 +33,7 @@ var sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
         .then((pilot) => {
             // Send email which includes link with the randomly generated token
             var templateData = {
-                url: DOMAIN + path + '/' + pilot.id + '/' + authToken
+                url: `${ROOT_URL}${path}/${pilot.id}/${authToken}`
             };
             return SendMail(pilot.email, EmailMessageTemplate, templateData);
         });

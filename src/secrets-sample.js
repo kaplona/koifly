@@ -1,16 +1,18 @@
 'use strict';
 
 
-var SecretsSample = {
+var Secrets = {
     // public data which is different on production and development
-    domain: 'http://example.com',
+    domain: 'example.com',
+    protocol: 'http',
+    port: 80,
 
     // your DB config
     // Admin user is used for initial tables creation (has CREATE, ALTER, DROP privileges)
     dbAdmin: {
         database: 'database-name',
         mysqlUser: 'adminUser',
-        mysqlPassword: 'very-very-save-password',
+        mysqlPassword: 'very-very-safe-password',
         mysqlHost: 'host'
     },
 
@@ -18,13 +20,13 @@ var SecretsSample = {
     dbApp: {
         database: 'database-name',
         mysqlUser: 'appUser',
-        mysqlPassword: 'very-save-password',
+        mysqlPassword: 'very-safe-password',
         mysqlHost: 'host'
     },
 
     // your auth cookie config
     bcryptRounds: 10,
-    cookiePassword: 'one-more-save-password',
+    cookiePassword: 'one-more-safe-password',
     cookieLifeTime: 1000 * 60 * 60 * 24 * 30, // one month
 
     // your mail agent config
@@ -33,4 +35,4 @@ var SecretsSample = {
 };
 
 
-module.exports = SecretsSample;
+module.exports = Secrets;

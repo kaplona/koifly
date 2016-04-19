@@ -64,6 +64,8 @@ server.register(plugins, (err) => {
     // Register cookie authentication scheme
     server.auth.strategy('session', 'cookie', {
         cookie: 'koifly',
+        domain: config.server.host,
+        path: '/',
         password: COOKIE_PASSWORD,
         ttl: COOKIE_LIFETIME,
         clearInvalid: true,
@@ -77,6 +79,7 @@ server.register(plugins, (err) => {
     // Register csrf cookie
     server.state('csrf', {
         ttl: COOKIE_LIFETIME,
+        domain: config.server.host,
         path: '/',
         isSecure: false, // cookie allows to be transmitted over insecure connection
         isHttpOnly: false, // scrf cookie is available to js
