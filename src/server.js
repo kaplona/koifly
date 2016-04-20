@@ -5,12 +5,15 @@
 // because we use a babel loader in webpack config
 require('babel-register');
 
+var _ = require('lodash');
 var config = require('./config/variables');
-var path = require('path');
+var fs = require('fs');
 var Hapi = require('hapi');
-var Inert = require('inert');
-var Vision = require('vision');
 var HapiReactViews = require('hapi-react-views');
+var Inert = require('inert');
+var path = require('path');
+var secrets = require('./secrets');
+var Vision = require('vision');
 
 var AuthCookie = require('hapi-auth-cookie');
 var setAuthCookie = require('./server/helpers/set-auth-cookie');
@@ -21,24 +24,32 @@ var changePasswordHandler = require('./server/handlers/change-password-handler')
 var loginHandler = require('./server/handlers/login-handler');
 var queryHandler = require('./server/handlers/query-handler');
 var resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
-var resetPasswordHandler= require('./server/handlers/reset-password-handler');
+var resetPasswordHandler = require('./server/handlers/reset-password-handler');
 var sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
 var signupHandler = require('./server/handlers/signup-handler');
 var verifyAuthToken = require('./server/helpers/verify-auth-token');
-
-const COOKIE_PASSWORD = require('./secrets').cookiePassword;
-const COOKIE_LIFETIME = require('./secrets').cookieLifeTime;
 
 
 
 
 var server = new Hapi.Server();
 
-server.connection({
+
+var connectionOptions = {
     host: config.server.host,
     port: config.server.port
-});
+};
 
+if (secrets.shouldUseSSL) {
+    _.extend(connectionOptions, {
+        tls: {
+            key: fs.readFileSync(secrets.sslKeyFileName, 'utf8'),
+            cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8')
+        }
+    });
+}
+
+server.connection(connectionOptions);
 
 
 var plugins = [
@@ -66,8 +77,8 @@ server.register(plugins, (err) => {
         cookie: 'koifly',
         domain: config.server.host,
         path: '/',
-        password: COOKIE_PASSWORD,
-        ttl: COOKIE_LIFETIME,
+        password: secrets.cookiePassword,
+        ttl: secrets.cookieLifeTime,
         clearInvalid: true,
         redirectTo: false,
         keepAlive: true, // reset expiry date every time
@@ -78,7 +89,7 @@ server.register(plugins, (err) => {
 
     // Register csrf cookie
     server.state('csrf', {
-        ttl: COOKIE_LIFETIME,
+        ttl: secrets.cookieLifeTime,
         domain: config.server.host,
         path: '/',
         isSecure: false, // cookie allows to be transmitted over insecure connection

@@ -14,7 +14,7 @@ var Util = require('../utils/util');
  * @param {string} modelFileName
  * @param {string} fieldName
  * @param {string} msg
- * @returns {Function}
+ * @returns {Function} - validation function
  */
 var isUnique = function(modelFileName, fieldName, msg) {
     return function(value, next) {
@@ -25,7 +25,10 @@ var isUnique = function(modelFileName, fieldName, msg) {
             var scope = (modelFileName === 'pilots') ? SCOPES.all : SCOPES.visible;
 
             // assuming that 'id' is primary key
-            var query = { id: { $ne: this.id } };
+            var query = {
+                id: { $ne: this.id },
+                [fieldName]: value
+            };
 
             if (modelFileName !== 'pilots') {
                 query.pilotId = this.pilotId;
@@ -34,7 +37,7 @@ var isUnique = function(modelFileName, fieldName, msg) {
             Model.scope(scope)
                 .findOne({
                     where: query,
-                    attributes: ['id']
+                    attributes: [ 'id' ]
                 })
                 .then((record) => {
                     if (record) {

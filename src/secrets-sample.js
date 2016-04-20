@@ -31,7 +31,12 @@ var Secrets = {
 
     // your mail agent config
     mailgunLogin: 'mailgun-login',
-    mailgunPassword: 'mailgun-password'
+    mailgunPassword: 'mailgun-password',
+
+    // SSL assets
+    shouldUseSSL: false, // true for production server with SSL certificate
+    sslKeyFileName: 'absolute-path-to-your-private-key',
+    sslCrtFileName: 'absolute-path-to-your-ssl-certificate'
 };
 
 
