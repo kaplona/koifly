@@ -33,7 +33,7 @@ var Table = React.createClass({
 
     handleSorting: function(newSortingField) {
         if (this.state.sortingField === newSortingField) {
-            this.setState((previousState) => {
+            this.setState(previousState => {
                 return {
                     sortingDirection: !previousState.sortingDirection
                 };
@@ -67,7 +67,7 @@ var Table = React.createClass({
 
     render: function() {
 
-        var headerNodes = _.map(this.props.columns, (column) => {
+        var headerNodes = _.map(this.props.columns, column => {
             var arrow = '\u25bc';
             var arrowClassName = 'arrow';
             if (column.key === this.state.sortingField) {
@@ -89,15 +89,21 @@ var Table = React.createClass({
 
 
         var sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
-        var sortedRows = _.sortByOrder(this.props.rows, [ (row) => {
-            // turn string to upper case so as to avoid ABCabc type of sorting
-            if (typeof row[this.state.sortingField] === 'string') {
-                return row[this.state.sortingField].toUpperCase();
-            }
-            return row[this.state.sortingField];
-        } ], [ sortingOrder ]);
+        var sortedRows = _.sortByOrder(
+            this.props.rows,
+            [
+                row => {
+                    // turn string to upper case so as to avoid ABCabc type of sorting
+                    if (typeof row[this.state.sortingField] === 'string') {
+                        return row[this.state.sortingField].toUpperCase();
+                    }
+                    return row[this.state.sortingField];
+                }
+            ],
+            [ sortingOrder ]
+        );
 
-        var rowNodes = _.map(sortedRows, (row) => {
+        var rowNodes = _.map(sortedRows, row => {
             var rowToDisplay = [];
             for (var i = 0; i < this.props.columns.length; i++) {
                 var columnKey = this.props.columns[i].key;

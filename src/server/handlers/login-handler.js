@@ -35,7 +35,7 @@ var loginHandler = function(request, reply) {
         .catch(() => {
             throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
         })
-        .then((pilotRecord) => {
+        .then(pilotRecord => {
             if (!pilotRecord || pilotRecord.email !== payload.email.toLowerCase()) {
                 throw new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR, 'There is no user with this email');
             }
@@ -43,7 +43,7 @@ var loginHandler = function(request, reply) {
             // Compare password provided by user with the one we have in DB
             return BcryptPromise.compare(payload.password, pilot.password);
         })
-        .catch((error) => {
+        .catch(error => {
             // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
             throw normalizeError(error, ErrorTypes.AUTHENTICATION_ERROR, 'You entered wrong password');
         })
@@ -57,10 +57,10 @@ var loginHandler = function(request, reply) {
             // this saves amount of data sending between server and client
             return getAllData(pilot, payload.lastModified);
         })
-        .then((dbData) => {
+        .then(dbData => {
             reply(dbData);
         })
-        .catch((error) => {
+        .catch(error => {
             reply({ error: normalizeError(error) });
         });
 };

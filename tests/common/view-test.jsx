@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -85,7 +87,7 @@ describe('View component.', () => {
             expect(mocks.handleStoreModified).to.have.been.calledOnce;
         });
 
-        it('requests for store data again when store-was-modified event emitted', (done) => {
+        it('requests for store data again when store-was-modified event emitted', done => {
             PubSub.emit(STORE_MODIFIED_EVENT);
 
             then(() => {
@@ -104,7 +106,7 @@ describe('View component.', () => {
             expect(notice).to.have.deep.property('props.onClose');
         });
 
-        it('close email-not-verified notice when close button clicked', (done) => {
+        it('close email-not-verified notice when close button clicked', done => {
             let notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
             let renderedDOMNotice = React.findDOMNode(notice);
             let closeButton = renderedDOMNotice.querySelector(`.${defaults.noticeCloseButtonClass}`);

@@ -30,7 +30,7 @@ app.use(webpackDevMiddleware(compiler, {
 app.use(webpackHotMiddleware(compiler));
 
 
-app.listen(config.webpack.port, config.server.host, (err) => {
+app.listen(config.webpack.port, config.server.host, err => {
     if (err) {
         console.log(err);
         return;

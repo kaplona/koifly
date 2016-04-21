@@ -85,11 +85,11 @@ MapFacade.prototype.addMarkerMoveEventListener = function(siteId, changeInfowind
     this.mapsApi.event.addListener(this.siteMarkers[siteId], 'drag', () => {
         this.siteInfowindows[siteId].close();
     });
-    this.mapsApi.event.addListener(this.siteMarkers[siteId], 'dragend', (e) => {
-        this.moveMarker(e.latLng, siteId, changeInfowindowContent);
+    this.mapsApi.event.addListener(this.siteMarkers[siteId], 'dragend', event => {
+        this.moveMarker(event.latLng, siteId, changeInfowindowContent);
     });
-    this.mapsApi.event.addListener(this.map, 'click', (e) => {
-        this.moveMarker(e.latLng, siteId, changeInfowindowContent);
+    this.mapsApi.event.addListener(this.map, 'click', event => {
+        this.moveMarker(event.latLng, siteId, changeInfowindowContent);
     });
 };
 
@@ -101,7 +101,7 @@ MapFacade.prototype.moveMarker = function(latLng, siteId, changeInfowindowConten
     // Request position data for infowindow content update
     this
         .getPositionInfoPromise(latLng)
-        .then((positionInfo) => {
+        .then(positionInfo => {
             changeInfowindowContent(positionInfo, this);
         });
 };
@@ -185,9 +185,10 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
         this.searchAddress(siteId);
     });
     // Trigger search event if Enter key is pressed on search bar
-    this.mapsApi.event.addDomListener(searchBar, 'keypress', (e) => {
-        if (e.keyCode == 13) {
-            e.preventDefault();
+    this.mapsApi.event.addDomListener(searchBar, 'keypress', event => {
+        // @TODO event.keyCode will be deprecated, event.key === 'Enter' (still doesn't supported by all browseers)
+        if (event.keyCode === 13) {
+            event.preventDefault();
             this.searchAddress(siteId);
         }
     });
@@ -197,10 +198,10 @@ MapFacade.prototype.searchAddress = function(siteId) {
     var address = document.getElementById('search-bar').value;
     
     this.geocoder.geocode({ 'address': address }, (results, status) => {
-        if (status == this.mapsApi.GeocoderStatus.OK) {
+        if (status == this.mapsApi.GeocoderStatus.OK) { // eslint-disable-line eqeqeq
             var position = results[0].geometry.location;
             this.moveMarker(position, siteId);
-        } else {
+        } else if (process.env.NODE_ENV === 'development') {
             console.log('Geocode was not successful for the following reason: ' + status);
         }
     });
@@ -214,7 +215,7 @@ MapFacade.prototype.getPositionInfoPromise = function(latLng) {
             this.getAddressPromise(latLng),
             this.getElevationPromise(latLng)
         ])
-        .then((positionInfoElements) => {
+        .then(positionInfoElements => {
             return {
                 address: this.formatGeacoderAddress(positionInfoElements[0]),
                 elevation: positionInfoElements[1],
@@ -230,10 +231,10 @@ MapFacade.prototype.getAddressPromise = function(latLng) {
         'location': latLng
     };
     
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         // Initiate the location request
         this.geocoder.geocode(positionalRequest, (results, status) => {
-            if (status == this.mapsApi.GeocoderStatus.OK) {
+            if (status == this.mapsApi.GeocoderStatus.OK) { // eslint-disable-line eqeqeq
                 // Retrieve the second result (less detailed compare to the first one)
                 if (results[1]) {
                     resolve(results[1].address_components);
@@ -251,10 +252,10 @@ MapFacade.prototype.getElevationPromise = function(latLng) {
         'locations': [ latLng ]
     };
     
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         // Initiate the location request
         this.elevator.getElevationForLocations(positionalRequest, (results, status) => {
-            if (status == this.mapsApi.ElevationStatus.OK) {
+            if (status == this.mapsApi.ElevationStatus.OK) { // eslint-disable-line eqeqeq
                 // Retrieve the first result
                 if (results[0] && Util.isNumber(results[0].elevation)) {
                     resolve(results[0].elevation);
@@ -268,7 +269,8 @@ MapFacade.prototype.getElevationPromise = function(latLng) {
 
 
 MapFacade.prototype.getCoordinatesString = function(latLng) {
-    var lat, lng;
+    var lat;
+    var lng;
     
     // Check the position format
     if (latLng.lat instanceof Function &&
@@ -308,7 +310,6 @@ MapFacade.prototype.getCoordinatesString = function(latLng) {
 //     }
 // ]
 MapFacade.prototype.formatGeacoderAddress = function(geocoderResult) {
-    var i, j;
     var addressList = [];
     var addressElements = [
         { // e.g. region
@@ -325,10 +326,12 @@ MapFacade.prototype.formatGeacoderAddress = function(geocoderResult) {
         }
     ];
 
+    var i;
+    var j;
     // Pull needed values from geocoder result
     for (i = 0; i < addressElements.length; i++) {
         for (j = 0; j < geocoderResult.length; j++) {
-            if (geocoderResult[j].types.indexOf(addressElements[i].googleKey) != -1) {
+            if (geocoderResult[j].types.indexOf(addressElements[i].googleKey) !== -1) {
                 addressList.push(geocoderResult[j][addressElements[i].valueType]);
                 break;
             }
@@ -341,7 +344,7 @@ MapFacade.prototype.formatGeacoderAddress = function(geocoderResult) {
 
 
 MapFacade.createPromise = function() {
-    return mapsApiPromise.then((mapsApi) => {
+    return mapsApiPromise.then(mapsApi => {
         return new MapFacade(mapsApi);
     });
 };

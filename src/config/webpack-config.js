@@ -4,7 +4,7 @@ var path = require('path');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
 var AssetsWebpackPlugin = require('assets-webpack-plugin');
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 // var SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
 var config = require('./variables');
 
@@ -85,15 +85,16 @@ if (process.env.NODE_ENV === 'development') {
                     loader: BABEL,
                     include: config.paths.source,
                     query: {
-                        plugins: [
-                            ['react-transform', {
-                                'transforms': [{
+                        plugins: [ [
+                            'react-transform',
+                            {
+                                'transforms': [ {
                                     'transform': 'react-transform-hmr',
-                                    'imports': ['react'],
-                                    'locals': ['module']
-                                }]
-                            }]
-                        ]
+                                    'imports': [ 'react' ],
+                                    'locals': [ 'module' ]
+                                } ]
+                            }
+                        ] ]
                     }
                 }
             ]
@@ -112,7 +113,7 @@ if (process.env.NODE_ENV === 'development') {
 
     /** @lends webpackConfig */
     webpackConfig = webpackMerge(webpackConfig, {
-        //devtool: 'source-map', // generate full source maps
+        // devtool: 'source-map', // generate full source maps
         module: {
             loaders: [
                 {

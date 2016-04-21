@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -71,7 +73,7 @@ describe('Switcher component', () => {
                 .that.not.contain(defaults.activeClass);
         });
 
-        it('Updates state and calls proper function once clicked', (done) => {
+        it('Updates state and calls proper function once clicked', done => {
             Simulate.click(renderedDOMElement);
 
             then(() => {

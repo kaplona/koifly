@@ -14,14 +14,38 @@ var Glider = require('../../orm/gliders');
 
 
 /**
+ * @param {Object[]} sequelizeRecordInstances - DB records set
+ * @returns {Object[]} array of DB records with plain values
+ * or in case of deleted instance just its id and deleted date
+ * Note: this method was designed for use with sequelize record instances
+ * which can be deleted (have property 'see')
+ * don't use it for pilot records
+ */
+function getRecordsValues(sequelizeRecordInstances) {
+    return _.map(sequelizeRecordInstances, record => {
+        // If instance was deleted
+        // user doesn't need its content
+        if (!record.see) {
+            return {
+                id: record.id,
+                see: false,
+                updatedAt: record.updatedAt
+            };
+        }
+        // {plain = true} will only return the values of sequelize record instance
+        // (omits sequelize methods and additional stuff)
+        return record.get({ plain: true });
+    });
+}
+
+
+/**
  * @param {object} pilot - sequelize pilot instance
  * @param {string|null} dateFrom - If provided, only changes since that date are returned
  * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
 var getAllData = function(pilot, dateFrom) {
-    // DEV
-    console.log('=> retrieving all data');
 
     var result = {};
 
@@ -47,15 +71,15 @@ var getAllData = function(pilot, dateFrom) {
             Site.scope(scope).findAll({ where: whereQuery }),
             Glider.scope(scope).findAll({ where: whereQuery })
         ])
-        .then((recordsSet) => {
+        .then(recordsSet => {
             // Values appear in the same order as we requested for them
             result.flights = getRecordsValues(recordsSet[0]);
             result.sites = getRecordsValues(recordsSet[1]);
             result.gliders = getRecordsValues(recordsSet[2]);
 
             // Find the latest updating date of all records
-            _.each(result, (records, dataType) => {
-                _.each(records, (record) => {
+            _.each(result, records => {
+                _.each(records, record => {
                     maxLastModified = (record.updatedAt > maxLastModified) ? record.updatedAt : maxLastModified;
                 });
             });
@@ -65,37 +89,10 @@ var getAllData = function(pilot, dateFrom) {
 
             return result;
         })
-        .catch (() => {
+        .catch(() => {
             throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
         });
 };
-
-
-
-/**
- * @param {Object[]} sequelizeRecordInstances - DB records set
- * @returns {Object[]} array of DB records with plain values
- * or in case of deleted instance just its id and deleted date
- * Note: this method was designed for use with sequelize record instances
- * which can be deleted (have property 'see')
- * don't use it for pilot records
- */
-function getRecordsValues(sequelizeRecordInstances) {
-    return _.map(sequelizeRecordInstances, function(record) {
-        // If instance was deleted
-        // user doesn't need its content
-        if (!record.see) {
-            return {
-                id: record.id,
-                see: false,
-                updatedAt: record.updatedAt
-            };
-        }
-        // {plain = true} will only return the values of sequelize record instance
-        // (omits sequelize methods and additional stuff)
-        return record.get({ plain: true });
-    });
-}
 
 
 module.exports = getAllData;

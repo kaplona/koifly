@@ -31,7 +31,7 @@ describe('SectionRow component', () => {
                 <SectionRow>{ mocks.sectionRowText }</SectionRow>
             );
 
-            renderedDOMElement = React.findDOMNode(component)
+            renderedDOMElement = React.findDOMNode(component);
         });
 
         it('renders parsed children', () => {

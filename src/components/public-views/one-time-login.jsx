@@ -59,7 +59,7 @@ var OneTimeLogin = React.createClass({
                     lastSentEmailAddress: emailAddress
                 });
             })
-            .catch((error) => {
+            .catch(error => {
                 this.updateError(error);
             });
     },

@@ -14,8 +14,6 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {function} callback - accepts (Error|null error, bool isSuccess)
  */
 var checkAuthCookie = function(request, session, callback) {
-    // DEV
-    console.log('=> cookie check');
 
     if (!session.userId || session.expiryDate < Date.now()) {
         callback(new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR), false);
@@ -25,15 +23,15 @@ var checkAuthCookie = function(request, session, callback) {
     var pilot; // we need it to have reference to current pilot
 
     Pilot.findById(session.userId)
-        .then((pilotRecord) => {
+        .then(pilotRecord => {
             pilot = pilotRecord;
 
             if (!pilot || pilot.id !== session.userId) {
                 throw new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
             }
 
-            var hashBase = session.expiryDate.toString() + pilot.password;
-            return BcryptPromise.compare(hashBase, session.hash);
+            var secret = session.expiryDate.toString() + pilot.password;
+            return BcryptPromise.compare(secret, session.hash);
         })
         .then(() => {
             // Reset cookie so as to have new expiry date
@@ -42,7 +40,7 @@ var checkAuthCookie = function(request, session, callback) {
         .then(() => {
             callback(null, true); // All OK!
         })
-        .catch((error) => {
+        .catch(error => {
             callback(normalizeError(error), false);
         });
 };

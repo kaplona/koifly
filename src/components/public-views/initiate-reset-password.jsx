@@ -59,7 +59,7 @@ var InitiateResetPassword = React.createClass({
                     lastSentEmailAddress: EmailAddress
                 });
             })
-            .catch((error) => {
+            .catch(error => {
                 this.updateError(error);
             });
     },

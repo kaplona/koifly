@@ -193,7 +193,7 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
 DataService.prototype.initializeStore = function() {
     Object
         .keys(this.store)
-        .forEach((key) => {
+        .forEach(key => {
             if (key !== 'pilot' && this.store[key] === null) {
                 this.store[key] = {};
             }

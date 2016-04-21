@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -31,8 +33,7 @@ describe('AltitudeInput component', () => {
         errorClassName: 'x-error',
         dropdownInputName: 'altitudeUnit'
     };
-
-    // TODO random values
+    
     var mocks = {
         initialInputValue: 'test input',
         nextInputValue: 'next tst value',
@@ -40,7 +41,7 @@ describe('AltitudeInput component', () => {
         selectedAltitudeUnit: 'feet',
         nextDropdownValue: 'meters',
         errorMessage: 'test error message',
-        inputName:'testInput',
+        inputName: 'testInput',
         handleInputChange: Sinon.spy()
     };
 

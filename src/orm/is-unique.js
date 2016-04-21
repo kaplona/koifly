@@ -39,14 +39,14 @@ var isUnique = function(modelFileName, fieldName, msg) {
                     where: query,
                     attributes: [ 'id' ]
                 })
-                .then((record) => {
+                .then(record => {
                     if (record) {
                         next(msg);
                     }
                     next();
                 })
-                .catch((e) => {
-                    next(e.message);
+                .catch(error => {
+                    next(error.message);
                 });
         } else {
             next(ErrorMessages.NOT_EMPTY.replace('%field', fieldName));

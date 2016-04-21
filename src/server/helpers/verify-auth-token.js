@@ -21,7 +21,7 @@ var verifyAuthToken = function(pilotId, authToken) {
 
     return Pilot
         .findById(pilotId)
-        .then((pilotRecord) => {
+        .then(pilotRecord => {
             pilot = pilotRecord;
             if (!pilot || pilot.id.toString() !== pilotId || pilot.tokenExpirationTime < Date.now()) {
                 throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);

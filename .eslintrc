@@ -3,7 +3,8 @@
   "env": {
     "browser": true,
     "node": true,
-    "commonjs": true
+    "commonjs": true,
+    "mocha": true
   },
   "plugins": [
     "react"
@@ -19,9 +20,9 @@
     "strict": [1, "global"],
 
     // Possible errors
-//    "comma-dangle": [1, "always-multiline"],
+    "comma-dangle": [1, "never"],
     "no-cond-assign": [2, "always"],
-//    "no-console": 1,
+    // "no-console": 1,
     "no-constant-condition": 1,
     "no-control-regex": 2,
     "no-debugger": 1,
@@ -51,8 +52,8 @@
     "curly": 2,
     "dot-notation": 1,
     "dot-location": [1, "property"],
-//    "eqeqeq": 2,
-//    "no-alert": 1,
+    "eqeqeq": 1,
+    // "no-alert": 1,
     "no-caller": 2,
     "no-div-regex": 2,
     "no-else-return": 1,
@@ -70,9 +71,8 @@
     "no-new": 1,
     "no-octal-escape": 2,
     "no-octal": 2,
-    // @TODO http://eslint.org/docs/rules/no-process-env
     "no-proto": 2,
-    // @TODO http://eslint.org/docs/rules/no-redeclare
+    "no-redeclare": 1,
     "no-return-assign": 2,
     "no-script-url": 2,
     "no-self-compare": 1,
@@ -106,16 +106,14 @@
     "array-bracket-spacing": [1, "never", { "singleValue": true }],
     "block-spacing": [1, "always"],
     "brace-style": [1, "1tbs"],
-    // http://eslint.org/docs/rules/camelcase
+    "camelcase": 1,
     "comma-spacing": 1,
     "comma-style": 1,
     "computed-property-spacing": [1, "never"],
     "consistent-this": [1, "this"],
     "eol-last": 1,
-    // http://eslint.org/docs/rules/func-names
     "jsx-quotes": [1, "prefer-single"],
     "key-spacing": [1, {"beforeColon": false, "afterColon": true, "mode": "minimum"}],
-    // http://eslint.org/docs/rules/lines-around-comment
     "linebreak-style": [1, "unix"],
     "new-cap": 1,
     "new-parens": 1,
@@ -125,14 +123,12 @@
     "no-multiple-empty-lines": [1, {"max": 5}],
     "no-nested-ternary": 1,
     "no-new-object": 1,
-    // http://eslint.org/docs/rules/no-restricted-syntax
     "no-spaced-func": 1,
     "no-trailing-spaces": [1, { "skipBlankLines": true }],
     "no-unneeded-ternary": 1,
     "object-curly-spacing": [1, "always"],
-    "one-var": [2, { uninitialized: "always", initialized: "never" }],
-    // http://eslint.org/docs/rules/operator-linebreak
-    // http://eslint.org/docs/rules/quote-props
+    "one-var": [2, { uninitialized: "never", initialized: "never" }],
+    "operator-linebreak": 1,
     "quotes": [1, "single", "avoid-escape"],
     // http://eslint.org/docs/rules/require-jsdoc
     "semi-spacing": [1, {"before": false, "after": true}],
@@ -145,42 +141,37 @@
     "space-infix-ops": 1,
     "space-return-throw-case": 1,
     "space-unary-ops": [1, {"words": true, "nonwords": false}],
-//    "spaced-comment": [1, "always"],
+    "spaced-comment": [1, "always"],
 
     // EcmaScript 6
-//    "arrow-parens": [1, "always"],
+    "arrow-parens": [1, "as-needed"],
     "arrow-spacing": [1, {"before": true, "after": true}],
     "constructor-super": 1,
-    // http://eslint.org/docs/rules/generator-star-spacing
     "no-class-assign": 1,
     "no-const-assign": 1,
     "no-dupe-class-members": 1,
     "no-this-before-super": 1,
-    // http://eslint.org/docs/rules/no-var
     "prefer-arrow-callback": 1,
     // http://eslint.org/docs/rules/prefer-const
     "prefer-spread": 1,
     // http://eslint.org/docs/rules/prefer-reflect
     // http://eslint.org/docs/rules/prefer-template
-    // http://eslint.org/docs/rules/require-yield
 
 
 
     // React plugin rules
     // Full list: https://github.com/yannickcr/eslint-plugin-react
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
-//    "react/jsx-boolean-value": 1,
+    // "react/jsx-boolean-value": 1,
     "react/jsx-closing-bracket-location": [1, "props-aligned"],
     "react/jsx-curly-spacing": [1, "always"],
     "react/jsx-max-props-per-line": [1, {"maximum": 3}],
     "react/jsx-no-duplicate-props": [1, {"ignoreCase": true}],
-    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/jsx-no-literals.md
     "react/jsx-no-undef": 1,
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,
     "react/no-direct-mutation-state": 1,
     "react/no-multi-comp": 1,
-    // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/no-set-state.md
     "react/no-unknown-property": 1,
     "react/prop-types": [1, {"ignore": ["children"]}],
     "react/react-in-jsx-scope": 1,

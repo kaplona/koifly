@@ -1,7 +1,5 @@
 'use strict';
 
-var _ = require('lodash');
-
 var EmailMessageTemplates = require('../../constants/email-message-templates');
 var normalizeError = require('../../errors/normalize-error');
 var Pilot = require('../../orm/pilots');
@@ -19,14 +17,14 @@ var sendAuthTokenToPilot = require('../helpers/send-auth-token');
 var resendAuthTokenHandler = function(request, reply) {
     Pilot
         .findById(request.auth.credentials.userId)
-        .then((pilot) => {
+        .then(pilot => {
             return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
         })
         .then(() => {
             reply(JSON.stringify('success'));
         })
-        .catch((error) => {
-            reply({ error: normalizeError(error)});
+        .catch(error => {
+            reply({ error: normalizeError(error) });
         });
 };
 

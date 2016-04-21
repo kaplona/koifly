@@ -102,13 +102,13 @@ var Util = {
     addOrdinalSuffix: function(number) {
         var lastDigit = number % 10;
         var twoLastDigits = number % 100;
-        if (lastDigit == 1 && twoLastDigits != 11) {
+        if (lastDigit === 1 && twoLastDigits !== 11) {
             return number + 'st';
         }
-        if (lastDigit == 2 && twoLastDigits != 12) {
+        if (lastDigit === 2 && twoLastDigits !== 12) {
             return number + 'nd';
         }
-        if (lastDigit == 3 && twoLastDigits != 13) {
+        if (lastDigit === 3 && twoLastDigits !== 13) {
             return number + 'rd';
         }
         return number + 'th';
@@ -181,7 +181,7 @@ var Util = {
      * @returns {function()} - iteratee for map to get value-text pairs
      */
     valueTextPairs: function(valueKey, textKey) {
-        return (item) => {
+        return item => {
             return {
                 value: item[valueKey].toString(),
                 text: item[textKey].toString()

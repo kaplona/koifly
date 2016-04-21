@@ -9,7 +9,8 @@ var assetsJsonPath = path.resolve(config.webpack.assetsPath, config.webpack.asse
  * @type {function}
  * @returns {object}
  */
-var getWebpackAssets, assets;
+var getWebpackAssets;
+var assets;
 
 if (process.env.NODE_ENV === 'production') {
     // Require the file only once for efficiency

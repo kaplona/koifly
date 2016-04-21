@@ -14,7 +14,6 @@ describe('BreadCrumbs component', () => {
     var TestUtils = React.addons.TestUtils;
 
     var component;
-    var renderedDOMElement;
 
     var mocks = {
         firstElementText: 'test first element text',
@@ -34,8 +33,6 @@ describe('BreadCrumbs component', () => {
                 ] }
                 />
         );
-
-        renderedDOMElement = React.findDOMNode(component);
     });
 
     it('renders proper layout and parsed element at proper places', () => {

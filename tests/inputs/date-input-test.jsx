@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -99,7 +101,7 @@ describe('DateInput component', () => {
                     errorMessage={ mocks.errorMessage }
                     inputName={ mocks.inputName }
                     onChange={ mocks.handleInputChange }
-                />
+                    />
             );
 
             renderedDOMElement = React.findDOMNode(component);

@@ -139,7 +139,7 @@ describe('Table component', () => {
         expect(secondRowCells[2]).to.have.property('textContent', mocks.rows[0][mocks.columns[2].key]);
     });
 
-    it('sorts table rows when certain column header clicked', (done) => {
+    it('sorts table rows when certain column header clicked', done => {
         // Click on first column header which table is not sorted by
         let columnHeaders = renderedDOMElement.querySelectorAll('th');
 
@@ -152,7 +152,7 @@ describe('Table component', () => {
             expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
             expect(component).to.have.deep.property('state.sortingDirection', columnsObject[sortingFieldKey].defaultSortingDirection);
 
-            let columnHeaders = renderedDOMElement.querySelectorAll('th');
+            columnHeaders = renderedDOMElement.querySelectorAll('th');
             let firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
             let secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
             let thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
@@ -185,7 +185,7 @@ describe('Table component', () => {
             expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
             expect(component).to.have.deep.property('state.sortingDirection', !columnsObject[sortingFieldKey].defaultSortingDirection);
 
-            let columnHeaders = renderedDOMElement.querySelectorAll('th');
+            columnHeaders = renderedDOMElement.querySelectorAll('th');
             let firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
             let secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
             let thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;

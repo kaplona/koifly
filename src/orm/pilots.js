@@ -25,7 +25,7 @@ var Pilot = sequelize.define(
         },
 
         userName: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.STRING(100), // eslint-disable-line new-cap
             allowNull: true,
             validate: {
                 len: {
@@ -79,14 +79,14 @@ var Pilot = sequelize.define(
         },
 
         altitudeUnit: {
-            type: Sequelize.ENUM('meters', 'feet'),
+            type: Sequelize.ENUM('meters', 'feet'), // eslint-disable-line new-cap
             allowNull: false,
             defaultValue: 'meters',
             validate: { isIn: [ ['meters', 'feet'] ] }
         },
 
         token: {
-            type: Sequelize.STRING(64),
+            type: Sequelize.STRING(64), // eslint-disable-line new-cap
             allowNull: true,
             defaultValue: null,
             validate: {
@@ -98,7 +98,7 @@ var Pilot = sequelize.define(
         },
 
         tokenExpirationTime: {
-            type: Sequelize.BIGINT(14),
+            type: Sequelize.BIGINT(14), // eslint-disable-line new-cap
             allowNull: true,
             defaultValue: null
         },

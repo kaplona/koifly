@@ -4,7 +4,7 @@ const ROOT_URL = require('../../config/variables').server.rootUrl;
 
 var BcryptPromise = require('../../utils/bcrypt-promise');
 var generateToken = require('./generate-token');
-var SendMail = require('./send-mail');
+var sendMail = require('./send-mail');
 
 
 /**
@@ -14,28 +14,28 @@ var SendMail = require('./send-mail');
  * @param {object} pilot - sequelize pilot instance
  * @param {object} EmailMessageTemplate
  * @param {string} path - link that will be included in email
- * @returns {Promise}
+ * @returns {Promise} - whether email was sent successfully
  */
 var sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
     var authToken = generateToken();
     // Create hash out of token to store in DB since it's a password equivalent
     return BcryptPromise
         .hash(authToken)
-        .then((hash) => {
+        .then(hash => {
             var newPilotInfo = {
                 token: hash,
                 tokenExpirationTime: Date.now() + (1000 * 60 * 60 * 6) // 6 hours starting from now
             };
 
             // Update pilot info with token hash and token expiry date
-            return pilot.update(newPilotInfo)
+            return pilot.update(newPilotInfo);
         })
-        .then((pilot) => {
+        .then(newPilot => {
             // Send email which includes link with the randomly generated token
             var templateData = {
-                url: `${ROOT_URL}${path}/${pilot.id}/${authToken}`
+                url: `${ROOT_URL}${path}/${newPilot.id}/${authToken}`
             };
-            return SendMail(pilot.email, EmailMessageTemplate, templateData);
+            return sendMail(newPilot.email, EmailMessageTemplate, templateData);
         });
 };
 

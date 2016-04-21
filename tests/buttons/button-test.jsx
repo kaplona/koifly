@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 // Our fake DOM must be required before React to be used by React
@@ -91,7 +93,7 @@ describe('Button component', () => {
 
     describe('Disabled button, button type and class name tasting (real DOM)', () => {
         before(() => {
-            handleClick =Sinon.spy();
+            handleClick = Sinon.spy();
 
             component = TestUtils.renderIntoDocument(
                 <Button

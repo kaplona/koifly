@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'development') {
 
 
 
-server.register(plugins, (err) => {
+server.register(plugins, err => {
 
     if (err) {
         console.error(err);
@@ -75,7 +75,8 @@ server.register(plugins, (err) => {
     // Register cookie authentication scheme
     server.auth.strategy('session', 'cookie', {
         cookie: 'koifly',
-        domain: config.server.host,
+        // domain: null - the domain that cookie was created
+        domain: process.env.NODE_ENV === 'development' ? null : config.server.host,
         path: '/',
         password: secrets.cookiePassword,
         ttl: secrets.cookieLifeTime,
@@ -90,7 +91,8 @@ server.register(plugins, (err) => {
     // Register csrf cookie
     server.state('csrf', {
         ttl: secrets.cookieLifeTime,
-        domain: config.server.host,
+        // domain: null - the domain that cookie was created
+        domain: process.env.NODE_ENV === 'development' ? null : config.server.host,
         path: '/',
         isSecure: false, // cookie allows to be transmitted over insecure connection
         isHttpOnly: false, // scrf cookie is available to js
@@ -126,19 +128,17 @@ server.register(plugins, (err) => {
     });
 
     // Serve white-listed files from the webRoot directory
-    config.server.publicFiles.forEach(
-        (filename) => {
-            server.route({
-                method: 'GET',
-                path: '/' + filename,
-                handler: {
-                    file: {
-                        path: path.join(config.paths.webRoot, filename)
-                    }
+    config.server.publicFiles.forEach(filename => {
+        server.route({
+            method: 'GET',
+            path: '/' + filename,
+            handler: {
+                file: {
+                    path: path.join(config.paths.webRoot, filename)
                 }
-            });
-        }
-    );
+            }
+        });
+    });
 
     // Catch-all
     // server.route({
@@ -228,13 +228,16 @@ server.register(plugins, (err) => {
         method: 'GET',
         path: '/email-verification/{pilotId}/{authToken}',
         handler: function(request, reply) {
-            verifyAuthToken(request.params.pilotId, request.params.authToken).then((user) => {
-                return setAuthCookie(request, user.id, user.password);
-            }).then(() => {
-                reply.view('app');
-            }).catch(() => {
-                reply.redirect('/invalid-verification-link');
-            });
+            verifyAuthToken(request.params.pilotId, request.params.authToken)
+                .then(user => {
+                    return setAuthCookie(request, user.id, user.password);
+                })
+                .then(() => {
+                    reply.view('app');
+                })
+                .catch(() => {
+                    reply.redirect('/invalid-verification-link');
+                });
         }
     });
 

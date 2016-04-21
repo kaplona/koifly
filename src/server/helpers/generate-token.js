@@ -3,19 +3,17 @@
 var crypto = require('crypto');
 
 
-// TODO add comments, read more about base64
-
 /**
- * @param {number} len
- * @returns {string} string of certain length of random chars (a-z, A-Z, 0-9)
+ * @param {number} len - length of token to generate
+ * @returns {string} - string of certain length of random chars (a-z, A-Z, 0-9)
  */
 var generateToken = function(len = 32) {
     return crypto
-        .randomBytes(Math.ceil(len))
-        .toString('base64') // a-z, A-Z, 0-9, / , +
-        .replace(/\+/g, '-') // replace '+' to '0'
-        .replace(/\//g, '_') // replace '/' to '0'
-        .slice(0, len);
+        .randomBytes(len)    // generates cryptographically strong pseudo-random number of bytes (octet buffer)
+        .toString('base64')  // decodes buffer data using base64 encoding (character set: a-z, A-Z, 0-9, / , +)
+        .replace(/\+/g, '-') // replace '+' to '-' in order to the token to be safe for url
+        .replace(/\//g, '_') // replace '/' to '_' in order to the token to be safe for url
+        .slice(0, len);      // take only certain amount of first characters
 };
 
 

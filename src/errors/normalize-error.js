@@ -4,8 +4,8 @@ var ErrorTypes = require('./error-types');
 var KoiflyError = require('./error');
 
 
-//Example of sequelize error:
-//{
+// Example of sequelize error:
+// {
 //    name: 'SequelizeValidationError',
 //    message: 'notNull Violation: airtime cannot be null',
 //    errors:
@@ -13,7 +13,7 @@ var KoiflyError = require('./error');
 //        type: 'notNull Violation',
 //        path: 'airtime',
 //        value: null } ]
-//}
+// }
 
 var normalizeError = function(error, defaultErrorType = ErrorTypes.DB_READ_ERROR, defaultMessage = null) {
     if (error instanceof KoiflyError) {

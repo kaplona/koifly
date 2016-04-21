@@ -38,7 +38,7 @@ var changePasswordHandler = function(request, reply) {
         .catch(() => {
             throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
         })
-        .then((pilotRecord) => {
+        .then(pilotRecord => {
             pilot = pilotRecord;
             // User can't change password if he didn't verify his email address
             if (!pilot.isActivated) {
@@ -47,7 +47,7 @@ var changePasswordHandler = function(request, reply) {
             // Compare password provided by user with the one we have in DB
             return BcryptPromise.compare(payload.currentPassword, pilot.password);
         })
-        .catch((error) => {
+        .catch(error => {
             // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
             throw normalizeError(error, ErrorTypes.VALIDATION_ERROR, 'You entered wrong password');
         })
@@ -55,7 +55,7 @@ var changePasswordHandler = function(request, reply) {
             // Generate hash from new password
             return BcryptPromise.hash(payload.nextPassword);
         })
-        .then((hash) => {
+        .then(hash => {
             // Change password hash in DB
             return pilot.update({ password: hash });
         })
@@ -69,7 +69,7 @@ var changePasswordHandler = function(request, reply) {
         .then(() => {
             reply(JSON.stringify('success'));
         })
-        .catch((error) => {
+        .catch(error => {
             reply({ error: normalizeError(error) });
         });
 };

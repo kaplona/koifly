@@ -18,10 +18,9 @@ var NodeMailer = require('nodemailer');
  */
 var SendMail = function(emailAddress, message, templateData) {
     return new Promise((resolve, reject) => {
-        // TODO config my own domain and send mail from it
-        // check for some other useful options: https://github.com/nodemailer/nodemailer#set-up-smtp
+        // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
         var smtpConfig = {
-            service:'Mailgun',
+            service: 'Mailgun',
             auth: {
                 user: MAILGUN_LOGIN,
                 pass: MAILGUN_PASSWORD
@@ -39,7 +38,7 @@ var SendMail = function(emailAddress, message, templateData) {
             });
         }
 
-        transporter.sendMail(message, (error) => {
+        transporter.sendMail(message, error => {
             if (error) {
                 reject(error);
             } else {

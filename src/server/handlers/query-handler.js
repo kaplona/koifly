@@ -25,7 +25,7 @@ var queryHandler = function(request, reply) {
 
     Pilot
         .findById(request.auth.credentials.userId)
-        .then((pilot) => {
+        .then(pilot => {
             if (request.method === 'get') {
                 // Get all data from the DB since lastModified
                 return getAllData(pilot, JSON.parse(request.query.lastModified));
@@ -45,7 +45,7 @@ var queryHandler = function(request, reply) {
                 }
 
                 return saveData(requestPayload.dataType, requestPayload.data, pilot)
-                    .catch((error) => {
+                    .catch(error => {
                         // If it's any other error but KoiflyError will replace it with KoiflyError with given type
                         throw normalizeError(error, ErrorTypes.DB_WRITE_ERROR);
                     })
@@ -55,12 +55,13 @@ var queryHandler = function(request, reply) {
                     });
             }
         })
-        .then((result) => {
+        .then(result => {
             reply(result);
         })
-        .catch((error) => {
-            //DEV
-            console.log('error => ', error);
+        .catch(error => {
+            if (process.env.NODE_ENV === 'development') {
+                console.log('Error => ', error);
+            }
 
             reply({ error: normalizeError(error) });
         });
@@ -69,11 +70,10 @@ var queryHandler = function(request, reply) {
 
 
 /**
- *
  * @param {string} dataType
  * @param {object} data
  * @param {object} pilot - sequelize instance
- * @returns {Promise}
+ * @returns {Promise} - whether the saving was successful
  */
 function saveData(dataType, data, pilot) {
     var pilotId = pilot.id;
@@ -122,7 +122,7 @@ function saveFlight(data, pilotId) {
 
     return Flight
         .findOne({ where: { id: data.id, pilotId: pilotId } })
-        .then((flight) => {
+        .then(flight => {
             if (!flight || flight.id.toString() !== data.id.toString()) {
                 throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
             }
@@ -165,19 +165,19 @@ function saveSite(data, pilotId) {
     // in order to delete glider with all its references in flight records
     return sequelize.transaction(t => {
         return Site
-            .findOne({ where: {id: data.id, pilotId: pilotId}, transaction: t })
-            .then((site) => {
+            .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
+            .then(site => {
                 if (!site || site.id.toString() !== data.id.toString()) {
                     throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
                 }
 
                 return site.update(data, { transaction: t });
             })
-            .then((site) => {
+            .then(site => {
                 if (!site.see) {
                     return Flight.update(
                         { siteId: null },
-                        { where: {siteId: site.id}, transaction: t }
+                        { where: { siteId: site.id }, transaction: t }
                     );
                 }
             });
@@ -217,19 +217,19 @@ function saveGlider(data, pilotId) {
     // in order to delete glider with all its references in flight records
     return sequelize.transaction(t => {
         return Glider
-            .findOne({where: {id: data.id, pilotId: pilotId}, transaction: t})
-            .then((glider) => {
+            .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
+            .then(glider => {
                 if (!glider || glider.id.toString() !== data.id.toString()) {
                     throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
                 }
 
-                return glider.update(data, {transaction: t});
+                return glider.update(data, { transaction: t });
             })
             .then(glider => {
                 if (!glider.see) {
                     return Flight.update(
                         { gliderId: null },
-                        { where: {gliderId: glider.id}, transaction: t }
+                        { where: { gliderId: glider.id }, transaction: t }
                     );
                 }
             });

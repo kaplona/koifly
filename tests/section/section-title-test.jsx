@@ -30,7 +30,7 @@ describe('SectionTitle component', () => {
                 <SectionTitle>{ mocks.titleText }</SectionTitle>
             );
 
-            renderedDOMElement = React.findDOMNode(component)
+            renderedDOMElement = React.findDOMNode(component);
         });
 
         it('renders parsed children', () => {

@@ -35,16 +35,16 @@ var signupHandler = function(request, reply) {
 
     BcryptPromise
         .hash(payload.password)
-        .then((hash) => {
+        .then(hash => {
             var newPilot = {
                 email: payload.email,
                 password: hash,
-                isSubscribed: payload.isSubscribed ? true : false,
+                isSubscribed: payload.isSubscribed,
                 isActivated: false
             };
             return Pilot.create(newPilot);
         })
-        .then((pilotRecord) => {
+        .then(pilotRecord => {
             pilot = pilotRecord;
             // Set cookie with new credentials
             return setAuthCookie(request, pilot.id, pilot.password);
@@ -55,8 +55,8 @@ var signupHandler = function(request, reply) {
             // Reply with pilot info since it's the only user's data yet
             reply(getPilotValuesForFrontend(pilot));
         })
-        .catch((err) => {
-            reply({ error: normalizeError(err) });
+        .catch(error => {
+            reply({ error: normalizeError(error) });
         });
 };
 

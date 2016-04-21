@@ -22,7 +22,7 @@ var Glider = sequelize.define(
         },
 
         name: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.STRING(100), // eslint-disable-line new-cap
             allowNull: false,
             validate: {
                 isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider')),

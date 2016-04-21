@@ -75,7 +75,7 @@ describe('EmailVerificationNotice component', () => {
             expect(notice).to.have.deep.property('props.onClose', mocks.handleClose);
         });
 
-        it('changes state and view once send-email button clicked', (done) => {
+        it('changes state and view once send-email button clicked', done => {
             let button = React.findDOMNode(component).querySelector('input');
 
             Simulate.click(button);

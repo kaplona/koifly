@@ -167,7 +167,7 @@ var SiteModel = {
         return {
             name: '',
             location: '',
-            coordinates: '', // TODO default local coordinates
+            coordinates: '', // @TODO default local coordinates
             launchAltitude: '0',
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: ''

@@ -33,7 +33,7 @@ describe('DaysSinceLastFlight component', () => {
                 <DaysSinceLastFlight />
             );
 
-            renderedDOMElement = React.findDOMNode(component)
+            renderedDOMElement = React.findDOMNode(component);
         });
 
         it('renders default text if no days prop parsed', () => {
@@ -53,7 +53,7 @@ describe('DaysSinceLastFlight component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component)
+            renderedDOMElement = React.findDOMNode(component);
         });
 
         it('renders text with parsed days', () => {
@@ -75,7 +75,7 @@ describe('DaysSinceLastFlight component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component)
+            renderedDOMElement = React.findDOMNode(component);
         });
 
         it('renders component with proper class', () => {

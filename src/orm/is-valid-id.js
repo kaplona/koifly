@@ -11,7 +11,7 @@ const SCOPES = require('../constants/orm-constants').SCOPES;
  * Checks if in given model there is a record with id = value
  * @param {string} modelFileName
  * @param {string} msg - error message to reply with if record already exists
- * @returns {Function}
+ * @returns {Function} - validation function
  */
 var isValidId = function(modelFileName, msg) {
     return function(value, next) {
@@ -19,16 +19,16 @@ var isValidId = function(modelFileName, msg) {
 
         Model.scope(SCOPES.visible)
             .findById(value)
-            .then((record) => {
+            .then(record => {
                 if (record) {
                     next();
                 }
                 next(msg);
             })
-            .catch((e) => {
-                next(e.message);
+            .catch(error => {
+                next(error.message);
             });
-    }
+    };
 };
 
 module.exports = isValidId;

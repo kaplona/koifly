@@ -72,7 +72,7 @@ var Altitude = {
      * @returns {Array} list of altitude units objects
      */
     getAltitudeUnitsValueTextList: function() {
-        return this.getAltitudeUnitsList().map((unitName) => {
+        return this.getAltitudeUnitsList().map(unitName => {
             return {
                 value: unitName,
                 text: unitName

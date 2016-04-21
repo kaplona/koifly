@@ -74,7 +74,7 @@ var Login = React.createClass({
             .then(() => {
                 this.handleLogin();
             })
-            .catch((error) => {
+            .catch(error => {
                 this.updateError(error);
             });
     },

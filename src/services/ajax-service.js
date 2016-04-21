@@ -66,8 +66,9 @@ var AjaxService = {
 
                 var serverResponse = JSON.parse(ajaxRequest.responseText);
 
-                // DEV
-                console.log('server response:', serverResponse);
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('server response:', serverResponse);
+                }
 
                 if (!serverResponse.error) {
                     resolve(serverResponse);

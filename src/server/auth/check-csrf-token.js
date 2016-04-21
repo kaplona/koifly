@@ -28,9 +28,6 @@ var checkCsrfToken = function(request, reply) {
         requestCsrfToken = JSON.parse(request.payload).csrf;
     }
 
-    // DEV
-    console.log('=> pre handler => ', cookieCsrfToken === requestCsrfToken);
-
     if (!_.isString(cookieCsrfToken) ||
         !_.isString(requestCsrfToken) ||
         cookieCsrfToken !== requestCsrfToken

@@ -4,9 +4,8 @@ var Sequelize = require('sequelize');
 
 var Secrets = require('../secrets').dbApp;
 
-console.log('---- init db -----');
 if (process.env.MYSQL_ADMIN) {
-    console.log('---- admin db -----');
+    console.log('---- init db -----');
     Secrets = require('../secrets').dbAdmin;
 }
 

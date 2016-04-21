@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -33,7 +35,7 @@ describe('AppLink component', () => {
             </AppLink>
         );
 
-        renderedDOMElement = React.findDOMNode(component)
+        renderedDOMElement = React.findDOMNode(component);
     });
 
     it('renders proper text', () => {

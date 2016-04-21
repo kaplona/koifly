@@ -30,7 +30,7 @@ var Dropdown = React.createClass({
 
     render: function() {
         // Sort options in ascending order
-        var selectOptions = _.sortBy(this.props.options, (option) => {
+        var selectOptions = _.sortBy(this.props.options, option => {
             return option.text.toUpperCase();
         });
 
@@ -40,7 +40,7 @@ var Dropdown = React.createClass({
         }
 
         // Make an array of React elements
-        selectOptions = _.map(selectOptions, (option) => {
+        selectOptions = _.map(selectOptions, option => {
             return (
                 <option
                     key={ option.value }

@@ -34,7 +34,7 @@ var StaticMap = React.createClass({
 
     getDefaultProps: function() {
         return {
-            center: CENTER.region, // TODO current location or last added site
+            center: CENTER.region, // @TODO current location or last added site
             zoomLevel: ZOOM_LEVEL.region,
             sites: [],
             isFullScreen: false
@@ -44,7 +44,7 @@ var StaticMap = React.createClass({
     mixins: [ History ],
 
     componentDidMount: function() {
-        this.props.mapFacadePromise.then((mapFacade) => {
+        this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
         });
     },
@@ -58,7 +58,10 @@ var StaticMap = React.createClass({
     },
 
     createMap: function(mapFacade) {
-        var markerId, markerPosition, infowindowContent, infowindowOnClickFunc;
+        var markerId;
+        var markerPosition;
+        var infowindowContent;
+        var infowindowOnClickFunc;
         var mapContainer = this.refs.map.getDOMNode();
 
         mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
@@ -71,7 +74,7 @@ var StaticMap = React.createClass({
                 mapFacade.createMarker(markerId, markerPosition);
 
                 infowindowContent = this.composeInfowindowMessage(this.props.sites[i]);
-                infowindowOnClickFunc = ((siteId) => {
+                infowindowOnClickFunc = (siteId => {
                     return () => this.handleGoToSiteView(siteId);
                 })(markerId);
 

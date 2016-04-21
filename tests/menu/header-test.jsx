@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 'use strict';
 
 require('../../src/test-dom')();
@@ -67,7 +69,7 @@ describe('Header component', () => {
         expect(mocks.pilotLogout).to.not.be.called;
     });
 
-    it('changes state when storeModified event emitted', (done) => {
+    it('changes state when storeModified event emitted', done => {
         expect(component).to.have.deep.property('state.isLoggedIn', false);
 
         PubSub.emit(STORE_MODIFIED_EVENT);

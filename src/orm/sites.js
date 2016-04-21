@@ -22,7 +22,7 @@ var Site = sequelize.define(
         },
         
         name: {
-            type: Sequelize.STRING(100),
+            type: Sequelize.STRING(100), // eslint-disable-line new-cap
             allowNull: false,
             validate: {
                 isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site')),
@@ -34,7 +34,7 @@ var Site = sequelize.define(
         },
         
         location: {
-            type: Sequelize.STRING(1000),
+            type: Sequelize.STRING(1000), // eslint-disable-line new-cap
             allowNull: false,
             defaultValue: '',
             validate: {
@@ -150,7 +150,7 @@ var Site = sequelize.define(
         validate: {
             coordinates: function() {
                 if ((this.lat === null) !== (this.lng === null)) {
-                    throw new Error(ErrorMessages.EITHER_BOTH_COORDS_OR_NON)
+                    throw new Error(ErrorMessages.EITHER_BOTH_COORDS_OR_NON);
                 }
             }
         },

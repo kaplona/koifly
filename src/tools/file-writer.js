@@ -37,7 +37,7 @@ var FileWriter = {
     /**
      * @param {string} filename   file, folder name or pattern
      */
-    remove: (filename) => {
+    remove: filename => {
         // @TODO this looks dangerous. Make sure that filename is legit (not higher than root, not .git, etc.)
         // @TODO make async
         try {

@@ -43,18 +43,18 @@ var sendAuthTokenHandler = function(request, reply) {
     // email is stored in lower case in DB, so as to perform case insensitivity
     Pilot
         .findOne({ where: { email: payload.email.toLowerCase() } })
-        .then((pilot) => {
+        .then(pilot => {
             if (pilot && pilot.email === payload.email.toLowerCase()) {
                 return sendAuthTokenToPilot(pilot, emailMessage, path);
             }
 
-            throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'there is no pilot with this email')
+            throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'there is no pilot with this email');
         })
         .then(() => {
             reply(JSON.stringify('success'));
         })
-        .catch((error) => {
-            reply({ error: normalizeError(error)});
+        .catch(error => {
+            reply({ error: normalizeError(error) });
         });
 };
 

@@ -35,7 +35,7 @@ var InteractiveMap = React.createClass({
     getDefaultProps: function() {
         return {
             markerId: 0,
-            center: CENTER.region, // TODO current location or last added site
+            center: CENTER.region, // @TODO current location or last added site
             zoomLevel: ZOOM_LEVEL.region,
             markerPosition: OUT_OF_MAP_COORDINATES,
             location: '',
@@ -45,7 +45,7 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
-        this.props.mapFacadePromise.then((mapFacade) => {
+        this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
         });
     },
@@ -66,7 +66,7 @@ var InteractiveMap = React.createClass({
         if (this.props.markerPosition !== OUT_OF_MAP_COORDINATES) {
             mapFacade
                 .getPositionInfoPromise(this.props.markerPosition)
-                .then((positionInfo) => {
+                .then(positionInfo => {
                     this.changeInfowindowContent(positionInfo, mapFacade);
                 });
         }
