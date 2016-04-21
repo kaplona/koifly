@@ -27,9 +27,13 @@ var Home = React.createClass({
                         <div className='logo left-float'>
                             Koifly
                         </div>
-                        <a href='/flights' className='app-enter right-float'>
+                        <a
+                            href={ this.props.isLoggedIn ? '/flights' : '/login' }
+                            className='app-enter right-float'
+                            >
                             { this.props.isLoggedIn ? 'Go to App' : 'Log in' }
                         </a>
+                        <a href='/signup' className='app-enter right-float'>Sign up</a>
                     </div>
                     <div className='home-pic-text'>
                         <div>Flight logging app for freeflight pilots</div>
@@ -44,7 +48,7 @@ var Home = React.createClass({
                 <h1>What is Koifly?</h1>
                 <div className='about-koifly'>
                     <p>Koifly - is an online flight logging book for freeflight pilots. If you are a hang glider or paraglider pilot this app is for you!</p>
-                    <p>No more paper or spread sheets which are inefficient and limit your ability to analyze your flights. Keep your flight log with us means you can access it when and where you need it either from your computer or smart phone.</p>
+                    <p>No more paper or spread sheets which are inefficient and limit your ability to analyze your flights. Keep your flight log with us means you can access it when and where you need it either from your computer or smartphone.</p>
                     <p>We dedicated ourselves to making easy to use and on the go application and will constantly add more features to it. Sign up now, it’s free and always will be!</p>
                 </div>
                 <SignupButton />
@@ -125,11 +129,11 @@ var Home = React.createClass({
                     <h1>Coming soon</h1>
                     <FeatureColumn>
                         <ul>
-                            <li>Data export/import (we want you to be able to upload your previous experience. We also understand that your data shouldn't be locked in the app) - April, 2016</li>
-                            <li>GPS uploading (who doesn't want to store GPS tracks along with the other flight information?) - June, 2016</li>
-                            <li>Statistics (your highest/longest flight for the season, what site you fly more often, which weather condition induce to longer flights? - just to name a few) - July, 2016</li>
-                            <li>More fields for each data type (wind strength and direction, landing zone coordinates and more) - August, 2016</li>
-                            <li>Off-line app (what if you don't have Internet connection for a long time? We will solve this problem too) - November, 2016</li>
+                            <li>Data export/import (we want you to be able to upload your previous experience. We also understand that your data shouldn't be locked in the app)</li>
+                            <li>GPS uploading (who doesn't want to store GPS tracks along with the other flight information?)</li>
+                            <li>Statistics (your highest/longest flight for the season, what site you fly more often, which weather condition induce to longer flights? - just to name a few)</li>
+                            <li>More fields for each data type (wind strength and direction, landing zone coordinates and more)</li>
+                            <li>Off-line app (what if you don't have Internet connection for a long time? We will solve this problem too)</li>
                         </ul>
                     </FeatureColumn>
 
