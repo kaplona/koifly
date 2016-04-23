@@ -5,7 +5,6 @@
 // because we use a babel loader in webpack config
 require('babel-register');
 
-var _ = require('lodash');
 var config = require('./config/variables');
 var fs = require('fs');
 var Hapi = require('hapi');
@@ -14,6 +13,7 @@ var Inert = require('inert');
 var path = require('path');
 var secrets = require('./secrets');
 var Vision = require('vision');
+var Url = require('url');
 
 var AuthCookie = require('hapi-auth-cookie');
 var setAuthCookie = require('./server/helpers/set-auth-cookie');
@@ -35,21 +35,54 @@ var verifyAuthToken = require('./server/helpers/verify-auth-token');
 var server = new Hapi.Server();
 
 
-var connectionOptions = {
+// http connection
+server.connection({
     host: config.server.host,
-    port: config.server.port
-};
+    port: config.server.httpPort
+});
 
+
+// https connection
 if (secrets.shouldUseSSL) {
-    _.extend(connectionOptions, {
+
+    server.connection({
+        host: config.server.host,
+        port: config.server.httpsPort,
         tls: {
             key: fs.readFileSync(secrets.sslKeyFileName, 'utf8'),
             cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8')
         }
     });
-}
 
-server.connection(connectionOptions);
+    server.ext('onRequest', (request, reply) => {
+
+        // redirect bare-hostname to www-hostname
+        if (request.info.hostname === config.server.bareHost) {
+
+            reply.redirect(Url.format({
+                protocol: config.server.protocol,
+                hostname: config.server.host,
+                pathname: request.url.path,
+                port: config.server.httpsPort
+            }));
+            return;
+        }
+
+        // redirect http to https
+        if (request.connection.info.port !== config.server.httpsPort) {
+
+            reply.redirect(Url.format({
+                protocol: config.server.protocol,
+                hostname: request.info.hostname,
+                pathname: request.url.path,
+                port: config.server.httpsPort
+            }));
+            return;
+        }
+
+        reply.continue();
+    });
+}
 
 
 var plugins = [

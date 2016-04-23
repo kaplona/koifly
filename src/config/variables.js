@@ -15,8 +15,10 @@ var ASSETS_DIRNAME = 'static';
 var BUILD_DIRNAME = 'static/build';
 
 var SERVER_HOST = secrets.domain;
+var SERVER_BARE_HOST = secrets.bareDomain;
 var SERVER_PROTOCOL = secrets.protocol;
-var SERVER_PORT = secrets.port;
+var SERVER_HTTPS_PORT = secrets.port.https;
+var SERVER_HTTP_PORT = secrets.port.http;
 
 var DEV_SERVER_HOST = 'localhost';
 var DEV_SERVER_PROTOCOL = 'http';
@@ -66,7 +68,7 @@ if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
             host: DEV_SERVER_HOST,
-            port: DEV_SERVER_PORT,
+            httpPort: DEV_SERVER_PORT,
             protocol: DEV_SERVER_PROTOCOL,
             rootUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT
         },
@@ -80,7 +82,9 @@ if (process.env.NODE_ENV === 'development') {
     deepExtend(config, {
         server: {
             host: SERVER_HOST,
-            port: SERVER_PORT,
+            bareHost: SERVER_BARE_HOST,
+            httpsPort: SERVER_HTTPS_PORT,
+            httpPort: SERVER_HTTP_PORT,
             protocol: SERVER_PROTOCOL,
             rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
         }

@@ -3,9 +3,13 @@
 
 var Secrets = {
     // public data which is different on production and development
-    domain: 'example.com',
+    domain: 'www.example.com',
+    bareDomain: 'example.com',
     protocol: 'http',
-    port: 80,
+    port: {
+        https: 443,
+        http:80
+    },
 
     // your DB config
     // Admin user is used for initial tables creation (has CREATE, ALTER, DROP privileges)
