@@ -12,7 +12,8 @@ var PublicLinksMixin = {
     },
 
     handleGoToHomePage: function() {
-        this.history.pushState(null, '/');
+        // need to request marketing page from the server
+        window.location.href = '/';
     },
 
     handleGoToLogin: function() {

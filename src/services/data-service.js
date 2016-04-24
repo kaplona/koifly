@@ -4,6 +4,8 @@ var _ = require('lodash');
 var AjaxService = require('./ajax-service');
 var PubSub = require('../utils/pubsub');
 
+var ErrorTypes = require('../errors/error-types');
+
 const STORE_MODIFIED_EVENT = require('../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 
@@ -59,15 +61,15 @@ DataService.prototype.requestServerData = function(isRetry = false) {
 /**
  * Logs out user
  * basically requests server to delete cookie since it couldn't be done from script
+ * @returns {Promise} - whether logout was successful
  */
 DataService.prototype.logout = function() {
-    AjaxService
+    return AjaxService
         .post('/api/logout')
         .then(() => {
             this.clearStore();
             PubSub.emit(STORE_MODIFIED_EVENT);
-        })
-        .catch(() => window.alert('Server error. Could not log out.'));
+        });
 };
 
 
@@ -267,7 +269,7 @@ DataService.prototype.setLoadingError = function(error, isRetry) {
     }
 
     // try to get data again
-    if (!isRetry) {
+    if (!isRetry && error.type !== ErrorTypes.AUTHENTICATION_ERROR) {
         this.requestServerData(true);
     }
 };

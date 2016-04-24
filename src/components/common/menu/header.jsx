@@ -1,9 +1,10 @@
 'use strict';
 
 var React = require('react');
-var Link = require('react-router').Link;
 var PubSub = require('../../../utils/pubsub');
+
 var PilotModel = require('../../../models/pilot');
+var PublicLinksMixin = require('../../mixins/public-links-mixin');
 
 const STORE_MODIFIED_EVENT = require('../../../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
@@ -11,6 +12,8 @@ require('./header.less');
 
 
 var Header = React.createClass({
+
+    mixins: [ PublicLinksMixin ],
 
     getInitialState: function() {
         return { isLoggedIn: false };
@@ -30,17 +33,20 @@ var Header = React.createClass({
     },
 
     handleLogOut: function() {
-        PilotModel.logout();
+        PilotModel
+            .logout()
+            .then(() => this.handleGoToLogin)
+            .catch(() => window.alert('Server error. Could not log out.'));
     },
 
     render: function() {
         var loginText = this.state.isLoggedIn ? 'Log Out' : 'Log In';
-        var loginHandler = this.state.isLoggedIn ? this.handleLogOut : null;
+        var loginHandler = this.state.isLoggedIn ? this.handleLogOut : this.handleGoToLogin;
 
         return (
             <div className='main-header desktop'>
-                <a className='logo' href='/' >Koifly</a>
-                <Link to='/login' className='logout' onClick={ loginHandler } >{ loginText }</Link>
+                <a className='logo' onClick={ this.handleGoToHomePage } >Koifly</a>
+                <a className='logout' onClick={ loginHandler } >{ loginText }</a>
             </div>
         );
     }

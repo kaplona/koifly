@@ -138,15 +138,18 @@ var PilotModel = {
      * Sends passwords to the server
      * @param {string} currentPassword
      * @param {string} nextPassword
-     * @returns {Promise} - if saving was successful or not
+     * @returns {Promise} - whether saving was successful or not
      */
     changePassword: function(currentPassword, nextPassword) {
         return dataService.changePassword(currentPassword, nextPassword);
     },
 
 
+    /**
+     * @returns {Promise} - whether logout was successful or not
+     */
     logout: function() {
-        dataService.logout();
+        return dataService.logout();
     },
 
 

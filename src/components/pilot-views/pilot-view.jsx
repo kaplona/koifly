@@ -3,7 +3,6 @@
 var React = require('react');
 var History = require('react-router').History;
 
-var dataService = require('../../services/data-service');
 var PilotModel = require('../../models/pilot');
 var PublicLinksMixin = require('../mixins/public-links-mixin');
 var Util = require('../../utils/util');
@@ -42,8 +41,10 @@ var PilotView = React.createClass({
     },
 
     handleLogout: function() {
-        dataService.logout();
-        this.handleGoToHomePage();
+        PilotModel
+            .logout()
+            .then(() => this.handleGoToLogin)
+            .catch(() => window.alert('Server error. Could not log out.'));
     },
 
     handleStoreModified: function() {
