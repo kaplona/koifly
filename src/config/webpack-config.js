@@ -33,8 +33,6 @@ var webpackConfig = {
         filename: config.webpack.outputFilename, // Bundle filename pattern
         path: config.paths.build  // Put bundle files in this directory (Note: dev server does not generate bundle files)
     },
-    devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
-    // devtool: 'eval',
     module: {
         loaders: [
             {
@@ -71,6 +69,7 @@ if (process.env.NODE_ENV === 'development') {
             app: [APP_ENTRY, WEBPACK_HOT_ENTRY],
             sandbox: [path.join(config.paths.source, 'main-sandbox'), WEBPACK_HOT_ENTRY]
         },
+        devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
         module: {
             preLoaders: [
                 {
@@ -113,7 +112,7 @@ if (process.env.NODE_ENV === 'development') {
 
     /** @lends webpackConfig */
     webpackConfig = webpackMerge(webpackConfig, {
-        // devtool: 'source-map', // generate full source maps
+        devtool: 'source-map', // generate full source maps
         module: {
             loaders: [
                 {
