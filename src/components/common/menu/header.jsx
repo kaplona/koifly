@@ -45,7 +45,9 @@ var Header = React.createClass({
 
         return (
             <div className='main-header desktop'>
-                <a className='logo' onClick={ this.handleGoToHomePage } >Koifly</a>
+                <div className='logo'>
+                    <a onClick={ this.handleGoToHomePage } >Koifly</a>
+                </div>
                 <a className='logout' onClick={ loginHandler } >{ loginText }</a>
             </div>
         );
