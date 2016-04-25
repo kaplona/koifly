@@ -5,6 +5,7 @@
 require('../../src/test-dom')();
 
 var React = require('react/addons');
+var Promise = require('es6-promise').Promise;
 var PubSub = require('../../src/utils/pubsub');
 
 var then = require('../../src/utils/then');
@@ -19,7 +20,6 @@ var PilotModel = require('../../src/models/pilot');
 const STORE_MODIFIED_EVENT = require('../../src/constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 var Header = require('../../src/components/common/menu/header');
-var Link = require('react-router').Link;
 
 
 
@@ -29,10 +29,12 @@ describe('Header component', () => {
     var Simulate = TestUtils.Simulate;
 
     var component;
+    var renderedDOMElement;
 
     var defaults = {
         loginText: 'Log In',
-        logoutText: 'Log Out'
+        logoutText: 'Log Out',
+        linkClassName: 'logout'
     };
 
     var mocks = {
@@ -41,7 +43,9 @@ describe('Header component', () => {
 
 
     before(() => {
-        mocks.pilotLogout = Sinon.stub(PilotModel, 'logout');
+        mocks.pilotLogout = Sinon.stub(PilotModel, 'logout', () => {
+            return Promise.reject();
+        });
 
         Sinon
             .stub(PilotModel, 'isLoggedIn')
@@ -51,6 +55,8 @@ describe('Header component', () => {
         component = TestUtils.renderIntoDocument(
             <Header />
         );
+
+        renderedDOMElement = React.findDOMNode(component);
     });
 
     after(() => {
@@ -58,15 +64,10 @@ describe('Header component', () => {
         PilotModel.isLoggedIn.restore();
     });
 
-    it('renders Link with login text and no onClick prop', () => {
-        let loginLink = TestUtils.findRenderedComponentWithType(component, Link);
+    it('renders link with login text', () => {
+        let loginLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
 
-        expect(loginLink).to.have.deep.property('props.children', defaults.loginText);
-        expect(loginLink).to.have.deep.property('props.onClick', null);
-
-        Simulate.click(React.findDOMNode(loginLink));
-
-        expect(mocks.pilotLogout).to.not.be.called;
+        expect(loginLink).to.have.property('textContent', defaults.loginText);
     });
 
     it('changes state when storeModified event emitted', done => {
@@ -80,13 +81,12 @@ describe('Header component', () => {
         });
     });
 
-    it('renders Link with logout text and logout on click', () => {
-        let logoutLink = TestUtils.findRenderedComponentWithType(component, Link);
+    it('renders link with logout text and logout on click', () => {
+        let logoutLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
 
-        expect(logoutLink).to.have.deep.property('props.children', defaults.logoutText);
-        expect(logoutLink.props.onClick).to.not.equal(null);
+        expect(logoutLink).to.have.property('textContent', defaults.logoutText);
 
-        Simulate.click(React.findDOMNode(logoutLink));
+        Simulate.click(logoutLink);
 
         expect(mocks.pilotLogout).to.be.calledOnce;
     });
