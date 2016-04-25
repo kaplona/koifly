@@ -273,9 +273,9 @@ var FlightModel = {
             numOfFlightsThatDay: 1
         };
 
-        objectValues(this.getStoreContent()).forEach((flight, flightId) => {
+        objectValues(this.getStoreContent()).forEach(flight => {
             // Don't increment anything if it's our target flight or it was performed after our target flight
-            if (flightId === targetFlight.id.toString() ||
+            if (flight.id === targetFlight.id ||
                 flight.date.substring(0, 10) > targetFlight.date.substring(0, 10)
             ) {
                 return;
