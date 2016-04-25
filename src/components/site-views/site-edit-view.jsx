@@ -49,7 +49,7 @@ var SiteEditView = React.createClass({
     },
 
     getMarkerPosition: function() {
-        if (Util.isEmptyString(this.state.item.coordinates)) {
+        if (!Util.isEmptyString(this.state.item.coordinates)) {
             // Hard validation in order to check coordinates format
             var validationErrors = this.getValidationErrors();
             if (!validationErrors || !validationErrors.coordinates) {
