@@ -78,10 +78,10 @@ var PilotChangePassword = React.createClass({
                     isSaving: false
                 });
             })
-            .catch(error => this.updateSavingError(error));
+            .catch(error => this.updateError(error));
     },
 
-    updateSavingError: function(error) {
+    updateError: function(error) {
         this.setState({
             error: error,
             isSaving: false

@@ -19,7 +19,7 @@ var sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * @param {function} reply
  */
 var sendAuthTokenHandler = function(request, reply) {
-    var payload = JSON.parse(request.payload);
+    var payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.email)) {

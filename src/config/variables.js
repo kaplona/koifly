@@ -20,7 +20,7 @@ var SERVER_PROTOCOL = secrets.protocol;
 var SERVER_HTTPS_PORT = secrets.port.https;
 var SERVER_HTTP_PORT = secrets.port.http;
 
-var DEV_SERVER_HOST = 'localhost';
+var DEV_SERVER_HOST = '0.0.0.0';
 var DEV_SERVER_PROTOCOL = 'http';
 var DEV_SERVER_PORT = 3000;
 var WEBPACK_DEV_SERVER_PORT = 3001;

@@ -21,7 +21,7 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  */
 var loginHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
-    var payload = JSON.parse(request.payload);
+    var payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.email) || !_.isString(payload.password)) {

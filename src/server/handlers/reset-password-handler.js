@@ -21,7 +21,7 @@ var verifyAuthToken = require('../helpers/verify-auth-token');
  */
 var resetPasswordHandler = function(request, reply) {
     var pilot; // we need it to have reference to current pilot
-    var payload = JSON.parse(request.payload);
+    var payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.pilotId) ||

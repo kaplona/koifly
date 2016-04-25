@@ -96,6 +96,11 @@ var AjaxService = {
 
             // Open and send request
             ajaxRequest.open(options.method, url);
+            
+            if (options.method === 'post') {
+                ajaxRequest.setRequestHeader('Content-Type', 'application/json');
+            }
+            
             ajaxRequest.send(data ? JSON.stringify(data) : null);
         });
     },

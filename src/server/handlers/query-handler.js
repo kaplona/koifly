@@ -32,7 +32,7 @@ var queryHandler = function(request, reply) {
             }
 
             if (request.method === 'post') {
-                var requestPayload = JSON.parse(request.payload);
+                var requestPayload = request.payload;
 
                 // If data type is not specified throw error
                 if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
