@@ -64,6 +64,7 @@ var AltitudeInput = React.createClass({
                         value={ this.props.inputValue }
                         type='text'
                         pattern='[0-9]*'
+                        placeholder='0'
                         onChange={ () => this.handleUserInput(this.props.inputName) }
                         ref={ this.props.inputName }
                         />

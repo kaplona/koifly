@@ -48,6 +48,7 @@ var SiteModel = {
             method: 'number',
             rules: {
                 min: 0,
+                round: true,
                 defaultVal: 0,
                 field: 'Launch Altitude'
             }
@@ -140,12 +141,16 @@ var SiteModel = {
             return site;
         }
 
+        // If launchAltitude is 0 show empty string to user
+        // So user won't need to erase 0 before entering altitude
+        var launchAltitude = site.launchAltitude ? Altitude.getAltitudeInPilotUnits(site.launchAltitude) : '';
+
         return {
             id: site.id,
             name: site.name,
             location: site.location,
             coordinates: Util.coordinatesToString(site.coordinates),
-            launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude).toString(),
+            launchAltitude: launchAltitude.toString(),
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: site.remarks
         };
@@ -168,7 +173,7 @@ var SiteModel = {
             name: '',
             location: '',
             coordinates: '', // @TODO default local coordinates
-            launchAltitude: '0',
+            launchAltitude: '',
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             remarks: ''
         };
@@ -224,10 +229,10 @@ var SiteModel = {
 
     /**
      * @param {number} siteId - assumption: site id exists
-     * @returns {number} - site launch altitude
+     * @returns {number} - site launch altitude in pilot units
      */
     getLaunchAltitude: function(siteId) {
-        return this.getStoreContent(siteId).launchAltitude;
+        return Altitude.getAltitudeInPilotUnits(this.getStoreContent(siteId).launchAltitude);
     },
 
     

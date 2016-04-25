@@ -103,13 +103,19 @@ var PilotModel = {
             return pilot;
         }
 
+        // If initialFlightNum or hours or minutes is 0 show empty string to user
+        // So user won't need to erase 0 before entering other value
+        var initialFlightNum = pilot.initialFlightNum || '';
+        var hours = pilot.initialAirtime > 60 ? Math.floor(pilot.initialAirtime / 60) : '';
+        var minutes = pilot.initialAirtime ? pilot.initialAirtime % 60 : '';
+
         return {
             email: pilot.email,
             userName: pilot.userName,
-            initialFlightNum: pilot.initialFlightNum.toString(),
+            initialFlightNum: initialFlightNum.toString(),
             altitudeUnit: pilot.altitudeUnit,
-            hours: Math.floor(pilot.initialAirtime / 60).toString(),
-            minutes: (pilot.initialAirtime % 60).toString()
+            hours: hours.toString(),
+            minutes: minutes.toString()
         };
     },
     

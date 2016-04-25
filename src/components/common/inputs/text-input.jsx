@@ -72,6 +72,7 @@ var TextInput = React.createClass({
                         value={ this.props.inputValue }
                         type='text'
                         pattern={ this.props.isNumber ? '[0-9]*' : null }
+                        placeholder={ this.props.isNumber ? '0' : '' }
                         onChange={ this.handleUserInput }
                         ref='input'
                         />

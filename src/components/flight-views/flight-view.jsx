@@ -108,7 +108,7 @@ var FlightView = React.createClass({
                     
                     <SectionRow>
                         <RowContent
-                            label='Above the launch:'
+                            label='Above launch:'
                             value={ `${this.state.item.altitudeAboveLaunch} ${this.state.item.altitudeUnit}` }
                             />
                     </SectionRow>

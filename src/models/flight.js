@@ -30,6 +30,7 @@ var FlightModel = {
             method: 'number',
             rules: {
                 min: 0,
+                round: true,
                 defaultVal: 0,
                 field: 'Altitude'
             }
@@ -140,15 +141,21 @@ var FlightModel = {
             return flight;
         }
 
+        // If altitude or hours or minutes is 0 show empty string to user
+        // So user won't need to erase 0 before entering other value
+        var altitude = flight.altitude ? Altitude.getAltitudeInPilotUnits(flight.altitude) : '';
+        var hours = flight.airtime > 60 ? Math.floor(flight.airtime / 60) : '';
+        var minutes = flight.airtime ? flight.airtime % 60 : '';
+
         return {
             id: flight.id,
             date: flight.date.substring(0, 10),
             siteId: (flight.siteId === null) ? null : flight.siteId.toString(),
-            altitude: Altitude.getAltitudeInPilotUnits(flight.altitude).toString(),
+            altitude: altitude.toString(),
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             gliderId: (flight.gliderId === null) ? null : flight.gliderId.toString(),
-            hours: Math.floor(flight.airtime / 60).toString(),
-            minutes: (flight.airtime % 60).toString(),
+            hours: hours.toString(),
+            minutes: minutes.toString(),
             remarks: flight.remarks
         };
     },
@@ -179,7 +186,7 @@ var FlightModel = {
         if (lastFlight.siteId) {
             siteAltitude = SiteModel.getLaunchAltitude(lastFlight.siteId);
         }
-        siteAltitude = siteAltitude || 0;
+        siteAltitude = siteAltitude || '';
 
         return {
             date: Util.today(),
@@ -189,8 +196,8 @@ var FlightModel = {
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             // null if no sites yet otherwise last added glider id
             gliderId: (lastFlight.gliderId === null) ? null : lastFlight.gliderId.toString(),
-            hours: '0',
-            minutes: '0',
+            hours: '',
+            minutes: '',
             remarks: ''
         };
     },
