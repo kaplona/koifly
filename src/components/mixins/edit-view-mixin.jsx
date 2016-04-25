@@ -151,10 +151,6 @@ var editViewMixin = function(modelKey) {
          * @param {object} validationErrors - object where key is a form field name, value is error message
          */
         updateValidationErrors: function(validationErrors) {
-            if (!validationErrors) {
-                return;
-            }
-
             validationErrors = _.extend({}, this.formFields, validationErrors);
 
             if (!_.isEqual(validationErrors, this.state.validationErrors)) {
