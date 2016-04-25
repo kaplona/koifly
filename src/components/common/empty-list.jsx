@@ -15,11 +15,7 @@ var EmptyList = React.createClass({
         return (
             <div className='empty-list'>
                 <div>{ 'You don\'t have any ' + this.props.ofWhichItems + ' yet' }</div>
-                <input
-                    type='button'
-                    value='+'
-                    onClick={ this.props.onAdding }
-                    />
+                <div className='add-button' onClick={ this.props.onAdding }>+</div>
             </div>
         );
     }

@@ -6,22 +6,27 @@
 .empty-list {
   @color: darken(@base-color, 15%);
 
-  margin: (@menu-height * 3) auto;
-  font-size: @menu-height;
+  margin: (@menu-height * 2) auto;
+  font-size: 2em;
   color: @color;
   text-align: center;
 
-  input {
+  @media (max-width: (@medium-viewport - 1)) {
+    margin-top: @menu-height;
+  }
+
+  .add-button {
     //.border-box();
 
-    width: @menu-height * 2.2;
-    height: @menu-height * 2.2;
-    margin-top: @menu-height;
-    padding: 0 0 (@menu-height * 0.3) 0;
-    border: 10px solid @color;
+    width: @menu-height * 1.5;
+    height: @menu-height * 1.5;
+    margin: @menu-height * 0.5 auto 0 auto;
+    padding: 0; // 0 (@menu-height * 0.3) 0;
+    border: 3px solid @color;
     border-radius: 50%;
     background-color: @base-color;
+    background: linear-gradient(135deg, @soft-white, @soft-white 20%, @color);
     color: @color;
-    font-size: @menu-height * 1.5;
+    font-size: @menu-height * 1.15;
   }
 }
