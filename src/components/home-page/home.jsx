@@ -18,6 +18,12 @@ var Home = React.createClass({
         isLoggedIn: React.PropTypes.bool.isRequired
     },
 
+    renderSignupInHeader: function() {
+        if (!this.props.isLoggedIn) {
+            return <a href='/signup' className='app-enter right-float'>Sign up</a>;
+        }
+    },
+
     render: function() {
 
         return (
@@ -33,7 +39,7 @@ var Home = React.createClass({
                             >
                             { this.props.isLoggedIn ? 'Go to App' : 'Log in' }
                         </a>
-                        <a href='/signup' className='app-enter right-float'>Sign up</a>
+                        { this.renderSignupInHeader() }
                     </div>
                     <div className='home-pic-text'>
                         <div>Flight logging app for freeflight pilots</div>
