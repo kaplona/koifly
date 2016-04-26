@@ -34,6 +34,11 @@ var queryHandler = function(request, reply) {
             if (request.method === 'post') {
                 var requestPayload = request.payload;
 
+                // Check that user are trying to change his/her own data
+                if (requestPayload.pilotId !== pilot.id) {
+                    throw new KoiflyError(ErrorTypes.USER_MISMATCH);
+                }
+
                 // If data type is not specified throw error
                 if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
                     throw new KoiflyError(ErrorTypes.BAD_REQUEST);

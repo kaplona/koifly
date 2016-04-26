@@ -34,7 +34,8 @@ var isUnique = function(modelFileName, fieldName, msg) {
                 query.pilotId = this.pilotId;
             }
 
-            Model.scope(scope)
+            Model
+                .scope(scope)
                 .findOne({
                     where: query,
                     attributes: [ 'id' ]

@@ -86,7 +86,8 @@ DataService.prototype.saveData = function(data, dataType) {
     data = {
         data: data,
         dataType: dataType,
-        lastModified: this.lastModified
+        lastModified: this.lastModified,
+        pilotId: this.store.pilot ? this.store.pilot.id : null
     };
 
     return AjaxService
@@ -128,11 +129,14 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
     // We are sending lastModified date along with user's credentials
     // in case if user was logged out due to expiring cookie and still has data in js
     // this saves amount of data sending between server and client
-    var data = _.extend({}, pilotCredentials, { lastModified: this.lastModified });
+    var data = _.extend({}, pilotCredentials, { lastModified: null });
 
     return AjaxService
         .post('/api/login', data)
-        .then(serverResponse => this.populateStore(serverResponse));
+        .then(serverResponse => {
+            this.clearStore();
+            this.populateStore(serverResponse);
+        });
 };
 
 
@@ -145,7 +149,8 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
 DataService.prototype.changePassword = function(currentPassword, nextPassword) {
     var passwords = {
         currentPassword: currentPassword,
-        nextPassword: nextPassword
+        nextPassword: nextPassword,
+        pilotId: this.store.pilot ? this.store.pilot.id : null
     };
 
     return AjaxService.post('/api/change-password', passwords);

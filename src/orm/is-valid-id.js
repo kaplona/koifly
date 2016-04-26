@@ -16,9 +16,17 @@ const SCOPES = require('../constants/orm-constants').SCOPES;
 var isValidId = function(modelFileName, msg) {
     return function(value, next) {
         var Model = require('./' + modelFileName);
-
-        Model.scope(SCOPES.visible)
-            .findById(value)
+        var query = {
+            id: value,
+            pilotId: this.pilotId
+        };
+        
+        Model
+            .scope(SCOPES.visible)
+            .findOne({
+                where: query,
+                attributes: [ 'id' ]
+            })
             .then(record => {
                 if (record) {
                     next();
