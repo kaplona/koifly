@@ -50,7 +50,15 @@ var Notice = React.createClass({
 
     renderCloseButton: function() {
         if (this.props.onClose) {
-            return <div className='close' onClick={ this.handleClose }>x</div>;
+            return (
+                <div
+                    className='close'
+                    onClick={ this.handleClose }
+                    onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                    >
+                    x
+                </div>
+            );
         }
     },
 

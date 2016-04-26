@@ -10,6 +10,10 @@
   left: 0;
   bottom: 0;
 
+  @media (max-width: (@small-viewport - 1)) {
+    height: @menu-height * 1.2;
+  }
+
   @media (min-width: @medium-viewport) {
     width: 60%;
     height: @header-height;

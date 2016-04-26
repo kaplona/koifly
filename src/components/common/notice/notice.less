@@ -8,7 +8,7 @@
 
   min-height: @row-height;
   padding: @row-height * 0.3;
-  padding-right: @row-height * 0.5;
+  padding-right: @row-height * 0.7;
   background-color: @sand-color;
   position: relative;
 
@@ -37,7 +37,7 @@
     border: 1px solid @mild-base;
     background: none;
     outline: none; // no blue glowing
-    font-size: @font-size * 0.9;
+    font-size: 0.9em;
     display: block;
     cursor: pointer;
 
@@ -52,15 +52,26 @@
   }
 
   .close {
+    padding: 0 7px;
     color: fade(@dark-base, 70%);
-    font-size: 1.5em;
+    font-size: 2em;
     position: absolute;
     top: 0;
-    right: 7px;
+    right: 0;
     cursor: pointer;
 
-    &:active {
-      color: @dark-base;
+    @media (max-width: (@medium-viewport - 1)) {
+      &:active {
+        background-color: @dark-base;
+      }
+    }
+
+    @media (min-width: @medium-viewport) {
+      font-size: 1.5em;
+
+      &:active {
+        color: darken(@dark-base, 30%);
+      }
     }
   }
 }

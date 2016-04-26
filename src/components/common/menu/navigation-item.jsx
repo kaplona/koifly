@@ -30,11 +30,17 @@ var NavigationItem = React.createClass({
         var imgSrc = '/static/icons/' + this.props.iconFileName;
 
         return (
-            <div className={ className } onClick={ this.props.onClick }>
+            <div
+                className={ className }
+                onClick={ this.props.onClick }
+                onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                >
+
                 <div className='icon'>
-                    <img src={ imgSrc } width='25px' />
+                    <img src={ imgSrc } width='26px' />
                 </div>
                 { this.props.label }
+
             </div>
         );
     }

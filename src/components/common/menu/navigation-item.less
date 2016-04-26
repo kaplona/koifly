@@ -2,20 +2,17 @@
 @import (reference) '../../constants';
 @import (reference) '../../general';
 
-@small-viewport: 400px;
-@large-viewport: 900px;
-
 
 .navigation-item() {
-  height: @menu-height;
-  padding: 3px 0 4px 0;
+  height: @menu-height * 1.2;
+  padding: 5px 0;
   font-size: 10px;
   cursor: pointer;
 
   @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+    height: @menu-height;
     padding-top: 7px;
     font-size: 13px;
-
   }
 
   @media (min-width: @medium-viewport) {
@@ -40,6 +37,10 @@
     &:hover {
       color: inherit;
     }
+  }
+  
+  &:active {
+    color: @dark-blue;
   }
 
   .icon {

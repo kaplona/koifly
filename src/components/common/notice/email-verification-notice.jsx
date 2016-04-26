@@ -43,14 +43,12 @@ var EmailVerificationNotice = React.createClass({
         var noticeText = this.props.text;
         var type = this.props.type;
         var onClick = this.handleEmailVerification;
-        var onClose = this.props.onClose;
 
         if (this.state.isEmailSent) {
             var email = PilotModel.getEmailAddress();
             noticeText = 'The verification link was sent to your email ' + email;
             type = 'success';
             onClick = null;
-            onClose = null;
         }
 
         return (
@@ -60,7 +58,7 @@ var EmailVerificationNotice = React.createClass({
                 onClick={ onClick }
                 buttonText={ this.state.isSending ? 'Sending...' : 'Send email again' }
                 isButtonEnabled={ !this.state.isSending }
-                onClose={ onClose }
+                onClose={ this.props.onClose }
                 />
         );
     }

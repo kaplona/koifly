@@ -156,6 +156,7 @@ var OneTimeLogin = React.createClass({
                                     inputValue={ this.state.email }
                                     labelText='Email:'
                                     inputName='email'
+                                    isEmail={ true }
                                     onChange={ this.handleInputChange }
                                     />
                             </SectionRow>

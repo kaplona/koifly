@@ -18,6 +18,7 @@ var TextInput = React.createClass({
         ]),
         inputName: React.PropTypes.string.isRequired,
         isNumber: React.PropTypes.bool.isRequired,
+        isEmail: React.PropTypes.bool.isRequired,
         errorMessage: React.PropTypes.string,
         onChange: React.PropTypes.func.isRequired,
         afterComment: React.PropTypes.oneOfType([
@@ -28,7 +29,8 @@ var TextInput = React.createClass({
 
     getDefaultProps: function() {
         return {
-            isNumber: false
+            isNumber: false,
+            isEmail: false
         };
     },
 
@@ -70,7 +72,7 @@ var TextInput = React.createClass({
                     <input
                         className={ className }
                         value={ this.props.inputValue }
-                        type='text'
+                        type={ this.props.isEmail ? 'email' : 'text' }
                         pattern={ this.props.isNumber ? '[0-9]*' : null }
                         placeholder={ this.props.isNumber ? '0' : '' }
                         onChange={ this.handleUserInput }
