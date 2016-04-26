@@ -214,7 +214,8 @@ var SiteModel = {
      * @returns {string|null} - site's name or null if no site with given id
      */
     getSiteName: function(siteId) {
-        return this.getStoreContent(siteId).name;
+        var getStoreContent = this.getStoreContent(siteId);
+        return !getStoreContent.error ? getStoreContent.name : null;
     },
 
 

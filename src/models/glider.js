@@ -204,7 +204,8 @@ var GliderModel = {
      * @returns {string|null} - glider's name or null if no glider with given id
      */
     getGliderName: function(gliderId) {
-        return this.getStoreContent(gliderId).name;
+        var getStoreContent = this.getStoreContent(gliderId);
+        return !getStoreContent.error ? getStoreContent.name : null;
     },
     
 

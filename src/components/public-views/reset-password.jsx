@@ -118,9 +118,24 @@ var ResetPassword = React.createClass({
         );
     },
 
+    renderSuccessNotice: function() {
+        return (
+            <div>
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
+                <Notice
+                    text='Your password was successfully reset'
+                    type='success'
+                    onClick={ this.handleGoToFlightLog }
+                    buttonText='Go to App'
+                    />
+            </div>
+        );
+    },
+
     render: function() {
         if (this.state.successNotice) {
-            return <Notice text='Your password was successfully reset' type='success' />;
+            return this.renderSuccessNotice();
         }
 
         return (

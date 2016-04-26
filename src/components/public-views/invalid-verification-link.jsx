@@ -20,7 +20,7 @@ var InvalidVerificationLink = React.createClass({
                     rightButtonCaption='Log in'
                     onRightClick={ this.handleGoToLogin }
                     />
-                <NavigationMenu />
+                <NavigationMenu isMobile={ true } />
                 
                 <Notice text='Verification link is invalid or expired' type='error' />
             </div>

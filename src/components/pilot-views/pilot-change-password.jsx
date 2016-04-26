@@ -189,10 +189,19 @@ var PilotChangePassword = React.createClass({
         );
     },
 
+    renderSuccessNotice: function() {
+        return (
+            <div>
+                { this.renderMobileTopMenu() }
+                { this.renderNavigationMenu() }
+                <Notice text='Your password was successfully changed' type='success' />
+            </div>
+        );
+    },
 
     render: function() {
         if (this.state.successNotice) {
-            return <Notice text='Your password was successfully changed' type='success' />;
+            return this.renderSuccessNotice();
         }
         
         return (
