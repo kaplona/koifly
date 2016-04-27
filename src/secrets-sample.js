@@ -40,7 +40,9 @@ var Secrets = {
     // SSL assets
     shouldUseSSL: false, // true for production server with SSL certificate
     sslKeyFileName: 'absolute-path-to-your-private-key',
-    sslCrtFileName: 'absolute-path-to-your-ssl-certificate'
+    sslCrtFileName: 'absolute-path-to-your-ssl-certificate',
+    sslIntermediateCrtFileName: 'absolute-path-to-your-ssl-intermediate-certificate',
+    sslRootCrtFileName: 'absolute-path-to-your-ssl-root-certificate'
 };
 
 

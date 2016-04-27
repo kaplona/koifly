@@ -50,7 +50,12 @@ if (secrets.shouldUseSSL) {
         port: config.server.httpsPort,
         tls: {
             key: fs.readFileSync(secrets.sslKeyFileName, 'utf8'),
-            cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8')
+            cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8'),
+            // ssl certificate chain
+            ca: [
+                fs.readFileSync(secrets.sslIntermediateCrtFileName, 'utf8'),
+                fs.readFileSync(secrets.sslRootCrtFileName, 'utf8')
+            ]
         }
     });
 
