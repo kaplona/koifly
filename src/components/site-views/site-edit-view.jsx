@@ -10,7 +10,7 @@ var SiteModel = require('../../models/site');
 var Util = require('../../utils/util');
 
 var AltitudeInput = require('../common/inputs/altitude-input');
-var AppLink = require('../common/app-link');
+var CoordinatesInput = require('../common/inputs/coordinates-input');
 var InteractiveMap = require('../common/maps/interactive-map');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
@@ -100,8 +100,6 @@ var SiteEditView = React.createClass({
             return this.renderLoader();
         }
 
-        var mapLink = <AppLink onClick={ this.handleMapShow }>or use a map</AppLink>;
-
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
@@ -136,13 +134,12 @@ var SiteEditView = React.createClass({
                         </SectionRow>
 
                         <SectionRow>
-                            <TextInput
+                            <CoordinatesInput
                                 inputValue={ this.state.item.coordinates }
                                 labelText='Coordinates:'
-                                inputName='coordinates'
                                 errorMessage={ this.state.validationErrors.coordinates }
                                 onChange={ this.handleInputChange }
-                                afterComment={ mapLink }
+                                onMapShow={ this.handleMapShow }
                                 />
                         </SectionRow>
 

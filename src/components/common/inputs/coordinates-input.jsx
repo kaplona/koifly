@@ -1,9 +1,13 @@
 'use strict';
 
 var React = require('react');
-var Label = require('../section/label');
+
+var AppLink = require('../app-link');
 var InputContainer = require('./input-container');
+var Label = require('../section/label');
 var ValidationError = require('../section/validation-error');
+
+require('./after-comment.less');
 
 
 var TextInput = React.createClass({
@@ -15,16 +19,14 @@ var TextInput = React.createClass({
             React.PropTypes.element
         ]),
         inputName: React.PropTypes.string.isRequired,
-        isNumber: React.PropTypes.bool.isRequired,
-        isEmail: React.PropTypes.bool.isRequired,
         errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        onChange: React.PropTypes.func.isRequired,
+        onMapShow: React.PropTypes.func.isRequired
     },
 
     getDefaultProps: function() {
         return {
-            isNumber: false,
-            isEmail: false
+            inputName: 'coordinates'
         };
     },
 
@@ -39,7 +41,7 @@ var TextInput = React.createClass({
     },
 
     render: function() {
-        var className = this.props.isNumber ? 'x-number' : 'x-text';
+        var className = 'x-text';
         if (this.props.errorMessage) {
             className += ' x-error';
         }
@@ -53,15 +55,20 @@ var TextInput = React.createClass({
                 </Label>
 
                 <InputContainer>
+                    
                     <input
                         className={ className }
                         value={ this.props.inputValue }
-                        type={ this.props.isEmail ? 'email' : 'text' }
-                        pattern={ this.props.isNumber ? '[0-9]*' : null }
-                        placeholder={ this.props.isNumber ? '0' : '' }
+                        type='text'
+                        placeholder='49.281082 -123.120888'
                         onChange={ this.handleUserInput }
                         ref='input'
                         />
+
+                    <div className='after-comment'>
+                        <AppLink onClick={ this.props.onMapShow }>or use a map</AppLink>
+                    </div>
+                    
                 </InputContainer>
             </div>
         );
