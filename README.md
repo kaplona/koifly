@@ -1,19 +1,27 @@
-# Flight logging app for ultralight pilots
+# Flight logging app for freeflight pilots
 
 This app was designed for hang gliding and paragliding pilots who want to keep records on their flights.
-
-It's also useful to have list of flying sites all in one place and monitor your glider usage.
 
 
 ## Features
 
-* ...
-* ...
+* Keep log of your flights
+* Store and organise information about your flying spots (sites)
+* Have a nice map view of your sites
+* Make your glider inventory
+* Check pilot statistics: your number of flights, total airtime and more
+* Mobile friendly
 
 
 ## Future features
 
-* ...
-* ...
+* Data export/import
+* GPS uploading
+* More fields, more statistics
+* Off-line app
 
-comming soon
+
+### Technical part
+
+* Node.js, Hapi.js, Webpack, Babel, React, React-router
+* Mocha, Chai, Sinon, jsDOM test setup

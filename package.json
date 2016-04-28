@@ -1,20 +1,18 @@
 {
-  "name": "minimal-hapi-react-webpack-hmr-sandbox",
-  "version": "2.0.1",
-  "description": "Minimal Hapi + React + Webpack + HMR (hot module reloading) Sandbox",
+  "name": "koifly-flight-loging-app",
+  "version": "1.0.0",
+  "description": "Flight loging app for hang glider and paraglider pilots",
   "keywords": [
     "hapi",
     "react",
     "webpack",
-    "HMR",
-    "boilerplate",
-    "sandbox"
+    "HMR"
   ],
   "license": "MIT",
-  "author": "Nikita Gazarov <nikita@raquo.com>",
+  "author": "Anastasia Kaplina <nkaplina@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/raquo/minimal-hapi-react-webpack"
+    "url": "https://github.com/kaplona/koifly-flight-loging-app"
   },
   "main": "src/server.js",
   "scripts": {
