@@ -64,13 +64,21 @@ var InitiateResetPassword = React.createClass({
             });
     },
 
+    handleCancelEdit: function() {
+        if (PilotModel.isLoggedIn()) {
+            this.handleGoToPilotView();
+        } else {
+            this.handleGoToLogin();
+        }
+    },
+
     renderMobileTopMenu: function() {
         return (
             <MobileTopMenu
                 header='Koifly'
                 leftButtonCaption='Back'
                 rightButtonCaption='Sign Up'
-                onLeftClick={ this.handleGoToLogin }
+                onLeftClick={ this.handleCancelEdit }
                 onRightClick={ this.handleGoToSignup }
                 />
         );
@@ -111,7 +119,7 @@ var InitiateResetPassword = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ this.handleGoToPilotView }
+                onClick={ this.handleCancelEdit }
                 isEnabled={ !this.state.isSending }
                 />
         );

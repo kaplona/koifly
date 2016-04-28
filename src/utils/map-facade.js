@@ -170,7 +170,7 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
     searchBar.setAttribute('id', 'search-bar');
     searchBar.setAttribute('type', 'textbox');
     searchBar.className = 'search-bar';
-    searchBar.placeholder = 'type here or drop a pin';
+    searchBar.placeholder = 'type or drop a pin';
     containerDiv.appendChild(searchBar);
 
     // Set CSS for the search button

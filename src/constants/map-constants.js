@@ -5,7 +5,7 @@ const MapConstants = {
 
     ZOOM_LEVEL: {
         world: 4,
-        region: 7,
+        region: 6,
         site: 10
     },
 

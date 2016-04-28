@@ -11,6 +11,7 @@ const UNKNOWN_ELEVATION = require('../../../constants/map-constants').UNKNOWN_EL
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
 var Altitude = require('../../../utils/altitude');
+var DomUtil = require('../../../utils/dom-util');
 
 require('./map.less');
 
@@ -45,6 +46,11 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
+        DomUtil.makeFullScreen('.map-container');
+        window.addEventListener('orientationchange', () => {
+            DomUtil.makeFullScreen('.map-container');
+        });
+
         this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
         });
@@ -127,8 +133,8 @@ var InteractiveMap = React.createClass({
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
                         _.escape(coordinates) +
                     '</div>' +
-                    '<button id="apply_google_data" type="button" class="map-button">Apply</button>' +
-                    '<button id="close_map" type="button" class="map-button">Close Map</button>' +
+                    '<button id="apply_google_data" type="button" class="infowindow-button">Apply</button>' +
+                    '<button id="close_map" type="button" class="infowindow-button">Close Map</button>' +
                '</div>';
     },
 
@@ -152,7 +158,7 @@ var InteractiveMap = React.createClass({
     render: function() {
         return (
             <div className='interactive-container'>
-                <div className='map_container x-full-screen' ref='map' />
+                <div className='map-container x-full-screen' ref='map' />
                 <div className='dimmer' onClick={ this.props.onMapClose } />
             </div>
         );

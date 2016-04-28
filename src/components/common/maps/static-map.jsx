@@ -9,6 +9,8 @@ const CENTER = require('../../../constants/map-constants').CENTER;
 const PROP_TYPES = require('../../../constants/prop-types');
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
+var DomUtil = require('../../../utils/dom-util');
+
 require('./map.less');
 
 
@@ -44,6 +46,12 @@ var StaticMap = React.createClass({
     mixins: [ History ],
 
     componentDidMount: function() {
+        DomUtil.makeFullScreen('.map-container');
+        window.addEventListener('orientationchange', () => {
+            console.log('orientation change');
+            DomUtil.makeFullScreen('.map-container');
+        });
+        
         this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
         });
@@ -98,7 +106,7 @@ var StaticMap = React.createClass({
     },
 
     render: function() {
-        var className = this.props.isFullScreen ? 'map_container x-full-screen' : 'map_container';
+        var className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
         return (
             <div>

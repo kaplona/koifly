@@ -7,26 +7,27 @@
   box-shadow: 0 0 3px black;
 }
 
-.map_container {
+.map-container {
   height: 300px;
   background-color: @map-background;
 
   @media (max-width: (@medium-viewport - 1)) and (orientation: landscape) {
     margin: (@row-height * 0.3) (@row-height * 1.5);
-    height: 100vh;
   }
 
   &.x-full-screen {
     z-index: 4;
 
     @media (max-width: (@medium-viewport - 1)) {
-      height: 100vh;
+      height: 100vh; // height should be approximately equal real device height
+      margin: 0;
     }
 
     @media (min-width: @medium-viewport) {
       .box-shadow();
 
       height: 500px;
+      margin: @row-height * 0.4;
     }
   }
 }
@@ -39,11 +40,8 @@
   position: absolute;
   top: 0;
   left: 0;
-
-  @media (min-width: @medium-viewport) {
-    padding: @row-height * 0.4;
-  }
 }
+
 
 @media (min-width: @medium-viewport) {
   .dimmer {
@@ -59,24 +57,30 @@
 }
 
 
+
+// Search control stiles
+
 .search-control {
   .box-shadow();
 
-  width: 50%;
+  width: 45%;
+  height: 30px;
   max-width: 350px;
-  margin-top: 6px;
+  margin-top: 12px;
   background-color: white;
+  border-radius: 3px;
 
   @media (max-width: (@medium-viewport - 1)) {
-    margin-left: -60px;
+    margin-left: -25%;
   }
 
   & .search-bar {
     .border-box();
 
     width: 77%;
-    padding: 5px;
+    padding: 6px;
     border: none;
+    border-radius: 3px;
     display: inline-block;
 
     @media (max-width: (@medium-viewport - 1)) {
@@ -105,7 +109,9 @@
 }
 
 
-.map-button {
+// infowindow styles
+
+.infowindow-button {
   .box-shadow();
 
   width: 75px;
