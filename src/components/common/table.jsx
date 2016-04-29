@@ -15,7 +15,8 @@ var Table = React.createClass({
         columns: React.PropTypes.arrayOf(React.PropTypes.shape({
             key: React.PropTypes.string.isRequired,
             label: React.PropTypes.string.isRequired,
-            defaultSortingDirection: React.PropTypes.bool.isRequired
+            defaultSortingDirection: React.PropTypes.bool.isRequired,
+            sortingKey: React.PropTypes.string
         })).isRequired,
         initialSortingField: React.PropTypes.string.isRequired,
         onRowClick: React.PropTypes.func
@@ -57,8 +58,13 @@ var Table = React.createClass({
     getDefaultSortingDirection: function(fieldName) {
         var sortingDirection = true;
         for (var i = 0; i < this.props.columns.length; i++) {
-            if (this.props.columns[i].key === fieldName) {
-                sortingDirection = this.props.columns[i].defaultSortingDirection;
+            var column = this.props.columns[i];
+            // If sortingKey column property presents, compare it to fieldName
+            // otherwise compare fieldName with key property
+            if ((column.sortingKey && column.sortingKey === fieldName) ||
+                (!column.sortingKey && column.key === fieldName)
+            ) {
+                sortingDirection = column.defaultSortingDirection;
                 break;
             }
         }
@@ -79,7 +85,7 @@ var Table = React.createClass({
             return (
                 <th
                     key={ 'column-' + column.key }
-                    onClick={ () => this.handleSorting(column.key) }
+                    onClick={ () => this.handleSorting(column.sortingKey || column.key) }
                     >
                     { column.label }
                     <span className={ arrowClassName }>{ arrow }</span>

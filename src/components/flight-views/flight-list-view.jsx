@@ -1,9 +1,11 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 
 var listViewMixin = require('../mixins/list-view-mixin');
 var FlightModel = require('../../models/flight');
+var Util = require('../../utils/util');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var ErrorBox = require('../common/notice/error-box');
@@ -41,9 +43,10 @@ var FlightListView = React.createClass({
     renderTable: function() {
         var columns = [
             {
-                key: 'date',
+                key: 'formattedDate',
                 label: 'Date',
-                defaultSortingDirection: false
+                defaultSortingDirection: false,
+                sortingKey: 'date'
             },
             {
                 key: 'siteName',
@@ -62,10 +65,21 @@ var FlightListView = React.createClass({
             }
         ];
         
+        var rows = [];
+        if (this.state.items) {
+            for (var i = 0; i < this.state.items.length; i++) {
+                rows.push(_.extend(
+                    {},
+                    this.state.items[i],
+                    { formattedDate: Util.formatDate(this.state.items[i].date) }
+                ));
+            }
+        }
+        
         return (
             <Table
                 columns={ columns }
-                rows={ this.state.items || [] }
+                rows={ rows }
                 initialSortingField='date'
                 onRowClick={ this.handleRowClick }
                 />

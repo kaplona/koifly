@@ -76,7 +76,7 @@ var Util = {
         }
 
         var dateElements = date.split('-');
-        return `${this.getMonthName(dateElements[1])} ${parseInt(dateElements[2])} , ${dateElements[0]}`;
+        return `${this.getMonthName(dateElements[1])} ${parseInt(dateElements[2])}, ${dateElements[0]}`;
     },
 
 
