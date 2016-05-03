@@ -2,6 +2,8 @@
 
 var React = require('react');
 
+var DomUtil = require('../../../utils/dom-util');
+
 require('./notice.less');
 
 
@@ -19,6 +21,14 @@ var Notice = React.createClass({
         return {
             isButtonEnabled: true
         };
+    },
+
+    componentDidMount: function() {
+        DomUtil.scrollToTheTop();
+    },
+
+    shouldComponentUpdate: function(nextProps) {
+        return this.props.text !== nextProps.text;
     },
 
     handleClick: function(event) {

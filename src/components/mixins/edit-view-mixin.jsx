@@ -4,6 +4,7 @@ var React = require('react');
 var History = require('react-router').History;
 var _ = require('lodash');
 
+var DomUtil = require('../../utils/dom-util');
 var ErrorTypes = require('../../errors/error-types');
 var Validation = require('../../utils/validation');
 
@@ -93,6 +94,7 @@ var editViewMixin = function(modelKey) {
 
             var validationErrors = this.getValidationErrors();
             if (validationErrors) {
+                DomUtil.scrollToTheTop();
                 this.updateValidationErrors(validationErrors);
                 return;
             }

@@ -7,6 +7,8 @@ var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
 var createBrowserHistory = require('history/lib/createBrowserHistory');
+var useScroll = require('scroll-behavior');
+var history = useScroll(createBrowserHistory(), () => [0, 0]); // Scroll to the top on each transition
 
 var Koifly = require('./components/koifly');
 
@@ -46,7 +48,7 @@ require('./components/koifly.less');
 function mainApp() {
 
     React.render((
-        <Router history={ createBrowserHistory() }>
+        <Router history={ history }>
             <Route path='/'>
                 <Route path='app' component={ Koifly }>
                     <IndexRoute component={ FlightListView } />

@@ -5,6 +5,7 @@ var _ = require('lodash');
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
+var DomUtil = require('../../utils/dom-util');
 var editViewMixin = require('../mixins/edit-view-mixin');
 var SiteModel = require('../../models/site');
 var Util = require('../../utils/util');
@@ -75,6 +76,8 @@ var SiteEditView = React.createClass({
         if (!this.state.isMapShown) {
             return null;
         }
+
+        DomUtil.scrollToTheTop();
 
         var markerPosition = this.getMarkerPosition();
 
