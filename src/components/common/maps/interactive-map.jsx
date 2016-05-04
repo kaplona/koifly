@@ -11,7 +11,6 @@ const UNKNOWN_ELEVATION = require('../../../constants/map-constants').UNKNOWN_EL
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
 var Altitude = require('../../../utils/altitude');
-var DomUtil = require('../../../utils/dom-util');
 
 require('./map.less');
 
@@ -46,11 +45,6 @@ var InteractiveMap = React.createClass({
     },
 
     componentDidMount: function() {
-        DomUtil.makeFullScreen('.map-container');
-        window.addEventListener('orientationchange', () => {
-            DomUtil.makeFullScreen('.map-container');
-        });
-
         this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
         });

@@ -19,7 +19,7 @@
     z-index: 4;
 
     @media (max-width: (@medium-viewport - 1)) {
-      height: 100vh; // height should be approximately equal real device height
+      height: 100%;
       margin: 0;
     }
 
@@ -33,13 +33,36 @@
 }
 
 
+.static-container {
+  @media (max-width: (@medium-viewport - 1)) {
+    .border-box();
+
+    width: 100%;
+    padding: @menu-height 0;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+
 .interactive-container {
   .border-box();
 
   width: 100%;
-  position: absolute;
+  padding: @menu-height 0;
+  position: fixed;
   top: 0;
+  bottom: 0;
   left: 0;
+
+  @media (min-width: @medium-viewport) {
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 }
 
 
