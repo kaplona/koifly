@@ -7,25 +7,23 @@ var Dropdown = require('./dropdown');
 var ValidationError = require('../section/validation-error');
 
 
+var { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
+
 var DropdownInput = React.createClass({
 
     propTypes: {
-        selectedValue: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]).isRequired,
-        options: React.PropTypes.arrayOf(React.PropTypes.shape({
-            value: React.PropTypes.string,
-            text: React.PropTypes.string
+        selectedValue: oneOfType([string, number]).isRequired,
+        options: arrayOf(shape({
+            value: string,
+            text: string
         })).isRequired,
-        labelText: React.PropTypes.string,
-        inputName: React.PropTypes.string.isRequired,
-        emptyValue: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]),
-        errorMessage: React.PropTypes.string,
-        onChangeFunc: React.PropTypes.func.isRequired
+        labelText: string,
+        inputName: string.isRequired,
+        emptyValue: oneOfType([string, number]),
+        errorMessage: string,
+        onChangeFunc: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     renderErrorMessage: function() {
@@ -51,6 +49,8 @@ var DropdownInput = React.createClass({
                         inputName={ this.props.inputName }
                         emptyValue={ this.props.emptyValue }
                         onChangeFunc={ this.props.onChangeFunc }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         />
                 </InputContainer>
             </div>

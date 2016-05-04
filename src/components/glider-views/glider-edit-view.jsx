@@ -42,6 +42,7 @@ var GliderEditView = React.createClass({
                 rightButtonCaption='Save'
                 onLeftClick={ this.handleCancelEdit }
                 onRightClick={ this.handleSubmit }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -58,7 +59,6 @@ var GliderEditView = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
@@ -75,6 +75,8 @@ var GliderEditView = React.createClass({
                                 inputName='name'
                                 errorMessage={ this.state.validationErrors.name }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -90,6 +92,8 @@ var GliderEditView = React.createClass({
                                 isNumber={ true }
                                 errorMessage={ this.state.validationErrors.initialFlightNum }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -104,6 +108,8 @@ var GliderEditView = React.createClass({
                                     this.state.validationErrors.minutes
                                 }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -113,6 +119,8 @@ var GliderEditView = React.createClass({
                                 labelText='Remarks'
                                 errorMessage={ this.state.validationErrors.remarks }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -121,8 +129,9 @@ var GliderEditView = React.createClass({
                     </Section>
 
                     { this.renderMobileButtons() }
-
                 </form>
+
+                { this.renderNavigationMenu() }
             </View>
         );
     }

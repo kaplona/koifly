@@ -12,8 +12,22 @@ var PublicViewMixin = {
 
     mixins: [ PublicLinksMixin ],
 
+    getInitialState: function() {
+        return {
+            isInputInFocus: false
+        };
+    },
+
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
+    },
+
+    handleInputFocus: function() {
+        this.setState({ isInputInFocus: true });
+    },
+
+    handleInputBlur: function() {
+        this.setState({ isInputInFocus: false });
     },
 
     updateError: function(error) {
@@ -24,7 +38,12 @@ var PublicViewMixin = {
     },
 
     renderNavigationMenu: function() {
-        return <NavigationMenu isMobile={ true } />;
+        return (
+            <NavigationMenu
+                isMobile={ true }
+                isPositionFixed={ !this.state.isInputInFocus }
+                />
+        );
     },
 
     renderError: function() {

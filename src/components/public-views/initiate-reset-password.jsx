@@ -80,6 +80,7 @@ var InitiateResetPassword = React.createClass({
                 rightButtonCaption='Sign Up'
                 onLeftClick={ this.handleCancelEdit }
                 onRightClick={ this.handleGoToSignup }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -141,7 +142,6 @@ var InitiateResetPassword = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <CompactContainer>
                     <form>
@@ -159,6 +159,8 @@ var InitiateResetPassword = React.createClass({
                                     inputName='email'
                                     isEmail={ true }
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -174,6 +176,8 @@ var InitiateResetPassword = React.createClass({
                         { this.renderMobileButtons() }
                     </form>
                 </CompactContainer>
+
+                { this.renderNavigationMenu() }
             </div>
         );
     }

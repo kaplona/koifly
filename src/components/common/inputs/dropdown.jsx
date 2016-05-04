@@ -4,24 +4,22 @@ var React = require('react');
 var _ = require('lodash');
 
 
+var { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
+
 var Dropdown = React.createClass({
 
     propTypes: {
-        selectedValue: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]).isRequired,
-        options: React.PropTypes.arrayOf(React.PropTypes.shape({
-            value: React.PropTypes.string,
-            text: React.PropTypes.string
+        selectedValue: oneOfType([string, number]).isRequired,
+        options: arrayOf(shape({
+            value: string,
+            text: string
         })).isRequired,
-        inputName: React.PropTypes.string.isRequired,
-        emptyValue: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.number
-        ]),
-        className: React.PropTypes.string,
-        onChangeFunc: React.PropTypes.func.isRequired
+        inputName: string.isRequired,
+        emptyValue: oneOfType([string, number]),
+        className: string,
+        onChangeFunc: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     handleUserInput: function() {
@@ -56,6 +54,8 @@ var Dropdown = React.createClass({
                 className={ this.props.className || null }
                 value={ this.props.selectedValue }
                 onChange={ this.handleUserInput }
+                onFocus={ this.props.onFocus }
+                onBlur={ this.props.onBlur }
                 ref='selectInput'
                 >
                 { selectOptions }

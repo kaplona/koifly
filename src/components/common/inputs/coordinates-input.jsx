@@ -10,18 +10,22 @@ var ValidationError = require('../section/validation-error');
 require('./after-comment.less');
 
 
+var { element, func, oneOfType, string } = React.PropTypes;
+
 var TextInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
+        inputValue: string.isRequired,
+        labelText: oneOfType([
+            string,
+            element
         ]),
-        inputName: React.PropTypes.string.isRequired,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired,
-        onMapShow: React.PropTypes.func.isRequired
+        inputName: string.isRequired,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onMapShow: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     getDefaultProps: function() {
@@ -62,6 +66,8 @@ var TextInput = React.createClass({
                         type='text'
                         placeholder='49.281082 -123.120888'
                         onChange={ this.handleUserInput }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='input'
                         />
 

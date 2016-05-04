@@ -6,17 +6,21 @@ var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
 
-var TextInput = React.createClass({
+var { element, func, oneOfType, string } = React.PropTypes;
+
+var DateInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
+        inputValue: string.isRequired,
+        labelText: oneOfType([
+            string,
+            element
         ]),
-        inputName: React.PropTypes.string.isRequired,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        inputName: string.isRequired,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     handleUserInput: function() {
@@ -49,6 +53,8 @@ var TextInput = React.createClass({
                         value={ this.props.inputValue }
                         type='date'
                         onChange={ this.handleUserInput }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='input'
                         />
                 </InputContainer>
@@ -58,4 +64,4 @@ var TextInput = React.createClass({
 });
 
 
-module.exports = TextInput;
+module.exports = DateInput;

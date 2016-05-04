@@ -8,14 +8,18 @@ var ValidationError = require('../section/validation-error');
 require('./four-input-elements.less');
 
 
+var { func, string } = React.PropTypes;
+
 var TimeInput = React.createClass({
 
     propTypes: {
-        hours: React.PropTypes.string.isRequired,
-        minutes: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.string,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        hours: string.isRequired,
+        minutes: string.isRequired,
+        labelText: string,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     handleUserInput: function(inputName) {
@@ -50,6 +54,8 @@ var TimeInput = React.createClass({
                         pattern='[0-9]*'
                         placeholder='0'
                         onChange={ () => this.handleUserInput('hours') }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='hours'
                         />
                     <div className='mobile col-of-four'>h</div>
@@ -61,6 +67,8 @@ var TimeInput = React.createClass({
                         pattern='[0-9]*'
                         placeholder='0'
                         onChange={ () => this.handleUserInput('minutes') }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='minutes'
                         />
                     <div className='mobile col-of-four'>min</div>

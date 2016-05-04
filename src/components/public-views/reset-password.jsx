@@ -86,6 +86,7 @@ var ResetPassword = React.createClass({
                 header='Koifly'
                 rightButtonCaption='Log in'
                 onRightClick={ this.handleGoToLogin }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -141,7 +142,6 @@ var ResetPassword = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <CompactContainer>
                     <form>
@@ -157,6 +157,8 @@ var ResetPassword = React.createClass({
                                     labelText='New Password:'
                                     inputName='password'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -166,6 +168,8 @@ var ResetPassword = React.createClass({
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -175,6 +179,8 @@ var ResetPassword = React.createClass({
                         { this.renderMobileButtons() }
                     </form>
                 </CompactContainer>
+
+                { this.renderNavigationMenu() }
             </div>
         );
     }

@@ -46,6 +46,7 @@ var FlightEditView = React.createClass({
                 rightButtonCaption='Save'
                 onLeftClick={ this.handleCancelEdit }
                 onRightClick={ this.handleSubmit }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -65,7 +66,6 @@ var FlightEditView = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
@@ -82,6 +82,8 @@ var FlightEditView = React.createClass({
                                 inputName='date'
                                 errorMessage={ this.state.validationErrors.date }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -96,6 +98,8 @@ var FlightEditView = React.createClass({
                                 onChangeFunc={ (inputName, inputValue) => {
                                     this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
                                 } }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -106,6 +110,8 @@ var FlightEditView = React.createClass({
                                 labelText='Max altitude:'
                                 errorMessage={ this.state.validationErrors.altitude }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -120,6 +126,8 @@ var FlightEditView = React.createClass({
                                     this.state.validationErrors.minutes
                                 }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -134,6 +142,8 @@ var FlightEditView = React.createClass({
                                 onChangeFunc={ (inputName, inputValue) => {
                                     this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
                                 } }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -143,6 +153,8 @@ var FlightEditView = React.createClass({
                                 labelText='Remarks:'
                                 errorMessage={ this.state.validationErrors.remarks }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -153,6 +165,8 @@ var FlightEditView = React.createClass({
                     { this.renderMobileButtons() }
 
                 </form>
+
+                { this.renderNavigationMenu() }
             </View>
         );
     }

@@ -34,6 +34,7 @@ var PilotEditView = React.createClass({
                 rightButtonCaption='Save'
                 onLeftClick={ this.handleCancelEdit }
                 onRightClick={ this.handleSubmit }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -50,7 +51,6 @@ var PilotEditView = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
@@ -67,6 +67,8 @@ var PilotEditView = React.createClass({
                                 inputName='userName'
                                 errorMessage={ this.state.validationErrors.userName }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -82,6 +84,8 @@ var PilotEditView = React.createClass({
                                 isNumber={ true }
                                 errorMessage={ this.state.validationErrors.initialFlightNum }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -96,6 +100,8 @@ var PilotEditView = React.createClass({
                                     this.state.validationErrors.minutes
                                 }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -111,6 +117,8 @@ var PilotEditView = React.createClass({
                                 inputName='altitudeUnit'
                                 errorMessage={ this.state.validationErrors.altitudeUnit }
                                 onChangeFunc={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -119,8 +127,9 @@ var PilotEditView = React.createClass({
                     </Section>
 
                     { this.renderMobileButtons() }
-
                 </form>
+
+                { this.renderNavigationMenu() }
             </View>
         );
     }

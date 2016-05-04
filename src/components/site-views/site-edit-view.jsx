@@ -68,6 +68,7 @@ var SiteEditView = React.createClass({
                 rightButtonCaption={ this.state.isMapShown ? null : 'Save' }
                 onLeftClick={ this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit }
                 onRightClick={ this.state.isMapShown ? null : this.handleSubmit }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -106,7 +107,6 @@ var SiteEditView = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <form>
                     { this.renderProcessingError() }
@@ -123,6 +123,8 @@ var SiteEditView = React.createClass({
                                 inputName='name'
                                 errorMessage={ this.state.validationErrors.name }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -133,6 +135,8 @@ var SiteEditView = React.createClass({
                                 inputName='location'
                                 errorMessage={ this.state.validationErrors.location }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -143,6 +147,8 @@ var SiteEditView = React.createClass({
                                 errorMessage={ this.state.validationErrors.coordinates }
                                 onChange={ this.handleInputChange }
                                 onMapShow={ this.handleMapShow }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -154,6 +160,8 @@ var SiteEditView = React.createClass({
                                 inputName='launchAltitude'
                                 errorMessage={ this.state.validationErrors.launchAltitude }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -163,6 +171,8 @@ var SiteEditView = React.createClass({
                                 labelText='Remarks:'
                                 errorMessage={ this.state.validationErrors.remarks }
                                 onChange={ this.handleInputChange }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
                                 />
                         </SectionRow>
 
@@ -173,8 +183,9 @@ var SiteEditView = React.createClass({
                     </Section>
 
                     { this.renderMobileButtons() }
-
                 </form>
+
+                { this.renderNavigationMenu() }
             </View>
         );
     }

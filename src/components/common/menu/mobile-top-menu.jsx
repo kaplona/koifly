@@ -12,12 +12,28 @@ var MobileTopMenu = React.createClass({
         leftButtonCaption: React.PropTypes.string,
         rightButtonCaption: React.PropTypes.string,
         onLeftClick: React.PropTypes.func,
-        onRightClick: React.PropTypes.func
+        onRightClick: React.PropTypes.func,
+        isPositionFixed: React.PropTypes.bool.isRequired
+    },
+
+    getDefaultProps: function() {
+        return {
+            isPositionFixed: true
+        };
     },
 
     render: function() {
+        var className = 'mobile-top-menu';
+        
+        // Virtual keyboard breaks fixed position of the menu
+        // thus we leave position: static if any input is focused
+        // original solution: https://dansajin.com/2012/12/07/fix-position-fixed/
+        if (this.props.isPositionFixed) {
+            className += ' x-fixed';
+        }
+        
         return (
-            <div className='mobile-top-menu'>
+            <div className={ className }>
                 <div
                     className='top-navigation'
                     onClick={ this.props.onLeftClick }

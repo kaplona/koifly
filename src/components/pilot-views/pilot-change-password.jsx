@@ -37,7 +37,8 @@ var PilotChangePassword = React.createClass({
             error: null,
             isSaving: false,
             successNotice: false,
-            isUserActivated: true
+            isUserActivated: true,
+            isInputInFocus: false
         };
     },
 
@@ -51,6 +52,14 @@ var PilotChangePassword = React.createClass({
 
     handleInputChange: function(inputName, inputValue) {
         this.setState({ [inputName]: inputValue });
+    },
+
+    handleInputFocus: function() {
+        this.setState({ isInputInFocus: true });
+    },
+
+    handleInputBlur: function() {
+        this.setState({ isInputInFocus: false });
     },
 
     handleSubmit: function(event) {
@@ -122,12 +131,18 @@ var PilotChangePassword = React.createClass({
                 rightButtonCaption='Save'
                 onLeftClick={ this.handleGoToPilotView }
                 onRightClick={ this.handleSubmit }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
     
     renderNavigationMenu: function() {
-        return <NavigationMenu currentView={ PilotModel.getModelKey() } />;
+        return (
+            <NavigationMenu
+                currentView={ PilotModel.getModelKey() }
+                isPositionFixed={ !this.state.isInputInFocus }
+                />
+        );
     },
 
     renderError: function() {
@@ -207,7 +222,6 @@ var PilotChangePassword = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.error }>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <CompactContainer>
                     <form>
@@ -223,6 +237,8 @@ var PilotChangePassword = React.createClass({
                                     labelText='Current Password:'
                                     inputName='password'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -232,6 +248,8 @@ var PilotChangePassword = React.createClass({
                                     labelText='New Password:'
                                     inputName='newPassword'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -241,6 +259,8 @@ var PilotChangePassword = React.createClass({
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -254,6 +274,8 @@ var PilotChangePassword = React.createClass({
                         { this.renderMobileButtons() }
                     </form>
                 </CompactContainer>
+                
+                { this.renderNavigationMenu() }
             </View>
         );
     }

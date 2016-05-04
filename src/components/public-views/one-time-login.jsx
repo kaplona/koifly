@@ -72,6 +72,7 @@ var OneTimeLogin = React.createClass({
                 rightButtonCaption='Sign Up'
                 onLeftClick={ this.handleGoToLogin }
                 onRightClick={ this.handleGoToSignup }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -140,7 +141,6 @@ var OneTimeLogin = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <CompactContainer>
                     <form>
@@ -158,6 +158,8 @@ var OneTimeLogin = React.createClass({
                                     inputName='email'
                                     isEmail={ true }
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
     
@@ -173,6 +175,8 @@ var OneTimeLogin = React.createClass({
                         { this.renderMobileButtons() }
                     </form>
                 </CompactContainer>
+
+                { this.renderNavigationMenu() }
             </div>
         );
     }

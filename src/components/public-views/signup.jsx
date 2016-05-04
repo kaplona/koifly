@@ -89,6 +89,7 @@ var Signup = React.createClass({
                 header='Koifly'
                 rightButtonCaption='Log In'
                 onRightClick={ this.handleGoToLogin }
+                isPositionFixed={ !this.state.isInputInFocus }
                 />
         );
     },
@@ -125,7 +126,6 @@ var Signup = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
 
                 <CompactContainer>
                     <form>
@@ -142,6 +142,8 @@ var Signup = React.createClass({
                                     inputName='email'
                                     isEmail={ true }
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                                 <Description>
                                     Your email will be used only for authorisation and won't be seen by anyone else
@@ -154,6 +156,8 @@ var Signup = React.createClass({
                                     labelText='Password:'
                                     inputName='password'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
 
@@ -163,6 +167,8 @@ var Signup = React.createClass({
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
                                     onChange={ this.handleInputChange }
+                                    onFocus={ this.handleInputFocus }
+                                    onBlur={ this.handleInputBlur }
                                     />
                             </SectionRow>
 
@@ -187,6 +193,8 @@ var Signup = React.createClass({
                         { this.renderMobileButtons() }
                     </form>
                 </CompactContainer>
+
+                { this.renderNavigationMenu() }
             </div>
         );
     }

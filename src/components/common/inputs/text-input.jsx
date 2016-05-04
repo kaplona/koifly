@@ -6,19 +6,20 @@ var InputContainer = require('./input-container');
 var ValidationError = require('../section/validation-error');
 
 
+var { bool, element, func, oneOfType, string } = React.PropTypes;
+
 var TextInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
-        ]),
-        inputName: React.PropTypes.string.isRequired,
-        isNumber: React.PropTypes.bool.isRequired,
-        isEmail: React.PropTypes.bool.isRequired,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        inputValue: string.isRequired,
+        labelText: oneOfType([string, element]),
+        inputName: string.isRequired,
+        isNumber: bool.isRequired,
+        isEmail: bool.isRequired,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     getDefaultProps: function() {
@@ -60,6 +61,8 @@ var TextInput = React.createClass({
                         pattern={ this.props.isNumber ? '[0-9]*' : null }
                         placeholder={ this.props.isNumber ? '0' : '' }
                         onChange={ this.handleUserInput }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='input'
                         />
                 </InputContainer>

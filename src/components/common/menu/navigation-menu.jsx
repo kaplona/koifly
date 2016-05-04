@@ -20,12 +20,14 @@ var NavigationMenu = React.createClass({
 
     propTypes: {
         currentView: string,
-        isMobile: bool.isRequired
+        isMobile: bool.isRequired,
+        isPositionFixed: bool.isRequired
     },
 
     getDefaultProps: function() {
         return {
-            isMobile: false
+            isMobile: false,
+            isPositionFixed: true
         };
     },
 
@@ -37,9 +39,20 @@ var NavigationMenu = React.createClass({
 
     render: function() {
         var itemsNumber = 4;
+        var className = 'navigation-menu';
+        if (this.props.isMobile) {
+            className += ' x-mobile';
+        }
+        
+        // Virtual keyboard breaks fixed position of the menu
+        // thus we leave position: static if any input is focused
+        // original solution: https://dansajin.com/2012/12/07/fix-position-fixed/
+        if (this.props.isPositionFixed) {
+            className += ' x-fixed';
+        }
 
         return (
-            <div className={ 'navigation-menu' + (this.props.isMobile ? ' x-mobile' : '') }>
+            <div className={ className }>
                 <NavigationItem
                     iconFileName='log-book.png'
                     label='Flights'

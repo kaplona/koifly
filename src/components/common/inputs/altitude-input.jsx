@@ -10,18 +10,19 @@ var ValidationError = require('../section/validation-error');
 require('./two-input-elements.less');
 
 
+var { element, func, oneOfType, string } = React.PropTypes;
+
 var AltitudeInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        selectedAltitudeUnit: React.PropTypes.string,
-        inputName: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
-        ]),
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        inputValue: string.isRequired,
+        selectedAltitudeUnit: string,
+        inputName: string.isRequired,
+        labelText: oneOfType([string, element]),
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     getDefaultProps: function() {
@@ -66,6 +67,8 @@ var AltitudeInput = React.createClass({
                         pattern='[0-9]*'
                         placeholder='0'
                         onChange={ () => this.handleUserInput(this.props.inputName) }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref={ this.props.inputName }
                         />
                     <div className='col-of-two second'>
@@ -74,6 +77,8 @@ var AltitudeInput = React.createClass({
                             options={ altitudeUnitsList }
                             inputName='altitudeUnit'
                             onChangeFunc={ this.handleUserInput }
+                            onFocus={ this.props.onFocus }
+                            onBlur={ this.props.onBlur }
                             />
                     </div>
                 </InputContainer>

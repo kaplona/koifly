@@ -33,7 +33,8 @@ var editViewMixin = function(modelKey) {
                 loadingError: null,
                 processingError: null,
                 isSaving: false,
-                isDeleting: false
+                isDeleting: false,
+                isInputInFocus: false
             };
         },
 
@@ -74,6 +75,14 @@ var editViewMixin = function(modelKey) {
             this.setState({ item: newItem }, () => {
                 this.updateValidationErrors(this.getValidationErrors(true));
             });
+        },
+
+        handleInputFocus: function() {
+            this.setState({ isInputInFocus: true });
+        },
+
+        handleInputBlur: function() {
+            this.setState({ isInputInFocus: false });
         },
 
         handleCancelEdit: function() {
@@ -170,7 +179,12 @@ var editViewMixin = function(modelKey) {
         },
         
         renderNavigationMenu: function() {
-            return <NavigationMenu currentView={ Model.getModelKey() } />;
+            return (
+                <NavigationMenu
+                    currentView={ Model.getModelKey() }
+                    isPositionFixed={ !this.state.isInputInFocus }
+                    />
+            );
         },
 
         renderSimpleLayout: function(children) {

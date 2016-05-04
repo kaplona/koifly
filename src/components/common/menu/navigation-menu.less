@@ -14,9 +14,16 @@
     height: @menu-height * 1.2;
   }
 
+  @media (max-width: (@medium-viewport - 1)) {
+    &.x-fixed {
+      position: fixed;
+    }
+  }
+
   @media (min-width: @medium-viewport) {
     width: 60%;
     height: @header-height;
+    position: fixed;
     left: 20%;
     top: 0;
 

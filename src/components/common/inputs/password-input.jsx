@@ -7,17 +7,18 @@ var Label = require('../section/label');
 var ValidationError = require('../section/validation-error');
 
 
+var { element, func, oneOfType, string } = React.PropTypes;
+
 var PasswordInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.oneOfType([
-            React.PropTypes.string,
-            React.PropTypes.element
-        ]),
-        inputName: React.PropTypes.string.isRequired,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        inputValue: string.isRequired,
+        labelText: oneOfType([string, element]),
+        inputName: string.isRequired,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     handleUserInput: function() {
@@ -50,6 +51,8 @@ var PasswordInput = React.createClass({
                         value={ this.props.inputValue }
                         type='password'
                         onChange={ this.handleUserInput }
+                        onFocus={ this.props.onFocus }
+                        onBlur={ this.props.onBlur }
                         ref='input'
                         />
                 </InputContainer>

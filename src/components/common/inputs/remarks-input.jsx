@@ -7,14 +7,18 @@ var ValidationError = require('../section/validation-error');
 require('./remarks.less');
 
 
+var { func, string } = React.PropTypes;
+
 var RemarksInput = React.createClass({
 
     propTypes: {
-        inputValue: React.PropTypes.string.isRequired,
-        labelText: React.PropTypes.string,
-        inputName: React.PropTypes.string.isRequired,
-        errorMessage: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        inputValue: string.isRequired,
+        labelText: string,
+        inputName: string.isRequired,
+        errorMessage: string,
+        onChange: func.isRequired,
+        onFocus: func,
+        onBlur: func
     },
 
     getDefaultProps: function() {
@@ -42,6 +46,8 @@ var RemarksInput = React.createClass({
                     className={ this.props.errorMessage ? 'x-error' : null }
                     value={ this.props.inputValue }
                     onChange={ this.handleUserInput }
+                    onFocus={ this.props.onFocus }
+                    onBlur={ this.props.onBlur }
                     ref='textarea'
                     />
             </div>
