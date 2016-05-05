@@ -3,7 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var expect = Chai.expect;
@@ -16,9 +19,6 @@ var AppLink = require('../../src/components/common/app-link');
 
 
 describe('AppLink component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -35,7 +35,7 @@ describe('AppLink component', () => {
             </AppLink>
         );
 
-        renderedDOMElement = React.findDOMNode(component);
+        renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders proper text', () => {

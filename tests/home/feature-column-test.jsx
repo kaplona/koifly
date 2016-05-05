@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var FeatureColumn = require('../../src/components/home-page/feature-column');
 
 
 describe('FeatureColumn component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -31,7 +31,7 @@ describe('FeatureColumn component', () => {
                 <FeatureColumn>{ mocks.childText }</FeatureColumn>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders parsed children without float', () => {
@@ -50,7 +50,7 @@ describe('FeatureColumn component', () => {
                 <FeatureColumn float='left' >{ mocks.childText }</FeatureColumn>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders children with proper float', () => {
@@ -68,7 +68,7 @@ describe('FeatureColumn component', () => {
                 <FeatureColumn float='right' >{ mocks.childText }</FeatureColumn>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders children with proper float', () => {

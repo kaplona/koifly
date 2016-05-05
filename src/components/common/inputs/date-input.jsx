@@ -24,7 +24,7 @@ var DateInput = React.createClass({
     },
 
     handleUserInput: function() {
-        this.props.onChange(this.props.inputName, this.refs.input.getDOMNode().value);
+        this.props.onChange(this.props.inputName, this.refs.input.value);
     },
 
     renderErrorMessage: function() {

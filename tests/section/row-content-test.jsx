@@ -1,21 +1,18 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-
-var RowContent = require('../../src/components/common/section/row-content');
-
-var Label = require('../../src/components/common/section/label');
-var ValueContainer = require('../../src/components/common/section/value-container');
+var React = require('react');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
+
+var Label = require('../../src/components/common/section/label');
+var RowContent = require('../../src/components/common/section/row-content');
+var ValueContainer = require('../../src/components/common/section/value-container');
 
 
 
 describe('RowContent component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
 

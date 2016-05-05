@@ -33,7 +33,7 @@ var changePasswordHandler = function(request, reply) {
         return;
     }
     
-    // Check that user are trying to change his/her own data 
+    // Check that user are trying to change his/her own data
     if (payload.pilotId !== request.auth.credentials.userId) {
         reply({ error: new KoiflyError(ErrorTypes.USER_MISMATCH) });
         return;

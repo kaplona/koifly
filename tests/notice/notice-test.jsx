@@ -3,9 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var Notice = require('../../src/components/common/notice/notice');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -13,12 +14,11 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var Notice = require('../../src/components/common/notice/notice');
+
 
 
 describe('Notice component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -43,7 +43,7 @@ describe('Notice component', () => {
                 <Notice text={ mocks.noticeText } />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders notice with proper text and default class', () => {
@@ -73,7 +73,7 @@ describe('Notice component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders notice with proper class', () => {
@@ -109,7 +109,7 @@ describe('Notice component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders disabled buttons and doesn\'t call onClick functions', () => {

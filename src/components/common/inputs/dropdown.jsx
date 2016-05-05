@@ -23,7 +23,7 @@ var Dropdown = React.createClass({
     },
 
     handleUserInput: function() {
-        this.props.onChangeFunc(this.props.inputName, this.refs.selectInput.getDOMNode().value);
+        this.props.onChangeFunc(this.props.inputName, this.refs.selectInput.value);
     },
 
     render: function() {

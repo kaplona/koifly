@@ -3,12 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var RemarksInput = require('../../src/components/common/inputs/remarks-input');
-
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -16,13 +14,14 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var Label = require('../../src/components/common/section/label');
+var RemarksInput = require('../../src/components/common/inputs/remarks-input');
+var ValidationError = require('../../src/components/common/section/validation-error');
+
 
 
 describe('RemarksInput component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
-
+    
     var component;
     var renderedDOMElement;
 
@@ -51,7 +50,7 @@ describe('RemarksInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders label with proper text', () => {
@@ -74,7 +73,7 @@ describe('RemarksInput component', () => {
         });
 
         it('triggers onChange function with proper parameters when changed', () => {
-            let textarea = React.findDOMNode(component.refs.textarea);
+            let textarea = component.refs.textarea;
             textarea.value = mocks.nextInputValue;
             Simulate.change(textarea);
 
@@ -96,7 +95,7 @@ describe('RemarksInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {

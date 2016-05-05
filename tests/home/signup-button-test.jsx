@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var SignupButton = require('../../src/components/home-page/signup-button');
 
 
 describe('SignupButton component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -25,7 +25,7 @@ describe('SignupButton component', () => {
             <SignupButton caption={ mocks.buttonCaption } />
         );
 
-        renderedDOMElement = React.findDOMNode(component);
+        renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders button with proper capture', () => {

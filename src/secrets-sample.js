@@ -8,7 +8,7 @@ var Secrets = {
     protocol: 'http',
     port: {
         https: 443,
-        http:80
+        http: 80
     },
 
     // your DB config

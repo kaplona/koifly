@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var BreadCrumbs = require('../../src/components/common/bread-crumbs');
 
 
 describe('BreadCrumbs component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
 
@@ -36,17 +36,22 @@ describe('BreadCrumbs component', () => {
     });
 
     it('renders proper layout and parsed element at proper places', () => {
-        let crumbs = React.findDOMNode(component).children;
-        let firstCrumbChildren = crumbs[0].children;
-        let secondCrumbChildren = crumbs[1].children;
-        let thirdCrumbChildren = crumbs[2].children;
+        let crumbs = ReactDOM.findDOMNode(component).children;
 
         expect(crumbs).to.have.lengthOf(3);
-        expect(firstCrumbChildren).to.have.lengthOf(2);
+
+        // First crumb should contain a div element
+        let firstCrumbChildren = crumbs[0].children;
+
+        expect(firstCrumbChildren).to.have.lengthOf(1);
         expect(firstCrumbChildren[0]).to.have.property('textContent', mocks.firstElementText);
-        expect(secondCrumbChildren).to.have.lengthOf(2);
-        expect(secondCrumbChildren[0]).to.have.property('textContent', mocks.secondElementText);
-        expect(thirdCrumbChildren).to.have.lengthOf(1);
-        expect(thirdCrumbChildren[0]).to.have.property('textContent', mocks.thirdElementText);
+
+        // Other crumbs should contain plain text
+        expect(crumbs[1])
+            .to.have.property('textContent')
+            .that.contain(mocks.secondElementText);
+        expect(crumbs[2])
+            .to.have.property('textContent')
+            .that.contain(mocks.thirdElementText);
     });
 });

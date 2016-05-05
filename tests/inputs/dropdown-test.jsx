@@ -3,9 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var Dropdown = require('../../src/components/common/inputs/dropdown');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -13,12 +14,11 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var Dropdown = require('../../src/components/common/inputs/dropdown');
+
 
 
 describe('Dropdown component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -55,7 +55,7 @@ describe('Dropdown component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders select tag with proper selected value and options in alphabetic order', () => {
@@ -112,7 +112,7 @@ describe('Dropdown component', () => {
         });
 
         it('renders first option with empty text and value', () => {
-            let options = React.findDOMNode(component).getElementsByTagName('option');
+            let options = ReactDOM.findDOMNode(component).getElementsByTagName('option');
 
             expect(options).to.have.lengthOf(mockOptions.length + 1);
             expect(options[0]).to.have.property('value', mocks.emptyValue);

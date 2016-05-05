@@ -3,9 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var NavigationItem = require('../../src/components/common/menu/navigation-item');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var expect = Chai.expect;
@@ -13,12 +14,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
+var NavigationItem = require('../../src/components/common/menu/navigation-item');
+
 
 
 describe('NavigationItem component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -47,7 +47,7 @@ describe('NavigationItem component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('sets default state and renders notice with proper props', () => {
@@ -80,7 +80,7 @@ describe('NavigationItem component', () => {
                     />
             );
 
-            let itemClassName = React.findDOMNode(component).className;
+            let itemClassName = ReactDOM.findDOMNode(component).className;
 
             expect(itemClassName).to.contain(defaults.activeClassName);
         });

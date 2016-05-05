@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var NavigationMenu = require('./components/common/menu/navigation-menu');
 
@@ -13,7 +14,7 @@ require('./main-sandbox.less');
 
 
 function mainSandbox() {
-    React.render(
+    ReactDOM.render(
         React.createElement(NavigationMenu, { isSiteView: true }),
         document.getElementById('container')
     );

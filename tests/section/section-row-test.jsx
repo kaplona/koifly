@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var SectionRow = require('../../src/components/common/section/section-row');
 
 
 describe('SectionRow component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -31,7 +31,7 @@ describe('SectionRow component', () => {
                 <SectionRow>{ mocks.sectionRowText }</SectionRow>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders parsed children', () => {
@@ -59,7 +59,7 @@ describe('SectionRow component', () => {
         });
 
         it('renders component with proper classes', () => {
-            let className = React.findDOMNode(component).className;
+            let className = ReactDOM.findDOMNode(component).className;
 
             expect(className).to.contain(defaults.lastRowClass);
             expect(className).to.contain(defaults.desktopClass);

@@ -3,11 +3,11 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 var Promise = require('es6-promise').Promise;
-
-var InteractiveMap = require('../../src/components/common/maps/interactive-map');
 
 var Chai = require('chai');
 var expect = Chai.expect;
@@ -15,12 +15,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
+var InteractiveMap = require('../../src/components/common/maps/interactive-map');
+
 
 
 describe('InteractiveMap component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMMapContainer;
@@ -72,7 +71,7 @@ describe('InteractiveMap component', () => {
                     />
             );
 
-            renderedDOMMapContainer = React.findDOMNode(component.refs[defaults.refsName]);
+            renderedDOMMapContainer = component.refs[defaults.refsName];
         });
 
 
@@ -96,7 +95,7 @@ describe('InteractiveMap component', () => {
         });
 
         it('calls close function when map background is clicked', () => {
-            let renderedDOMElement = React.findDOMNode(component);
+            let renderedDOMElement = ReactDOM.findDOMNode(component);
             let backGround = renderedDOMElement.querySelector(`.${defaults.dimmerClass}`);
 
             Simulate.click(backGround);

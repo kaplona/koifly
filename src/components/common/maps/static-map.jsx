@@ -63,7 +63,7 @@ var StaticMap = React.createClass({
         var markerPosition;
         var infowindowContent;
         var infowindowOnClickFunc;
-        var mapContainer = this.refs.map.getDOMNode();
+        var mapContainer = this.refs.map;
 
         mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
 

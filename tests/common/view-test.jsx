@@ -3,7 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 var PubSub = require('../../src/utils/pubsub');
 
 var then = require('../../src/utils/then');
@@ -25,9 +28,6 @@ var Login = require('../../src/components/public-views/login');
 
 
 describe('View component.', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -65,7 +65,7 @@ describe('View component.', () => {
                 </View>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         after(() => {
@@ -108,7 +108,7 @@ describe('View component.', () => {
 
         it('close email-not-verified notice when close button clicked', done => {
             let notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
-            let renderedDOMNotice = React.findDOMNode(notice);
+            let renderedDOMNotice = ReactDOM.findDOMNode(notice);
             let closeButton = renderedDOMNotice.querySelector(`.${defaults.noticeCloseButtonClass}`);
 
             Simulate.click(closeButton);
@@ -136,7 +136,7 @@ describe('View component.', () => {
                 </View>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         after(() => {

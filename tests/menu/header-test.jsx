@@ -4,7 +4,10 @@
 
 require('../../src/test-dom')();
 
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 var Promise = require('es6-promise').Promise;
 var PubSub = require('../../src/utils/pubsub');
 
@@ -24,9 +27,6 @@ var Header = require('../../src/components/common/menu/header');
 
 
 describe('Header component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -56,7 +56,7 @@ describe('Header component', () => {
             <Header />
         );
 
-        renderedDOMElement = React.findDOMNode(component);
+        renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     after(() => {

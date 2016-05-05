@@ -36,7 +36,7 @@ var AltitudeInput = React.createClass({
         // both parameters are provided
         // otherwise retrieve input value from the DOM
         if (inputValue === undefined) {
-            inputValue = this.refs[inputName].getDOMNode().value;
+            inputValue = this.refs[inputName].value;
         }
 
         this.props.onChange(inputName, inputValue);

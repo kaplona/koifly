@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 var _ = require('lodash');
 
 var expect = require('chai').expect;
@@ -10,8 +12,6 @@ var ScreenShot = require('../../src/components/home-page/screen-shot');
 
 
 describe('ScreenShot component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -31,7 +31,7 @@ describe('ScreenShot component', () => {
             <ScreenShot type={ mocks.randomType } />
         );
 
-        renderedDOMElement = React.findDOMNode(component);
+        renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders header component and parsed children', () => {

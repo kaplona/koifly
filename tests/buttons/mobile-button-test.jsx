@@ -1,18 +1,17 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var TestUtils = require('react-addons-test-utils');
+
+var expect = require('chai').expect;
 
 var MobileButton = require('../../src/components/common/buttons/mobile-button');
 var Button = require('../../src/components/common/buttons/button');
 
-var expect = require('chai').expect;
-
 
 
 describe('MobileButton component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
 

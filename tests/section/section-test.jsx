@@ -3,7 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var expect = Chai.expect;
@@ -17,9 +20,6 @@ var Button = require('../../src/components/common/buttons/button');
 
 
 describe('Section component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -39,7 +39,7 @@ describe('Section component', () => {
                 <Section>{ mocks.sectionText }</Section>
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders parsed children', () => {
@@ -68,7 +68,7 @@ describe('Section component', () => {
         });
 
         it('renders edit button and full-screen component', () => {
-            let className = React.findDOMNode(component).className;
+            let className = ReactDOM.findDOMNode(component).className;
 
             expect(className).to.contain(defaults.fullScreenClass);
         });
@@ -78,7 +78,7 @@ describe('Section component', () => {
 
             expect(editButton).to.have.deep.property('props.onClick', mocks.handleClick);
 
-            let renderedDOMButton = React.findDOMNode(editButton);
+            let renderedDOMButton = ReactDOM.findDOMNode(editButton);
 
             Simulate.click(renderedDOMButton);
 

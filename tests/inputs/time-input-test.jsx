@@ -3,12 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var TimeInput = require('../../src/components/common/inputs/time-input');
-
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -16,12 +14,13 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var Label = require('../../src/components/common/section/label');
+var TimeInput = require('../../src/components/common/inputs/time-input');
+var ValidationError = require('../../src/components/common/section/validation-error');
+
 
 
 describe('TimeInput component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -56,7 +55,7 @@ describe('TimeInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders label with proper text', () => {
@@ -90,14 +89,14 @@ describe('TimeInput component', () => {
         });
 
         it('triggers onChange function with proper parameters when changed', () => {
-            let hoursInput = React.findDOMNode(component.refs[defaults.hoursInputName]);
+            let hoursInput = component.refs[defaults.hoursInputName];
             hoursInput.value = mocks.nextHoursValue;
             Simulate.change(hoursInput);
 
             expect(mocks.handleInputChange).to.have.been.calledOnce;
             expect(mocks.handleInputChange).to.have.been.calledWith(defaults.hoursInputName, mocks.nextHoursValue);
 
-            let minutesInput = React.findDOMNode(component.refs[defaults.minutesInputName]);
+            let minutesInput = component.refs[defaults.minutesInputName];
             minutesInput.value = mocks.nextMinutesValue;
             Simulate.change(minutesInput);
 
@@ -123,7 +122,7 @@ describe('TimeInput component', () => {
 
         it('renders error when general errorMessage provided', () => {
             let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
-            let highlightedInputs = React.findDOMNode(component).querySelectorAll(`input.${defaults.errorClassName}`);
+            let highlightedInputs = ReactDOM.findDOMNode(component).querySelectorAll(`input.${defaults.errorClassName}`);
 
             expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
             expect(highlightedInputs).to.have.lengthOf(2);

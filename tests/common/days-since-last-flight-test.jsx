@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var DaysSinceLastFlight = require('../../src/components/common/days-since-last-f
 
 
 describe('DaysSinceLastFlight component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -33,7 +33,7 @@ describe('DaysSinceLastFlight component', () => {
                 <DaysSinceLastFlight />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders default text if no days prop parsed', () => {
@@ -53,7 +53,7 @@ describe('DaysSinceLastFlight component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders text with parsed days', () => {
@@ -75,7 +75,7 @@ describe('DaysSinceLastFlight component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders component with proper class', () => {

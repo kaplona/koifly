@@ -3,13 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var AltitudeInput = require('../../src/components/common/inputs/altitude-input');
-
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
-var Dropdown = require('../../src/components/common/inputs/dropdown');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -17,12 +14,14 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var AltitudeInput = require('../../src/components/common/inputs/altitude-input');
+var Label = require('../../src/components/common/section/label');
+var ValidationError = require('../../src/components/common/section/validation-error');
+var Dropdown = require('../../src/components/common/inputs/dropdown');
+
 
 
 describe('AltitudeInput component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -58,7 +57,7 @@ describe('AltitudeInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders label with proper text', () => {
@@ -95,7 +94,7 @@ describe('AltitudeInput component', () => {
         });
 
         it('triggers onChange function with proper parameters', () => {
-            let input = React.findDOMNode(component.refs[mocks.inputName]);
+            let input = component.refs[mocks.inputName];
             input.value = mocks.nextInputValue;
             Simulate.change(input);
 
@@ -125,7 +124,7 @@ describe('AltitudeInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {

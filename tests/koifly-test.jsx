@@ -3,7 +3,9 @@
 'use strict';
 
 require('../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -13,8 +15,6 @@ var Header = require('../src/components/common/menu/header');
 
 
 describe('Koifly component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -31,7 +31,7 @@ describe('Koifly component', () => {
             </Koifly>
         );
 
-        renderedDOMElement = React.findDOMNode(component);
+        renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders header component and parsed children', () => {

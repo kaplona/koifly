@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
@@ -47,7 +48,7 @@ require('./components/koifly.less');
 
 function mainApp() {
 
-    React.render((
+    ReactDOM.render((
         <Router history={ history }>
             <Route path='/'>
                 <Route path='app' component={ Koifly }>

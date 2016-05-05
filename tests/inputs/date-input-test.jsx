@@ -3,12 +3,10 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var DateInput = require('../../src/components/common/inputs/date-input');
-
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -16,12 +14,13 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var DateInput = require('../../src/components/common/inputs/date-input');
+var Label = require('../../src/components/common/section/label');
+var ValidationError = require('../../src/components/common/section/validation-error');
+
 
 
 describe('DateInput component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -53,7 +52,7 @@ describe('DateInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders label with proper text', () => {
@@ -82,7 +81,7 @@ describe('DateInput component', () => {
         });
 
         it('triggers onChange function with proper parameters when changed', () => {
-            let input = React.findDOMNode(component.refs.input);
+            let input = component.refs.input;
             input.value = mocks.nextInputValue;
             Simulate.change(input);
 
@@ -104,7 +103,7 @@ describe('DateInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {

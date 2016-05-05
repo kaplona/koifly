@@ -1,18 +1,17 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-
-var RemarksRow = require('../../src/components/common/section/remarks-row');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
+
+var RemarksRow = require('../../src/components/common/section/remarks-row');
 
 
 
 describe('RemarksRow component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
 
@@ -40,7 +39,7 @@ describe('RemarksRow component', () => {
     });
 
     it('renders remarks in proper place and split it into new lines', () => {
-        let remarks = React.findDOMNode(component).querySelector(`.${defaults.className}`);
+        let remarks = ReactDOM.findDOMNode(component).querySelector(`.${defaults.className}`);
         let remarksSpans = remarks.children;
         let remarksNewLines = remarks.getElementsByTagName('br');
 

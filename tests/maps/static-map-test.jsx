@@ -3,11 +3,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react/addons');
+var React = require('react');
+var TestUtils = require('react-addons-test-utils');
 var Promise = require('es6-promise').Promise;
-
-var StaticMap = require('../../src/components/common/maps/static-map');
 
 var Chai = require('chai');
 var expect = Chai.expect;
@@ -15,11 +13,11 @@ var Sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
+var StaticMap = require('../../src/components/common/maps/static-map');
+
 
 
 describe('StaticMap component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMMapContainer;
@@ -86,7 +84,7 @@ describe('StaticMap component', () => {
                     />
             );
 
-            renderedDOMMapContainer = React.findDOMNode(component.refs[defaults.refsName]);
+            renderedDOMMapContainer = component.refs[defaults.refsName];
         });
 
 
@@ -162,7 +160,7 @@ describe('StaticMap component', () => {
         });
 
         it('renders full screen map', () => {
-            let className = React.findDOMNode(component.refs[defaults.refsName]).className;
+            let className = component.refs[defaults.refsName].className;
 
             expect(className).to.contain(defaults.fullScreenClass);
         });

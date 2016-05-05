@@ -4,9 +4,10 @@
 
 // Our fake DOM must be required before React to be used by React
 require('../../src/test-dom')();
-
-var React = require('react/addons');
-var Button = require('../../src/components/common/buttons/button');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -14,12 +15,11 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
+var Button = require('../../src/components/common/buttons/button');
+
 
 
 describe('Button component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
     var renderedDOMElement;
@@ -50,7 +50,7 @@ describe('Button component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders an input element with proper text', () => {
@@ -76,7 +76,7 @@ describe('Button component', () => {
         it('renders an input element with proper default classes (React TestUtils)', () => {
             let button = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
 
-            expect(button).to.have.deep.property('props.className', `${defaults.className} x-${mocks.buttonStyle}`);
+            expect(button).to.have.property('className', `${defaults.className} x-${mocks.buttonStyle}`);
         });
 
         // Note: we can’t just issue an event on element with real DOM
@@ -105,7 +105,7 @@ describe('Button component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders a disabled button', () => {

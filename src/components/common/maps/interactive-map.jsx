@@ -55,7 +55,7 @@ var InteractiveMap = React.createClass({
     },
 
     createMap: function(mapFacade) {
-        var mapContainer = this.refs.map.getDOMNode();
+        var mapContainer = this.refs.map;
 
         mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
         mapFacade.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);

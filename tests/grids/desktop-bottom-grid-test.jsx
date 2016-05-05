@@ -2,16 +2,17 @@
 
 require('../../src/test-dom')();
 
-var React = require('react/addons');
-var DesktopBottomGrid = require('../../src/components/common/grids/desktop-bottom-grid');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
+
+var DesktopBottomGrid = require('../../src/components/common/grids/desktop-bottom-grid');
 
 
 
 describe('DesktopBottomGrid component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDomElement;
@@ -39,7 +40,7 @@ describe('DesktopBottomGrid component', () => {
                 />
         );
 
-        renderedDomElement = React.findDOMNode(component);
+        renderedDomElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders proper layout for parsed elements', () => {

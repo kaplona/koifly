@@ -1,7 +1,9 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
 var expect = require('chai').expect;
 
@@ -10,8 +12,6 @@ var InputContainer = require('../../src/components/common/inputs/input-container
 
 
 describe('InputContainer component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
 
@@ -30,7 +30,7 @@ describe('InputContainer component', () => {
     });
 
     it('renders parsed children', () => {
-        let input = React.findDOMNode(component).querySelector('input');
+        let input = ReactDOM.findDOMNode(component).querySelector('input');
 
         expect(input).to.have.property('value', mocks.inputText);
     });

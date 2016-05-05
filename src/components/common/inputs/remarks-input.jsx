@@ -28,7 +28,7 @@ var RemarksInput = React.createClass({
     },
 
     handleUserInput: function() {
-        this.props.onChange(this.props.inputName, this.refs.textarea.getDOMNode().value);
+        this.props.onChange(this.props.inputName, this.refs.textarea.value);
     },
 
     renderErrorMessage: function() {

@@ -23,7 +23,7 @@ var TimeInput = React.createClass({
     },
 
     handleUserInput: function(inputName) {
-        this.props.onChange(inputName, this.refs[inputName].getDOMNode().value);
+        this.props.onChange(inputName, this.refs[inputName].value);
     },
 
     renderErrorMessage: function() {

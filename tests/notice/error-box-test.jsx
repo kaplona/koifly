@@ -1,21 +1,20 @@
 'use strict';
 
 require('../../src/test-dom')();
+var React = require('react');
+var TestUtils = require('react-addons-test-utils');
 
-var React = require('react/addons');
+var expect = require('chai').expect;
+
 var ErrorTypes = require('../../src/errors/error-types');
 var ErrorBox = require('../../src/components/common/notice/error-box');
 
 var Notice = require('../../src/components/common/notice/notice');
 
-var expect = require('chai').expect;
-
 
 
 describe('ErrorBox component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-
+    
     var component;
 
     var defaults = {

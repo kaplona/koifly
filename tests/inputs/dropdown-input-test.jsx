@@ -2,20 +2,20 @@
 
 require('../../src/test-dom')();
 
-var React = require('react/addons');
-var DropdownInput = require('../../src/components/common/inputs/dropdown-input');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
 
+var expect = require('chai').expect;
+
+var DropdownInput = require('../../src/components/common/inputs/dropdown-input');
 var Label = require('../../src/components/common/section/label');
 var ValidationError = require('../../src/components/common/section/validation-error');
 var Dropdown = require('../../src/components/common/inputs/dropdown');
 
-var expect = require('chai').expect;
-
 
 
 describe('DropdownInput component', () => {
-
-    var TestUtils = React.addons.TestUtils;
 
     var component;
     var renderedDOMElement;
@@ -62,7 +62,7 @@ describe('DropdownInput component', () => {
 
         it('renders dropdown with proper props', () => {
             let dropdown = TestUtils.findRenderedComponentWithType(component, Dropdown);
-            let className = React.findDOMNode(component).querySelector('select').className;
+            let className = ReactDOM.findDOMNode(component).querySelector('select').className;
 
             expect(dropdown).to.have.deep.property('props.selectedValue', mocks.selectedValue);
             expect(dropdown).to.have.deep.property('props.options', mocks.options);
@@ -93,7 +93,7 @@ describe('DropdownInput component', () => {
                     />
             );
 
-            renderedDOMElement = React.findDOMNode(component);
+            renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {

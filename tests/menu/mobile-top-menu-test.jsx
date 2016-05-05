@@ -3,7 +3,11 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react/addons');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var TestUtils = require('react-addons-test-utils');
+var Simulate = TestUtils.Simulate;
+
 var Chai = require('chai');
 var expect = Chai.expect;
 var Sinon = require('sinon');
@@ -15,9 +19,6 @@ var MobileTopMenu = require('../../src/components/common/menu/mobile-top-menu');
 
 
 describe('MobileTopMenu component', () => {
-
-    var TestUtils = React.addons.TestUtils;
-    var Simulate = TestUtils.Simulate;
 
     var component;
 
@@ -49,9 +50,9 @@ describe('MobileTopMenu component', () => {
     });
 
     it('renders proper layout', () => {
-        let headerElement = React.findDOMNode(component).querySelector('.header');
-        let leftNavigationElement = React.findDOMNode(component.refs[defaults.leftNavigationRef]);
-        let rightNavigationElement = React.findDOMNode(component.refs[defaults.rightNavigationRef]);
+        let headerElement = ReactDOM.findDOMNode(component).querySelector('.header');
+        let leftNavigationElement = component.refs[defaults.leftNavigationRef];
+        let rightNavigationElement = component.refs[defaults.rightNavigationRef];
 
         expect(headerElement).to.have.property('textContent', mocks.headerText);
         expect(leftNavigationElement).to.have.property('textContent', mocks.leftButtonCaption);
@@ -59,14 +60,14 @@ describe('MobileTopMenu component', () => {
     });
 
     it('triggers right onClick event when navigation element clicked', () => {
-        let leftNavigationElement = React.findDOMNode(component.refs[defaults.leftNavigationRef]);
+        let leftNavigationElement = component.refs[defaults.leftNavigationRef];
 
         Simulate.click(leftNavigationElement);
 
         expect(mocks.handleLeftClick).to.be.calledOnce;
         expect(mocks.handleRightClick).to.not.be.called;
 
-        let rightNavigationElement = React.findDOMNode(component.refs[defaults.rightNavigationRef]);
+        let rightNavigationElement = component.refs[defaults.rightNavigationRef];
 
         Simulate.click(rightNavigationElement);
 
