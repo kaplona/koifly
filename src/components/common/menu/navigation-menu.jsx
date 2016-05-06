@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 
 var FlightModel = require('../../../models/flight');
 var GliderModel = require('../../../models/glider');
@@ -31,10 +31,8 @@ var NavigationMenu = React.createClass({
         };
     },
 
-    mixins: [ History ],
-
     handleLinkTo: function(page) {
-        this.history.pushState(null, `/${encodeURIComponent(page)}`);
+        browserHistory.push(`/${encodeURIComponent(page)}`);
     },
 
     render: function() {

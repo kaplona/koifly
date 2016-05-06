@@ -1,14 +1,12 @@
 'use strict';
 
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 
 
 var PublicLinksMixin = {
 
-    mixins: [ History ],
-
     handleGoToFlightLog: function() {
-        this.history.pushState(null, '/flights');
+        browserHistory.push('/flights');
     },
 
     handleGoToHomePage: function() {
@@ -17,23 +15,23 @@ var PublicLinksMixin = {
     },
 
     handleGoToLogin: function() {
-        this.history.pushState(null, '/login');
+        browserHistory.push('/login');
     },
 
     handleGoToOneTimeLogin: function() {
-        this.history.pushState(null, '/one-time-login');
+        browserHistory.push('/one-time-login');
     },
 
     handleGoToPilotView: function() {
-        this.history.pushState(null, '/pilot');
+        browserHistory.push('/pilot');
     },
 
     handleGoToResetPassword: function() {
-        this.history.pushState(null, '/reset-password');
+        browserHistory.push('/reset-password');
     },
 
     handleGoToSignup: function() {
-        this.history.pushState(null, '/signup');
+        browserHistory.push('/signup');
     }
 };
 

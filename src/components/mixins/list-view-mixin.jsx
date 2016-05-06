@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 
 var Button = require('../common/buttons/button');
 var EmptyList = require('../common/empty-list');
@@ -15,8 +15,6 @@ var listViewMixin = function(modelKey) {
     var Model = VIEW_ASSETS.model;
 
     return {
-
-        mixins: [ History ],
 
         getInitialState: function() {
             return {
@@ -47,11 +45,11 @@ var listViewMixin = function(modelKey) {
          * @param {number} id - id of the item which page to open
          */
         handleRowClick: function(id) {
-            this.history.pushState(null, `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(id)}`);
+            browserHistory.push(`/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(id)}`);
         },
 
         handleAddItem: function() {
-            this.history.pushState(null, `/${encodeURIComponent(Model.keys.single)}/0/edit`);
+            browserHistory.push(`/${encodeURIComponent(Model.keys.single)}/0/edit`);
         },
         
         renderNavigationMenu: function() {

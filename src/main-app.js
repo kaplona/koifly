@@ -7,9 +7,9 @@ var ReactRouter = require('react-router');
 var Router = ReactRouter.Router;
 var IndexRoute = ReactRouter.IndexRoute;
 var Route = ReactRouter.Route;
-var createBrowserHistory = require('history/lib/createBrowserHistory');
-var useScroll = require('scroll-behavior');
-var history = useScroll(createBrowserHistory(), () => [0, 0]); // Scroll to the top on each transition
+var browserHistory = ReactRouter.browserHistory;
+var applyRouterMiddleware = ReactRouter.applyRouterMiddleware;
+var useScroll = require('react-router-scroll');
 
 var Koifly = require('./components/koifly');
 
@@ -49,7 +49,11 @@ require('./components/koifly.less');
 function mainApp() {
 
     ReactDOM.render((
-        <Router history={ history }>
+        <Router
+            history={ browserHistory }
+            render={ applyRouterMiddleware(useScroll(() => [0, 0])) } // Scroll to the top on each transition
+            >
+
             <Route path='/'>
                 <Route path='app' component={ Koifly }>
                     <IndexRoute component={ FlightListView } />

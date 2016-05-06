@@ -1,8 +1,7 @@
 'use strict';
 
 var React = require('react');
-var Router = require('react-router');
-var History = Router.History;
+var browserHistory = require('react-router').browserHistory;
 var _ = require('lodash');
 
 const CENTER = require('../../../constants/map-constants').CENTER;
@@ -42,8 +41,6 @@ var StaticMap = React.createClass({
         };
     },
 
-    mixins: [ History ],
-
     componentDidMount: function() {
         this.props.mapFacadePromise.then(mapFacade => {
             this.createMap(mapFacade);
@@ -55,7 +52,7 @@ var StaticMap = React.createClass({
     },
 
     handleGoToSiteView: function(siteId) {
-        this.history.pushState(null, `/site/${encodeURIComponent(siteId)}`);
+        browserHistory.push(`/site/${encodeURIComponent(siteId)}`);
     },
 
     createMap: function(mapFacade) {

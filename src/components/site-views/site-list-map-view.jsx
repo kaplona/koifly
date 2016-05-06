@@ -1,6 +1,7 @@
 'use strict';
 
 var React = require('react');
+var browserHistory = require('react-router').browserHistory;
 
 var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
@@ -17,10 +18,10 @@ var View = require('../common/view');
 
 var SiteListMapView = React.createClass({
 
-    mixins: [ listViewMixin(SiteModel.getModelKey()) ], // already includes history mixin
+    mixins: [ listViewMixin(SiteModel.getModelKey()) ],
 
     handleGoToListView: function() {
-        this.history.pushState(null, '/sites/');
+        browserHistory.push('/sites/');
     },
     
     renderMobileTopMenu: function() {

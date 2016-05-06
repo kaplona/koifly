@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 
 var ErrorBox = require('../common/notice/error-box');
 var Loader = require('../common/loader');
@@ -16,8 +16,6 @@ var itemViewMixin = function(modelKey) {
     var Model = VIEW_ASSETS.model;
 
     return {
-
-        mixins: [ History ],
 
         getInitialState: function() {
             return {
@@ -45,12 +43,11 @@ var itemViewMixin = function(modelKey) {
         },
 
         handleGoToListView: function() {
-            this.history.pushState(null, `/${encodeURIComponent(Model.keys.plural)}`);
+            browserHistory.push(`/${encodeURIComponent(Model.keys.plural)}`);
         },
 
         handleEditItem: function() {
-            this.history.pushState(
-                null,
+            browserHistory.push(
                 `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}/edit`
             );
         },

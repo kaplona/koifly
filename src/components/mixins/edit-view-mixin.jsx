@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 var _ = require('lodash');
 
 var DomUtil = require('../../utils/dom-util');
@@ -24,8 +24,6 @@ var editViewMixin = function(modelKey) {
     var Model = VIEW_ASSETS.model;
 
     return {
-
-        mixins: [ History ],
 
         getInitialState: function() {
             return {
@@ -92,8 +90,8 @@ var editViewMixin = function(modelKey) {
             } else {
                 path = `/${encodeURIComponent(Model.keys.plural)}`;
             }
-            
-            this.history.pushState(null, path);
+
+            browserHistory.push(path);
         },
 
         handleSubmit: function(event) {
@@ -123,7 +121,7 @@ var editViewMixin = function(modelKey) {
                 this.setState({ isDeleting: true });
                 Model
                     .deleteItem(this.props.params.id)
-                    .then(() => this.history.pushState(null, `/${encodeURIComponent(Model.keys.plural)}`))
+                    .then(() => browserHistory.push(`/${encodeURIComponent(Model.keys.plural)}`))
                     .catch(error => this.updateProcessingError(error));
             }
         },

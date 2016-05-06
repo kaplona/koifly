@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-var History = require('react-router').History;
+var browserHistory = require('react-router').browserHistory;
 
 var PilotModel = require('../../models/pilot');
 var PublicLinksMixin = require('../mixins/public-links-mixin');
@@ -23,7 +23,7 @@ var View = require('../common/view');
 
 var PilotView = React.createClass({
 
-    mixins: [History, PublicLinksMixin],
+    mixins: [ PublicLinksMixin ],
 
     getInitialState: function() {
         return {
@@ -33,11 +33,11 @@ var PilotView = React.createClass({
     },
 
     handleEditPilotInfo: function() {
-        this.history.pushState(null, '/pilot/edit');
+        browserHistory.push('/pilot/edit');
     },
 
     handleChangePassword: function() {
-        this.history.pushState(null, '/pilot/edit/change-password');
+        browserHistory.push('/pilot/edit/change-password');
     },
 
     handleLogout: function() {
