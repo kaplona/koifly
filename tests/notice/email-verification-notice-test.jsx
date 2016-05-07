@@ -92,7 +92,7 @@ describe('EmailVerificationNotice component', () => {
                 expect(notice).to.have.deep.property('props.buttonText', defaults.buttonSendingText);
                 expect(notice).to.have.deep.property('props.isButtonEnabled', false);
                 expect(notice).to.have.deep.property('props.onClick', null);
-                expect(notice).to.have.deep.property('props.onClose', null);
+                expect(notice).to.have.deep.property('props.onClose', mocks.handleClose);
 
                 done();
             });

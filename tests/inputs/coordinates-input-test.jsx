@@ -14,30 +14,31 @@ var sinonChai = require('sinon-chai');
 var expect = Chai.expect;
 Chai.use(sinonChai);
 
-var DateInput = require('../../src/components/common/inputs/date-input');
+var AppLink = require('../../src/components/common/app-link');
+var CoordinatesInput = require('../../src/components/common/inputs/coordinates-input');
 var Label = require('../../src/components/common/section/label');
 var ValidationError = require('../../src/components/common/section/validation-error');
 
 
 
-describe('DateInput component', () => {
+describe('CoordinatesInput component', () => {
 
     var component;
     var renderedDOMElement;
 
     var defaults = {
-        inputType: 'date',
-        inputClassName: 'x-date',
+        className: 'x-text',
         errorClassName: 'x-error'
     };
 
     var mocks = {
-        initialInputValue: 'test input',
-        nextInputValue: 'next tst value',
+        initialInputValue: 'test value',
+        nextInputValue: 'next test value',
         labelText: 'Test label',
         errorMessage: 'test error message',
-        inputName: 'testInput',
+        inputName: 'coordinatesInput',
         handleInputChange: Sinon.spy(),
+        handleMapShow: Sinon.spy(),
         handleInputFocus: Sinon.spy(),
         handleInputBlur: Sinon.spy()
     };
@@ -46,11 +47,12 @@ describe('DateInput component', () => {
     describe('Defaults and behavior testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <DateInput
+                <CoordinatesInput
                     inputValue={ mocks.initialInputValue }
                     labelText={ mocks.labelText }
                     inputName={ mocks.inputName }
                     onChange={ mocks.handleInputChange }
+                    onMapShow={ mocks.handleMapShow }
                     onFocus={ mocks.handleInputFocus }
                     onBlur={ mocks.handleInputBlur }
                     />
@@ -65,17 +67,19 @@ describe('DateInput component', () => {
             expect(label).to.have.deep.property('props.children', mocks.labelText);
         });
 
-        it('renders input with proper value, type and classes', () => {
-            let inputs = renderedDOMElement.getElementsByTagName('input');
+        it('renders input with proper value and classes', () => {
+            let input = renderedDOMElement.querySelector('input');
+            let inputClassName = input.className;
 
-            expect(inputs).to.have.lengthOf(1);
-            expect(inputs[0]).to.have.property('value', mocks.initialInputValue);
-            expect(inputs[0]).to.have.property('type', defaults.inputType);
+            expect(input).to.have.property('value', mocks.initialInputValue);
+            expect(inputClassName).to.contain(defaults.className);
+            expect(inputClassName).to.not.contain(defaults.errorClassName);
+        });
 
-            let className = inputs[0].className;
+        it('renders link to the map', () => {
+            let mapLink = TestUtils.findRenderedComponentWithType(component, AppLink);
 
-            expect(className).to.contain(defaults.inputClassName);
-            expect(className).to.not.contain(defaults.errorClassName);
+            expect(mapLink).to.have.deep.property('props.onClick', mocks.handleMapShow);
         });
 
         it('doesn\'t show error message if wasn\'t provided', () => {
@@ -107,12 +111,13 @@ describe('DateInput component', () => {
     describe('Error message testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <DateInput
+                <CoordinatesInput
                     inputValue={ mocks.initialInputValue }
                     labelText={ mocks.labelText }
-                    errorMessage={ mocks.errorMessage }
                     inputName={ mocks.inputName }
+                    errorMessage={ mocks.errorMessage }
                     onChange={ mocks.handleInputChange }
+                    onMapShow={ mocks.handleMapShow }
                     />
             );
 
@@ -125,9 +130,11 @@ describe('DateInput component', () => {
             expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
         });
 
-        it('renders input with error classes if error message presents', () => {
-            let inputClassName = renderedDOMElement.querySelector('input').className;
+        it('renders input with error className', () => {
+            let input = renderedDOMElement.querySelector('input');
+            let inputClassName = input.className;
 
+            expect(inputClassName).to.contain(defaults.className);
             expect(inputClassName).to.contain(defaults.errorClassName);
         });
     });

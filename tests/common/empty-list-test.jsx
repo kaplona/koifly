@@ -23,6 +23,10 @@ describe('EmptyList component', () => {
     var component;
     var renderedDOMElement;
 
+    var defaults = {
+        buttonClass: 'add-button'
+    };
+
     var mocks = {
         itemsName: 'test type',
         handleAdding: Sinon.spy()
@@ -48,7 +52,7 @@ describe('EmptyList component', () => {
     });
 
     it('triggers onAdding once button clicked', () => {
-        let button = renderedDOMElement.querySelector('input');
+        let button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
 
         Simulate.click(button);
 

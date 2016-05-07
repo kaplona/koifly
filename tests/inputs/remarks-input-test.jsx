@@ -35,7 +35,9 @@ describe('RemarksInput component', () => {
         labelText: 'Test label',
         errorMessage: 'test error message',
         inputName: 'testInput',
-        handleInputChange: Sinon.spy()
+        handleInputChange: Sinon.spy(),
+        handleInputFocus: Sinon.spy(),
+        handleInputBlur: Sinon.spy()
     };
 
 
@@ -47,6 +49,8 @@ describe('RemarksInput component', () => {
                     labelText={ mocks.labelText }
                     inputName={ mocks.inputName }
                     onChange={ mocks.handleInputChange }
+                    onFocus={ mocks.handleInputFocus }
+                    onBlur={ mocks.handleInputBlur }
                     />
             );
 
@@ -79,6 +83,15 @@ describe('RemarksInput component', () => {
 
             expect(mocks.handleInputChange).to.have.been.calledOnce;
             expect(mocks.handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            let textarea = component.refs.textarea;
+            Simulate.focus(textarea);
+            Simulate.blur(textarea);
+
+            expect(mocks.handleInputFocus).to.have.been.calledOnce;
+            expect(mocks.handleInputBlur).to.have.been.calledOnce;
         });
     });
 

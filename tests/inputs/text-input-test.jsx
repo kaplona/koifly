@@ -33,13 +33,14 @@ describe('TextInput component', () => {
     };
 
     var mocks = {
-        initialInputValue: 'test input',
-        nextInputValue: 'next tst value',
+        initialInputValue: 'test value',
+        nextInputValue: 'next test value',
         labelText: 'Test label',
         errorMessage: 'test error message',
         inputName: 'testInput',
-        afterComment: 'after comment',
-        handleInputChange: Sinon.spy()
+        handleInputChange: Sinon.spy(),
+        handleInputFocus: Sinon.spy(),
+        handleInputBlur: Sinon.spy()
     };
 
 
@@ -50,8 +51,9 @@ describe('TextInput component', () => {
                     inputValue={ mocks.initialInputValue }
                     labelText={ mocks.labelText }
                     inputName={ mocks.inputName }
-                    afterComment={ <div>{ mocks.afterComment }</div> }
                     onChange={ mocks.handleInputChange }
+                    onFocus={ mocks.handleInputFocus }
+                    onBlur={ mocks.handleInputBlur }
                     />
             );
 
@@ -77,12 +79,6 @@ describe('TextInput component', () => {
             expect(className).to.not.contain(defaults.errorClassName);
         });
 
-        it('renders after comment after input', () => {
-            let afterComment = renderedDOMElement.querySelector('input').nextElementSibling;
-
-            expect(afterComment).to.have.property('textContent', mocks.afterComment);
-        });
-
         it('doesn\'t show error message if wasn\'t provided', () => {
             let errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
 
@@ -96,6 +92,15 @@ describe('TextInput component', () => {
 
             expect(mocks.handleInputChange).to.have.been.calledOnce;
             expect(mocks.handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            let input = component.refs.input;
+            Simulate.focus(input);
+            Simulate.blur(input);
+
+            expect(mocks.handleInputFocus).to.have.been.calledOnce;
+            expect(mocks.handleInputBlur).to.have.been.calledOnce;
         });
     });
 
@@ -129,12 +134,6 @@ describe('TextInput component', () => {
             expect(input).to.have.property('pattern', defaults.numberInputPattern);
             expect(inputClassName).to.contain(defaults.numberClassName);
             expect(inputClassName).to.contain(defaults.errorClassName);
-        });
-
-        it('doesn\'t render after comment if there is no one in props', () => {
-            let afterComment = renderedDOMElement.querySelector('input').nextElementSibling;
-
-            expect(afterComment).to.equal(null);
         });
     });
 });

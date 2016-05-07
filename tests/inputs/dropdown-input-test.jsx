@@ -36,7 +36,9 @@ describe('DropdownInput component', () => {
         emptyValue: 'empty value',
         errorMessage: 'test error message',
         inputName: 'testInput',
-        handleSelectChange: () => {}
+        handleSelectChange: () => {},
+        handleSelectFocus: () => {},
+        handleSelectBlur: () => {}
     };
 
 
@@ -50,6 +52,8 @@ describe('DropdownInput component', () => {
                     emptyValue={ mocks.emptyValue }
                     inputName={ mocks.inputName }
                     onChangeFunc={ mocks.handleSelectChange }
+                    onFocus={ mocks.handleSelectFocus }
+                    onBlur={ mocks.handleSelectBlur }
                     />
             );
         });
@@ -69,6 +73,8 @@ describe('DropdownInput component', () => {
             expect(dropdown).to.have.deep.property('props.inputName', mocks.inputName);
             expect(dropdown).to.have.deep.property('props.emptyValue', mocks.emptyValue);
             expect(dropdown).to.have.deep.property('props.onChangeFunc', mocks.handleSelectChange);
+            expect(dropdown).to.have.deep.property('props.onFocus', mocks.handleSelectFocus);
+            expect(dropdown).to.have.deep.property('props.onBlur', mocks.handleSelectBlur);
             expect(className).to.not.contain(defaults.errorClassName);
         });
 

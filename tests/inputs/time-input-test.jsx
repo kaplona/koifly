@@ -40,7 +40,9 @@ describe('TimeInput component', () => {
         nextMinutesValue: '45',
         labelText: 'Test label',
         errorMessage: 'test error message',
-        handleInputChange: Sinon.spy()
+        handleInputChange: Sinon.spy(),
+        handleInputFocus: Sinon.spy(),
+        handleInputBlur: Sinon.spy()
     };
 
 
@@ -52,6 +54,8 @@ describe('TimeInput component', () => {
                     minutes={ mocks.minutesValue }
                     labelText={ mocks.labelText }
                     onChange={ mocks.handleInputChange }
+                    onFocus={ mocks.handleInputFocus }
+                    onBlur={ mocks.handleInputBlur }
                     />
             );
 
@@ -102,6 +106,22 @@ describe('TimeInput component', () => {
 
             expect(mocks.handleInputChange).to.have.been.calledTwice;
             expect(mocks.handleInputChange).to.have.been.calledWith(defaults.minutesInputName, mocks.nextMinutesValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            let hoursInput = component.refs[defaults.hoursInputName];
+            Simulate.focus(hoursInput);
+            Simulate.blur(hoursInput);
+
+            expect(mocks.handleInputFocus).to.have.been.calledOnce;
+            expect(mocks.handleInputBlur).to.have.been.calledOnce;
+
+            let minutesInput = component.refs[defaults.minutesInputName];
+            Simulate.focus(minutesInput);
+            Simulate.blur(minutesInput);
+
+            expect(mocks.handleInputFocus).to.have.been.calledTwice;
+            expect(mocks.handleInputBlur).to.have.been.calledTwice;
         });
     });
 

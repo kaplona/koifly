@@ -41,7 +41,9 @@ describe('AltitudeInput component', () => {
         nextDropdownValue: 'meters',
         errorMessage: 'test error message',
         inputName: 'testInput',
-        handleInputChange: Sinon.spy()
+        handleInputChange: Sinon.spy(),
+        handleInputFocus: Sinon.spy(),
+        handleInputBlur: Sinon.spy()
     };
 
 
@@ -54,6 +56,8 @@ describe('AltitudeInput component', () => {
                     selectedAltitudeUnit={ mocks.selectedAltitudeUnit }
                     inputName={ mocks.inputName }
                     onChange={ mocks.handleInputChange }
+                    onFocus={ mocks.handleInputFocus }
+                    onBlur={ mocks.handleInputBlur }
                     />
             );
 
@@ -107,6 +111,22 @@ describe('AltitudeInput component', () => {
 
             expect(mocks.handleInputChange).to.have.been.calledTwice;
             expect(mocks.handleInputChange).to.have.been.calledWith(defaults.dropdownInputName, mocks.nextDropdownValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            let input = component.refs[mocks.inputName];
+            Simulate.focus(input);
+            Simulate.blur(input);
+
+            expect(mocks.handleInputFocus).to.have.been.calledOnce;
+            expect(mocks.handleInputBlur).to.have.been.calledOnce;
+
+            let dropdown = renderedDOMElement.querySelector('select ');
+            Simulate.focus(dropdown);
+            Simulate.blur(dropdown);
+
+            expect(mocks.handleInputFocus).to.have.been.calledTwice;
+            expect(mocks.handleInputBlur).to.have.been.calledTwice;
         });
     });
 

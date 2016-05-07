@@ -119,7 +119,7 @@ describe('Notice component', () => {
 
             Simulate.click(actionButton);
 
-            expect(mocks.handleClick).to.have.not.been.calledOnce;
+            expect(mocks.handleClick).to.have.been.calledOnce;
         });
     });
 });

@@ -37,7 +37,9 @@ describe('PasswordInput component', () => {
         labelText: 'Test label',
         errorMessage: 'test error message',
         inputName: 'testInput',
-        handleInputChange: Sinon.spy()
+        handleInputChange: Sinon.spy(),
+        handleInputFocus: Sinon.spy(),
+        handleInputBlur: Sinon.spy()
     };
 
 
@@ -49,6 +51,8 @@ describe('PasswordInput component', () => {
                     labelText={ mocks.labelText }
                     inputName={ mocks.inputName }
                     onChange={ mocks.handleInputChange }
+                    onFocus={ mocks.handleInputFocus }
+                    onBlur={ mocks.handleInputBlur }
                     />
             );
 
@@ -87,6 +91,15 @@ describe('PasswordInput component', () => {
 
             expect(mocks.handleInputChange).to.have.been.calledOnce;
             expect(mocks.handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            let input = component.refs.input;
+            Simulate.focus(input);
+            Simulate.blur(input);
+
+            expect(mocks.handleInputFocus).to.have.been.calledOnce;
+            expect(mocks.handleInputBlur).to.have.been.calledOnce;
         });
     });
 

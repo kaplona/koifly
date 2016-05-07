@@ -33,7 +33,9 @@ describe('Dropdown component', () => {
         emptyValue: 'empty value',
         inputName: 'testInput',
         className: 'test class',
-        handleSelectChange: Sinon.spy()
+        handleSelectChange: Sinon.spy(),
+        handleSelectFocus: Sinon.spy(),
+        handleSelectBlur: Sinon.spy()
     };
 
     var mockOptions = [
@@ -52,6 +54,8 @@ describe('Dropdown component', () => {
                     inputName={ mocks.inputName }
                     className={ mocks.className }
                     onChangeFunc={ mocks.handleSelectChange }
+                    onFocus={ mocks.handleSelectFocus }
+                    onBlur={ mocks.handleSelectBlur }
                     />
             );
 
@@ -94,6 +98,14 @@ describe('Dropdown component', () => {
 
             expect(mocks.handleSelectChange).to.have.been.calledOnce;
             expect(mocks.handleSelectChange).to.have.been.calledWith(mocks.inputName, mocks.nextSelectedValue);
+        });
+
+        it('calls onFocus and onBlur functions', () => {
+            Simulate.focus(renderedDOMElement);
+            Simulate.blur(renderedDOMElement);
+
+            expect(mocks.handleSelectFocus).to.have.been.calledOnce;
+            expect(mocks.handleSelectBlur).to.have.been.calledOnce;
         });
     });
 
