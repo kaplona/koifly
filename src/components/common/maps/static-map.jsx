@@ -99,7 +99,7 @@ var StaticMap = React.createClass({
         var className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
         return (
-            <div className={ this.props.isFullScreen ? 'static-container' : null }>
+            <div className={ this.props.isFullScreen ? 'static-wrapper' : null }>
                 <div className={ className } ref='map'/>
             </div>
         );

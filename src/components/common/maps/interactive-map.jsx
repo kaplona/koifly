@@ -151,7 +151,7 @@ var InteractiveMap = React.createClass({
 
     render: function() {
         return (
-            <div className='interactive-container'>
+            <div className='interactive-wrapper'>
                 <div className='map-container x-full-screen' ref='map' />
                 <div className='dimmer' onClick={ this.props.onMapClose } />
             </div>

@@ -16,8 +16,6 @@
   }
 
   &.x-full-screen {
-    z-index: 4;
-
     @media (max-width: (@medium-viewport - 1)) {
       height: 100%;
       margin: 0;
@@ -32,30 +30,28 @@
   }
 }
 
-
-.static-container {
-  @media (max-width: (@medium-viewport - 1)) {
-    .border-box();
-
-    width: 100%;
-    padding: @menu-height 0;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-  }
-}
-
-
-.interactive-container {
-  .border-box();
-
+.wrapper() {
   width: 100%;
   padding: @menu-height 0;
+  z-index: @map-popup-z-index;
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
+}
+
+
+.static-wrapper {
+  @media (max-width: (@medium-viewport - 1)) {
+    .border-box();
+    .wrapper();
+  }
+}
+
+
+.interactive-wrapper {
+  .border-box();
+  .wrapper();
 
   @media (min-width: @medium-viewport) {
     padding: 0;
@@ -75,7 +71,7 @@
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 1;
+    z-index: @dimmer-z-index;
   }
 }
 
