@@ -26,6 +26,7 @@
 
       height: 500px;
       margin: @row-height * 0.4;
+      z-index: @map-popup-z-index;
     }
   }
 }
@@ -33,7 +34,7 @@
 .wrapper() {
   width: 100%;
   padding: @menu-height 0;
-  z-index: @map-popup-z-index;
+  z-index: @dimmer-z-index;
   position: fixed;
   top: 0;
   bottom: 0;
