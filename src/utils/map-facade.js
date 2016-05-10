@@ -5,6 +5,7 @@ var Promise = require('es6-promise').Promise;
 var Util = require('./util');
 
 const CENTER = require('../constants/map-constants').CENTER;
+const GOOGLE_MAPS_API_KEY = require('../secrets').googleMapsApiKey;
 const INFOWINDOW_WIDTH = require('../constants/map-constants').INFOWINDOW_WIDTH;
 const UNKNOWN_ADDRESS = require('../constants/map-constants').UNKNOWN_ADDRESS;
 const UNKNOWN_ELEVATION = require('../constants/map-constants').UNKNOWN_ELEVATION;
@@ -12,7 +13,7 @@ const UNKNOWN_ELEVATION = require('../constants/map-constants').UNKNOWN_ELEVATIO
 // Load google maps api
 // On success extend basic Map object with map interactive functionality
 // Emit event that map was loaded
-var googleMapsApi = require('google-maps-api')('AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s');
+var googleMapsApi = require('google-maps-api')(GOOGLE_MAPS_API_KEY);
 var mapsApiPromise = googleMapsApi();
 
 
