@@ -312,8 +312,8 @@ var FlightModel = {
      */
     getAltitudeAboveLaunch: function(siteId, flightAltitude) {
         var siteAltitude = siteId ? SiteModel.getLaunchAltitude(siteId) : 0;
-        var altitudeDiff = parseFloat(flightAltitude) - parseFloat(siteAltitude);
-        return Altitude.getAltitudeInPilotUnits(altitudeDiff);
+        flightAltitude = Altitude.getAltitudeInPilotUnits(parseFloat(flightAltitude));
+        return flightAltitude - siteAltitude;
     },
 
 
