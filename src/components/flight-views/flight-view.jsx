@@ -116,7 +116,7 @@ var FlightView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.hoursMinutes(this.state.item.airtime) }
+                            value={ Util.formatTime(this.state.item.airtime) }
                             />
                     </SectionRow>
                     

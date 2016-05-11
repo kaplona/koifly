@@ -142,7 +142,7 @@ var PilotView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.hoursMinutes(airtimeTotal) }
+                            value={ Util.formatTime(airtimeTotal) }
                             />
                     </SectionRow>
                     

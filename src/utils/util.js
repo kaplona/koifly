@@ -84,14 +84,35 @@ var Util = {
      * @param {number} timeInMinutes
      * @returns {string} - time in '3 h 45 min' format
      */
-    hoursMinutes: function(timeInMinutes) {
-        if (timeInMinutes < 60) {
-            return timeInMinutes + ' min';
+    formatTime: function(timeInMinutes) {
+        var hoursMinutes = this.getHoursMinutes(timeInMinutes);
+        var result = null;
+
+        if (hoursMinutes.hours) {
+            result = `${hoursMinutes.hours} h`;
         }
 
-        var hours = Math.floor(timeInMinutes / 60);
-        var minutes = timeInMinutes % 60;
-        return hours + ' h ' + minutes + ' min';
+        if (hoursMinutes.minutes) {
+            result = result ? `${result} ${hoursMinutes.minutes} min` : `${hoursMinutes.minutes} min`;
+        }
+
+        return result ? result : '–';
+    },
+
+
+    /**
+     * @param {number} timeInMinutes
+     * @returns {{hours: *, minutes: *}} - object with `hours` and `minutes` keys
+     * where `hours` and `minutes` are numbers
+     * `hours` is null when timeInMinutes less than one hour
+     * `minutes` is null when timeInMinutes is round amount of hours
+     * both are null when timeInMinutes is 0
+     */
+    getHoursMinutes: function(timeInMinutes) {
+        return {
+            hours: timeInMinutes >= 60 ? Math.floor(timeInMinutes / 60) : null,
+            minutes: timeInMinutes ? timeInMinutes % 60 : null
+        };
     },
 
 

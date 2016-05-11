@@ -5,6 +5,7 @@ var _ = require('lodash');
 var BaseModel = require('./base-model');
 var dataService = require('../services/data-service');
 var ErrorTypes = require('../errors/error-types');
+var Util = require('../utils/util');
 
 
 var PilotModel = {
@@ -106,16 +107,15 @@ var PilotModel = {
         // If initialFlightNum or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
         var initialFlightNum = pilot.initialFlightNum || '';
-        var hours = pilot.initialAirtime > 60 ? Math.floor(pilot.initialAirtime / 60) : '';
-        var minutes = pilot.initialAirtime ? pilot.initialAirtime % 60 : '';
+        var hoursMinutes = Util.getHoursMinutes(pilot.initialAirtime);
 
         return {
             email: pilot.email,
             userName: pilot.userName,
             initialFlightNum: initialFlightNum.toString(),
             altitudeUnit: pilot.altitudeUnit,
-            hours: hours.toString(),
-            minutes: minutes.toString()
+            hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
+            minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : ''
         };
     },
     

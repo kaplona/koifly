@@ -144,8 +144,7 @@ var FlightModel = {
         // If altitude or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
         var altitude = flight.altitude ? Altitude.getAltitudeInPilotUnits(flight.altitude) : '';
-        var hours = flight.airtime > 60 ? Math.floor(flight.airtime / 60) : '';
-        var minutes = flight.airtime ? flight.airtime % 60 : '';
+        var hoursMinutes = Util.getHoursMinutes(flight.airtime);
 
         return {
             id: flight.id,
@@ -154,8 +153,8 @@ var FlightModel = {
             altitude: altitude.toString(),
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             gliderId: (flight.gliderId === null) ? null : flight.gliderId.toString(),
-            hours: hours.toString(),
-            minutes: minutes.toString(),
+            hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
+            minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : '',
             remarks: flight.remarks
         };
     },

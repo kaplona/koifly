@@ -79,7 +79,7 @@ var GliderView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Total airtime:'
-                            value={ Util.hoursMinutes(this.state.item.trueAirtime) }
+                            value={ Util.formatTime(this.state.item.trueAirtime) }
                             />
                     </SectionRow>
 
@@ -97,7 +97,7 @@ var GliderView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.hoursMinutes(this.state.item.initialAirtime) }
+                            value={ Util.formatTime(this.state.item.initialAirtime) }
                             />
                     </SectionRow>
 

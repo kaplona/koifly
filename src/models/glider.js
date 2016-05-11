@@ -141,15 +141,14 @@ var GliderModel = {
         // If initialFlightNum or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
         var initialFlightNum = glider.initialFlightNum || '';
-        var hours = glider.initialAirtime > 60 ? Math.floor(glider.initialAirtime / 60) : '';
-        var minutes = glider.initialAirtime ? glider.initialAirtime % 60 : '';
+        var hoursMinutes = Util.getHoursMinutes(glider.initialAirtime);
 
         return {
             id: glider.id,
             name: glider.name,
             initialFlightNum: initialFlightNum.toString(),
-            hours: hours.toString(),
-            minutes: minutes.toString(),
+            hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
+            minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : '',
             remarks: glider.remarks
         };
     },
