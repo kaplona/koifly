@@ -58,6 +58,13 @@ a {
     display: none;
   }
 
+  // disable Firefox red highlight on form submit
+  // when input content fails to validate according to the input's type setting
+  // specific case: input pattern [0-9]* used for mobile keyboard style shouldn't trigger FF validation
+  input:invalid {
+    box-shadow: none;
+  }
+
   select {
     -moz-appearance: none; // hides select arrow in Firefox (its design is meh...)
   }
