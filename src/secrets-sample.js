@@ -38,7 +38,10 @@ var Secrets = {
     mailgunPassword: 'mailgun-password',
 
     // your google-maps-api key
-    googleMapsApiKey: 'AIzaSyBz1tSd7GuxPzuUdHxOIA6nDWODomNAE3s',
+    googleMapsApiKey: 'key',
+
+    // your google analytics tracking id
+    googleTrackingId: 'UI-*******-**',
 
     // SSL assets
     shouldUseSSL: false, // true for production server with SSL certificate

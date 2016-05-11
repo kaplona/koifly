@@ -5,6 +5,8 @@ var getWebpackAssets = require('../../tools/get-webpack-assets');
 var React = require('react');
 var Home = require('../../components/home-page/home.jsx');
 
+const TRACKING_CODE_SNIPPET = require('../../constants/tracking-code-snippet');
+
 
 var About = React.createClass({
 
@@ -29,6 +31,8 @@ var About = React.createClass({
                     <meta property='og:type' content='website' />
                     <meta property='og:url' content={ config.server.rootUrl } />
                     <meta property='og:image' content={ `${config.server.rootUrl}/static/icons/koifly-about-icon.png` } />
+
+                    <script dangerouslySetInnerHTML={ { __html: TRACKING_CODE_SNIPPET } } />
                 </head>
                 <body>
                     <Home isLoggedIn={ this.props.isLoggedIn } />

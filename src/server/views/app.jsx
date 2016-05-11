@@ -4,6 +4,8 @@ var config = require('../../config/variables');
 var getWebpackAssets = require('../../tools/get-webpack-assets');
 var React = require('react');
 
+const TRACKING_CODE_SNIPPET = require('../../constants/tracking-code-snippet');
+
 
 var App = React.createClass({
 
@@ -19,6 +21,7 @@ var App = React.createClass({
                     <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no' />
                     <title>Koifly - Flight logging app for freeflight pilots</title>
                     <script src={ getWebpackAssets().app.js }></script>
+                    <script dangerouslySetInnerHTML={ { __html: TRACKING_CODE_SNIPPET } } />
                     <link rel='stylesheet' type='text/css' href={ getWebpackAssets().app.css } />
 
                     <link rel='icon' type='image/png' sizes='32x32' href='/static/icons/koifly-icon-32x32-round.png' />
