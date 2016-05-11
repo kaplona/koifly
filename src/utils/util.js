@@ -141,7 +141,7 @@ var Util = {
      * @returns {boolean} - whether value is a number (or a string representing a number)
      */
     isNumber: function(val) {
-        return !isNaN(val * 1);
+        return !isNaN(val * 1) && val.toString().toLowerCase().indexOf('e') === -1;
     },
 
 
