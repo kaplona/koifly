@@ -14,7 +14,7 @@ var EmailMessageTemplates = {
         ].join('\n'),
 
         html: [
-            '<p><b>Your Koifly password was changed</b></p>',
+            '<p><b>Your Koifly password was changed.</b></p>',
             '<p>If it was not you follow the link to reset your password:</p>',
             '<p><a href="%url">%url</a></p><br/>',
             '<p>Fly safe!</p>'
@@ -32,7 +32,7 @@ var EmailMessageTemplates = {
         ].join('\n'),
 
         html: [
-            '<p><b>You successfully signed in to Koifly application</b></p>',
+            '<p><b>You successfully signed in to Koifly application.</b></p>',
             '<p>To complete your registration and confirm your email follow the link:</p>',
             '<p><a href="%url">%url</a></p><br/>',
             '<p>Fly safe!</p>'
@@ -43,14 +43,14 @@ var EmailMessageTemplates = {
         from: 'Koifly <noreply@koifly.com>',
         subject: 'Koifly password reset',
         text: [
-            'You requested for Koifly password reset.',
+            'You have requested Koifly password reset.',
             'Follow the link and fill in the form:',
             '%url',
             'Fly safe!'
         ].join('\n'),
 
         html: [
-            '<p><b>You requested for Koifly password reset</b></p>',
+            '<p><b>You have requested Koifly password reset.</b></p>',
             '<p>Follow the link and fill in the form:</p>',
             '<p><a href="%url">%url</a></p><br/>',
             '<p>Fly safe!</p>'
@@ -61,14 +61,14 @@ var EmailMessageTemplates = {
         from: 'Koifly <noreply@koifly.com>',
         subject: 'Log in to Koifly with your email',
         text: [
-            'You do not need to have your password handy any more.',
+            'You have requested one-time-login link.',
             'Log in to your Koifly account by clicking on the link:',
             '%url',
             'Fly safe!'
         ].join('\n'),
 
         html: [
-            '<p><b>You do not need to have your password handy any more</b></p>',
+            '<p><b>You have requested one-time-login link.</b></p>',
             '<p>Log in to your Koifly account by clicking on the link:</p>',
             '<p><a href="%url">%url</a></p><br/>',
             '<p>Fly safe!</p>'

@@ -79,7 +79,7 @@ var OneTimeLogin = React.createClass({
 
     renderNotice: function() {
         if (this.state.lastSentEmailAddress) {
-            var noticeText = 'Email with verification link was successfully sent to ' + this.state.lastSentEmailAddress;
+            var noticeText = 'One-time-login link was successfully sent to ' + this.state.lastSentEmailAddress;
             return <Notice text={ noticeText } />;
         }
     },
@@ -165,7 +165,7 @@ var OneTimeLogin = React.createClass({
     
                             <SectionRow isLast={ true }>
                                 <Description>
-                                    We will send you an email with a link, which will log in you into app
+                                    We will send you an email with a one-time-login link which you can use to login without a password
                                 </Description>
                             </SectionRow>
     

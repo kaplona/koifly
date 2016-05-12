@@ -30,7 +30,7 @@ var GliderModel = {
                 min: 0,
                 round: true,
                 defaultVal: 0,
-                field: 'Initial Flight #'
+                field: 'Initial Number of Flights'
             }
         },
         hours: {

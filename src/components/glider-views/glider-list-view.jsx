@@ -49,7 +49,7 @@ var GliderListView = React.createClass({
             },
             {
                 key: 'trueFlightNum',
-                label: 'Flight#',
+                label: 'Flights',
                 defaultSortingDirection: false
             },
             {

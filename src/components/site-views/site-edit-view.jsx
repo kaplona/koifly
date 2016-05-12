@@ -113,7 +113,7 @@ var SiteEditView = React.createClass({
                     
                     <Section>
                         <SectionTitle>
-                            Site Edit
+                            Edit Site
                         </SectionTitle>
                         
                         <SectionRow>

@@ -65,7 +65,7 @@ var GliderEditView = React.createClass({
 
                     <Section>
                         <SectionTitle>
-                            Glider Edit
+                            Edit Glider
                         </SectionTitle>
 
                         <SectionRow>

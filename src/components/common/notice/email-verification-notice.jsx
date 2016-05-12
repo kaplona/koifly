@@ -17,10 +17,10 @@ var EmailVerificationNotice = React.createClass({
     getDefaultProps: function() {
         return {
             text: [
-                'We sent you email with verification link.',
+                'We sent you an email with a verification link.',
                 'Please follow it to activate your account.',
-                'It is required for your records safety',
-                'since your email is the primary way to access the application'
+                'It is required for safety of your records',
+                'since your email is the only way to access the application'
             ].join(' ')
         };
     },

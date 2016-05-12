@@ -72,7 +72,7 @@ var FlightEditView = React.createClass({
 
                     <Section>
                         <SectionTitle>
-                            Flight Edit
+                            Edit Flight
                         </SectionTitle>
                         
                         <SectionRow>
