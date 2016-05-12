@@ -130,7 +130,7 @@ var FlightView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Glider:'
-                            value={ this.state.item.gliderName }
+                            value={ Util.formatText(this.state.item.gliderName) }
                             />
                     </SectionRow>
 

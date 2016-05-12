@@ -1,5 +1,7 @@
 'use strict';
 
+const EMPTY_FIELD = require('../constants/general-constants').EMPTY_FIELD;
+
 
 var Util = {
 
@@ -105,7 +107,7 @@ var Util = {
             result = result ? `${result} ${hoursMinutes.minutes} min` : `${hoursMinutes.minutes} min`;
         }
 
-        return result ? result : '—';
+        return this.formatText(result);
     },
 
 
@@ -122,6 +124,14 @@ var Util = {
             hours: timeInMinutes >= 60 ? Math.floor(timeInMinutes / 60) : null,
             minutes: timeInMinutes ? timeInMinutes % 60 : null
         };
+    },
+
+    /**
+     * @param {string|null} text
+     * @returns {string} - either passed text or default empty field text
+     */
+    formatText: function(text) {
+        return text ? text : EMPTY_FIELD;
     },
 
 

@@ -8,6 +8,7 @@ const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 var Altitude = require('../../utils/altitude');
 var itemViewMixin = require('../mixins/item-view-mixin');
 var SiteModel = require('../../models/site');
+var Util = require('../../utils/util');
 
 var BreadCrumbs = require('../common/bread-crumbs');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
@@ -88,7 +89,7 @@ var SiteView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Location:'
-                            value={ this.state.item.location }
+                            value={ Util.formatText(this.state.item.location) }
                             />
                     </SectionRow>
 

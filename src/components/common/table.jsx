@@ -2,6 +2,7 @@
 
 var React = require('react');
 var _ = require('lodash');
+var Util = require('../../utils/util');
 
 require('./table.less');
 
@@ -117,7 +118,7 @@ var Table = React.createClass({
                 var columnKey = this.props.columns[i].key;
                 rowToDisplay.push(
                     <td key={ 'cell-' + row.id + '-' + columnKey } >
-                        { (row[columnKey] !== null) ? row[columnKey] : '—' }
+                        { Util.formatText(row[columnKey]) }
                     </td>
                 );
             }

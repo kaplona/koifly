@@ -1,6 +1,7 @@
 'use strict';
 
 var dataService = require('../services/data-service');
+var Util = require('./util');
 
 
 var Altitude = {
@@ -34,7 +35,8 @@ var Altitude = {
      * @returns {string} - altitude followed by user's altitude units or '–'
      */
     formatAltitude: function(altitude) {
-        return (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : '—';
+        var formattedAltitude = (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : null;
+        return Util.formatText(formattedAltitude);
     },
 
     /**
@@ -42,7 +44,8 @@ var Altitude = {
      * @returns {string} - altitude followed by short version of user's altitude units or '–'
      */
     formatAltitudeShort: function(altitude) {
-        return altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : '—';
+        var formattedAltitude = altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : null;
+        return Util.formatText(formattedAltitude);
     },
 
     /**
