@@ -59,7 +59,7 @@ var Site = sequelize.define(
         },
         
         lat: {
-            type: Sequelize.FLOAT(9, 6), // eslint-disable-line new-cap
+            type: Sequelize.DECIMAL(9, 6), // eslint-disable-line new-cap
             allowNull: true,
             defaultValue: null,
             validate: {
@@ -76,7 +76,7 @@ var Site = sequelize.define(
         },
         
         lng: {
-            type: Sequelize.FLOAT(9, 6), // eslint-disable-line new-cap
+            type: Sequelize.DECIMAL(9, 6), // eslint-disable-line new-cap
             allowNull: true,
             defaultValue: null,
             validate: {
