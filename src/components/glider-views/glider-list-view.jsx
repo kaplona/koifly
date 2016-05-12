@@ -1,9 +1,11 @@
 'use strict';
 
 var React = require('react');
+var _ = require('lodash');
 
 var listViewMixin = require('../mixins/list-view-mixin');
 var GliderModel = require('../../models/glider');
+var Util = require('../../utils/util');
 
 var DesktopTopGrid = require('../common/grids/desktop-top-grid');
 var ErrorBox = require('../common/notice/error-box');
@@ -51,16 +53,30 @@ var GliderListView = React.createClass({
                 defaultSortingDirection: false
             },
             {
-                key: 'trueAirtime',
+                key: 'formattedAirtime',
                 label: 'Airtime',
-                defaultSortingDirection: false
+                defaultSortingDirection: false,
+                sortingKey: 'trueAirtime'
             }
         ];
+
+        var rows = [];
+        if (this.state.items) {
+            for (var i = 0; i < this.state.items.length; i++) {
+                rows.push(_.extend(
+                    {},
+                    this.state.items[i],
+                    {
+                        formattedAirtime: Util.formatTime(this.state.items[i].trueAirtime)
+                    }
+                ));
+            }
+        }
 
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.items || [] }
+                rows={ rows }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />

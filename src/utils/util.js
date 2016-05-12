@@ -81,6 +81,15 @@ var Util = {
 
 
     /**
+     * @param {string} date
+     * @returns {string} - four digit year
+     */
+    getDateYear: function(date) {
+        return date.substring(0, 4);
+    },
+
+
+    /**
      * @param {number} timeInMinutes
      * @returns {string} - time in '3 h 45 min' format
      */
@@ -96,7 +105,7 @@ var Util = {
             result = result ? `${result} ${hoursMinutes.minutes} min` : `${hoursMinutes.minutes} min`;
         }
 
-        return result ? result : '–';
+        return result ? result : '—';
     },
 
 

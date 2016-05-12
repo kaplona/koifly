@@ -129,24 +129,24 @@ var SiteEditView = React.createClass({
                         </SectionRow>
 
                         <SectionRow>
-                            <TextInput
-                                inputValue={ this.state.item.location }
-                                labelText='Location:'
-                                inputName='location'
-                                errorMessage={ this.state.validationErrors.location }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
-                        </SectionRow>
-
-                        <SectionRow>
                             <CoordinatesInput
                                 inputValue={ this.state.item.coordinates }
                                 labelText='Coordinates:'
                                 errorMessage={ this.state.validationErrors.coordinates }
                                 onChange={ this.handleInputChange }
                                 onMapShow={ this.handleMapShow }
+                                onFocus={ this.handleInputFocus }
+                                onBlur={ this.handleInputBlur }
+                                />
+                        </SectionRow>
+
+                        <SectionRow>
+                            <TextInput
+                                inputValue={ this.state.item.location }
+                                labelText='Location:'
+                                inputName='location'
+                                errorMessage={ this.state.validationErrors.location }
+                                onChange={ this.handleInputChange }
                                 onFocus={ this.handleInputFocus }
                                 onBlur={ this.handleInputBlur }
                                 />

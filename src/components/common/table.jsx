@@ -76,8 +76,10 @@ var Table = React.createClass({
         var headerNodes = _.map(this.props.columns, column => {
             var arrow = '\u25bc';
             var arrowClassName = 'arrow';
-            if (column.key === this.state.sortingField) {
-                arrow = this.state.sortingDirection ? '\u25bc' : '\u25b2';
+            if (column.key === this.state.sortingField ||
+                column.sortingKey === this.state.sortingField
+            ) {
+                arrow = this.state.sortingDirection ? '\u25b2' : '\u25bc';
             } else {
                 arrowClassName += ' x-hidden';
             }

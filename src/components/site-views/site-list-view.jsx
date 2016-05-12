@@ -2,7 +2,9 @@
 
 var React = require('react');
 var browserHistory = require('react-router').browserHistory;
+var _ = require('lodash');
 
+var Altitude = require('../../utils/altitude');
 var listViewMixin = require('../mixins/list-view-mixin');
 var SiteModel = require('../../models/site');
 
@@ -70,16 +72,30 @@ var SiteListView = React.createClass({
                 defaultSortingDirection: true
             },
             {
-                key: 'launchAltitude',
+                key: 'formattedAltitude',
                 label: 'Altitude',
-                defaultSortingDirection: false
+                defaultSortingDirection: false,
+                sortingKey: 'launchAltitude'
             }
         ];
+
+        var rows = [];
+        if (this.state.items) {
+            for (var i = 0; i < this.state.items.length; i++) {
+                rows.push(_.extend(
+                    {},
+                    this.state.items[i],
+                    {
+                        formattedAltitude: Altitude.formatAltitudeShort(this.state.items[i].launchAltitude)
+                    }
+                ));
+            }
+        }
 
         return (
             <Table
                 columns={ columnsConfig }
-                rows={ this.state.items || [] }
+                rows={ rows }
                 initialSortingField='name'
                 onRowClick={ this.handleRowClick }
                 />

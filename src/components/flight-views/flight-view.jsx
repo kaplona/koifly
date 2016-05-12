@@ -5,6 +5,7 @@ var Link = require('react-router').Link;
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
+var Altitude = require('../../utils/altitude');
 var itemViewMixin = require('../mixins/item-view-mixin');
 var FlightModel = require('../../models/flight');
 var SiteModel = require('../../models/site');
@@ -71,7 +72,7 @@ var FlightView = React.createClass({
             return this.renderLoader();
         }
 
-        var { date, flightNum, flightNumDay, numOfFlightsThatDay, flightNumYear } = this.state.item;
+        var { date, flightNumDay, numOfFlightsThatDay } = this.state.item;
         var flightName = `${date} (${flightNumDay}/${numOfFlightsThatDay})`;
         
         return (
@@ -95,21 +96,27 @@ var FlightView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Flight number:'
-                            value={ `${flightNum} ( ${Util.addOrdinalSuffix(flightNumYear)} for the year )` }
+                            value={ [
+                                Util.addOrdinalSuffix(this.state.item.flightNum),
+                                ', in ',
+                                Util.getDateYear(date),
+                                ': ',
+                                Util.addOrdinalSuffix(this.state.item.flightNumYear)
+                            ].join('') }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Max altitude:'
-                            value={ `${this.state.item.altitude} ${this.state.item.altitudeUnit}` }
+                            value={ Altitude.formatAltitude(this.state.item.altitude) }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Above launch:'
-                            value={ `${this.state.item.altitudeAboveLaunch} ${this.state.item.altitudeUnit}` }
+                            value={ Altitude.formatAltitude(this.state.item.altitudeAboveLaunch) }
                             />
                     </SectionRow>
                     

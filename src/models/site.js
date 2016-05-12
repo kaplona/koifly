@@ -76,15 +76,12 @@ var SiteModel = {
             return storeContent;
         }
 
-        var altitudeUnit = Altitude.getUserAltitudeUnit();
-
         return objectValues(storeContent).map(site => {
             return {
                 id: site.id,
                 name: site.name,
                 location: site.location,
                 launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
-                altitudeUnit: altitudeUnit,
                 coordinates: Util.coordinatesToString(site.coordinates),
                 latLng: site.coordinates
             };
@@ -116,7 +113,6 @@ var SiteModel = {
             coordinates: Util.coordinatesToString(site.coordinates),
             latLng: site.coordinates,
             launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
-            altitudeUnit: Altitude.getUserAltitudeUnit(),
             flightNum: flightStats.total,
             flightNumThisYear: flightStats.thisYear,
             remarks: site.remarks

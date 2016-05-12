@@ -116,7 +116,6 @@ var FlightModel = {
             gliderName: flight.gliderId ? GliderModel.getGliderName(flight.gliderId) : null,
             altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
             altitudeAboveLaunch: this.getAltitudeAboveLaunch(flight.siteId, flight.altitude),
-            altitudeUnit: Altitude.getUserAltitudeUnit(),
             airtime: flight.airtime,
             remarks: flight.remarks
         };

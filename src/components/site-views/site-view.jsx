@@ -5,6 +5,7 @@ var Link = require('react-router').Link;
 
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
+var Altitude = require('../../utils/altitude');
 var itemViewMixin = require('../mixins/item-view-mixin');
 var SiteModel = require('../../models/site');
 
@@ -63,6 +64,9 @@ var SiteView = React.createClass({
         }
 
         var { flightNum, flightNumThisYear } = this.state.item;
+        if (flightNumThisYear) {
+            flightNum += `, incl. this year: ${flightNumThisYear}`;
+        }
 
         return (
             <View onStoreModified={ this.handleStoreModified }>
@@ -91,21 +95,21 @@ var SiteView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Launch altitude:'
-                            value={ this.state.item.launchAltitude + ' ' + this.state.item.altitudeUnit }
+                            value={ Altitude.formatAltitude(this.state.item.launchAltitude) }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Coordinates:'
-                            value={ this.state.item.coordinates }
+                            value={ this.state.item.coordinates ? this.state.item.coordinates : '—' }
                             />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ `${flightNum} ( this year: ${flightNumThisYear} )` }
+                            value={ flightNum }
                             />
                     </SectionRow>
 

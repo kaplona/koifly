@@ -9,12 +9,40 @@ var Altitude = {
         feet: 3.28084
     },
 
+    altitudeUnitsShort: {
+        meters: 'm',
+        feet: 'ft'
+    },
+
     /**
      * Gets name of current user's altitude units
      * @returns {string} name of current user's altitude units
      */
     getUserAltitudeUnit: function() {
         return dataService.store.pilot.altitudeUnit;
+    },
+
+    /**
+     * @returns {string} - short version of altitude units
+     */
+    getUserAltitudeUnitShort: function() {
+        return this.altitudeUnitsShort[this.getUserAltitudeUnit()];
+    },
+
+    /**
+     * @param {number} altitude
+     * @returns {string} - altitude followed by user's altitude units or '–'
+     */
+    formatAltitude: function(altitude) {
+        return (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : '—';
+    },
+
+    /**
+     * @param {number} altitude
+     * @returns {string} - altitude followed by short version of user's altitude units or '–'
+     */
+    formatAltitudeShort: function(altitude) {
+        return altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : '—';
     },
 
     /**

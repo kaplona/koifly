@@ -51,6 +51,9 @@ var GliderView = React.createClass({
         }
 
         var { trueFlightNum, flightNumThisYear } = this.state.item;
+        if (flightNumThisYear) {
+            trueFlightNum += `, incl. this year: ${flightNumThisYear}`;
+        }
 
         return (
             <View onStoreModified={ this.handleStoreModified }>
@@ -72,7 +75,7 @@ var GliderView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Total flights:'
-                            value={ `${trueFlightNum} ( this year: ${flightNumThisYear} )` }
+                            value={ trueFlightNum }
                             />
                     </SectionRow>
 

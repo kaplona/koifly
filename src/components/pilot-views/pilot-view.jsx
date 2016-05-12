@@ -119,7 +119,10 @@ var PilotView = React.createClass({
             return this.renderLoader();
         }
 
-        var { airtimeTotal, flightNumThisYear, flightNumTotal } = this.state.pilot;
+        var { flightNumThisYear, flightNumTotal } = this.state.pilot;
+        if (flightNumThisYear) {
+            flightNumTotal += `, incl. this year: ${flightNumThisYear}`;
+        }
 
         return (
             <View onStoreModified={ this.handleStoreModified }>
@@ -135,14 +138,14 @@ var PilotView = React.createClass({
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ `${flightNumTotal} ( this year: ${flightNumThisYear} )` }
+                            value={ flightNumTotal }
                             />
                     </SectionRow>
                     
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.formatTime(airtimeTotal) }
+                            value={ Util.formatTime(this.state.pilot.airtimeTotal) }
                             />
                     </SectionRow>
                     

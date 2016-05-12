@@ -3,6 +3,7 @@
 var React = require('react');
 var _ = require('lodash');
 
+var Altitude = require('../../utils/altitude');
 var listViewMixin = require('../mixins/list-view-mixin');
 var FlightModel = require('../../models/flight');
 var Util = require('../../utils/util');
@@ -54,14 +55,16 @@ var FlightListView = React.createClass({
                 defaultSortingDirection: true
             },
             {
-                key: 'altitude',
+                key: 'formattedAltitude',
                 label: 'Altitude',
-                defaultSortingDirection: false
+                defaultSortingDirection: false,
+                sortingKey: 'altitude'
             },
             {
-                key: 'airtime',
+                key: 'formattedAirtime',
                 label: 'Airtime',
-                defaultSortingDirection: false
+                defaultSortingDirection: false,
+                sortingKey: 'airtime'
             }
         ];
         
@@ -71,7 +74,11 @@ var FlightListView = React.createClass({
                 rows.push(_.extend(
                     {},
                     this.state.items[i],
-                    { formattedDate: Util.formatDate(this.state.items[i].date) }
+                    {
+                        formattedDate: Util.formatDate(this.state.items[i].date),
+                        formattedAltitude: Altitude.formatAltitudeShort(this.state.items[i].altitude),
+                        formattedAirtime: Util.formatTime(this.state.items[i].airtime)
+                    }
                 ));
             }
         }
