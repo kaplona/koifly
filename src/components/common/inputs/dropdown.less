@@ -1,0 +1,28 @@
+
+@import (reference) '../../constants';
+
+
+.dropdown {
+  margin: 0;
+  padding: 0;
+
+  @media (min-width: @medium-viewport) {
+    @arrow-padding: 18px;
+
+    &::after {
+      content: '▼';
+      font-size: 0.7em;
+      color: @dark-blue;
+      pointer-events: none; // pointer event goes “through” the arrow and target “underneath” select element instead
+      position: relative;
+      right: @arrow-padding;
+      top: -0.2em;
+    }
+
+    select {
+      padding-right: @arrow-padding;
+      -webkit-appearance: none; // disables background color in Safari and arrows in Safari and Chrome
+      -moz-appearance: none; // hides select arrow in Firefox (its design is meh...)
+    }
+  }
+}

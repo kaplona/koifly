@@ -5,22 +5,24 @@
 
 .screen-shots {
   width: 100%;
-  margin-top: 30px; // ???
+  margin-top: 30px;
 
   @media (min-width: @small-viewport) {
+    height: 320px; // for old browsers with no support of vw
     height: 42vw;
     position: relative;
   }
 
   @media (min-width: @medium-viewport) {
-    margin-top: 1.2em; // the same as for h2
     max-height: 440px;
+    height: 440px; // for old browsers with no support of vw
+    height: 42vw;
+    margin-top: 1.2em; // the same as for h2
   }
 }
 
 
 .screen-shot {
-  //padding-top: 90%;
   background-repeat: no-repeat;
   background-size: cover;
   box-shadow: 0 0 7px -1px black;
@@ -28,6 +30,7 @@
   @media (max-width: (@small-viewport - 1)) {
     max-width: 320px;
     max-height: 315px;
+    height: 240px; // for old browsers with no support of vw
     height: 80vw;
     margin: 0 auto;
   }
@@ -39,8 +42,6 @@
   }
 
   @media (min-width: @medium-viewport) {
-    //width: 400px;
-    //height: 400px;
     width: 70%;
     padding-top: 70%;
     position: absolute;

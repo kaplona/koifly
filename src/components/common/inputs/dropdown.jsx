@@ -3,6 +3,8 @@
 var React = require('react');
 var _ = require('lodash');
 
+require('./dropdown.less');
+
 
 var { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
 
@@ -50,16 +52,18 @@ var Dropdown = React.createClass({
         });
 
         return (
-            <select
-                className={ this.props.className || null }
-                value={ this.props.selectedValue }
-                onChange={ this.handleUserInput }
-                onFocus={ this.props.onFocus }
-                onBlur={ this.props.onBlur }
-                ref='selectInput'
-                >
-                { selectOptions }
-            </select>
+            <div className='dropdown'>
+                <select
+                    className={ this.props.className || null }
+                    value={ this.props.selectedValue }
+                    onChange={ this.handleUserInput }
+                    onFocus={ this.props.onFocus }
+                    onBlur={ this.props.onBlur }
+                    ref='selectInput'
+                    >
+                    { selectOptions }
+                </select>
+            </div>
         );
     }
 });

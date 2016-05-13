@@ -29,6 +29,7 @@ body {
 
 
   .home-pic {
+    height: 340px; // for old browsers with no support of vw
     height: 66vw;
     background-repeat: no-repeat;
     background-size: cover;
@@ -196,7 +197,7 @@ body {
     }
 
     .about-me-text {
-      padding: 10px 30px;
+      padding: 10px 30px 30px 30px;
 
       @media (min-width: @medium-viewport) {
         max-width: 455px;
@@ -215,14 +216,14 @@ body {
     background-position: center;
 
     @media (max-width: (@medium-viewport - 1)) {
+      height: 340px; // for old browsers with no support of vw
       height: 66vw;
-      margin-top: 20px;
       background-image: url('/static/images/my-pic-mobile.jpg');
     }
 
     @media (min-width: @medium-viewport) {
       height: 33vw;
-      min-height: 390px;
+      min-height: 426px;
       max-height: 567px;
       background-image: url('/static/images/my-pic-desktop.jpg');
     }
