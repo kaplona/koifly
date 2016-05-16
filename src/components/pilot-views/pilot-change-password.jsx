@@ -35,6 +35,7 @@ var PilotChangePassword = React.createClass({
             newPassword: '',
             passwordConfirm: '',
             error: null,
+            loadingError: null,
             isSaving: false,
             successNotice: false,
             isUserActivated: true,
@@ -47,7 +48,15 @@ var PilotChangePassword = React.createClass({
     },
 
     handleStoreModified: function() {
-        this.setState({ isUserActivated: PilotModel.getUserActivationStatus() });
+        var activationStatus = PilotModel.getUserActivationStatus();
+        if (activationStatus && activationStatus.error) {
+            this.setState({ loadingError: activationStatus.error });
+            return;
+        }
+        this.setState({
+            isUserActivated: activationStatus,
+            loadingError: null
+        });
     },
 
     handleInputChange: function(inputName, inputValue) {
@@ -220,7 +229,7 @@ var PilotChangePassword = React.createClass({
         }
         
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.error }>
+            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
 
                 <CompactContainer>

@@ -181,14 +181,17 @@ var PilotModel = {
     
 
     /**
-     * @returns {boolean} - is pilot's email verified,
+     * @returns {boolean|object} - is pilot's email verified or loading error object
      * true - if no information about pilot yet,
      * so he won't get email verification notice until we know for sure that email is not verified
      */
     getUserActivationStatus: function() {
         var pilot = this.getStoreContent();
-        if (!pilot || pilot.error) {
+        if (!pilot) {
             return true;
+        }
+        if (pilot.error) {
+            return pilot;
         }
         return pilot.isActivated;
     },
