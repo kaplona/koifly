@@ -171,7 +171,6 @@ var FlightModel = {
             return storeContent;
         }
 
-        var siteAltitude;
         var lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties
@@ -181,16 +180,11 @@ var FlightModel = {
             };
         }
 
-        if (lastFlight.siteId) {
-            siteAltitude = SiteModel.getLaunchAltitude(lastFlight.siteId);
-        }
-        siteAltitude = siteAltitude || '';
-
         return {
             date: Util.today(),
             // null if no sites yet otherwise last added site id
             siteId: (lastFlight.siteId === null) ? null : lastFlight.siteId.toString(),
-            altitude: siteAltitude.toString(),
+            altitude: '',
             altitudeUnit: Altitude.getUserAltitudeUnit(),
             // null if no sites yet otherwise last added glider id
             gliderId: (lastFlight.gliderId === null) ? null : lastFlight.gliderId.toString(),

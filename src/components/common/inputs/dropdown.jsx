@@ -6,7 +6,7 @@ var _ = require('lodash');
 require('./dropdown.less');
 
 
-var { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
+var { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
 
 var Dropdown = React.createClass({
 
@@ -19,9 +19,16 @@ var Dropdown = React.createClass({
         inputName: string.isRequired,
         emptyValue: oneOfType([string, number]),
         className: string,
+        isEnabled: bool.isRequired,
         onChangeFunc: func.isRequired,
         onFocus: func,
         onBlur: func
+    },
+
+    getDefaultProps: function() {
+        return {
+            isEnabled: true
+        };
     },
 
     handleUserInput: function() {
@@ -56,6 +63,7 @@ var Dropdown = React.createClass({
                 <select
                     className={ this.props.className || null }
                     value={ this.props.selectedValue }
+                    disabled={ !this.props.isEnabled }
                     onChange={ this.handleUserInput }
                     onFocus={ this.props.onFocus }
                     onBlur={ this.props.onBlur }

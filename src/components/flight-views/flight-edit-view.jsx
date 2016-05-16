@@ -3,6 +3,7 @@
 var React = require('react');
 var _ = require('lodash');
 
+var Altitude = require('../../utils/altitude');
 var editViewMixin = require('../mixins/edit-view-mixin');
 var FlightModel = require('../../models/flight');
 var GliderModel = require('../../models/glider');
@@ -35,8 +36,30 @@ var FlightEditView = React.createClass({
 
     getInitialState: function() {
         return {
-            validationErrors: _.clone(FlightEditView.formFields)
+            validationErrors: _.clone(FlightEditView.formFields),
+            isSledRide: false
         };
+    },
+    
+    handleSledRide: function(isSledRide) {
+        if (!isSledRide) {
+            this.setState({ isSledRide: false });
+            return;
+        }
+        
+        var altitude = this.state.item.altitude;
+        var altitudeUnit = this.state.item.altitudeUnit;
+        if (this.state.item.siteId) {
+            altitude = SiteModel.getLaunchAltitude(this.state.item.siteId).toString();
+            altitudeUnit = Altitude.getUserAltitudeUnit();
+        }
+        
+        var item = _.extend({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
+        
+        this.setState({
+            item: item,
+            isSledRide: true
+        });
     },
     
     renderMobileTopMenu: function() {
@@ -112,6 +135,8 @@ var FlightEditView = React.createClass({
                                 onChange={ this.handleInputChange }
                                 onFocus={ this.handleInputFocus }
                                 onBlur={ this.handleInputBlur }
+                                onSledRide={ this.handleSledRide }
+                                isSledRide={ this.state.isSledRide }
                                 />
                         </SectionRow>
 

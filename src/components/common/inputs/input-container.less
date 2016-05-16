@@ -42,6 +42,7 @@
   input, select {
     .border-box();
 
+    margin: 0;
     outline: none; // no blue glowing around input
 
     @media (max-width: (@medium-viewport - 1)) {
@@ -59,9 +60,19 @@
       border-radius: 5px;
       color: @dark-blue;
 
+      &:disabled {
+        background-color: @base-color;
+      }
+
       &.x-error {
         border-color: @brick-color;
       }
+    }
+  }
+
+  input {
+    @media (min-width: @medium-viewport) {
+      margin-right: @row-height * 0.2;
     }
   }
 
