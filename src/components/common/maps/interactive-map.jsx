@@ -116,12 +116,14 @@ var InteractiveMap = React.createClass({
                     '<div>' +
                         '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
                             ' style="display:inline;width:12px;">' +
-                        _.escape(location) +
+                        '<label for="location_checkbox">' + _.escape(location) + '</label>' +
                     '</div>' +
                     '<div>' +
                         '<input id="launchAltitude_checkbox" type="checkbox" ' + checkboxParameters.launchAltitude +
                             ' style="display:inline;width:12px;">' +
-                        _.escape(altitude + ' ' + altitudeUnit) +
+                        '<label for="launchAltitude_checkbox">' +
+                            _.escape(altitude + ' ' + altitudeUnit) +
+                        '</label>' +
                     '</div>' +
                     '<div>' +
                         '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +

@@ -175,11 +175,14 @@ var Signup = React.createClass({
                             <SectionRow isLast={ true }>
                                 <Description>
                                     <input
+                                        id='isSubscribed'
                                         type='checkbox'
                                         checked={ this.state.isSubscribed }
                                         onChange={ this.handleCheckboxChange }
                                         />
-                                    Yes, let me know once new features will be added
+                                    <label htmlFor='isSubscribed'>
+                                        Yes, let me know once new features will be added
+                                    </label>
                                 </Description>
                             </SectionRow>
 

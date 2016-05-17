@@ -15,7 +15,7 @@ var EmailVerified = React.createClass({
                 <MobileTopMenu header='Koifly' />
                 <NavigationMenu />
                 
-                <Notice text='Thank you, your email was successfully verified' type='success' />
+                <Notice text='Thank you, you are now logged in and can continue working with Koifly!' type='success' />
             </div>
         );
     }

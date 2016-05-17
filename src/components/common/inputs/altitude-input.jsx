@@ -60,11 +60,12 @@ var AltitudeInput = React.createClass({
             return (
                 <div className='after-comment'>
                     <input
+                        id='sled-ride'
                         type='checkbox'
                         checked={ this.props.isSledRide }
                         onChange={ this.handleCheckboxChange }
                         />
-                    was a sled ride :(
+                    <label htmlFor='sled-ride'>was a sled ride :(</label>
                 </div>
             );
         }
