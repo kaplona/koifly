@@ -1,8 +1,8 @@
-### Minimal Hapi + React + Webpack + HMR Sandbox
+## Minimal Hapi + React + Webpack + HMR Sandbox
 
 https://github.com/raquo/minimal-hapi-react-webpack
 
-## MIT License
+### MIT License
 
 Copyright (c) 2015 Nikita Gazarov
 

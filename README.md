@@ -1,27 +1,38 @@
-# Flight logging app for freeflight pilots
+# Flight Logging App for Freeflight Pilots
 
-This app was designed for hang gliding and paragliding pilots who want to keep records on their flights.
+This app is designed for hang gliding and paragliding pilots who want to keep records on their flights.
 
 
 ## Features
 
-* Keep log of your flights
-* Store and organise information about your flying spots (sites)
-* Have a nice map view of your sites
-* Make your glider inventory
+* Keep a log of your flights
+* Store information about your flying spots (sites)
+* See a nice map view of your sites
 * Check pilot statistics: your number of flights, total airtime and more
-* Mobile friendly
+* Access from anywhere, on any smartphone or computer
 
 
-## Future features
+## Coming Soon
 
 * Data export/import
 * GPS uploading
 * More fields, more statistics
-* Off-line app
+* Offline app
 
 
-### Technical part
+## Technical Stack
 
 * Node.js, Hapi.js, Webpack, Babel, React, React-router
 * Mocha, Chai, Sinon, jsDOM test setup
+
+
+## Author
+
+Anastasia Kaplina
+
+[nkaplina@gmail.com](mailto:nkaplina@gmail.com)
+
+
+# License
+
+[MIT](https://github.com/kaplona/koifly/blob/master/LICENSE.md)
