@@ -1,6 +1,8 @@
 # Flight Logging App for Freeflight Pilots
 
-This app is designed for hang gliding and paragliding pilots who want to keep records on their flights.
+This app is designed for hang gliding and paragliding pilots who want to keep records of their flights.
+
+#### [koifly.com](https://www.koifly.com) - Live app
 
 
 ## Features
@@ -33,6 +35,6 @@ Anastasia Kaplina
 [nkaplina@gmail.com](mailto:nkaplina@gmail.com)
 
 
-# License
+### License
 
 [MIT](https://github.com/kaplona/koifly/blob/master/LICENSE.md)

@@ -159,7 +159,7 @@ var Home = React.createClass({
                         <div className='about-me-text'>
                             <h2>About me</h2>
                             <p>My husband and I are hang gliding pilots in British Columbia, Canada.</p>
-                            <p>Hang gliding and paragliding is a spirit freeing sport, for most of us it’s a life style. But it comes with its own perils. For me, safety is a key factor for enjoyable flights. I use a flight log to refresh my knowledge in the beginning of the season, make some notes, plan flying trips, gather information about new sites , etc.</p>
+                            <p>Hang gliding and paragliding is a spirit freeing sport, for most of us it’s a life style. But it comes with its own perils. For me, safety is a key factor for enjoyable flights. I use a flight log to refresh my knowledge in the beginning of the season, make some notes, plan flying trips, gather information about new sites, etc.</p>
                             <p>As a web developer and a pilot, I decided to combine both my favourite things in life and create an online application to make our flying experience even more pleasurable. I hope you will enjoy using Koifly as much as we do!</p>
                         </div>
                     </FeatureColumn>
