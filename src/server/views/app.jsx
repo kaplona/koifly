@@ -19,7 +19,7 @@ var App = React.createClass({
                     <meta name='keywords' content='Koifly,flight log,hang gliding,paragliding' />
                     <meta name='description' content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly' />
                     <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no' />
-                    <title>Koifly - Flight logging app for freeflight pilots</title>
+                    <title>Koifly — Flight logging app for freeflight pilots</title>
                     <script src={ getWebpackAssets().app.js }></script>
                     <script dangerouslySetInnerHTML={ { __html: TRACKING_CODE_SNIPPET } } />
                     <link rel='stylesheet' type='text/css' href={ getWebpackAssets().app.css } />

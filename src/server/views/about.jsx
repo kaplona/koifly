@@ -24,7 +24,7 @@ var About = React.createClass({
                     <meta name='keywords' content='Koifly,flight log,hang gliding,paragliding' />
                     <meta name='description' content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly' />
                     <meta name='viewport' content='width=device-width,initial-scale=1' />
-                    <title>Koifly - Flight logging app for freeflight pilots</title>
+                    <title>Koifly — Flight logging app for freeflight pilots</title>
                     <link rel='stylesheet' type='text/css' href={ getWebpackAssets().home.css } />
                     
                     <meta property='og:title' content='Koifly' />
