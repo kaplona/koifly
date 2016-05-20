@@ -42,10 +42,11 @@ var App = React.createClass({
 
                     <meta name='apple-mobile-web-app-capable' content='yes' />
                     <meta name='apple-mobile-web-app-status-bar-style' content='black' />
-
-                    <meta property='og:title' content='Koifly' />
-                    <meta property='og:type' content='application' />
+                    
                     <meta property='og:url' content={ `${config.server.rootUrl}/flights` } />
+                    <meta property='og:type' content='website' />
+                    <meta property='og:title' content='Koifly' />
+                    <meta property='og:description' content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly' />
                     <meta property='og:image' content={ `${config.server.rootUrl}/static/icons/koifly-icon.png` } />
                 </head>
                 <body>
