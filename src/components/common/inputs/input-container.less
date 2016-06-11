@@ -29,10 +29,12 @@
   }
 
   .arrow {
-    &:extend(.column);
     .column-width(0.09);
 
-    padding: @row-height * 0.3 0;
+    margin-left: 0;
+    margin-right: 0;
+    font-size: 1.5em;
+    display: inline-block;
 
     @media (min-width: @medium-viewport) {
       display: none;
@@ -43,16 +45,15 @@
     .border-box();
 
     margin: 0;
-    outline: none; // no blue glowing around input
 
     @media (max-width: (@medium-viewport - 1)) {
       height: @row-height;
-      width: 90%;
-      padding: @row-height * 0.3;
+      padding: (@row-height * 0.3) (@row-height * 0.2);
       border: none;
       color: @dark-base;
 
       &:disabled {
+        background-color: inherit;
         color: #000;
         opacity: 1;
       }
@@ -60,7 +61,7 @@
 
     @media (min-width: @medium-viewport) {
       height: @row-height * 0.9;
-      padding: @row-height * 0.2;
+      padding: @row-height * 0.15;
       border: 1px solid @mild-base;
       border-radius: 5px;
       color: @dark-blue;
@@ -75,14 +76,25 @@
     }
   }
 
+  // margin between input and everything that goes after it, like "use a map" link
   input {
     @media (min-width: @medium-viewport) {
       margin-right: @row-height * 0.2;
     }
   }
 
+  input, .dropdown {
+    @media (max-width: (@medium-viewport - 1)) {
+      width: 90%;
+    }
+  }
+
   select {
     background-color: inherit;
+
+    @media (max-width: (@medium-viewport - 1)) {
+      width: 100%;
+    }
 
     @media (min-width: @medium-viewport) {
       min-width: @number-input-width;

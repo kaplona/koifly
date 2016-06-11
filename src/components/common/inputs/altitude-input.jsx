@@ -97,7 +97,7 @@ var AltitudeInput = React.createClass({
                         ref={ this.props.inputName }
                         />
 
-                    <div className='col-of-two second'>
+                    <div className='col-of-two'>
                         <Dropdown
                             selectedValue={ this.props.selectedAltitudeUnit }
                             options={ altitudeUnitsList }

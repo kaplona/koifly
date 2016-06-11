@@ -9,4 +9,11 @@
   @media (min-width: @medium-viewport) {
     display: inline-block;
   }
+
+  @media (max-width: (@medium-viewport - 1)) {
+    label, input[type='checkbox'] {
+      display: inline-block;
+      vertical-align: middle;
+    }
+  }
 }

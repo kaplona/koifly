@@ -119,7 +119,7 @@ var SiteEditView = React.createClass({
                         <SectionRow>
                             <TextInput
                                 inputValue={ this.state.item.name }
-                                labelText={ <span>Name<sup>*</sup>:</span> }
+                                labelText='Name*:'
                                 inputName='name'
                                 errorMessage={ this.state.validationErrors.name }
                                 onChange={ this.handleInputChange }

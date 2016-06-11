@@ -27,6 +27,10 @@ a {
   color: @link-color;
 }
 
+input, select, textarea {
+  outline: none; // no blue glowing around input
+}
+
 input[type=checkbox] {
   height: initial;
   width: initial;
@@ -57,7 +61,11 @@ input[type=checkbox] {
   input[type='button'],
   input[type='submit'],
   input[type='date'] {
-    -webkit-appearance: none; // disables background gradient, border radius, ...
+    -webkit-appearance: none; // disables background gradient, border radius, etc.
+  }
+
+  input[type='date'] {
+    background-color: inherit;
   }
 }
 

@@ -101,7 +101,7 @@ var FlightEditView = React.createClass({
                         <SectionRow>
                             <DateInput
                                 inputValue={ this.state.item.date }
-                                labelText={ <span>Date<sup>*</sup>:</span> }
+                                labelText='Date*:'
                                 inputName='date'
                                 errorMessage={ this.state.validationErrors.date }
                                 onChange={ this.handleInputChange }
