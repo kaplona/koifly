@@ -45,8 +45,8 @@ var NavigationMenu = React.createClass({
         // Virtual keyboard breaks fixed position of the menu
         // thus we leave position: static if any input is focused
         // original solution: https://dansajin.com/2012/12/07/fix-position-fixed/
-        if (this.props.isPositionFixed) {
-            className += ' x-fixed';
+        if (!this.props.isPositionFixed) {
+            className += ' x-static';
         }
 
         return (

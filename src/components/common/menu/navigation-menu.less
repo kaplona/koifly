@@ -7,6 +7,7 @@
   &:extend(.menu);
 
   z-index: @navigation-menu-z-index;
+  position: fixed;
   left: 0;
   bottom: 0;
 
@@ -15,15 +16,14 @@
   }
 
   @media (max-width: (@medium-viewport - 1)) {
-    &.x-fixed {
-      position: fixed;
+    &.x-static {
+      position: static;
     }
   }
 
   @media (min-width: @medium-viewport) {
     width: 60%;
     height: @header-height;
-    position: fixed;
     left: 20%;
     top: 0;
 
