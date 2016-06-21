@@ -100,15 +100,8 @@ var Table = React.createClass({
         var sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
         var sortedRows = _.sortByOrder(
             this.props.rows,
-            [
-                row => {
-                    // turn string to upper case so as to avoid ABCabc type of sorting
-                    if (typeof row[this.state.sortingField] === 'string') {
-                        return row[this.state.sortingField].toUpperCase();
-                    }
-                    return row[this.state.sortingField];
-                }
-            ],
+            // make string uppercase so as to avoid ABCabc type of sorting
+            [ row => Util.upperCaseString(row[this.state.sortingField]) ],
             [ sortingOrder ]
         );
 

@@ -57,7 +57,7 @@ var Home = React.createClass({
                         Koifly is a free, <a href='https://github.com/kaplona/koifly'>open-source</a>, online flight logbook for freeflight pilots. If you are a hang glider or paraglider pilot this app is for you!
                     </p>
                     <p>No more paper or spreadsheets which are inefficient and limit your ability to analyze your flights. Keeping your flight log with us means you can access it whenever and wherever you need it either from your computer or smartphone.</p>
-                    <p>We dedicated ourselves to making easy to use and on the go application. Sign up now, it’s free and always will be!</p>
+                    <p>We dedicated ourselves to making easy to use and on the go application. Sign up now, it’s free and always will be!</p>
                 </div>
                 <SignupButton />
 

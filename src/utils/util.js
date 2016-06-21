@@ -231,6 +231,15 @@ var Util = {
 
 
     /**
+     * @param {*} value
+     * @returns {string|*} uppercase string or input value
+     */
+    upperCaseString: function(value) {
+        return (typeof value === 'string') ? value.toUpperCase() : value;
+    },
+
+
+    /**
      * @param {object|null} coordinates - object with latitude and longitude ({ lat: number, lng: number })
      * @returns {string} - string representation of coordinates
      */

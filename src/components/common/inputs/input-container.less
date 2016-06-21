@@ -44,19 +44,17 @@
   input, select {
     .border-box();
 
+    height: @row-height;
     margin: 0;
+    padding: (@row-height * 0.3) (@row-height * 0.2);
+    border: none;
+    color: @dark-blue;
 
-    @media (max-width: (@medium-viewport - 1)) {
-      height: @row-height;
-      padding: (@row-height * 0.3) (@row-height * 0.2);
-      border: none;
+    &:disabled {
+      background-color: inherit;
       color: @dark-base;
-
-      &:disabled {
-        background-color: inherit;
-        color: #000;
-        opacity: 1;
-      }
+      -webkit-text-fill-color: @dark-base; // by default webkit browsers make input color slightly lighter
+      opacity: 1;
     }
 
     @media (min-width: @medium-viewport) {
