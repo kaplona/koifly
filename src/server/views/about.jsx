@@ -27,6 +27,8 @@ var About = React.createClass({
                     <title>Koifly — Flight logging app for freeflight pilots</title>
                     <link rel='stylesheet' type='text/css' href={ getWebpackAssets().home.css } />
 
+                    <link rel='icon' type='image/png' sizes='32x32' href='/static/icons/koifly-icon-32x32-round.png' />
+
                     <meta property='og:url' content={ config.server.rootUrl } />
                     <meta property='og:type' content='website' />
                     <meta property='og:title' content='Koifly' />
