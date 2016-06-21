@@ -40,8 +40,12 @@ var App = React.createClass({
                     <link rel='apple-touch-icon-precomposed' sizes='167x167' href='/static/icons/koifly-icon-167x167.png' />
                     <link rel='apple-touch-icon-precomposed' sizes='180x180' href='/static/icons/koifly-icon-180x180.png' />
 
+                    { /* Sets whether a web application runs in full-screen mode */ }
                     <meta name='apple-mobile-web-app-capable' content='yes' />
+                    <meta name='mobile-web-app-capable' content='yes' />
+                    { /* Set header bar and search bar color to app header and menu color */ }
                     <meta name='apple-mobile-web-app-status-bar-style' content='black' />
+                    <meta name='theme-color' content='#1F95C7' />
                     
                     <meta property='og:url' content={ `${config.server.rootUrl}/flights` } />
                     <meta property='og:type' content='website' />
