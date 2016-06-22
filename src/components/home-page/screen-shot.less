@@ -7,9 +7,11 @@
   width: 100%;
   margin-top: 30px;
 
+  @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
+    padding-top: 45%; // CSS hack: responsive image height depending on vw
+  }
+
   @media (min-width: @small-viewport) {
-    height: 320px; // for old browsers with no support of vw
-    height: 42vw;
     position: relative;
   }
 
@@ -28,22 +30,20 @@
   box-shadow: 0 0 7px -1px black;
 
   @media (max-width: (@small-viewport - 1)) {
-    max-width: 320px;
-    max-height: 315px;
-    height: 240px; // for old browsers with no support of vw
-    height: 80vw;
+    max-width: 384px;
+    padding-top: 80%; // CSS hack: responsive height depending on vw
     margin: 0 auto;
   }
 
   @media (min-width: @small-viewport) and (max-width: (@medium-viewport - 1)) {
     width: 45%;
-    padding-top: 45%;
+    padding-top: 45%; // CSS hack: responsive image height depending on vw
     position: absolute;
   }
 
   @media (min-width: @medium-viewport) {
     width: 70%;
-    padding-top: 70%;
+    padding-top: 70%; // CSS hack: responsive image height depending on vw
     position: absolute;
   }
 

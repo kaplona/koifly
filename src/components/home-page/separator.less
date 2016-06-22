@@ -1,9 +1,14 @@
 
 @import (reference) '../constants';
+@import (reference) './break-points';
 
 
 .separator {
-  width: 100vw;
+  width: 100%;
   margin: 20px 0;
   border-top: 1px solid @base-color;
+
+  @media (min-width: @medium-viewport) {
+    width: 100vw;
+  }
 }

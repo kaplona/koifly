@@ -130,7 +130,7 @@ var OneTimeLogin = React.createClass({
                     />
 
                 <MobileButton
-                    caption='Log In With Password'
+                    caption='Log in with Password'
                     onClick={ this.handleGoToLogin }
                     />
             </div>

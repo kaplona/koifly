@@ -136,16 +136,19 @@ var Login = React.createClass({
                 <MobileButton
                     caption='Forgot Password?'
                     onClick={ this.handleGoToResetPassword }
+                    isEnabled={ !this.state.isSending }
                     />
 
                 <MobileButton
                     caption='Log In Without Password'
                     onClick={ this.handleGoToOneTimeLogin }
+                    isEnabled={ !this.state.isSending }
                     />
 
                 <MobileButton
                     caption='Don&#39;t Have Account?'
                     onClick={ this.handleGoToSignup }
+                    isEnabled={ !this.state.isSending }
                     />
             </div>
         );
@@ -193,11 +196,11 @@ var Login = React.createClass({
                             </SectionRow>
     
                             <SectionRow isDesktopOnly={ true } >
-                                <AppLink onClick={ this.handleGoToOneTimeLogin }>Log In Without Password</AppLink>
+                                <AppLink onClick={ this.handleGoToOneTimeLogin }>Log in without Password</AppLink>
                             </SectionRow>
     
                             <SectionRow isDesktopOnly={ true } isLast={ true } >
-                                <AppLink onClick={ this.handleGoToSignup }>Sign up now!</AppLink>
+                                <AppLink onClick={ this.handleGoToSignup }>Sign up Now!</AppLink>
                             </SectionRow>
                         </Section>
     
