@@ -27,8 +27,8 @@ var Notice = React.createClass({
         DomUtil.scrollToTheTop();
     },
 
-    shouldComponentUpdate: function(nextProps) {
-        return this.props.text !== nextProps.text;
+    componentDidUpdate: function() {
+        DomUtil.scrollToTheTop();
     },
 
     handleClick: function(event) {
@@ -64,7 +64,7 @@ var Notice = React.createClass({
                 <div
                     className='close'
                     onClick={ this.handleClose }
-                    onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                    onTouchStart={ () => {} } // required for iOS webkit browser to trigger :active pseudo state
                     >
                     x
                 </div>
