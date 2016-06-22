@@ -1,21 +1,13 @@
 
 @import (reference) '../constants';
-@import (reference) '../general';
 @import (reference) './break-points';
+@import '../general';
 
-
-body {
-  margin: 0;
-  padding: 0;
-}
-
-a {
-  color: @link-color;
-}
 
 
 .home {
-  font-family: Helvetica Neue, Arial, sans-serif;
+  .font-family();
+
   font-size: 15px;
 
   @media (min-width: 650px) {
