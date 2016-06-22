@@ -24,12 +24,17 @@
     font-size: 24px;
   }
 
+  // https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariWebContent/AdjustingtheTextSize/AdjustingtheTextSize.html#//apple_ref/doc/uid/TP40006510-SW1
+  // On iOS, mouse events are sent so quickly that active state is never received
+  // Therefor only hover styles will be visible to iOS users when clicking a button
+  // Note: button is rendered into plain text on server side, so I can't set onTouchStart event
   &:hover {
+    background-color: darken(@grass-color, 10%);
     box-shadow: 0 0 5px 1px @dark-base;
   }
 
   &:active {
-    background-color: darken(@grass-color, 10%);
+    background-color: darken(@grass-color, 15%);
     box-shadow: none;
   }
 }

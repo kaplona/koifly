@@ -33,7 +33,7 @@ var NavigationItem = React.createClass({
             <div
                 className={ className }
                 onClick={ this.props.onClick }
-                onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                onTouchStart={ () => {} } // required for iOS webkit browser to trigger :active pseudo state
                 >
 
                 <div className='icon'>

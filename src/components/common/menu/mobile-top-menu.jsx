@@ -38,7 +38,7 @@ var MobileTopMenu = React.createClass({
                     className='top-navigation'
                     onClick={ this.props.onLeftClick }
                     ref='left-navigation'
-                    onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                    onTouchStart={ () => {} } // required for iOS webkit browser to trigger :active pseudo state
                     >
                     { this.props.leftButtonCaption }
                 </div>
@@ -49,7 +49,7 @@ var MobileTopMenu = React.createClass({
                     className='top-navigation'
                     onClick={ this.props.onRightClick }
                     ref='right-navigation'
-                    onTouchStart='' // required for iOS webkit browser to trigger :active pseudo state
+                    onTouchStart={ () => {} } // required for iOS webkit browser to trigger :active pseudo state
                     >
                     { this.props.rightButtonCaption }
                 </div>
