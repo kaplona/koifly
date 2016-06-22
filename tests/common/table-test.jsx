@@ -110,7 +110,7 @@ describe('Table component', () => {
         expect(columnHeaders[1])
             .to.have.property('textContent')
             .that.contain(mocks.columns[1].label)
-            .and.contain(defaults.arrowUp); // sorted by this field, descendant sorting direction (false)
+            .and.contain(defaults.arrowDown); // sorted by this field, descendant sorting direction (false)
         expect(secondHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
         expect(columnHeaders[2])
             .to.have.property('textContent')
@@ -160,7 +160,7 @@ describe('Table component', () => {
             // first column header now have sorting-arrow pointing down
             expect(columnHeaders[0])
                 .to.have.property('textContent')
-                .that.contain(defaults.arrowDown); // sorted by this field, ascendant sorting direction (true)
+                .that.contain(defaults.arrowUp); // sorted by this field, ascendant sorting direction (true)
             // other arrows are hidden
             expect(firstHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
             expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
@@ -193,7 +193,7 @@ describe('Table component', () => {
             // first column header now have sorting-arrow pointing up
             expect(columnHeaders[0])
                 .to.have.property('textContent')
-                .that.contain(defaults.arrowUp); // sorted by this field, ascendant sorting direction (true)
+                .that.contain(defaults.arrowDown); // sorted by this field, ascendant sorting direction (true)
             // other arrows are hidden
             expect(firstHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
             expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);

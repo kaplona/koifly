@@ -7,6 +7,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var TestUtils = require('react-addons-test-utils');
 var Simulate = TestUtils.Simulate;
+var _ = require('lodash');
 
 var Chai = require('chai');
 var Sinon = require('sinon');
@@ -39,9 +40,9 @@ describe('Dropdown component', () => {
     };
 
     var mockOptions = [
-        { value: mocks.selectedValue, text: 'c - third' },
         { value: mocks.nextSelectedValue, text: 'a - first' },
-        { value: 'another value', text: 'b - second' }
+        { value: 'another value', text: 'b - second' },
+        { value: mocks.selectedValue, text: 'c - third' }
     ];
 
 
@@ -50,7 +51,7 @@ describe('Dropdown component', () => {
             component = TestUtils.renderIntoDocument(
                 <Dropdown
                     selectedValue={ mocks.selectedValue }
-                    options={ mockOptions }
+                    options={ _.shuffle(mockOptions) }
                     inputName={ mocks.inputName }
                     className={ mocks.className }
                     onChangeFunc={ mocks.handleSelectChange }
@@ -63,46 +64,32 @@ describe('Dropdown component', () => {
         });
 
         it('renders select tag with proper selected value and options in alphabetic order', () => {
+            let select = renderedDOMElement.querySelector('select');
             let options = renderedDOMElement.getElementsByTagName('option');
-            let optionOrder = [];
-            let i = 0;
-            while (optionOrder.length < mockOptions.length) {
-                let minOptionText = null;
-                let nextIndex = null;
-                for (let j = 0; j < mockOptions.length; j++) {
-                    if ((minOptionText === null || mockOptions[j].text.toUpperCase() < minOptionText) &&
-                        optionOrder.indexOf(j) === -1
-                    ) {
-                        minOptionText = mockOptions[j].text.toUpperCase();
-                        nextIndex = j;
-                    }
-                }
-                optionOrder.push(nextIndex);
-                i++;
-            }
 
-            expect(renderedDOMElement).to.have.property('value', mocks.selectedValue);
-            expect(renderedDOMElement).to.have.property('className', mocks.className);
+            expect(select).to.have.property('value', mocks.selectedValue);
+            expect(select).to.have.property('className', mocks.className);
             expect(options).to.have.lengthOf(mockOptions.length);
-            expect(options[0]).to.have.property('value', mockOptions[optionOrder[0]].value);
-            expect(options[0]).to.have.property('textContent', mockOptions[optionOrder[0]].text);
-            expect(options[1]).to.have.property('value', mockOptions[optionOrder[1]].value);
-            expect(options[1]).to.have.property('textContent', mockOptions[optionOrder[1]].text);
-            expect(options[2]).to.have.property('value', mockOptions[optionOrder[2]].value);
-            expect(options[2]).to.have.property('textContent', mockOptions[optionOrder[2]].text);
+
+            for (let i = 0; i < options.length; i++) {
+                expect(options[i]).to.have.property('value', mockOptions[i].value);
+                expect(options[i]).to.have.property('textContent', mockOptions[i].text);
+            }
         });
 
         it('triggers onChange function with proper parameters when changed', () => {
-            renderedDOMElement.value = mocks.nextSelectedValue;
-            Simulate.change(renderedDOMElement);
+            let select = renderedDOMElement.querySelector('select');
+            select.value = mocks.nextSelectedValue;
+            Simulate.change(select);
 
             expect(mocks.handleSelectChange).to.have.been.calledOnce;
             expect(mocks.handleSelectChange).to.have.been.calledWith(mocks.inputName, mocks.nextSelectedValue);
         });
 
         it('calls onFocus and onBlur functions', () => {
-            Simulate.focus(renderedDOMElement);
-            Simulate.blur(renderedDOMElement);
+            let select = renderedDOMElement.querySelector('select');
+            Simulate.focus(select);
+            Simulate.blur(select);
 
             expect(mocks.handleSelectFocus).to.have.been.calledOnce;
             expect(mocks.handleSelectBlur).to.have.been.calledOnce;
