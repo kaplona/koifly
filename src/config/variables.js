@@ -14,6 +14,8 @@ var WEB_ROOT_DIRNAME = 'public';
 var ASSETS_DIRNAME = 'static';
 var BUILD_DIRNAME = 'static/build';
 
+var ACME_CHALLENGE_DIRNAME = secrets.sslACMEChallengeDir;
+
 var SERVER_HOST = secrets.domain;
 var SERVER_BARE_HOST = secrets.bareDomain;
 var SERVER_PROTOCOL = secrets.protocol;
@@ -30,7 +32,8 @@ var WEBPACK_DEV_SERVER_PORT = 3001;
 var config = {
     publicPaths: {
         assets: '/' + ASSETS_DIRNAME + '/',
-        build: '/' + BUILD_DIRNAME + '/'
+        build: '/' + BUILD_DIRNAME + '/',
+        acmeChallenge: '/' + ACME_CHALLENGE_DIRNAME + '/'
     },
     paths: {
         root: ROOT_PATH,
@@ -39,7 +42,8 @@ var config = {
         build: path.join(ROOT_PATH, WEB_ROOT_DIRNAME, BUILD_DIRNAME), // Do not keep any non-generated files here.
         source: path.join(ROOT_PATH, SOURCE_DIRNAME),
         components: path.join(ROOT_PATH, SOURCE_DIRNAME, 'components'),
-        serverViews: path.join(ROOT_PATH, SOURCE_DIRNAME, 'server/views')
+        serverViews: path.join(ROOT_PATH, SOURCE_DIRNAME, 'server/views'),
+        acmeChallenge: path.join(ROOT_PATH, WEB_ROOT_DIRNAME, ACME_CHALLENGE_DIRNAME)
     },
     server: {
         publicFiles: [

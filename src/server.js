@@ -51,11 +51,11 @@ if (secrets.shouldUseSSL) {
         tls: {
             key: fs.readFileSync(secrets.sslKeyFileName, 'utf8'),
             cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8'),
-            // ssl certificate chain
-            ca: [
-                fs.readFileSync(secrets.sslIntermediateCrtFileName, 'utf8'),
-                fs.readFileSync(secrets.sslRootCrtFileName, 'utf8')
-            ]
+            // ssl certificate chain (uncomment if your CA cert file doesn't include the full chain)
+            // ca: [
+            //     fs.readFileSync(secrets.sslIntermediateCrtFileName, 'utf8'),
+            //     fs.readFileSync(secrets.sslRootCrtFileName, 'utf8')
+            // ]
         }
     });
 
@@ -177,6 +177,22 @@ server.register(plugins, err => {
             }
         });
     });
+
+    // Serve ACME challenge file from this directory
+    if (secrets.shouldUseSSL) {
+        server.route({
+            method: 'GET',
+            path: config.publicPaths.acmeChallenge + '{path*}',
+            handler: {
+                directory: {
+                    path: config.paths.acmeChallenge,
+                    index: false,
+                    listing: false,
+                    showHidden: false
+                }
+            }
+        });
+    }
 
     // Catch-all
     // server.route({

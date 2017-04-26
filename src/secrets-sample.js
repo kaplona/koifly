@@ -48,7 +48,8 @@ var Secrets = {
     sslKeyFileName: 'absolute-path-to-your-private-key',
     sslCrtFileName: 'absolute-path-to-your-ssl-certificate',
     sslIntermediateCrtFileName: 'absolute-path-to-your-ssl-intermediate-certificate',
-    sslRootCrtFileName: 'absolute-path-to-your-ssl-root-certificate'
+    sslRootCrtFileName: 'absolute-path-to-your-ssl-root-certificate',
+    sslACMEChallengeDir: 'absolute-path-to-your-acme-protocol-challenge-directory'
 };
 
 
