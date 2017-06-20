@@ -50,6 +50,7 @@ var Secrets = {
     sslIntermediateCrtFileName: 'absolute-path-to-your-ssl-intermediate-certificate',
     sslRootCrtFileName: 'absolute-path-to-your-ssl-root-certificate',
 
+    shouldConfirmACMEChallenge: false, // true for production server with Automated Certificate Management Environment
     sslACMEChallengeDir: 'path-to-your-acme-challenge-directory-from-web-root-directory'
 };
 

@@ -179,18 +179,20 @@ server.register(plugins, err => {
     });
 
     // Serve ACME challenge file from this directory
-    server.route({
-        method: 'GET',
-        path: config.publicPaths.acmeChallenge + '{path*}',
-        handler: {
-            directory: {
-                path: config.paths.acmeChallenge,
-                index: false,
-                listing: false,
-                showHidden: true
+    if (secrets.shouldConfirmACMEChallenge) {
+        server.route({
+            method: 'GET',
+            path: config.publicPaths.acmeChallenge + '{path*}',
+            handler: {
+                directory: {
+                    path: config.paths.acmeChallenge,
+                    index: false,
+                    listing: false,
+                    showHidden: true
+                }
             }
-        }
-    });
+        });
+    }
 
     // Catch-all
     // server.route({
