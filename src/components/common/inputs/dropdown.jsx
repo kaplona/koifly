@@ -16,7 +16,7 @@ var Dropdown = React.createClass({
             value: string,
             text: string
         })).isRequired,
-        inputName: string.isRequired,
+        inputName: oneOfType([string, number]).isRequired,
         emptyValue: oneOfType([string, number]),
         className: string,
         isEnabled: bool.isRequired,

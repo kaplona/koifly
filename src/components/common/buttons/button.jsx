@@ -9,11 +9,11 @@ var Button = React.createClass({
 
     propTypes: {
         caption: React.PropTypes.string.isRequired,
-        type: React.PropTypes.oneOf(['button', 'submit']).isRequired,
+        type: React.PropTypes.oneOf(['button', 'submit']),
         buttonStyle: React.PropTypes.oneOf(['primary', 'secondary', 'warning']),
         onClick: React.PropTypes.func.isRequired,
-        isEnabled: React.PropTypes.bool.isRequired,
-        isMobile: React.PropTypes.bool.isRequired
+        isEnabled: React.PropTypes.bool,
+        isMobile: React.PropTypes.bool
     },
 
     getDefaultProps: function() {

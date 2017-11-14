@@ -192,6 +192,11 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
 };
 
 
+DataService.prototype.importFlights = function(dataUri) {
+    return AjaxService.post('/api/import-flights', { encodedContent: dataUri });
+};
+
+
 /**
  * Once new user signed up we don't query the DB for his data (because he has none)
  * instead we just mimic empty store at front-end

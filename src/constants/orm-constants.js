@@ -2,10 +2,10 @@
 
 
 const OrmConstants = {
-        SCOPES: {
-            all: null,
-            visible: 'see'
-        }
+    SCOPES: {
+        all: null,
+        visible: 'see'
+    }
 };
 
 

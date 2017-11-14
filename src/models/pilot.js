@@ -151,6 +151,11 @@ var PilotModel = {
     },
 
 
+    importFlights: function(dataUri) {
+        return dataService.importFlights(dataUri);
+    },
+
+
     /**
      * @returns {Promise} - whether logout was successful or not
      */

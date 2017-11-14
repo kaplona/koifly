@@ -95,6 +95,7 @@ var Site = sequelize.define(
         remarks: {
             type: Sequelize.TEXT,
             allowNull: false,
+            defaultValue: '',
             validate: {
                 len: {
                     args: [0, 10000],

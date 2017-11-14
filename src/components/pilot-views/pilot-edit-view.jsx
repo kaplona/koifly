@@ -1,12 +1,14 @@
 'use strict';
 
 var React = require('react');
+var browserHistory = require('react-router').browserHistory;
 var _ = require('lodash');
 
 var Altitude = require('../../utils/altitude');
 var editViewMixin = require('../mixins/edit-view-mixin');
 var PilotModel = require('../../models/pilot');
 
+var AppLink = require('../common/app-link');
 var DropdownInput = require('../common/inputs/dropdown-input');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var Section = require('../common/section/section');
@@ -25,6 +27,10 @@ var PilotEditView = React.createClass({
         return {
             validationErrors: _.clone(PilotEditView.formFields)
         };
+    },
+
+    handleGoToFlightsUpload: function() {
+        browserHistory.push('/pilot/edit/flights-upload');
     },
     
     renderMobileTopMenu: function() {
@@ -89,7 +95,7 @@ var PilotEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionRow>
+                        <SectionRow isLast={ true }>
                             <TimeInput
                                 hours={ this.state.item.hours }
                                 minutes={ this.state.item.minutes }
@@ -103,6 +109,10 @@ var PilotEditView = React.createClass({
                                 onFocus={ this.handleInputFocus }
                                 onBlur={ this.handleInputBlur }
                                 />
+                        </SectionRow>
+
+                        <SectionRow isDesktopOnly={ true }>
+                            <AppLink onClick={ this.handleGoToFlightsUpload }>Or upload your flights</AppLink>
                         </SectionRow>
 
                         <SectionTitle  isSubtitle={ true }>

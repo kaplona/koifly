@@ -23,6 +23,8 @@ var getDefaultMessage = function(errorType) {
             return 'You need to verify your email before performing this operation.';
         case ErrorTypes.RECORD_NOT_FOUND:
             return 'There is no such record in the database';
+        case ErrorTypes.UNSUPPORTED_BROWSER_VERSION:
+            return 'You need to upgrade your browser in order to use this feature';
         case ErrorTypes.USER_MISMATCH:
             return 'You have logged in as a different user (probably in another tab). You need to reload this page. All unsaved data will be lost';
         case ErrorTypes.VALIDATION_ERROR:

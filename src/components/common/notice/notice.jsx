@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react');
-
+var { bool, element, func, oneOfType, string } = React.PropTypes;
 var DomUtil = require('../../../utils/dom-util');
 
 require('./notice.less');
@@ -9,12 +9,12 @@ require('./notice.less');
 
 var Notice = React.createClass({
     propTypes: {
-        text: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string,
-        onClick: React.PropTypes.func, // if not provided button won't be rendered no matter if buttonText or isButtonEnabled present
-        buttonText: React.PropTypes.string,
-        isButtonEnabled: React.PropTypes.bool.isRequired,
-        onClose: React.PropTypes.func // if not provided close-button won't be rendered
+        text: oneOfType([element, string]).isRequired,
+        type: string,
+        onClick: func, // if not provided button won't be rendered no matter if buttonText or isButtonEnabled present
+        buttonText: string,
+        isButtonEnabled: bool.isRequired,
+        onClose: func // if not provided close-button won't be rendered
     },
 
     getDefaultProps: function() {

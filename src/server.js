@@ -21,6 +21,7 @@ var checkAuthCookie = require('./server/auth/check-auth-cookie');
 var checkCsrfToken = require('./server/auth/check-csrf-token');
 
 var changePasswordHandler = require('./server/handlers/change-password-handler');
+var importFlightsHandler = require('./server/handlers/import-flights-handler');
 var loginHandler = require('./server/handlers/login-handler');
 var queryHandler = require('./server/handlers/query-handler');
 var resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
@@ -245,6 +246,19 @@ server.register(plugins, err => {
             pre: [ checkCsrfToken ]
         },
         handler: queryHandler
+    });
+
+    server.route({
+        method: 'POST',
+        path: '/api/import-flights',
+        config: {
+            auth: 'session',
+            pre: [ checkCsrfToken ],
+            payload: {
+                maxBytes: 1048576 // 1MB
+            }
+        },
+        handler: importFlightsHandler
     });
 
     server.route({

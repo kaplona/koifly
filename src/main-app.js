@@ -26,6 +26,7 @@ var GliderEditView = require('./components/glider-views/glider-edit-view');
 var GliderListView = require('./components/glider-views/glider-list-view');
 var GliderView = require('./components/glider-views/glider-view');
 
+var PilotFlightsUpload = require('./components/pilot-views/pilot-flights-upload');
 var PilotChangePassword = require('./components/pilot-views/pilot-change-password');
 var PilotEditView = require('./components/pilot-views/pilot-edit-view');
 var PilotView = require('./components/pilot-views/pilot-view');
@@ -71,6 +72,7 @@ function mainApp() {
                     <Route path='/glider/:id/edit' component={ GliderEditView } />
                     <Route path='/glider/:id' component={ GliderView } />
                     <Route path='/pilot/edit/change-password' component={ PilotChangePassword } />
+                    <Route path='/pilot/edit/flights-upload' component={ PilotFlightsUpload } />
                     <Route path='/pilot/edit' component={ PilotEditView } />
                     <Route path='/pilot' component={ PilotView } />
                     <Route path='/signup' component={ Signup } />
