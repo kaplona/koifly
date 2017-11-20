@@ -1,17 +1,17 @@
 'use strict';
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 const SCOPES = require('../constants/orm-constants').SCOPES;
-var ErrorMessages = require('../errors/error-messages');
-var isValidId = require('./is-valid-id');
-var sequelize = require('./sequelize');
+const ErrorMessages = require('../errors/error-messages');
+const isValidId = require('./is-valid-id');
+const sequelize = require('./sequelize');
 
-var Site = require('./sites');
-var Glider = require('./gliders');
+const Site = require('./sites');
+const Glider = require('./gliders');
 
 
-var Flight = sequelize.define(
+const Flight = sequelize.define(
 
     'flight',
 
@@ -35,10 +35,7 @@ var Flight = sequelize.define(
         siteId: {
             type: Sequelize.INTEGER,
             allowNull: true,
-            defaultValue: null,
-            validate: {
-                isValidId: isValidId('sites', ErrorMessages.NOT_EXIST.replace('%field', 'Site'))
-            }
+            defaultValue: null
         },
 
         altitude: {
@@ -70,10 +67,7 @@ var Flight = sequelize.define(
         gliderId: {
             type: Sequelize.INTEGER,
             allowNull: true,
-            defaultValue: null,
-            validate: {
-                isValidId: isValidId('gliders', ErrorMessages.NOT_EXIST.replace('%field', 'Glider'))
-            }
+            defaultValue: null
         },
 
         remarks: {
@@ -110,6 +104,19 @@ var Flight = sequelize.define(
                 where: {
                     see: true
                 }
+            }
+        },
+
+        hooks: {
+            // Checks that site and glider ids exist.
+            beforeValidate: function(flight, options) {
+                const gliderErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Glider');
+                const siteErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Site');
+
+                return Promise.all([
+                    isValidId(Glider, flight.gliderId, flight.pilotId, gliderErrorMsg, options.transaction),
+                    isValidId(Site, flight.siteId, flight.pilotId, siteErrorMsg, options.transaction)
+                ]);
             }
         },
 
