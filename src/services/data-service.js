@@ -191,7 +191,12 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
         .then(serverResponse => this.populateStore(serverResponse));
 };
 
-
+/**
+ * Uploads flights data from a file and updates this store data with newly created one when request succeeds.
+ * @param {string} dataUri – Result of uploading data with FileReader.
+ * @return {Promise.<{flightsNum: number, sitesNum: number, glidersNum: number}>} – Promise resolved with counts of how
+ * many flights, sites, gliders were created.
+ */
 DataService.prototype.importFlights = function(dataUri) {
     return AjaxService
         .post('/api/import-flights', { encodedContent: dataUri })
