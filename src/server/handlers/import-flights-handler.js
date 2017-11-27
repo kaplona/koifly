@@ -54,7 +54,7 @@ function  importFlightsHandler(request, reply) {
 
             return sequelize.transaction(t => {
                 return Promise.all(rows.map((row, rowIndex) => {
-                    const newFlight = composeFlight(row, pilotId);
+                    const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap);
                     const newSite = composeSite(row, pilotId);
                     const newGlider = composeGlider(row, pilotId);
 
@@ -82,7 +82,6 @@ function  importFlightsHandler(request, reply) {
                             glidersHashMap[siteNameKey] = site;
                             counts.sitesNum++;
                         })
-                        // TODO why glider does not longer exists? The previous implementation worked...
                         .then(() => saveFlight(newFlight, t))
                         .catch(error => saveValidationError(error, rowIndex))
                         .then(() => {
@@ -176,13 +175,23 @@ function convertNameToKey(name) {
     return name.toLowerCase().replace(/\s/g, '_');
 }
 
-function composeFlight(row, pilotId) {
+function composeFlight(row, pilotId, glidersHashMap, sitesHashMap) {
+    const gliderKey = row.glider ? convertNameToKey(row.glider) : null;
+    const glider = gliderKey ? glidersHashMap[gliderKey] : null;
+    const gliderId = glider ? glider.id : null;
+
+    const siteKey = row.site ? convertNameToKey(row.site) : null;
+    const site = siteKey ? sitesHashMap[siteKey] : null;
+    const siteId = site ? site.id : null;
+
     return {
         date: row.date,
         airtime: row.airtime,
         altitude: row.altitude,
         remarks: row.remarks,
-        pilotId: pilotId
+        pilotId: pilotId,
+        gliderId: gliderId,
+        siteId: siteId
     };
 }
 
