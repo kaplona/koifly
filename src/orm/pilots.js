@@ -1,17 +1,17 @@
 'use strict';
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
-var ErrorMessages = require('../errors/error-messages');
-var isUnique = require('./is-unique');
-var sequelize = require('./sequelize');
+const ErrorMessages = require('../errors/error-messages');
+const isUnique = require('./is-unique');
+const sequelize = require('./sequelize');
 
-var Flight = require('./flights');
-var Site = require('./sites');
-var Glider = require('./gliders');
+const Flight = require('./flights');
+const Site = require('./sites');
+const Glider = require('./gliders');
 
 
-var Pilot = sequelize.define(
+const Pilot = sequelize.define(
 
     'pilot',
 
@@ -43,7 +43,6 @@ var Pilot = sequelize.define(
             },
             validate: {
                 isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL },
-                isUnique: isUnique('pilots', 'email', ErrorMessages.EXISTENT_EMAIL)
             }
         },
 
@@ -119,6 +118,13 @@ var Pilot = sequelize.define(
     // options
     {
         timestamps: true, // automatically adds fields updatedAt and createdAt
+
+        hooks: {
+            beforeValidate: function(instance, options) {
+                const errorMsg = ErrorMessages.EXISTENT_EMAIL;
+                return isUnique(Pilot, instance, 'email', errorMsg, options.transaction, true);
+            }
+        },
 
         indexes: [
             {

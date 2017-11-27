@@ -1,14 +1,14 @@
 'use strict';
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 const SCOPES = require('../constants/orm-constants').SCOPES;
-var ErrorMessages = require('../errors/error-messages');
-var isUnique = require('./is-unique');
-var sequelize = require('./sequelize');
+const ErrorMessages = require('../errors/error-messages');
+const isUnique = require('./is-unique');
+const sequelize = require('./sequelize');
 
 
-var Site = sequelize.define(
+const Site = sequelize.define(
     
     'site',
     
@@ -25,7 +25,6 @@ var Site = sequelize.define(
             type: Sequelize.STRING(100), // eslint-disable-line new-cap
             allowNull: false,
             validate: {
-                isUnique: isUnique('sites', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site')),
                 len: {
                     args: [0, 100],
                     msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Site Name').replace('%max', '100')
@@ -126,6 +125,13 @@ var Site = sequelize.define(
                 where: {
                     see: true
                 }
+            }
+        },
+
+        hooks: {
+            beforeValidate: function(instance, options) {
+                const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site');
+                return isUnique(Site, instance, 'name', errorMsg, options.transaction);
             }
         },
         

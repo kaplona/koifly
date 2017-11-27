@@ -1,59 +1,58 @@
 'use strict';
 
+const ErrorTypes = require('../errors/error-types');
+const KoiflyError = require('../errors/error');
+const ErrorMessages = require('../errors/error-messages');
 const SCOPES = require('../constants/orm-constants').SCOPES;
-var ErrorMessages = require('../errors/error-messages');
-var Util = require('../utils/util');
-
-
-// mixed solution:
-// http://stackoverflow.com/questions/16356856/sequelize-js-custom-validator-check-for-unique-username-password#answer-19306820
-// https://github.com/sequelize/sequelize/issues/2640#issuecomment-97146477
+const Util = require('../utils/util');
 
 /**
- * Checks if value is unique for given model and column
- * @param {string} modelFileName
- * @param {string} fieldName
- * @param {string} msg
- * @returns {Function} - validation function
+ * Checks if value is unique for given model and column.
+ * Note: it assume that `id` is a primary key for given Model.
+ * @param {Object} Model – Sequelize model to query.
+ * @param {Object} record – New record to be saved.
+ * @param {string} fieldName – Field name which should be unique.
+ * @param {string} errorMsg - Error message to reply with if record isn't unique.
+ * @param {string} [transaction] – Transaction id to use for querying DB.
+ * @param {Boolean} scopeAll – Whether to query all records. By default query will be scoped to visible records (which
+ * weren't deleted).
+ * @returns {Promise} - Resolved Promise if value is unique, rejected Promise if it isn't or DB read error occurred.
  */
-var isUnique = function(modelFileName, fieldName, msg) {
-    return function(value, next) {
-        // If value is undefined or null it should be checked by allowNull and defaultValue check
-        // Here we just checks that user doesn't want to save an empty string
-        if (!Util.isEmptyString(value)) {
-            var Model = require('./' + modelFileName);
-            var scope = (modelFileName === 'pilots') ? SCOPES.all : SCOPES.visible;
+function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = false) {
+    const fieldValue = record[fieldName];
 
-            // assuming that 'id' is primary key
-            var query = {
-                id: { $ne: this.id },
-                [fieldName]: value
-            };
+    // Unique value can't be empty.
+    if (Util.isEmptyString(fieldValue)) {
+        const error = new KoiflyError(ErrorTypes.VALIDATION_ERROR, ErrorMessages.NOT_EMPTY.replace('%field', fieldName));
+        return Promise.reject(error);
+    }
 
-            if (modelFileName !== 'pilots') {
-                query.pilotId = this.pilotId;
-            }
-
-            Model
-                .scope(scope)
-                .findOne({
-                    where: query,
-                    attributes: [ 'id' ]
-                })
-                .then(record => {
-                    if (record) {
-                        next(msg);
-                    }
-                    next();
-                })
-                .catch(error => {
-                    next(error.message);
-                });
-        } else {
-            next(ErrorMessages.NOT_EMPTY.replace('%field', fieldName));
-        }
+    const scope = scopeAll ? SCOPES.all : SCOPES.visible;
+    const queryOptions = {
+        where: {
+            id: { $ne: record.id },
+            [fieldName]: fieldValue
+        },
+        attributes: [ 'id' ]
     };
-};
+    if (transaction) {
+        queryOptions.transaction = transaction;
+    }
+    if (record.pilotId) {
+        queryOptions.where.pilotId = record.pilotId;
+    }
 
+    return Model
+        .scope(scope)
+        .findOne(queryOptions)
+        .then(record => {
+            if (record) {
+                const errorList = {
+                    [fieldName]: errorMsg
+                };
+                return Promise.reject(new KoiflyError(ErrorTypes.VALIDATION_ERROR, errorMsg, errorList));
+            }
+        });
+}
 
 module.exports = isUnique;

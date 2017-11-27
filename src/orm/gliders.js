@@ -1,14 +1,14 @@
 'use strict';
 
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 
 const SCOPES = require('../constants/orm-constants').SCOPES;
-var ErrorMessages = require('../errors/error-messages');
-var isUnique = require('./is-unique');
-var sequelize = require('./sequelize');
+const ErrorMessages = require('../errors/error-messages');
+const isUnique = require('./is-unique');
+const sequelize = require('./sequelize');
 
 
-var Glider = sequelize.define(
+const Glider = sequelize.define(
 
     'glider',
 
@@ -25,7 +25,6 @@ var Glider = sequelize.define(
             type: Sequelize.STRING(100), // eslint-disable-line new-cap
             allowNull: false,
             validate: {
-                isUnique: isUnique('gliders', 'name', ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider')),
                 len: {
                     args: [0, 100],
                     msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Glider Name').replace('%max', '100')
@@ -93,6 +92,13 @@ var Glider = sequelize.define(
                 where: {
                     see: true
                 }
+            }
+        },
+
+        hooks: {
+            beforeValidate: function(instance, options) {
+                const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider');
+                return isUnique(Glider, instance, 'name', errorMsg, options.transaction);
             }
         },
 

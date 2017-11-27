@@ -109,13 +109,13 @@ const Flight = sequelize.define(
 
         hooks: {
             // Checks that site and glider ids exist.
-            beforeValidate: function(flight, options) {
+            beforeValidate: function(instance, options) {
                 const gliderErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Glider');
                 const siteErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Site');
 
                 return Promise.all([
-                    isValidId(Glider, flight.gliderId, flight.pilotId, gliderErrorMsg, options.transaction),
-                    isValidId(Site, flight.siteId, flight.pilotId, siteErrorMsg, options.transaction)
+                    isValidId(Glider, instance.gliderId, instance.pilotId, gliderErrorMsg, options.transaction),
+                    isValidId(Site, instance.siteId, instance.pilotId, siteErrorMsg, options.transaction)
                 ]);
             }
         },
