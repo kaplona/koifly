@@ -193,8 +193,12 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
 
 
 DataService.prototype.importFlights = function(dataUri) {
-    // TODO load newly created records on successful request
-    return AjaxService.post('/api/import-flights', { encodedContent: dataUri });
+    return AjaxService
+        .post('/api/import-flights', { encodedContent: dataUri })
+        .then(res => {
+            this.requestServerData();
+            return res;
+        });
 };
 
 
