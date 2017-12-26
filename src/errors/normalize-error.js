@@ -33,6 +33,9 @@ const KoiflyError = require('./error');
  *    }
  * }
  *
+ * Note: sequelizeValidationError.message or KoiflyValidationError.message will contain error messages for all DB fields
+ * separated by new line character.
+ *
  * @param {Error|Object} error – Error occurred.
  * @param {string} defaultErrorType – Pass it to override default Koifly error type.
  * @param {string} defaultMessage – Default error message.

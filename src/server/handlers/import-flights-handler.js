@@ -129,7 +129,7 @@ function  importFlightsHandler(request, reply) {
         // TODO merge all messages for one row into one record
         errors.push({
             row: rowIndex + 1, // since indexes start with `0`
-            message: normalisedError
+            error: normalisedError
         });
     }
 }
@@ -238,7 +238,7 @@ function composeSite(row, pilotId) {
         name: row.site,
         launchAltitude: row.launchAltitude,
         location: row.location,
-        coordinates: row.coordinates,
+        coordinates: row.coordinates || null,
         pilotId: pilotId
     };
 }
