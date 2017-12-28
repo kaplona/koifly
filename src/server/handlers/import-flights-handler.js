@@ -11,7 +11,33 @@ const Flight = require('../../orm/flights');
 const Site = require('../../orm/sites');
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 
-
+/**
+ * Parses csv data and saves it into DB.
+ * If import succeeds will reply with SuccessCounts object which contains numbers of how many rows were added to the DB.
+ * If any row fails import will reply with list of ValidationErrors objects which contains row index and error occurred.
+ *
+ * @typedef {Object} ImportFlightRow
+ * @property {string} date – Date in yyyy-mm-dd format.
+ * @property {number} airtime
+ * @property {number} altitude
+ * @property {string} site – Name of a site.
+ * @property {number} launchAltitude – Site launch altitude.
+ * @property {string} location – Site geographical location, e.g. country, province, town.
+ * @property {string} glider – Name of a glider.
+ * @property {string} remarks
+ *
+ * @typedef {Object} SuccessCounts
+ * @property {number} flightsNum
+ * @property {number} sitesNum
+ * @property {number} glidersNum
+ *
+ * @typedef {Object} ValidationErrors
+ * @property {number} row – Index of a row where error occurred.
+ * @property {KoiflyError} error
+ *
+ * @param {Function} request
+ * @param {Function} reply
+ */
 function  importFlightsHandler(request, reply) {
     const pilotId = request.auth.credentials.userId;
 
@@ -19,17 +45,17 @@ function  importFlightsHandler(request, reply) {
     const encodedCsvString = request.payload.encodedContent.replace('data:text/csv;base64,', '');
     const csvString = new Buffer(encodedCsvString, 'base64').toString('utf8');
 
-    // If import succeeds, counts will be returned, otherwise list of errors.
-    const errors = [];
+    // When import succeeds we reply with numbers of added records to the DB.
     const counts = {
         flightsNum: 0,
         sitesNum: 0,
         glidersNum: 0
     };
 
-    let rows = [];
-    let sitesHashMap = {};
-    let glidersHashMap = {};
+    // We will iterate over all csv rows and saves encountered validation errors in this list. We will save records to
+    // the DB only if this list is empty. Otherwise we respond with this list in order for client to learn which csv rows
+    // they need to correct.
+    const errors = [];
 
     Promise
         .all([
@@ -38,66 +64,29 @@ function  importFlightsHandler(request, reply) {
             getRecordsNameHashMap(Glider, pilotId)
         ])
         .then(result => {
-            rows = result[0];
+            const rows = result[0];
             // Name to existing sequelize record hash map. In import data all sites and gliders are referenced by name,
             // so this hash map will be user to check whether new flight's glider/site existed previously in the DB.
-            sitesHashMap = result[1];
-            glidersHashMap = result[2];
+            const sitesHashMap = result[1];
+            const glidersHashMap = result[2];
 
-            // For each csv file row save new flight, and additionally new glider and site if they didn't exist.
-            return sequelize.transaction(t => {
-                return Promise
-                    .all(rows.map((row, rowIndex) => {
-                        const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap);
-                        const newSite = composeSite(row, pilotId);
-                        const newGlider = composeGlider(row, pilotId);
-
-                        return saveGlider(newGlider, glidersHashMap, t)
-                            .catch(error => saveValidationError(error, rowIndex))
-                            .then(glider => {
-                                if (!glider) {
-                                    return;
-                                }
-
-                                newFlight.gliderId = glider.id;
-                                counts.glidersNum++;
-
-
-                                // Add newly created glider to gliders name hash map, so if we encounter a row with the same
-                                // glider name we won't save it twice.
-                                const gliderNameKey = convertNameToKey(glider.name);
-                                glidersHashMap[gliderNameKey] = glider;
-                            })
-                            .then(() => saveSite(newSite, sitesHashMap, t))
-                            .catch(error => saveValidationError(error, rowIndex))
-                            .then(site => {
-                                if (!site) {
-                                    return;
-                                }
-
-                                newFlight.siteId = site.id;
-                                counts.sitesNum++;
-
-                                // Add newly created site to sites name hash map, so if we encounter a row with the same
-                                // site name we won't save it twice.
-                                const siteNameKey = convertNameToKey(site.name);
-                                glidersHashMap[siteNameKey] = site;
-                            })
-                            .then(() => saveFlight(newFlight, t))
-                            .catch(error => saveValidationError(error, rowIndex))
-                            .then(() => {
-                                counts.flightsNum++;
-                            })
-                    }))
-                    .then(() => {
-                        // If we encountered any validation error throw Koifly validation error, thus cancelling
-                        // transaction.
-                        if (errors.length) {
-                            throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
-                        }
-
-                        return Promise.resolve();
+            // For each csv file row save new flight, glider, and site (if they didn't exist) in one transaction.
+            return sequelize.transaction(transactionId => {
+                // We need to save each row data sequentially in order to correctly add new sites and gliders to the DB.
+                let lastPromise = Promise.resolve();
+                for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+                    lastPromise = lastPromise.then(() => {
+                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, errors, counts, transactionId);
                     });
+                }
+
+                // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
+                return lastPromise.then(() => {
+                    if (errors.length) {
+                        throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
+                    }
+                    return Promise.resolve();
+                });
             });
         })
         .then(() => {
@@ -113,27 +102,7 @@ function  importFlightsHandler(request, reply) {
                 reply({ error: normalisedError });
             }
         });
-
-    /**
-     * Converts error into Koifly error, and adds encountered validation error to the list of errors.
-     * If error is not validation error, throws DB write error.
-     * @param {Error|Object} error – An error occurred.
-     * @param {number} rowIndex – Index of a row where error occurred.
-     */
-    function saveValidationError(error, rowIndex) {
-        const normalisedError = normalizeError(error);
-        if (normalisedError.type !== ErrorTypes.VALIDATION_ERROR) {
-            throw new KoiflyError(ErrorTypes.DB_WRITE_ERROR);
-        }
-
-        // TODO merge all messages for one row into one record
-        errors.push({
-            row: rowIndex + 1, // since indexes start with `0`
-            error: normalisedError
-        });
-    }
 }
-
 
 /**
  * Takes csv file insides as string and converts it into list of objects, where key of each object is csv file header,
@@ -159,7 +128,6 @@ function convertCsvToJson(csvString) {
         });
     });
 }
-
 
 /**
  * Fetches records for given Model and pilot id.
@@ -196,6 +164,61 @@ function getRecordsNameHashMap(Model, pilotId, options = {}) {
  */
 function convertNameToKey(name) {
     return name.toLowerCase().replace(/\s/g, '_');
+}
+
+/**
+ * Separates row data related to flight, site, or glider, and saves new record if needed.
+ * @param {ImportFlightRow} row
+ * @param {number} rowIndex
+ * @param {number|string} pilotId
+ * @param {Object} glidersHashMap
+ * @param {Object} sitesHashMap
+ * @param {Array.<ValidationError>} validationErrors
+ * @param {SuccessCounts} successCounts
+ * @param {string} transactionId
+ * @return {Promise<void>}
+ */
+function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, successCounts, transactionId) {
+    const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap);
+    const newSite = composeSite(row, pilotId);
+    const newGlider = composeGlider(row, pilotId);
+
+    return saveGlider(newGlider, glidersHashMap, transactionId)
+        .catch(error => saveValidationError(error, rowIndex, validationErrors))
+        .then(glider => {
+            if (!glider) {
+                return;
+            }
+
+            newFlight.gliderId = glider.id;
+            successCounts.glidersNum++;
+
+
+            // Add newly created glider to gliders name hash map, so if we encounter a row with the same
+            // glider name we won't save it twice.
+            const gliderNameKey = convertNameToKey(glider.name);
+            glidersHashMap[gliderNameKey] = glider;
+        })
+        .then(() => saveSite(newSite, sitesHashMap, transactionId))
+        .catch(error => saveValidationError(error, rowIndex, validationErrors))
+        .then(site => {
+            if (!site) {
+                return;
+            }
+
+            newFlight.siteId = site.id;
+            successCounts.sitesNum++;
+
+            // Add newly created site to sites name hash map, so if we encounter a row with the same
+            // site name we won't save it twice.
+            const siteNameKey = convertNameToKey(site.name);
+            glidersHashMap[siteNameKey] = site;
+        })
+        .then(() => saveFlight(newFlight, transactionId))
+        .catch(error => saveValidationError(error, rowIndex, validationErrors))
+        .then(() => {
+            successCounts.flightsNum++;
+        })
 }
 
 /**
@@ -283,6 +306,26 @@ function saveRecord(Model, newRecord, namesHashMap, transaction) {
     }
 
     return Model.create(newRecord, { transaction: transaction });
+}
+
+/**
+ * Converts error into Koifly error, and adds encountered validation error to the list of errors.
+ * If error is not validation error, throws DB write error.
+ * @param {Error|Object} error – An error occurred.
+ * @param {number} rowIndex – Index of a row where error occurred.
+ * @param {Array.<{row: number, error: KoiflyError}>} validationErrors – Reference to list with validation errors.
+ */
+function saveValidationError(error, rowIndex, validationErrors) {
+    const normalisedError = normalizeError(error);
+    if (normalisedError.type !== ErrorTypes.VALIDATION_ERROR) {
+        throw new KoiflyError(ErrorTypes.DB_WRITE_ERROR);
+    }
+
+    // TODO merge all messages for one row into one record
+    validationErrors.push({
+        row: rowIndex + 1, // since indexes start with `0`
+        error: normalisedError
+    });
 }
 
 

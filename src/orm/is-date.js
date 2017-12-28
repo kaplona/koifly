@@ -8,9 +8,7 @@ const Util = require('../utils/util');
  * @param {string} value
  */
 function isDate(value) {
-    console.log('-------> is date validation <-------');
     if (typeof value !== 'string' || !Util.isRightDateFormat(value)) {
-        console.log('throw');
         throw new Error(ErrorMessages.DATE_FORMAT);
     }
 }
