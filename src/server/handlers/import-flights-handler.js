@@ -263,7 +263,7 @@ function composeSite(row, pilotId) {
 
     return {
         name: row.site,
-        launchAltitude: row.launchAltitude,
+        launchAltitude: row.launchAltitude || 0,
         location: row.location,
         coordinates: coordinates,
         pilotId: pilotId
