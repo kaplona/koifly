@@ -23,6 +23,8 @@ const SCOPES = require('../../constants/orm-constants').SCOPES;
  * @property {string} site – Name of a site.
  * @property {number} launchAltitude – Site launch altitude.
  * @property {string} location – Site geographical location, e.g. country, province, town.
+ * @property {number} latitude – Site coordinates latitude.
+ * @property {number} longitude – Site coordinates longitude.
  * @property {string} glider – Name of a glider.
  * @property {string} remarks
  *
@@ -212,7 +214,7 @@ function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validatio
             // Add newly created site to sites name hash map, so if we encounter a row with the same
             // site name we won't save it twice.
             const siteNameKey = convertNameToKey(site.name);
-            glidersHashMap[siteNameKey] = site;
+            sitesHashMap[siteNameKey] = site;
         })
         .then(() => saveFlight(newFlight, transactionId))
         .catch(error => saveValidationError(error, rowIndex, validationErrors))
@@ -257,11 +259,13 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap) {
  * @return {Object}
  */
 function composeSite(row, pilotId) {
+    const coordinates = (row.latitude && row.longitude) ? { lat: row.latitude, lng: row.longitude } : null;
+
     return {
         name: row.site,
         launchAltitude: row.launchAltitude,
         location: row.location,
-        coordinates: row.coordinates || null,
+        coordinates: coordinates,
         pilotId: pilotId
     };
 }
