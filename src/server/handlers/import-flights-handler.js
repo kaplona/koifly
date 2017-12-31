@@ -57,7 +57,7 @@ function  importFlightsHandler(request, reply) {
     // We will iterate over all csv rows and saves encountered validation errors in this list. We will save records to
     // the DB only if this list is empty. Otherwise we respond with this list in order for client to learn which csv rows
     // they need to correct.
-    const errors = [];
+    const validationErrors = [];
 
     Promise
         .all([
@@ -78,13 +78,13 @@ function  importFlightsHandler(request, reply) {
                 let lastPromise = Promise.resolve();
                 for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
                     lastPromise = lastPromise.then(() => {
-                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, errors, counts, transactionId);
+                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId);
                     });
                 }
 
                 // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
                 return lastPromise.then(() => {
-                    if (errors.length) {
+                    if (validationErrors.length) {
                         throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
                     }
                     return Promise.resolve();
@@ -96,11 +96,15 @@ function  importFlightsHandler(request, reply) {
         })
         .catch(error => {
             const normalisedError = normalizeError(error);
+
+            // If we encountered validation error, reply with list of validation errors.
             if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
-                console.log('-------> Validation Error', errors);
-                reply({ error: errors });
+                reply({ error: validationErrors });
+            // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
+            } else if(normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
+                reply({ error: normalisedError.errors });
+            // Otherwise reply with generic Koifly error.
             } else {
-                console.log('-------> Error', error);
                 reply({ error: normalisedError });
             }
         });
@@ -110,13 +114,17 @@ function  importFlightsHandler(request, reply) {
  * Takes csv file insides as string and converts it into list of objects, where key of each object is csv file header,
  * and value of each object is a corresponding to that header cell value.
  * @param {string} csvString
- * @return {Promise}
+ * @return {Promise.<Array.<ImportFlightRow>|KoiflyError>}
  */
 function convertCsvToJson(csvString) {
     const csvConverter = new Converter({
-        delimiter: [',', ';', ' '],
+        // If `checkColumn` is true, converter doesn't ignore empty lines. Uncomment when this issue is resolved:
+        // @see https://github.com/Keyang/node-csvtojson/issues/231
+        // checkColumn: true,
+        checkType: false,
+        delimiter: [',', ';'],
         flatKeys: true,
-        checkType: false
+        ignoreEmpty: true
     });
 
     return new Promise((resolve, reject) => {
@@ -126,7 +134,21 @@ function convertCsvToJson(csvString) {
                 return;
             }
 
-            reject(err);
+            // If scv file parsing failed – reject Promise with special KoiflyError. If we know line and type of
+            // an error – pass it to KoiflyError constructor.
+            const errors = [];
+            const csvToJsonErrorMessages = {
+                column_mismatched: 'A file line has more (or less) columns than file header.',
+                unclosed_quote: 'There is unclosed quote in a row.',
+            };
+            if (err.err && (err.line || err.line === 0)) {
+                errors.push({
+                    row: err.line + 1,
+                    error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err]),
+                });
+            }
+
+            reject(new KoiflyError(ErrorTypes.FILE_IMPORT_ERROR, null, errors));
         });
     });
 }
