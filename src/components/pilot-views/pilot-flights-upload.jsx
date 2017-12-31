@@ -56,16 +56,21 @@ const PilotFlightsUpload = React.createClass({
 
     handleFile: function(event) {
         const file = event.target.files[0];
-        const reader = new FileReader();
-
-        console.log('name: ', file.name);
-        console.log('size: ', file.size, 'bytes');
 
         this.setState({
-            file: file,
+            file: file || null,
             error: null
         });
 
+        if (!file) {
+            return;
+        }
+
+        // TODO validate file size
+        console.log('name: ', file.name);
+        console.log('size: ', file.size, 'bytes');
+
+        const reader = new FileReader();
         reader.onload = upload => {
             this.setState({
                 dataUri: upload.target.result
