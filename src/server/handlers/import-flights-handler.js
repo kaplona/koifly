@@ -1,5 +1,6 @@
 'use strict';
 
+const Altitude = require('../../utils/altitude');
 const Converter = require('csvtojson').Converter;
 const ErrorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
@@ -8,6 +9,7 @@ const sequelize = require('../../orm/sequelize');
 
 const Glider = require('../../orm/gliders');
 const Flight = require('../../orm/flights');
+const Pilot = require('../../orm/pilots');
 const Site = require('../../orm/sites');
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 
@@ -62,15 +64,17 @@ function  importFlightsHandler(request, reply) {
     Promise
         .all([
             convertCsvToJson(csvString),
+            getPilotUnit(pilotId),
             getRecordsNameHashMap(Site, pilotId),
             getRecordsNameHashMap(Glider, pilotId)
         ])
         .then(result => {
             const rows = result[0];
+            const altitudeUnit = result[1];
             // Name to existing sequelize record hash map. In import data all sites and gliders are referenced by name,
             // so this hash map will be user to check whether new flight's glider/site existed previously in the DB.
-            const sitesHashMap = result[1];
-            const glidersHashMap = result[2];
+            const sitesHashMap = result[2];
+            const glidersHashMap = result[3];
 
             // For each csv file row save new flight, glider, and site (if they didn't exist) in one transaction.
             return sequelize.transaction(transactionId => {
@@ -78,7 +82,7 @@ function  importFlightsHandler(request, reply) {
                 let lastPromise = Promise.resolve();
                 for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
                     lastPromise = lastPromise.then(() => {
-                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId);
+                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId, altitudeUnit);
                     });
                 }
 
@@ -154,6 +158,15 @@ function convertCsvToJson(csvString) {
 }
 
 /**
+ * Returns current user altitude unit, e.g. "meters", "feet".
+ * @param {string|number} pilotId
+ * @return {Promise<string>}
+ */
+function getPilotUnit(pilotId) {
+    return Pilot.findById(pilotId).then(pilot => pilot.altitudeUnit);
+}
+
+/**
  * Fetches records for given Model and pilot id.
  * Returns object with orm instances where keys are modified record name.
  * @param {Object} Model – Sequelize model.
@@ -200,11 +213,12 @@ function convertNameToKey(name) {
  * @param {Array.<ValidationError>} validationErrors
  * @param {SuccessCounts} successCounts
  * @param {string} transactionId
+ * @param {string} altitudeUnit – Current pilot altitude unit.
  * @return {Promise<void>}
  */
-function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, successCounts, transactionId) {
-    const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap);
-    const newSite = composeSite(row, pilotId);
+function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, successCounts, transactionId, altitudeUnit) {
+    const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit);
+    const newSite = composeSite(row, pilotId, altitudeUnit);
     const newGlider = composeGlider(row, pilotId);
 
     return saveGlider(newGlider, glidersHashMap, transactionId)
@@ -252,9 +266,10 @@ function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validatio
  * @param {string|number} pilotId
  * @param {Object} glidersHashMap – Name to existing orm glider instance hash map.
  * @param {Object} sitesHashMap – Name to existing orm site instance hash map.
+ * @param {string} altitudeUnit – Current pilot altitude unit.
  * @return {Object}
  */
-function composeFlight(row, pilotId, glidersHashMap, sitesHashMap) {
+function composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit) {
     const gliderKey = row.glider ? convertNameToKey(row.glider) : null;
     const glider = gliderKey ? glidersHashMap[gliderKey] : null;
     const gliderId = glider ? glider.id : null;
@@ -266,7 +281,7 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap) {
     return {
         date: row.date,
         airtime: row.airtime,
-        altitude: row.altitude,
+        altitude: Altitude.convertAltitudeToMeters(row.altitude || 0, altitudeUnit),
         remarks: row.remarks,
         pilotId: pilotId,
         gliderId: gliderId,
@@ -278,14 +293,15 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap) {
  * Extracts data for new site from csv row.
  * @param {Object} row – Object which represents a csv row.
  * @param {string|number} pilotId
+ * @param {string} altitudeUnit – Current pilot altitude unit.
  * @return {Object}
  */
-function composeSite(row, pilotId) {
+function composeSite(row, pilotId, altitudeUnit) {
     const coordinates = (row.latitude && row.longitude) ? { lat: row.latitude, lng: row.longitude } : null;
 
     return {
         name: row.site,
-        launchAltitude: row.launchAltitude || 0,
+        launchAltitude: Altitude.convertAltitudeToMeters(row.launchAltitude || 0, altitudeUnit),
         location: row.location,
         coordinates: coordinates,
         pilotId: pilotId

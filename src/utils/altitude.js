@@ -83,9 +83,19 @@ var Altitude = {
     getAltitudeInMeters: function(nextValue, previousValue, units) {
         var previousFilteredVal = this.getAltitudeInPilotUnits(previousValue);
         if (nextValue !== previousFilteredVal || units !== dataService.store.pilot.altitudeUnit) {
-            return nextValue / this.meterConverter[units];
+            return this.convertAltitudeToMeters(nextValue, units);
         }
         return previousValue;
+    },
+
+    /**
+     * Convert altitude from feet to meters. Won't change it if altitude is already in meters.
+     * @param {number} altitude – Altitude to convert to meters.
+     * @param {string} units – Measurement unit of provided altitude, e.g. meters, feet.
+     * @return {number} – Altitude in meters.
+     */
+    convertAltitudeToMeters: function(altitude, units) {
+        return altitude / this.meterConverter[units];
     },
 
     /**
