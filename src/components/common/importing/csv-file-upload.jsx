@@ -1,11 +1,12 @@
 'use strict';
 
 const React = require('react');
-const { bool, func } = React.PropTypes;
+const { bool, element, func, oneOfType, string } = React.PropTypes;
 
 const Button = require('../buttons/button');
 const Description = require('../section/description');
 const DesktopBottomGrid = require('../grids/desktop-bottom-grid');
+const Notice = require('../notice/notice');
 const SectionRow = require('../section/section-row');
 
 function CsvFileUpload(props) {
@@ -34,6 +35,8 @@ function CsvFileUpload(props) {
                     accept='.csv'
                     onChange={ props.onChange }
                     />
+
+                {props.successMessage && (<Notice type='success' text={props.successMessage} />)}
             </SectionRow>
 
             <SectionRow isLast={ true }>
@@ -55,6 +58,7 @@ CsvFileUpload.defaultProps = {
 CsvFileUpload.propTypes = {
     canImport: bool,
     isImporting: bool,
+    successMessage: oneOfType([ string, element ]),
     onCancel: func.isRequired,
     onChange: func.isRequired,
     onImport: func.isRequired

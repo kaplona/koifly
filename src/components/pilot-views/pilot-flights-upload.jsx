@@ -12,7 +12,6 @@ const ErrorBox = require('../common/notice/error-box');
 const ImportError = require('../common/importing/import-error');
 const Loader = require('../common/loader');
 const NavigationMenu = require('../common/menu/navigation-menu');
-const Notice = require('../common/notice/notice');
 const Section = require('../common/section/section');
 const SectionTitle = require('../common/section/section-title');
 const View = require('../common/view');
@@ -22,14 +21,13 @@ const PilotFlightsUpload = React.createClass({
 
     getInitialState: function() {
         return {
-            userName: null,
+            dataUri: null,
             email: null,
-            file: null,
             error: null,
-            loadingError: null,
             isImporting: false,
-            successNotice: false,
-            dataUri: null
+            loadingError: null,
+            successSummary: false,
+            userName: null
         };
     },
 
@@ -58,8 +56,9 @@ const PilotFlightsUpload = React.createClass({
         const file = event.target.files[0];
 
         this.setState({
-            file: file || null,
-            error: null
+            dataUri: null,
+            error: null,
+            successSummary: null
         });
 
         if (!file) {
@@ -85,9 +84,9 @@ const PilotFlightsUpload = React.createClass({
 
         PilotModel
             .importFlights(this.state.dataUri)
-            .then(() => {
+            .then(successSummary => {
                 this.setState({
-                    successNotice: true,
+                    successSummary,
                     error: null,
                     isImporting: false
                 });
@@ -133,9 +132,21 @@ const PilotFlightsUpload = React.createClass({
         return <ImportError errors={ this.state.errors } />;
     },
 
-    renderSuccessNotice: function() {
-        const onClose = () => this.setState({ successNotice: false });
-        return <Notice type='success' text='Your records were successfully saved' onClose={ onClose }/>;
+    renderSuccessMessage: function() {
+        if (!this.state.successSummary) {
+            return null;
+        }
+
+        return (
+            <div>
+                Your records were successfully saved:
+                <ul>
+                    <li>{this.state.successSummary.flightsNum} flights added;</li>
+                    <li>{this.state.successSummary.sitesNum} sites added;</li>
+                    <li>{this.state.successSummary.glidersNum} gliders added.</li>
+                </ul>
+            </div>
+        );
     },
 
     render: function() {
@@ -151,7 +162,7 @@ const PilotFlightsUpload = React.createClass({
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <form>
                     { this.state.error && this.renderProcessingError() }
-                    { this.state.successNotice && this.renderSuccessNotice() }
+
                     <Section>
                         <SectionTitle>
                             <div>{ this.state.userName }</div>
@@ -163,8 +174,9 @@ const PilotFlightsUpload = React.createClass({
                         </SectionTitle>
 
                         <CsvFileUpload
-                            canImport={ this.state.dataUri && !this.state.error }
+                            canImport={ this.state.dataUri && !this.state.error && !this.state.successSummary }
                             isImporting={ this.state.isImporting }
+                            successMessage={ this.renderSuccessMessage() }
                             onChange={ this.handleFile }
                             onImport={ this.handleImportFile }
                             onCancel={ this.handleGoToPilotEdit }
