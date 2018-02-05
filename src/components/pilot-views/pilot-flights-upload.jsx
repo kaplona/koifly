@@ -64,9 +64,11 @@ const PilotFlightsUpload = React.createClass({
             return;
         }
 
-        // TODO validate file size
-        console.log('name: ', file.name);
-        console.log('size: ', file.size, 'bytes');
+        const validationError = this.validateFile(file);
+        if (validationError) {
+            this.setState({ error: validationError });
+            return;
+        }
 
         const reader = new FileReader();
         reader.onload = upload => {
@@ -96,6 +98,18 @@ const PilotFlightsUpload = React.createClass({
                     isImporting: false
                 });
             });
+    },
+
+    validateFile(file) {
+        let errors = [];
+        if (file.type !== 'text/csv') {
+            errors.push('File must be .csv format.');
+        }
+        if (file.size > 1048576) {
+            errors.push('File must be less than 1MB');
+        }
+
+        return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
     },
 
     renderNavigationMenu: function() {
