@@ -1,45 +1,59 @@
 'use strict';
 
 const React = require('react');
-const { arrayOf, number, shape, string } = React.PropTypes;
+const { arrayOf, number, oneOfType, shape } = React.PropTypes;
+const koiflyErrorPropType = require('../../../errors/error-prop-type');
 
 const Notice = require('../notice/notice');
 const SectionRow = require('../section/section-row');
 const SectionTitle = require('../section/section-title');
 
+require('./import-error.less');
+
 
 function ImportError(props) {
-    if (!props.errors || props.errors.length === 0) {
-        return null;
+    if (!(props.error instanceof Array)) {
+        const errorMessage = props.error.message || 'Couldn\'t import your file';
+        return <Notice text={errorMessage} type='error' />;
     }
 
-    // TODO error row is incorrect (I didn't get what it refers to)
-    let errorNodes = props.errors.map((error, index) => {
-        return <p key={ `error-row-${index}` }>{ `${error.row}: ${error.message}` }</p>;
-    });
-    let noticeText = <div>{ errorNodes }</div>;
+    const errorTable = (
+        <table>
+            <thead>
+            <tr>
+                <th className='first-column'>Line</th>
+                <th>Error Message</th>
+            </tr>
+            </thead>
+            <tbody>
+            {props.error.map((importError, index) => (
+                <tr key={index}>
+                    <td>{importError.row}</td>
+                    <td>{importError.error.message}</td>
+                </tr>
+            ))}
+            </tbody>
+        </table>
+    );
 
-    return (
-        <div>
-            <SectionTitle isSubtitle={ true }>
-                Rows in the file that couldn't be processed and thus won't be imported:
-            </SectionTitle>
-
-            <SectionRow>
-                <Notice
-                    text={ noticeText }
-                    type='error'
-                    />
-            </SectionRow>
+    const noticeText = (
+        <div className='import-error'>
+            <div className='title'>Couldn't process next file lines:</div>
+            {errorTable}
         </div>
     );
+
+    return <Notice text={ noticeText } type='error' />;
 }
 
 ImportError.propTypes = {
-    errors: arrayOf(shape({
-        row: number,
-        message: string
-    })).isRequired
+    error: oneOfType([
+        shape(koiflyErrorPropType),
+        arrayOf(shape({
+            row: number,
+            error: shape(koiflyErrorPropType)
+        }))
+    ]).isRequired
 };
 
 

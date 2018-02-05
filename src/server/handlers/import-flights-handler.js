@@ -143,7 +143,7 @@ function convertCsvToJson(csvString) {
             const errors = [];
             const csvToJsonErrorMessages = {
                 column_mismatched: 'A file line has more (or less) columns than file header.',
-                unclosed_quote: 'There is unclosed quote in a row.',
+                unclosed_quote: 'There is an unclosed quote in a line.',
             };
             if (err.err && (err.line || err.line === 0)) {
                 errors.push({

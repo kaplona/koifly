@@ -1,11 +1,13 @@
 'use strict';
 
 const React = require('react');
-const { bool, element, func, oneOfType, string } = React.PropTypes;
+const { arrayOf, bool, element, func, number, oneOfType, shape, string } = React.PropTypes;
+const koiflyErrorPropType = require('../../../errors/error-prop-type');
 
 const Button = require('../buttons/button');
 const Description = require('../section/description');
 const DesktopBottomGrid = require('../grids/desktop-bottom-grid');
+const ImportError = require('./import-error');
 const Notice = require('../notice/notice');
 const SectionRow = require('../section/section-row');
 
@@ -37,6 +39,7 @@ function CsvFileUpload(props) {
                     />
 
                 {props.successMessage && (<Notice type='success' text={props.successMessage} />)}
+                {props.importError && (<ImportError error={props.importError} />)}
             </SectionRow>
 
             <SectionRow isLast={ true }>
@@ -58,6 +61,13 @@ CsvFileUpload.defaultProps = {
 CsvFileUpload.propTypes = {
     canImport: bool,
     isImporting: bool,
+    importError: oneOfType([
+        shape(koiflyErrorPropType),
+        arrayOf(shape({
+            row: number,
+            error: shape(koiflyErrorPropType)
+        }))
+    ]),
     successMessage: oneOfType([ string, element ]),
     onCancel: func.isRequired,
     onChange: func.isRequired,

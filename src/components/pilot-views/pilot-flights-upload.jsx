@@ -92,10 +92,8 @@ const PilotFlightsUpload = React.createClass({
                 });
             })
             .catch(error => {
-                console.log('error', error);
-                // TODO check whether it's a general error or list of errors for each file row
                 this.setState({
-                    error: new KoiflyError(ErrorTypes.DB_WRITE_ERROR),
+                    error: error || new KoiflyError(ErrorTypes.DB_WRITE_ERROR),
                     isImporting: false
                 });
             });
@@ -121,15 +119,6 @@ const PilotFlightsUpload = React.createClass({
     renderLoadingError: function() {
         const errorBox = <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
         return this.renderSimpleLayout(errorBox);
-    },
-
-    // TODO replace with renderUploadingError method
-    renderProcessingError: function() {
-        return <ErrorBox error={ this.state.error } />;
-    },
-
-    renderUploadingError: function() {
-        return <ImportError errors={ this.state.errors } />;
     },
 
     renderSuccessMessage: function() {
@@ -161,8 +150,6 @@ const PilotFlightsUpload = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <form>
-                    { this.state.error && this.renderProcessingError() }
-
                     <Section>
                         <SectionTitle>
                             <div>{ this.state.userName }</div>
@@ -176,6 +163,7 @@ const PilotFlightsUpload = React.createClass({
                         <CsvFileUpload
                             canImport={ this.state.dataUri && !this.state.error && !this.state.successSummary }
                             isImporting={ this.state.isImporting }
+                            importError={this.state.error}
                             successMessage={ this.renderSuccessMessage() }
                             onChange={ this.handleFile }
                             onImport={ this.handleImportFile }

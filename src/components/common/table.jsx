@@ -126,7 +126,7 @@ var Table = React.createClass({
         });
 
         return (
-            <table>
+            <table className='koifly-table'>
                 <thead>
                     <tr>{ headerNodes }</tr>
                 </thead>
