@@ -43,9 +43,7 @@ function CsvFileUpload(props) {
             </SectionRow>
 
             <SectionRow isLast={ true }>
-                <Description>
-                    File should be .csv format. Table column names (header) should contain next fields: ... Then some info how to get one of this file and other content requirements.
-                </Description>
+                <Description>{props.description}</Description>
             </SectionRow>
 
             <DesktopBottomGrid leftElements={ [ImportButton, CancelButton] } />
@@ -55,11 +53,13 @@ function CsvFileUpload(props) {
 
 CsvFileUpload.defaultProps = {
     canImport: true,
+    description: 'File should be .csv format',
     isImporting: false
 };
 
 CsvFileUpload.propTypes = {
     canImport: bool,
+    description: oneOfType([ string, element ]),
     isImporting: bool,
     importError: oneOfType([
         shape(koiflyErrorPropType),

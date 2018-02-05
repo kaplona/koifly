@@ -138,6 +138,27 @@ const PilotFlightsUpload = React.createClass({
         );
     },
 
+    renderDescription() {
+        return (
+            <div>
+                File should be .csv format. First line should be header with next column names:
+                <ul>
+                    <li>"date" – date in yyyy-mm-dd format;</li>
+                    <li>"airtime" – number, flight duration in minutes;</li>
+                    <li>"altitude" – number, gained altitude in the same unit as in pilot's settings;</li>
+                    <li>"site" – name of the site;</li>
+                    <li>"launchAltitude" – number, site altitude in the same unit as in pilot's settings;</li>
+                    <li>"location" – site geographical address;</li>
+                    <li>"latitude" – site coordinates;</li>
+                    <li>"longitude" – site coordinates;</li>
+                    <li>"glider" – name of the glider;</li>
+                    <li>"remarks"</li>
+                </ul>
+                Each line must have "date" value, other columns are optional.
+            </div>
+        );
+    },
+
     render: function() {
         if (this.state.loadingError) {
             return this.renderLoadingError();
@@ -162,6 +183,7 @@ const PilotFlightsUpload = React.createClass({
 
                         <CsvFileUpload
                             canImport={ this.state.dataUri && !this.state.error && !this.state.successSummary }
+                            description={this.renderDescription()}
                             isImporting={ this.state.isImporting }
                             importError={this.state.error}
                             successMessage={ this.renderSuccessMessage() }
