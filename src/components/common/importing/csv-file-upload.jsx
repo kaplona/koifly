@@ -12,6 +12,14 @@ const Notice = require('../notice/notice');
 const SectionRow = require('../section/section-row');
 
 function CsvFileUpload(props) {
+    if (!window.FileReader || !window.File || !window.FileList || !window.Blob) {
+        const message = `
+            Your browser doesn\'t support new html file uploading API.
+            Please, upgrade your browser to the latest version, or use Firefox, Chrome, Safari, or Opera browsers.
+        `;
+        return <SectionRow><Notice type='error' text={ message } /></SectionRow>;
+    }
+
     const ImportButton = (
         <Button
             caption={ props.isImporting ? 'Importing...' : 'Import' }
