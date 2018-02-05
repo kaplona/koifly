@@ -9,7 +9,6 @@ const PilotModel = require('../../models/pilot');
 
 const CsvFileUpload = require('../common/importing/csv-file-upload');
 const ErrorBox = require('../common/notice/error-box');
-const ImportError = require('../common/importing/import-error');
 const Loader = require('../common/loader');
 const NavigationMenu = require('../common/menu/navigation-menu');
 const Section = require('../common/section/section');
@@ -130,9 +129,9 @@ const PilotFlightsUpload = React.createClass({
             <div>
                 Your records were successfully saved:
                 <ul>
-                    <li>{this.state.successSummary.flightsNum} flights added;</li>
-                    <li>{this.state.successSummary.sitesNum} sites added;</li>
-                    <li>{this.state.successSummary.glidersNum} gliders added.</li>
+                    <li>{ this.state.successSummary.flightsNum } flights added;</li>
+                    <li>{ this.state.successSummary.sitesNum } sites added;</li>
+                    <li>{ this.state.successSummary.glidersNum } gliders added.</li>
                 </ul>
             </div>
         );
@@ -183,9 +182,9 @@ const PilotFlightsUpload = React.createClass({
 
                         <CsvFileUpload
                             canImport={ this.state.dataUri && !this.state.error && !this.state.successSummary }
-                            description={this.renderDescription()}
+                            description={ this.renderDescription() }
                             isImporting={ this.state.isImporting }
-                            importError={this.state.error}
+                            importError={ this.state.error }
                             successMessage={ this.renderSuccessMessage() }
                             onChange={ this.handleFile }
                             onImport={ this.handleImportFile }

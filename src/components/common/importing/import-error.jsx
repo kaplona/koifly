@@ -5,8 +5,6 @@ const { arrayOf, number, oneOfType, shape } = React.PropTypes;
 const koiflyErrorPropType = require('../../../errors/error-prop-type');
 
 const Notice = require('../notice/notice');
-const SectionRow = require('../section/section-row');
-const SectionTitle = require('../section/section-title');
 
 require('./import-error.less');
 
@@ -14,7 +12,7 @@ require('./import-error.less');
 function ImportError(props) {
     if (!(props.error instanceof Array)) {
         const errorMessage = props.error.message || 'Couldn\'t import your file';
-        return <Notice text={errorMessage} type='error' />;
+        return <Notice text={ errorMessage } type='error' />;
     }
 
     const errorTable = (
@@ -26,12 +24,12 @@ function ImportError(props) {
             </tr>
             </thead>
             <tbody>
-            {props.error.map((importError, index) => (
-                <tr key={index}>
-                    <td>{importError.row}</td>
-                    <td>{importError.error.message}</td>
+            { props.error.map((importError, index) => (
+                <tr key={ index }>
+                    <td>{ importError.row }</td>
+                    <td>{ importError.error.message }</td>
                 </tr>
-            ))}
+            )) }
             </tbody>
         </table>
     );
@@ -39,7 +37,7 @@ function ImportError(props) {
     const noticeText = (
         <div className='import-error'>
             <div className='title'>Couldn't process next file lines:</div>
-            {errorTable}
+            { errorTable }
         </div>
     );
 

@@ -38,12 +38,12 @@ function CsvFileUpload(props) {
                     onChange={ props.onChange }
                     />
 
-                {props.successMessage && (<Notice type='success' text={props.successMessage} />)}
-                {props.importError && (<ImportError error={props.importError} />)}
+                { props.successMessage && (<Notice type='success' text={ props.successMessage } />) }
+                { props.importError && (<ImportError error={ props.importError } />) }
             </SectionRow>
 
             <SectionRow isLast={ true }>
-                <Description>{props.description}</Description>
+                <Description>{ props.description }</Description>
             </SectionRow>
 
             <DesktopBottomGrid leftElements={ [ImportButton, CancelButton] } />
@@ -59,7 +59,7 @@ CsvFileUpload.defaultProps = {
 
 CsvFileUpload.propTypes = {
     canImport: bool,
-    description: oneOfType([ string, element ]),
+    description: oneOfType([string, element]),
     isImporting: bool,
     importError: oneOfType([
         shape(koiflyErrorPropType),
@@ -68,7 +68,7 @@ CsvFileUpload.propTypes = {
             error: shape(koiflyErrorPropType)
         }))
     ]),
-    successMessage: oneOfType([ string, element ]),
+    successMessage: oneOfType([string, element]),
     onCancel: func.isRequired,
     onChange: func.isRequired,
     onImport: func.isRequired

@@ -108,7 +108,7 @@ var StaticMap = React.createClass({
 
 
 
-StaticMap.create = function(props) {
+StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     // this loads external google-maps-api
     var mapFacadePromise = require('../../../utils/map-facade').createPromise();
 

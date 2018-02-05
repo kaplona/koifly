@@ -162,7 +162,7 @@ var InteractiveMap = React.createClass({
 });
 
 
-InteractiveMap.create = function(props) {
+InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     // this loads external google-maps-api
     var mapFacadePromise = require('../../../utils/map-facade').createPromise();
 
