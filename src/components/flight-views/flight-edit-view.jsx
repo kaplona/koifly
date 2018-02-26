@@ -12,6 +12,7 @@ var SiteModel = require('../../models/site');
 var AltitudeInput = require('../common/inputs/altitude-input');
 var DateInput = require('../common/inputs/date-input');
 var DropdownInput = require('../common/inputs/dropdown-input');
+var FightTrackUpload = require('./flight-track-upload');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var RemarksInput = require('../common/inputs/remarks-input');
 var Section = require('../common/section/section');
@@ -172,7 +173,7 @@ var FlightEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionRow isLast={ true }>
+                        <SectionRow>
                             <RemarksInput
                                 inputValue={ this.state.item.remarks }
                                 labelText='Remarks:'
@@ -181,6 +182,14 @@ var FlightEditView = React.createClass({
                                 onFocus={ this.handleInputFocus }
                                 onBlur={ this.handleInputBlur }
                                 />
+                        </SectionRow>
+
+                        <SectionTitle isSubtitle={ true }>
+                            Upload IGC:
+                        </SectionTitle>
+
+                        <SectionRow isLast={ true }>
+                            <FightTrackUpload />
                         </SectionRow>
 
                         { this.renderDesktopButtons() }
