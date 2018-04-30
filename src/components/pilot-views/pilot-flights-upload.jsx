@@ -76,6 +76,9 @@ const PilotFlightsUpload = React.createClass({
                 dataUri: upload.target.result
             });
         };
+        reader.onerror = error => {
+            this.setState({ error });
+        };
 
         reader.readAsDataURL(file);
     },
