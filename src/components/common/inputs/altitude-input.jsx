@@ -1,22 +1,21 @@
 'use strict';
 
-var React = require('react');
-var Altitude = require('../../../utils/altitude');
-var Label = require('../section/label');
-var InputContainer = require('./input-container');
-var Dropdown = require('./dropdown');
-var ValidationError = require('../section/validation-error');
+const React = require('react');
+const { bool, element, func, number, oneOfType, string } = React.PropTypes;
+const Altitude = require('../../../utils/altitude');
+const Label = require('../section/label');
+const InputContainer = require('./input-container');
+const Dropdown = require('./dropdown');
+const ValidationError = require('../section/validation-error');
 
 require('./two-input-elements.less');
 require('./after-comment.less');
 
 
-var { bool, element, func, oneOfType, string } = React.PropTypes;
-
-var AltitudeInput = React.createClass({
+const AltitudeInput = React.createClass({
 
     propTypes: {
-        inputValue: string.isRequired,
+        inputValue: oneOfType([number, string]).isRequired,
         selectedAltitudeUnit: string,
         inputName: string.isRequired,
         labelText: oneOfType([string, element]),
@@ -72,7 +71,7 @@ var AltitudeInput = React.createClass({
     },
 
     render: function() {
-        var altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
+        const altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
         return (
             <div>
@@ -86,7 +85,7 @@ var AltitudeInput = React.createClass({
 
                     <input
                         className={ 'col-of-two x-number' + (this.props.errorMessage ? ' x-error' : '') }
-                        value={ this.props.inputValue }
+                        value={ this.props.inputValue || '' }
                         type='text'
                         pattern='[0-9]*'
                         placeholder='0'

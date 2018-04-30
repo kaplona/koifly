@@ -1,31 +1,29 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const _ = require('lodash');
+const Altitude = require('../../utils/altitude');
+const editViewMixin = require('../mixins/edit-view-mixin');
+const FlightModel = require('../../models/flight');
+const GliderModel = require('../../models/glider');
+const SiteModel = require('../../models/site');
+const Util = require('../../utils/util');
 
-var Altitude = require('../../utils/altitude');
-var editViewMixin = require('../mixins/edit-view-mixin');
-var FlightModel = require('../../models/flight');
-var GliderModel = require('../../models/glider');
-var SiteModel = require('../../models/site');
-
-var AltitudeInput = require('../common/inputs/altitude-input');
-var DateInput = require('../common/inputs/date-input');
-var DropdownInput = require('../common/inputs/dropdown-input');
-var FightTrackUpload = require('./flight-track-upload');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var RemarksInput = require('../common/inputs/remarks-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TimeInput = require('../common/inputs/time-input');
-var View = require('../common/view');
+const AltitudeInput = require('../common/inputs/altitude-input');
+const DateInput = require('../common/inputs/date-input');
+const DropdownInput = require('../common/inputs/dropdown-input');
+const FightTrackUpload = require('./flight-track-upload');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const RemarksInput = require('../common/inputs/remarks-input');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const TimeInput = require('../common/inputs/time-input');
+const View = require('../common/view');
 
 
-
-var { shape, string } = React.PropTypes;
-
-var FlightEditView = React.createClass({
+const FlightEditView = React.createClass({
 
     propTypes: {
         params: shape({ // url args
@@ -48,18 +46,37 @@ var FlightEditView = React.createClass({
             return;
         }
         
-        var altitude = this.state.item.altitude;
-        var altitudeUnit = this.state.item.altitudeUnit;
+        let altitude = this.state.item.altitude;
+        let altitudeUnit = this.state.item.altitudeUnit;
         if (this.state.item.siteId) {
             altitude = SiteModel.getLaunchAltitude(this.state.item.siteId).toString();
             altitudeUnit = Altitude.getUserAltitudeUnit();
         }
         
-        var item = _.extend({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
+        const item = _.extend({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
         
         this.setState({
             item: item,
             isSledRide: true
+        });
+    },
+
+    handleFlightTrackData: function(flightTrackData, igcFileContent) {
+        const { altitude, hours, minutes } = this.state.item;
+        const newAltitude = (!altitude && flightTrackData.maxAltitude) ? flightTrackData.maxAltitude : altitude;
+        const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
+        const newHours = (!hours && !minutes && flightTrackData.airtime) ? flightTrackHoursMinutes.hours : hours;
+        const newMinutes = (!hours && !minutes && flightTrackData.airtime) ? flightTrackHoursMinutes.minutes : minutes;
+
+        const newItem = _.extend({}, this.state.item, {
+            altitude: newAltitude,
+            hours: newHours,
+            minutes: newMinutes,
+            igcFileContent
+        });
+
+        this.setState({ item: newItem }, () => {
+            this.updateValidationErrors(this.getValidationErrors(true));
         });
     },
     
@@ -84,8 +101,8 @@ var FlightEditView = React.createClass({
             return this.renderLoader();
         }
 
-        var sites = SiteModel.getSiteValueTextList();
-        var gliders = GliderModel.getGliderValueTextList();
+        const sites = SiteModel.getSiteValueTextList();
+        const gliders = GliderModel.getGliderValueTextList();
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
@@ -189,7 +206,7 @@ var FlightEditView = React.createClass({
                         </SectionTitle>
 
                         <SectionRow isLast={ true }>
-                            <FightTrackUpload />
+                            <FightTrackUpload onLoad={ this.handleFlightTrackData } />
                         </SectionRow>
 
                         { this.renderDesktopButtons() }

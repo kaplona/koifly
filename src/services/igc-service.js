@@ -23,7 +23,7 @@ const igcService = {
      * Parses IGC file into list of flight points with IGC B record (Fixed record) information. Calculates airtime and
      * max altitude from the records.
      * @param {string} fileText – IGC file content as text.
-     * @return {{flightPoints: igcRecord[], maxAltitude: number, airtime: number}|KoiflyError}
+     * @return {{flightPoints: igcRecord[], maxAltitude: number, airtime: number}|KoiflyError} – Parsed igc file or error.
      */
     parseIgc(fileText) {
         const records = fileText.split('\n');

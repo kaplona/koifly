@@ -1,19 +1,29 @@
 'use strict';
 
 const React = require('react');
+const { func } = React.PropTypes;
+const Altitude = require('../../utils/altitude');
 const ErrorTypes = require('../../errors/error-types');
 const igcService = require('../../services/igc-service');
 const KoiflyError = require('../../errors/error');
+const Util = require('../../utils/util');
 
 const ErrorBox = require('../common/notice/error-box');
 
+require('./flight-track-upload.less');
+
+
 const FightTrackUpload = React.createClass({
+
+    propTypes: {
+        onLoad: func.isRequired
+    },
 
     getInitialState: function() {
         return {
             dataUri: null,
             error: null,
-            successSummary: null
+            igcData: null
         };
     },
 
@@ -23,7 +33,7 @@ const FightTrackUpload = React.createClass({
         this.setState({
             dataUri: null,
             error: null,
-            successSummary: null
+            igcData: null
         });
 
         if (!file) {
@@ -44,7 +54,11 @@ const FightTrackUpload = React.createClass({
 
             if (parsedFile instanceof Error) {
                 this.setState({ error: parsedFile });
+                return;
             }
+
+            this.props.onLoad(parsedFile, upload.target.result);
+            this.setState({ igcData: parsedFile });
         };
         reader.onerror = error => {
             this.setState({ error });
@@ -72,7 +86,17 @@ const FightTrackUpload = React.createClass({
             <div>
                 <input type='file' accept='.igc' onChange={ this.handleFile } />
 
-                {this.state.error && <ErrorBox error={ this.state.error } />}
+                { this.state.igcData && (
+                    <div>
+                        <div className='flight-track-upload-map'>Here will be map</div>
+                        <div>
+                            Airtime: { Util.formatTime(this.state.igcData.airtime) },{ '\u0020' }
+                            max altitude: { Altitude.formatAltitude(this.state.igcData.maxAltitude) }
+                        </div>
+                    </div>
+                ) }
+
+                { this.state.error && <ErrorBox error={ this.state.error } /> }
             </div>
         );
     }
