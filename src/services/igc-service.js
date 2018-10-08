@@ -130,26 +130,26 @@ const igcService = {
      */
     getDecimalCoordsFromBRecord(BRecord) {
         return {
-            lat: this.getDecimalDegreeFromDmsString(BRecord.substr(7, 8), true),
-            lng: this.getDecimalDegreeFromDmsString(BRecord.substr(15, 9))
+            lat: this.getDecimalDegreeFromBRecordString(BRecord.substr(7, 8), true),
+            lng: this.getDecimalDegreeFromBRecordString(BRecord.substr(15, 9))
         };
     },
 
     /**
      * Latitude format: ddmmtttD, longitude format: dddmmtttD, where d – degree digits, m – minutes digits,
-     * t – represents tenths, hundredths and thousandths of minutes, D – N/S/W/E.
+     * t – represents tenths, hundredths and thousandths of minutes, D – N/S/W/E. E.g. 4914597N, 12153278W
      * @param {string} dmsString – B record partial corresponding to lat or lng in DMS format.
      * @param {Boolean} [isLatitude] – Whether dms string is latitude.
      * @return {number} – lat or lng in decimal degree coordinate system.
      */
-    getDecimalDegreeFromDmsString(dmsString, isLatitude = false) {
+    getDecimalDegreeFromBRecordString(dmsString, isLatitude = false) {
         const degreeDigits = isLatitude ? 2 : 3;
         const degree = Number(dmsString.substr(0, degreeDigits));
-        const minutes = Number(dmsString.substr(2, 2) + '.' + dmsString.substr(4, 3));
+        const minutes = Number(dmsString.substr(degreeDigits, 2)) + Number(dmsString.substr(degreeDigits + 2, 3)) * 0.001;
         let decimalDegree = degree + minutes / 60;
 
         const negativeCardinalDirection = isLatitude ? 'S' : 'W';
-        if (dmsString.substr(7) === negativeCardinalDirection) {
+        if (dmsString.substr(-1) === negativeCardinalDirection) {
             decimalDegree *= -1;
         }
 

@@ -9,6 +9,7 @@ const KoiflyError = require('../../errors/error');
 const Util = require('../../utils/util');
 
 const ErrorBox = require('../common/notice/error-box');
+const TrackMap = require('../common/maps/track-map');
 
 require('./flight-track-upload.less');
 
@@ -29,16 +30,15 @@ const FightTrackUpload = React.createClass({
 
     handleFile: function(event) {
         const file = event.target.files[0];
+        if (!file) {
+            return;
+        }
 
         this.setState({
             dataUri: null,
             error: null,
             igcData: null
         });
-
-        if (!file) {
-            return;
-        }
 
         const validationError = this.validateFile(file);
         if (validationError) {
@@ -48,9 +48,7 @@ const FightTrackUpload = React.createClass({
 
         const reader = new FileReader();
         reader.onload = upload => {
-            console.log('loaded');
             const parsedFile = igcService.parseIgc(upload.target.result);
-            console.log(parsedFile);
 
             if (parsedFile instanceof Error) {
                 this.setState({ error: parsedFile });
@@ -81,6 +79,14 @@ const FightTrackUpload = React.createClass({
         return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
     },
 
+    renderMap: function() {
+        const trackCoords = this.state.igcData.flightPoints.map(({lat, lng}) => ({ lat, lng }));
+
+        return TrackMap.create({
+            trackCoords: trackCoords,
+        });
+    },
+
     render: function() {
         return (
             <div>
@@ -88,7 +94,7 @@ const FightTrackUpload = React.createClass({
 
                 { this.state.igcData && (
                     <div>
-                        <div className='flight-track-upload-map'>Here will be map</div>
+                        <div className='flight-track-upload-map'>{ this.renderMap() }</div>
                         <div>
                             Airtime: { Util.formatTime(this.state.igcData.airtime) },{ '\u0020' }
                             max altitude: { Altitude.formatAltitude(this.state.igcData.maxAltitude) }

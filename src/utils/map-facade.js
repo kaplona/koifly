@@ -1,8 +1,8 @@
 'use strict';
 
-var _ = require('lodash');
-var Promise = require('es6-promise').Promise;
-var Util = require('./util');
+const _ = require('lodash');
+const Promise = require('es6-promise').Promise;
+const Util = require('./util');
 
 const CENTER = require('../constants/map-constants').CENTER;
 const GOOGLE_MAPS_API_KEY = require('../secrets').googleMapsApiKey;
@@ -13,16 +13,17 @@ const UNKNOWN_ELEVATION = require('../constants/map-constants').UNKNOWN_ELEVATIO
 // Load google maps api
 // On success extend basic Map object with map interactive functionality
 // Emit event that map was loaded
-var googleMapsApi = require('google-maps-api')(GOOGLE_MAPS_API_KEY);
-var mapsApiPromise = googleMapsApi();
+const googleMapsApi = require('google-maps-api')(GOOGLE_MAPS_API_KEY);
+const mapsApiPromise = googleMapsApi();
 
 
-var MapFacade = function(mapsApi) {
+const MapFacade = function(mapsApi) {
 
     this.mapsApi = mapsApi;
     this.map = null;
     this.elevator = null;
     this.geocoder = null;
+    this.flightTrack = null;
     this.siteMarkers = {};
     this.siteInfowindows = {};
     this.infowindowOnClickFunctions = {};
@@ -154,9 +155,23 @@ MapFacade.prototype.bindMarkerAndInfowindow = function(siteId) {
 
 
 
+MapFacade.prototype.createFlightTrack = function(flightPoints) {
+    this.flightTrack = new this.mapsApi.Polyline({
+        path: flightPoints,
+        geodesic: true,
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 2
+    });
+
+    this.flightTrack.setMap(this.map);
+};
+
+
+
 MapFacade.prototype.addSearchBarControl = function(siteId) {
     // Create control element
-    var searchControl = document.createElement('div');
+    const searchControl = document.createElement('div');
     this.createSearchControl(searchControl, siteId);
     // Add element to google map controls
     this.map.controls[this.mapsApi.ControlPosition.TOP_CENTER].push(searchControl);
@@ -167,7 +182,7 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
     containerDiv.className = 'search-control';
 
     // Set CSS for the search bar
-    var searchBar = document.createElement('input');
+    const searchBar = document.createElement('input');
     searchBar.setAttribute('id', 'search-bar');
     searchBar.setAttribute('type', 'textbox');
     searchBar.className = 'search-bar';
@@ -175,7 +190,7 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
     containerDiv.appendChild(searchBar);
 
     // Set CSS for the search button
-    var searchButton = document.createElement('div');
+    const searchButton = document.createElement('div');
     searchButton.setAttribute('id', 'search_button');
     searchButton.className = 'search-button';
     searchButton.textContent = 'Search';
@@ -196,11 +211,11 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
 };
 
 MapFacade.prototype.searchAddress = function(siteId) {
-    var address = document.getElementById('search-bar').value;
+    const address = document.getElementById('search-bar').value;
     
     this.geocoder.geocode({ 'address': address }, (results, status) => {
         if (status == this.mapsApi.GeocoderStatus.OK) { // eslint-disable-line eqeqeq
-            var position = results[0].geometry.location;
+            const position = results[0].geometry.location;
             this.moveMarker(position, siteId);
         } else if (process.env.NODE_ENV === 'development') {
             console.log('Geocode was not successful for the following reason: ' + status);
@@ -218,7 +233,7 @@ MapFacade.prototype.getPositionInfoPromise = function(latLng) {
         ])
         .then(positionInfoElements => {
             return {
-                address: this.formatGeacoderAddress(positionInfoElements[0]),
+                address: this.formatGeocoderAddress(positionInfoElements[0]),
                 elevation: positionInfoElements[1],
                 coordinates: this.getCoordinatesString(latLng)
             };
@@ -228,7 +243,7 @@ MapFacade.prototype.getPositionInfoPromise = function(latLng) {
 
 MapFacade.prototype.getAddressPromise = function(latLng) {
     // Create a LocationAddressRequest object
-    var positionalRequest = {
+    const positionalRequest = {
         'location': latLng
     };
     
@@ -249,7 +264,7 @@ MapFacade.prototype.getAddressPromise = function(latLng) {
 
 MapFacade.prototype.getElevationPromise = function(latLng) {
     // Create a LocationElevationRequest object using the array's one value
-    var positionalRequest = {
+    const positionalRequest = {
         'locations': [ latLng ]
     };
     
@@ -270,8 +285,8 @@ MapFacade.prototype.getElevationPromise = function(latLng) {
 
 
 MapFacade.prototype.getCoordinatesString = function(latLng) {
-    var lat;
-    var lng;
+    let lat;
+    let lng;
     
     // Check the position format
     if (latLng.lat instanceof Function &&
@@ -310,9 +325,9 @@ MapFacade.prototype.getCoordinatesString = function(latLng) {
 //         "types" : [ "locality", "political" ]
 //     }
 // ]
-MapFacade.prototype.formatGeacoderAddress = function(geocoderResult) {
-    var addressList = [];
-    var addressElements = [
+MapFacade.prototype.formatGeocoderAddress = function(geocoderResult) {
+    const addressList = [];
+    const addressElements = [
         { // e.g. region
             googleKey: 'administrative_area_level_2', // maybe change it to 'locality'
             valueType: 'long_name'
@@ -327,11 +342,9 @@ MapFacade.prototype.formatGeacoderAddress = function(geocoderResult) {
         }
     ];
 
-    var i;
-    var j;
     // Pull needed values from geocoder result
-    for (i = 0; i < addressElements.length; i++) {
-        for (j = 0; j < geocoderResult.length; j++) {
+    for (let i = 0; i < addressElements.length; i++) {
+        for (let j = 0; j < geocoderResult.length; j++) {
             if (geocoderResult[j].types.indexOf(addressElements[i].googleKey) !== -1) {
                 addressList.push(geocoderResult[j][addressElements[i].valueType]);
                 break;
