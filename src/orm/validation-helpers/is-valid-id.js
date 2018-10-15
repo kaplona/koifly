@@ -1,9 +1,9 @@
 'use strict';
 
-const ErrorTypes = require('../errors/error-types');
-const KoiflyError = require('../errors/error');
-const SCOPES = require('../constants/orm-constants').SCOPES;
-const Util = require('../utils/util');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const SCOPES = require('../../constants/orm-constants').SCOPES;
+const Util = require('../../utils/util');
 
 /**
  * Checks if in given model there is a record with given id.

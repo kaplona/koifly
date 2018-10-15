@@ -23,6 +23,7 @@
     "dev": "NODE_ENV=development      node --harmony src/scripts/make.js  &&  NODE_ENV=development  nodemon --harmony src/server.js",
     "make": "NODE_ENV=development     node --harmony src/scripts/make.js",
     "db_init": "MYSQL_ADMIN=true      node --harmony src/orm/init.js",
+    "db_migrate": "MYSQL_ADMIN=true      /node_modules/.bin/sequelize db:migrate",
     "lint": "eslint . --ext .js --ext .jsx",
     "test": "./node_modules/.bin/mocha --compilers jsx:babel-register --require ignore-styles ./tests/ --recursive"
   },
@@ -63,6 +64,7 @@
     "react-router-scroll": "0.2.1",
     "rimraf": "2.6.1",
     "sequelize": "3.23.0",
+    "sequelize-cli": "5.1.0",
     "style-loader": "0.13.2",
     "vision": "3.0.0",
     "webpack": "1.11.0",

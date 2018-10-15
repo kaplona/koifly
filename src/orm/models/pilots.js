@@ -1,10 +1,10 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const Sequelize = require('../sequelize');
 
-const ErrorMessages = require('../errors/error-messages');
-const isUnique = require('./is-unique');
-const sequelize = require('./sequelize');
+const ErrorMessages = require('../../errors/error-messages');
+const isUnique = require('../validation-helpers/is-unique');
+const sequelize = require('../sequelize');
 
 const Flight = require('./flights');
 const Site = require('./sites');

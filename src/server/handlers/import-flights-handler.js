@@ -7,10 +7,10 @@ const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
 const sequelize = require('../../orm/sequelize');
 
-const Glider = require('../../orm/gliders');
-const Flight = require('../../orm/flights');
-const Pilot = require('../../orm/pilots');
-const Site = require('../../orm/sites');
+const Glider = require('../../orm/models/gliders');
+const Flight = require('../../orm/models/flights');
+const Pilot = require('../../orm/models/pilots');
+const Site = require('../../orm/models/sites');
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 
 /**

@@ -3,7 +3,7 @@
 var BcryptPromise = require('../../utils/bcrypt-promise');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
-var Pilot = require('../../orm/pilots');
+var Pilot = require('../../orm/models/pilots');
 
 
 

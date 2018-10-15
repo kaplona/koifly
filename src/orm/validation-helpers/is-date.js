@@ -1,7 +1,7 @@
 'use strict';
 
-const ErrorMessages = require('../errors/error-messages');
-const Util = require('../utils/util');
+const ErrorMessages = require('../../errors/error-messages');
+const Util = require('../../utils/util');
 
 /**
  * Checks if value is a date string in yyyy-mm-dd format.

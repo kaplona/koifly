@@ -8,7 +8,7 @@ var EmailMessageTemplates = require('../../constants/email-message-templates');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/pilots');
+var Pilot = require('../../orm/models/pilots');
 var sendAuthTokenToPilot = require('../helpers/send-auth-token');
 var setAuthCookie = require('../helpers/set-auth-cookie');
 

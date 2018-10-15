@@ -7,9 +7,9 @@ var KoiflyError = require('../../errors/error');
 var getPilotValuesForFrontend = require('./get-pilot-values');
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 
-var Flight = require('../../orm/flights');
-var Site = require('../../orm/sites');
-var Glider = require('../../orm/gliders');
+var Flight = require('../../orm/models/flights');
+var Site = require('../../orm/models/sites');
+var Glider = require('../../orm/models/gliders');
 
 
 

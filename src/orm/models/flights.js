@@ -1,12 +1,12 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const Sequelize = require('../sequelize');
 
-const SCOPES = require('../constants/orm-constants').SCOPES;
-const ErrorMessages = require('../errors/error-messages');
-const isDate = require('./is-date');
-const isValidId = require('./is-valid-id');
-const sequelize = require('./sequelize');
+const SCOPES = require('../../constants/orm-constants').SCOPES;
+const ErrorMessages = require('../../errors/error-messages');
+const isDate = require('../validation-helpers/is-date');
+const isValidId = require('../validation-helpers/is-valid-id');
+const sequelize = require('../sequelize');
 
 const Site = require('./sites');
 const Glider = require('./gliders');
@@ -81,6 +81,12 @@ const Flight = sequelize.define(
                     msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
                 }
             }
+        },
+
+        igc: {
+            type: Sequelize.TEXT('long'),
+            allowNull: true,
+            defaultValue: null
         },
 
         see: {

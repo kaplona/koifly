@@ -8,10 +8,10 @@ var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
 var sequelize = require('../../orm/sequelize');
 
-var Flight = require('../../orm/flights');
-var Glider = require('../../orm/gliders');
-var Pilot = require('../../orm/pilots');
-var Site = require('../../orm/sites');
+var Flight = require('../../orm/models/flights');
+var Glider = require('../../orm/models/gliders');
+var Pilot = require('../../orm/models/pilots');
+var Site = require('../../orm/models/sites');
 
 
 

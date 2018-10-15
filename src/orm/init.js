@@ -1,11 +1,15 @@
 'use strict';
 
-var sequelize = require('./sequelize');
+const chalk = require('chalk');
+const sequelize = require('./sequelize');
 
-require('./flights');
-require('./sites');
-require('./gliders');
-require('./pilots');
+require('./models/flights');
+require('./models/sites');
+require('./models/gliders');
+require('./models/pilots');
 
 
-sequelize.sync();
+sequelize
+    .sync()
+    .then(() => console.log(chalk.green('db sync succeeded')))
+    .catch(err => console.log(chalk.red('ERROR: db sync failed:'), err));

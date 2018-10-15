@@ -1,10 +1,10 @@
 'use strict';
 
-const ErrorTypes = require('../errors/error-types');
-const KoiflyError = require('../errors/error');
-const ErrorMessages = require('../errors/error-messages');
-const SCOPES = require('../constants/orm-constants').SCOPES;
-const Util = require('../utils/util');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const ErrorMessages = require('../../errors/error-messages');
+const SCOPES = require('../../constants/orm-constants').SCOPES;
+const Util = require('../../utils/util');
 
 /**
  * Checks if value is unique for given model and column.

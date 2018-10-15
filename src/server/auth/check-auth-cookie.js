@@ -4,7 +4,7 @@ var BcryptPromise = require('../../utils/bcrypt-promise');
 var ErrorTypes = require('../../errors/error-types');
 var KoiflyError = require('../../errors/error');
 var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/pilots');
+var Pilot = require('../../orm/models/pilots');
 var setAuthCookie = require('../helpers/set-auth-cookie');
 
 
