@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('../sequelize');
+const Sequelize = require('sequelize');
 
 const ErrorMessages = require('../../errors/error-messages');
 const isUnique = require('../validation-helpers/is-unique');

@@ -65,7 +65,7 @@ TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
         <TrackMap
             {...props}
             mapFacadePromise={ mapFacadePromise }
-        />
+            />
     );
 };
 

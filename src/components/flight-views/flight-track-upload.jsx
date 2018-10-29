@@ -80,10 +80,10 @@ const FightTrackUpload = React.createClass({
     },
 
     renderMap: function() {
-        const trackCoords = this.state.igcData.flightPoints.map(({lat, lng}) => ({ lat, lng }));
+        const trackCoords = this.state.igcData.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
 
         return TrackMap.create({
-            trackCoords: trackCoords,
+            trackCoords: trackCoords
         });
     },
 

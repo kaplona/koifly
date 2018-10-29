@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('../sequelize');
+const Sequelize = require('sequelize');
 
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 const ErrorMessages = require('../../errors/error-messages');
