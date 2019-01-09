@@ -61,18 +61,15 @@ const FlightEditView = React.createClass({
         });
     },
 
-    handleFlightTrackData: function(flightTrackData, igcFileContent) {
+    handleFlightTrackData: function(flightTrackData, igc) {
         const { altitude, hours, minutes } = this.state.item;
-        const newAltitude = (!altitude && flightTrackData.maxAltitude) ? flightTrackData.maxAltitude : altitude;
         const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
-        const newHours = (!hours && !minutes && flightTrackData.airtime) ? flightTrackHoursMinutes.hours : hours;
-        const newMinutes = (!hours && !minutes && flightTrackData.airtime) ? flightTrackHoursMinutes.minutes : minutes;
 
         const newItem = _.extend({}, this.state.item, {
-            altitude: newAltitude,
-            hours: newHours,
-            minutes: newMinutes,
-            igcFileContent
+            altitude: flightTrackData.maxAltitude || altitude,
+            hours: flightTrackData.airtime ? flightTrackHoursMinutes.hours : hours,
+            minutes: flightTrackData.airtime ? flightTrackHoursMinutes.minutes : minutes,
+            igc
         });
 
         this.setState({ item: newItem }, () => {

@@ -1,29 +1,27 @@
 'use strict';
 
-var React = require('react');
-var Link = require('react-router').Link;
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const Link = require('react-router').Link;
 
+const Altitude = require('../../utils/altitude');
+const FlightModel = require('../../models/flight');
+const igcService = require('../../services/igc-service');
+const itemViewMixin = require('../mixins/item-view-mixin');
+const SiteModel = require('../../models/site');
+const Util = require('../../utils/util');
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
-var Altitude = require('../../utils/altitude');
-var itemViewMixin = require('../mixins/item-view-mixin');
-var FlightModel = require('../../models/flight');
-var SiteModel = require('../../models/site');
-var Util = require('../../utils/util');
-
-var BreadCrumbs = require('../common/bread-crumbs');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var RemarksRow = require('../common/section/remarks-row');
-var RowContent = require('../common/section/row-content');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var StaticMap = require('../common/maps/static-map');
-var View = require('../common/view');
-
-
-
-var { shape, string } = React.PropTypes;
+const BreadCrumbs = require('../common/bread-crumbs');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const RemarksRow = require('../common/section/remarks-row');
+const RowContent = require('../common/section/row-content');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const StaticMap = require('../common/maps/static-map');
+const TrackMap = require('../common/maps/track-map');
+const View = require('../common/view');
 
 var FlightView = React.createClass({
 
@@ -47,6 +45,23 @@ var FlightView = React.createClass({
     },
 
     renderMap: function() {
+        const igc = this.state.item.igc;
+        if (!igc || typeof igc !== 'string') {
+            return this.renderSiteMap();
+        }
+
+        const parsedIgc = igcService.parseIgc(this.state.item.igc);
+        if (parsedIgc instanceof Error) {
+            return this.renderSiteMap();
+        }
+
+        const trackCoords = parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
+        return TrackMap.create({
+            trackCoords: trackCoords
+        });
+    },
+
+    renderSiteMap: function() {
         var siteId = this.state.item.siteId;
         var siteCoordinates = SiteModel.getLatLng(siteId);
         // this flight has no site or the site has no coordinates

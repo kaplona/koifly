@@ -117,7 +117,8 @@ var FlightModel = {
             altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
             altitudeAboveLaunch: this.getAltitudeAboveLaunch(flight.siteId, flight.altitude),
             airtime: flight.airtime,
-            remarks: flight.remarks
+            remarks: flight.remarks,
+            igc: flight.igc
         };
     },
     
@@ -213,7 +214,8 @@ var FlightModel = {
             siteId: (newFlight.siteId === null) ? null : parseInt(newFlight.siteId),
             gliderId: (newFlight.gliderId === null) ? null : parseInt(newFlight.gliderId),
             airtime: parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes),
-            remarks: newFlight.remarks
+            remarks: newFlight.remarks,
+            igc: newFlight.igc
         };
 
         var currentAltitude = (newFlight.id !== undefined) ? this.getStoreContent(newFlight.id).altitude : 0;

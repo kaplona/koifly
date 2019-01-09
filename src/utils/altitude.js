@@ -77,7 +77,7 @@ var Altitude = {
      * in order to get the same value in feet (or other units) all the times
      * @param {number} nextValue - new value inserted by user
      * @param {number} previousValue - old value to compare to
-     * @param {string} units chose by user
+     * @param {string} units – user settings units
      * @returns {number} altitude in meters
      */
     getAltitudeInMeters: function(nextValue, previousValue, units) {

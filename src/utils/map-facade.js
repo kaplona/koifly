@@ -165,6 +165,19 @@ MapFacade.prototype.createFlightTrack = function(flightPoints) {
     });
 
     this.flightTrack.setMap(this.map);
+    this.zoomToFlightTrack();
+    console.log('createFlightTrack', this.flightTrack);
+};
+
+MapFacade.prototype.zoomToFlightTrack = function() {
+    if (!this.flightTrack || !this.flightTrack.getPath) {
+        return;
+    }
+    const bounds = new this.mapsApi.LatLngBounds();
+    const points = this.flightTrack.getPath().getArray();
+    _.each(points, point => bounds.extend(point));
+
+    this.map.fitBounds(bounds);
 };
 
 

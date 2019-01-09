@@ -116,7 +116,8 @@ function saveFlight(data, pilotId) {
             altitude: data.altitude,
             airtime: data.airtime,
             gliderId: data.gliderId,
-            remarks: data.remarks
+            remarks: data.remarks,
+            igc: data.igc
         };
     }
 

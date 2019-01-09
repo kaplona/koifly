@@ -48,14 +48,15 @@ const FightTrackUpload = React.createClass({
 
         const reader = new FileReader();
         reader.onload = upload => {
-            const parsedFile = igcService.parseIgc(upload.target.result);
+            const igc = upload.target.result;
+            const parsedFile = igcService.parseIgc(igc);
 
             if (parsedFile instanceof Error) {
                 this.setState({ error: parsedFile });
                 return;
             }
 
-            this.props.onLoad(parsedFile, upload.target.result);
+            this.props.onLoad(parsedFile, igc);
             this.setState({ igcData: parsedFile });
         };
         reader.onerror = error => {
