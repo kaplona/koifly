@@ -117,7 +117,12 @@ const igcService = {
         const hours = Number(BRecord.substr(1, 2));
         const minutes = Number(BRecord.substr(3, 2));
         const seconds = Number(BRecord.substr(5, 2));
-        const timeInSeconds = hours * 3600 + minutes * 60 + seconds;
+        let timeInSeconds = hours * 3600 + minutes * 60 + seconds;
+        // Time is in UTC, so potentially it can "overflow" to next day,
+        // in this case we add 24 hours the flight timestamp in order to calculate airtime correctly.
+        if (flightStartTime && timeInSeconds < flightStartTime) {
+            timeInSeconds += 24 * 3600;
+        }
         const airtimeInSeconds = (flightStartTime !== null) ? (timeInSeconds - flightStartTime) : 0;
 
         return { airtimeInSeconds, timeInSeconds };

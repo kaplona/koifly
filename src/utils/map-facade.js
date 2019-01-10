@@ -166,7 +166,6 @@ MapFacade.prototype.createFlightTrack = function(flightPoints) {
 
     this.flightTrack.setMap(this.map);
     this.zoomToFlightTrack();
-    console.log('createFlightTrack', this.flightTrack);
 };
 
 MapFacade.prototype.zoomToFlightTrack = function() {
