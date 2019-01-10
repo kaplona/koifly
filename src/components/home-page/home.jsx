@@ -190,8 +190,11 @@ var Home = React.createClass({
                     { '\u00A9' }
                     { new Date().getFullYear() } Anastasia Kaplina
                     <div className='icons-credits'>
-                        icons by <a href='http://www.flaticon.com/authors/hand-drawn-goods' title='Hand Drawn Goods'> Hand Drawn Goods </a><br />
+                        icons by <a href='http://www.flaticon.com/authors/hand-drawn-goods' title='Hand Drawn Goods'> Hand Drawn Goods </a>
+                        <br />
                         from <a href='http://www.flaticon.com' title='Flaticon'>www.flaticon.com</a> is licensed by <a href='http://creativecommons.org/licenses/by/3.0/' title='Creative Commons BY 3.0'> CC BY 3.0 </a>
+                        <br />
+                        background pattern from <a href='https://www.toptal.com/designers/subtlepatterns/' title='Toptal Subtle Patterns'> Toptal Subtle Patterns </a>
                     </div>
                 </div>
             </div>
