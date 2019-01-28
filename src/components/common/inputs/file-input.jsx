@@ -1,10 +1,11 @@
 'use strict';
 
 const React = require('react');
-const { element, func, oneOfType, string } = React.PropTypes;
+const {func, string} = React.PropTypes;
 const Button = require('../buttons/button');
 const InputContainer = require('./input-container');
 const Label = require('../section/label');
+const Notice = require('../notice/notice');
 const ValidationError = require('../section/validation-error');
 
 require('./file-input.less');
@@ -14,18 +15,9 @@ const FileInput = React.createClass({
     propTypes: {
         fileName: string,
         fileTypes: string.isRequired, // comma separated types, which input[type='file'] expects in "accepts" attr
-        buttonCaption: oneOfType([string, element]),
-        selectedButtonCaption: oneOfType([string, element]),
         errorMessage: string,
         onSelect: func.isRequired,
         onRemove: func.isRequired,
-    },
-
-    getDefaultProps: function() {
-        return {
-            buttonCaption: 'Choose File',
-            selectedButtonCaption: 'Choose Another File'
-        };
     },
 
     handleButtonClick: function() {
@@ -43,6 +35,14 @@ const FileInput = React.createClass({
     },
 
     render: function() {
+        if (!window.FileReader || !window.File || !window.FileList || !window.Blob) {
+            const message = `
+                Your browser doesn't support new html file uploading API.
+                Please, upgrade your browser to the latest version, or use Firefox, Chrome, Safari, or Opera browsers.
+            `;
+            return <Notice type='error' text={ message } />;
+        }
+
         return (
             <div className='file-loader-component'>
                 {!!this.props.errorMessage && (
@@ -62,7 +62,7 @@ const FileInput = React.createClass({
                 )}
 
                 <Button
-                    caption={this.props.fileName ? this.props.selectedButtonCaption : this.props.buttonCaption}
+                    caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
                     fitContent={true}
                     onClick={this.handleButtonClick}
                 />

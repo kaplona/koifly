@@ -7,11 +7,17 @@ const KoiflyError = require('../../errors/error');
 
 const PilotModel = require('../../models/pilot');
 
-const CsvFileUpload = require('../common/importing/csv-file-upload');
+const Button = require('../common/buttons/button');
+const Description = require('../common/section/description');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 const ErrorBox = require('../common/notice/error-box');
-const Loader = require('../common/loader');
+const FileInput = require('../common/inputs/file-input');
+const ImportError = require('../common/notice/import-error');
 const NavigationMenu = require('../common/menu/navigation-menu');
+const Notice = require('../common/notice/notice');
 const Section = require('../common/section/section');
+const SectionLoader = require('../common/section/section-loader');
+const SectionRow = require('../common/section/section-row');
 const SectionTitle = require('../common/section/section-title');
 const View = require('../common/view');
 
@@ -22,10 +28,12 @@ const PilotFlightsUpload = React.createClass({
         return {
             dataUri: null,
             email: null,
-            error: null,
+            fileName: null,
+            fileReadError: null,
             isImporting: false,
             loadingError: null,
             successSummary: false,
+            validationError: null,
             userName: null
         };
     },
@@ -51,22 +59,18 @@ const PilotFlightsUpload = React.createClass({
         browserHistory.push('/pilot/edit');
     },
 
-    handleFile: function(event) {
-        const file = event.target.files[0];
-
+    handleFile: function(file) {
         this.setState({
             dataUri: null,
-            error: null,
-            successSummary: null
+            fileName: file.name,
+            fileReadError: null,
+            successSummary: null,
+            validationError: null,
         });
-
-        if (!file) {
-            return;
-        }
 
         const validationError = this.validateFile(file);
         if (validationError) {
-            this.setState({ error: validationError });
+            this.setState({ validationError: validationError });
             return;
         }
 
@@ -77,10 +81,20 @@ const PilotFlightsUpload = React.createClass({
             });
         };
         reader.onerror = error => {
-            this.setState({ error });
+            this.setState({ fileReadError: error });
         };
 
         reader.readAsDataURL(file);
+    },
+
+    handleRemoveFile() {
+        this.setState({
+            dataUri: null,
+            fileName: null,
+            fileReadError: null,
+            successSummary: null,
+            validationError: null,
+        });
     },
 
     handleImportFile: function() {
@@ -91,13 +105,12 @@ const PilotFlightsUpload = React.createClass({
             .then(successSummary => {
                 this.setState({
                     successSummary,
-                    error: null,
                     isImporting: false
                 });
             })
             .catch(error => {
                 this.setState({
-                    error: error || new KoiflyError(ErrorTypes.DB_WRITE_ERROR),
+                    fileReadError: error || new KoiflyError(ErrorTypes.DB_WRITE_ERROR),
                     isImporting: false
                 });
             });
@@ -129,7 +142,7 @@ const PilotFlightsUpload = React.createClass({
     },
 
     renderLoader: function() {
-        return this.renderSimpleLayout(<Loader />);
+        return this.renderSimpleLayout(<SectionLoader />);
     },
 
     renderLoadingError: function() {
@@ -138,40 +151,20 @@ const PilotFlightsUpload = React.createClass({
     },
 
     renderSuccessMessage: function() {
-        if (!this.state.successSummary) {
-            return null;
-        }
-
         return (
-            <div>
-                Your records were successfully saved:
-                <ul>
-                    <li>{ this.state.successSummary.flightsNum } flights added;</li>
-                    <li>{ this.state.successSummary.sitesNum } sites added;</li>
-                    <li>{ this.state.successSummary.glidersNum } gliders added.</li>
-                </ul>
-            </div>
-        );
-    },
-
-    renderDescription() {
-        return (
-            <div>
-                File should be .csv format. First line should be header with next column names:
-                <ul>
-                    <li>"date" – date in yyyy-mm-dd format;</li>
-                    <li>"airtime" – number, flight duration in minutes;</li>
-                    <li>"altitude" – number, gained altitude in the same unit as in pilot's settings;</li>
-                    <li>"site" – name of the site;</li>
-                    <li>"launchAltitude" – number, site altitude in the same unit as in pilot's settings;</li>
-                    <li>"location" – site geographical address;</li>
-                    <li>"latitude" – site coordinates;</li>
-                    <li>"longitude" – site coordinates;</li>
-                    <li>"glider" – name of the glider;</li>
-                    <li>"remarks"</li>
-                </ul>
-                Each line must have "date" value, other columns are optional.
-            </div>
+            <Notice
+                type='success'
+                text={(
+                    <div>
+                        Your records were successfully saved:
+                        <ul>
+                            <li>{ this.state.successSummary.flightsNum } flights added;</li>
+                            <li>{ this.state.successSummary.sitesNum } sites added;</li>
+                            <li>{ this.state.successSummary.glidersNum } gliders added.</li>
+                        </ul>
+                    </div>
+                )}
+            />
         );
     },
 
@@ -183,6 +176,11 @@ const PilotFlightsUpload = React.createClass({
         if (!this.state.email) {
             return this.renderLoader();
         }
+
+        const canImport = (
+            this.state.dataUri && !this.state.fileReadError && !this.state.validationError &&
+            !this.state.isImporting && !this.state.successSummary
+        );
 
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
@@ -197,16 +195,55 @@ const PilotFlightsUpload = React.createClass({
                             Import you flights:
                         </SectionTitle>
 
-                        <CsvFileUpload
-                            canImport={ this.state.dataUri && !this.state.error && !this.state.successSummary }
-                            description={ this.renderDescription() }
-                            isImporting={ this.state.isImporting }
-                            importError={ this.state.error }
-                            successMessage={ this.renderSuccessMessage() }
-                            onChange={ this.handleFile }
-                            onImport={ this.handleImportFile }
-                            onCancel={ this.handleGoToPilotEdit }
+                        <SectionRow>
+                            { !!this.state.successSummary && this.renderSuccessMessage() }
+                            { !!this.state.fileReadError && (<ImportError error={this.state.fileReadError} />) }
+
+                            <FileInput
+                                fileName={this.state.fileName}
+                                fileTypes='.csv'
+                                errorMessage={this.state.validationError ? this.state.validationError.message : null}
+                                onSelect={this.handleFile}
+                                onRemove={this.handleRemoveFile}
                             />
+                        </SectionRow>
+
+                        <SectionRow isLast={ true }>
+                            <Description>
+                                <div>
+                                    File should be .csv format. First line should be a header with next column names:
+                                    <ul>
+                                        <li>"date" – date in yyyy-mm-dd format;</li>
+                                        <li>"airtime" – number, flight duration in minutes;</li>
+                                        <li>"altitude" – number, gained altitude in the same unit as in pilot's settings;</li>
+                                        <li>"site" – name of the site;</li>
+                                        <li>"launchAltitude" – number, site altitude in the same unit as in pilot's settings;</li>
+                                        <li>"location" – site geographical address;</li>
+                                        <li>"latitude" – site coordinates;</li>
+                                        <li>"longitude" – site coordinates;</li>
+                                        <li>"glider" – name of the glider;</li>
+                                        <li>"remarks"</li>
+                                    </ul>
+                                    Each line must have "date" value, other column values are optional.
+                                </div>
+                            </Description>
+                        </SectionRow>
+
+                        <DesktopBottomGrid
+                            leftElements={[
+                                (<Button
+                                    buttonStyle='primary'
+                                    caption={this.state.isImporting ? 'Importing...' : 'Import'}
+                                    isEnabled={canImport}
+                                    onClick={this.handleImportFile}
+                                />),
+                                (<Button
+                                    buttonStyle='secondary'
+                                    caption='Cancel'
+                                    onClick={this.handleGoToPilotEdit}
+                                />)
+                            ]}
+                        />
                     </Section>
                 </form>
 

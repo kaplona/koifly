@@ -4,7 +4,7 @@ const React = require('react');
 const { arrayOf, number, oneOfType, shape } = React.PropTypes;
 const koiflyErrorPropType = require('../../../errors/error-prop-type');
 
-const Notice = require('../notice/notice');
+const Notice = require('./notice');
 
 require('./import-error.less');
 
@@ -15,29 +15,25 @@ function ImportError(props) {
         return <Notice text={ errorMessage } type='error' />;
     }
 
-    const errorTable = (
-        <table>
-            <thead>
-            <tr>
-                <th className='first-column'>Line</th>
-                <th>Error Message</th>
-            </tr>
-            </thead>
-            <tbody>
-            { props.error.map((importError, index) => (
-                <tr key={ index }>
-                    <td>{ importError.row }</td>
-                    <td>{ importError.error.message }</td>
-                </tr>
-            )) }
-            </tbody>
-        </table>
-    );
-
     const noticeText = (
         <div className='import-error'>
             <div className='title'>Couldn't process next file lines:</div>
-            { errorTable }
+            <table>
+                <thead>
+                <tr>
+                    <th className='first-column'>Line</th>
+                    <th>Error Message</th>
+                </tr>
+                </thead>
+                <tbody>
+                {props.error.map((importError, index) => (
+                    <tr key={ index }>
+                        <td>{ importError.row }</td>
+                        <td>{ importError.error.message }</td>
+                    </tr>
+                ))}
+                </tbody>
+            </table>
         </div>
     );
 
