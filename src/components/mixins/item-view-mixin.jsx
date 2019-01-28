@@ -4,7 +4,7 @@ var React = require('react');
 var browserHistory = require('react-router').browserHistory;
 
 var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
+var SectionLoader = require('../common/section/section-loader');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
 var View = require('../common/view');
@@ -70,7 +70,7 @@ var itemViewMixin = function(modelKey) {
         },
 
         renderLoader: function() {
-            return this.renderSimpleLayout(<Loader />);
+            return this.renderSimpleLayout(<SectionLoader />);
         },
 
         renderError: function() {

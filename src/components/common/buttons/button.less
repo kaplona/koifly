@@ -1,4 +1,3 @@
-
 @import (reference) '../../constants';
 @import (reference) '../../general';
 
@@ -14,7 +13,7 @@
 
     width: 100%;
     height: @row-height;
-    padding: 0;
+    padding: 0 1em;
     border: none;
     background-color: @dark-blue;
     color: @light-blue;
@@ -25,6 +24,9 @@
     cursor: pointer;
     display: block;
 
+    &.x-content-width {
+      width: auto;
+    }
 
     &.x-primary {
       background-color: darken(@grass-color, 5%);

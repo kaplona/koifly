@@ -1,28 +1,34 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const {bool} = React.PropTypes;
 
 require('./section-row.less');
 
 
-var SectionRow = React.createClass({
+const SectionRow = React.createClass({
 
     propTypes: {
-        isLast: React.PropTypes.bool.isRequired,
-        isDesktopOnly: React.PropTypes.bool.isRequired
+        isDesktopOnly: bool,
+        isLast: bool,
+        isMobileLast: bool,
     },
 
     getDefaultProps: function() {
         return {
+            isDesktopOnly: false,
             isLast: false,
-            isDesktopOnly: false
+            isMobileLast: false,
         };
     },
 
     render: function() {
-        var className = 'section-row';
+        let className = 'section-row';
         if (this.props.isLast) {
             className += ' x-last';
+        }
+        if (this.props.isMobileLast) {
+            className += ' x-mobile-last';
         }
         if (this.props.isDesktopOnly) {
             className += ' x-desktop';

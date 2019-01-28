@@ -1,0 +1,31 @@
+@import (reference) '../../constants';
+
+
+.file-loader-component {
+
+  .selected-file {
+    margin-bottom: 0.5em;
+  }
+
+  .file-name {
+    padding-top: (@row-height * 0.3);
+    display: inline-block;
+
+    @media (min-width: @medium-viewport) {
+      padding-top: (@row-height * 0.2);
+    }
+  }
+
+  .remove-file {
+    margin-left: 0.5em;
+    color: @brick-color;
+    font-size: 0.8em;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .hidden {
+    visibility: hidden;
+    position: absolute;
+  }
+}

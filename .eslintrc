@@ -163,7 +163,7 @@
     // Full list: https://github.com/yannickcr/eslint-plugin-react
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
     // "react/jsx-boolean-value": 1,
-    "react/jsx-closing-bracket-location": [1, "props-aligned"],
+    // "react/jsx-closing-bracket-location": [1, "props-aligned"],
     "react/jsx-curly-spacing": [1, "always"],
     "react/jsx-max-props-per-line": [1, {"maximum": 3}],
     "react/jsx-no-duplicate-props": [1, {"ignoreCase": true}],

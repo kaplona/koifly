@@ -33,6 +33,15 @@ var Util = {
      */
     today: function() {
         var date = new Date();
+        return this.dateToString(date);
+    },
+
+
+    /**
+     * @param {Date} date
+     * @returns {string} - String date in yyyy-mm-dd format.
+     */
+    dateToString(date) {
         var dd = date.getDate();
         var mm = date.getMonth() + 1;
         var yyyy = date.getFullYear();
@@ -70,7 +79,7 @@ var Util = {
 
     /**
      * @param {string} date - in yyyy-mm-dd format
-     * @returns {string} - date in 'Jan 23, 2016' format
+     * @returns {string|null} - date in 'Jan 23, 2016' format
      */
     formatDate: function(date) {
         if (!this.isRightDateFormat(date)) {

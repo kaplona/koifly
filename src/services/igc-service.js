@@ -3,6 +3,8 @@
 const Altitude = require('../utils/altitude');
 const ErrorTypes = require('../errors/error-types');
 const KoiflyError = require('../errors/error');
+const SiteModel = require('../models/site');
+const Util = require('../utils/util');
 
 /**
  * @name igcService
@@ -27,8 +29,7 @@ const igcService = {
      */
     parseIgc(fileText) {
         const records = fileText.split('\n');
-
-        let startIndex = this.findStartIndex(records);
+        const startIndex = this.findStartIndex(records);
 
         const fixedRecords = records.filter((record, index) => {
             return (index > startIndex) && record.startsWith('B');
@@ -52,17 +53,90 @@ const igcService = {
 
             maxAltitude = (!maxAltitude || maxAltitude < altInPilotUnit) ? altInPilotUnit : maxAltitude;
 
-            return { altitude, altInPilotUnit, lat, lng, airtimeInSeconds, timeInSeconds };
+            return {
+                altitude, // in meters
+                altInPilotUnit,
+                lat,
+                lng,
+                airtimeInSeconds, // time in seconds starting from the beginning of the flight
+                timeInSeconds, // time in seconds starting from the beginning of a day (in UTC)
+            };
         });
 
+        const firstRecord = parsedFixedRecords[0];
         const lastRecord = parsedFixedRecords[parsedFixedRecords.length - 1];
+        const date = this.findFlightDate(records, firstRecord.timeInSeconds, firstRecord.lng);
         const airtimeInMinutes = Math.round(lastRecord.airtimeInSeconds / 60);
+        const nearestSite = this.findNearestSite(firstRecord.lat, firstRecord.lng) || {};
 
         return {
+            date,
             flightPoints: parsedFixedRecords,
             maxAltitude: maxAltitude,
-            airtime: airtimeInMinutes
+            airtime: airtimeInMinutes,
+            siteId: nearestSite.id ? nearestSite.id.toString() : null,
         };
+    },
+
+    /**
+     * Searches for header record "H" with date mnemonic "DTE".
+     * Extracts date from the record, adjust date depending on timezone (longitude where flight took place).
+     * @param {array.<string>} records
+     * @param {number} timeInSec
+     * @param {number} lng
+     * @return {string|null} – Date in "YYYY-MM-DD" format when the flight took place or null if no date record exist.
+     */
+    findFlightDate(records, timeInSec, lng) {
+        let dateRecord;
+        for (let i = 0; i < records.length; i++) {
+            const record = records[i];
+            const isHeaderRecord = (record[0] === 'H') || (record[0] === 'A');
+            if (!isHeaderRecord) {
+                break;
+            }
+            const isDateRecord = (record.substring(2, 5) === 'DTE');
+            if (isDateRecord) {
+                dateRecord = record;
+                break;
+            }
+        }
+
+        if (!dateRecord) {
+            return null;
+        }
+
+        let DD = dateRecord.substring(5, 7);
+        const MM = dateRecord.substring(7, 9);
+        const YY = dateRecord.substring(9);
+        // Hoping that IGC format will start saving year in 4 digits in 2100
+        const YYYY = ('20' + YY);
+
+        if (!DD || !MM || !YYYY) {
+            return null;
+        }
+
+        // Very simplified calculation of time offset depending on launch longitude.
+        // I don't use standard time zones for a specific longitude,
+        // and simply divide globe into 24 geographical time zones.
+        // I need only date without hours, so this approach can lead to one day errors if a flight starts very late
+        // in the evening or very early in the morning in an area which spreads across several geographical time zones.
+        // Since standard time zones can be differ from geographical time zones no more than 3 hours,
+        // flight should star later than 9pm or earlier than 3am for calculation error to appear.
+        // Decision was made to consider this error negligible.
+        const sign = Math.sign(lng) || 1;
+        const hoursOffset = sign * Math.floor(Math.abs(lng) * 12 / 180);
+        const hours = (timeInSec / 3600) + hoursOffset;
+        if (hours > 24) {
+            DD += 1;
+        }
+        if (hours < 0) {
+            DD += -1;
+        }
+
+        // Using JS Date object to get a valid date in case day of the month is zero or greater that days in the month.
+        const flightDate = new Date(YYYY, Number(MM) - 1, DD);
+
+        return Util.dateToString(flightDate);
     },
 
     /**
@@ -167,6 +241,80 @@ const igcService = {
      */
     getAltitudeFromBRecord(BRecord) {
         return Number(BRecord.substr(25, 5));
+    },
+
+    /**
+     * Searches for a nearest launch within 1 km radius.
+     * @param {number} lat
+     * @param {number} lng
+     * @return {{id:number|string, distance: number}|null}
+     */
+    findNearestSite(lat, lng) {
+        if (!lat || !lng) {
+            return null;
+        }
+
+        let nearestSite = null;
+        SiteModel
+            .getList()
+            .filter(({coordinates}) => {
+                if (!coordinates) {
+                    return false;
+                }
+                const siteLat = coordinates.lat;
+                const siteLng = coordinates.lng;
+                // Take only flights which are within a rectangular area of 0.1 degree latitude or longitude.
+                return !!siteLat && !!siteLng && (Math.abs(siteLat - lat) < 0.1) && (Math.abs(siteLng - lng) < 0.1);
+            })
+            .forEach(site => {
+                const distance = this.getDistance(lat, lng, site.coordinates.lat, site.coordinates.lng);
+                // Take only sites within 1 km radius.
+                if ((distance < 1) && (!nearestSite || distance < nearestSite.distance)) {
+                    nearestSite = {
+                        id: site.id,
+                        distance
+                    };
+                }
+            });
+
+        return nearestSite;
+    },
+
+    /**
+     * Returns distance between two points in km.
+     * Stolen from here: https://www.geodatasource.com/developers/javascript
+     * Theory: https://en.wikipedia.org/wiki/Great-circle_distance
+     * @param {number} lat1
+     * @param {number} lng1
+     * @param {number} lat2
+     * @param {number} lng2
+     * @return {number}
+     */
+    getDistance(lat1, lng1, lat2, lng2) {
+        if ((lat1 === lat2) && (lng1 === lng2)) {
+            return 0;
+        }
+
+        // Converting Latitude to Radians:
+        const radlat1 = Math.PI * lat1 / 180;
+        const radlat2 = Math.PI * lat2 / 180;
+
+        // Converting Longitude degrees between two points to Radians:
+        const theta = lng1 - lng2;
+        const radtheta = Math.PI * theta / 180;
+
+        // Calculations of great-circle distance between points using trigonometric functions.
+        let acosDist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (acosDist > 1) {
+            acosDist = 1;
+        }
+        const radDist = Math.acos(acosDist);
+
+        // Converting Radians to distance (km):
+        const earthRadius = 6371;
+        const kmDist = radDist * earthRadius;
+
+        return kmDist;
     }
 };
 

@@ -10,7 +10,7 @@ var Util = require('../../utils/util');
 var AppLink = require('../common/app-link');
 var DaysSinceLastFlight = require('../common/days-since-last-flight');
 var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
+var SectionLoader = require('../common/section/section-loader');
 var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
@@ -90,7 +90,7 @@ var PilotView = React.createClass({
     },
 
     renderLoader: function() {
-        return this.renderSimpleLayout(<Loader />);
+        return this.renderSimpleLayout(<SectionLoader />);
     },
 
     renderMobileButtons: function() {

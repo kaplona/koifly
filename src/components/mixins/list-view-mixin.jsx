@@ -5,7 +5,7 @@ var browserHistory = require('react-router').browserHistory;
 
 var Button = require('../common/buttons/button');
 var EmptyList = require('../common/empty-list');
-var Loader = require('../common/loader');
+var SectionLoader = require('../common/section/section-loader');
 var NavigationMenu = require('../common/menu/navigation-menu');
 
 
@@ -57,7 +57,7 @@ var listViewMixin = function(modelKey) {
         },
 
         renderLoader: function() {
-            return (this.state.items === null) ? <Loader /> : null;
+            return (this.state.items === null) ? <SectionLoader /> : null;
         },
 
         renderEmptyList: function() {

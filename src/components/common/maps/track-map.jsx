@@ -28,20 +28,27 @@ const TrackMap = React.createClass({
 
     componentDidMount: function() {
         this.props.mapFacadePromise.then(mapFacade => {
-            this.createMap(mapFacade);
+            this.mapFacade = mapFacade;
+            this.createMap();
         });
+    },
+
+    componentWillReceiveProps(nextProps) {
+        if (this.mapFacade && nextProps.trackCoords !== this.props.trackCoords) {
+            this.mapFacade.updateFlightTrack(nextProps.trackCoords);
+        }
     },
 
     shouldComponentUpdate: function() {
         return false;
     },
 
-    createMap: function(mapFacade) {
+    createMap: function() {
         const mapContainer = this.refs.map;
         const center = this.props.trackCoords[0] || CENTER.region;
-        mapFacade.createMap(mapContainer, center, ZOOM_LEVEL.track);
+        this.mapFacade.createMap(mapContainer, center, ZOOM_LEVEL.track);
 
-        mapFacade.createFlightTrack(this.props.trackCoords);
+        this.mapFacade.createFlightTrack(this.props.trackCoords);
     },
 
     render: function() {

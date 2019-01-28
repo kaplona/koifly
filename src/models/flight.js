@@ -155,7 +155,8 @@ var FlightModel = {
             gliderId: (flight.gliderId === null) ? null : flight.gliderId.toString(),
             hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
             minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : '',
-            remarks: flight.remarks
+            remarks: flight.remarks,
+            igc: flight.igc,
         };
     },
     
@@ -191,7 +192,8 @@ var FlightModel = {
             gliderId: (lastFlight.gliderId === null) ? null : lastFlight.gliderId.toString(),
             hours: '',
             minutes: '',
-            remarks: ''
+            remarks: '',
+            igc: null,
         };
     },
     

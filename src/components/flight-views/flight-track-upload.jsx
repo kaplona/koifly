@@ -1,48 +1,58 @@
 'use strict';
 
 const React = require('react');
-const { func } = React.PropTypes;
+const { func, string } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
+const ErrorBox = require('../common/notice/error-box');
 const ErrorTypes = require('../../errors/error-types');
+const FileInput = require('../common/inputs/file-input');
 const igcService = require('../../services/igc-service');
 const KoiflyError = require('../../errors/error');
-const Util = require('../../utils/util');
-
-const ErrorBox = require('../common/notice/error-box');
+const SiteModel = require('../../models/site');
 const TrackMap = require('../common/maps/track-map');
+const Util = require('../../utils/util');
 
 require('./flight-track-upload.less');
 
 
 const FightTrackUpload = React.createClass({
-
     propTypes: {
+        igc: string,
         onLoad: func.isRequired
     },
 
-    getInitialState: function() {
+    getInitialState() {
+        let validationError = null;
+        let parsedFile = null;
+        if (this.props.igc) {
+            parsedFile = igcService.parseIgc(this.props.igc);
+        }
+        if (parsedFile instanceof Error) {
+            parsedFile = null;
+            validationError = parsedFile;
+        }
+
         return {
-            dataUri: null,
-            error: null,
-            igcData: null
+            fileName: this.props.igc ? 'previously loaded IGC file' : null,
+            fileReadError: null,
+            parsedIgc: parsedFile,
+            validationError: validationError,
         };
     },
 
-    handleFile: function(event) {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
-
+    handleFile(file) {
         this.setState({
-            dataUri: null,
-            error: null,
-            igcData: null
+            fileName: file.name,
+            fileReadError: null,
+            validationError: null,
         });
 
         const validationError = this.validateFile(file);
         if (validationError) {
-            this.setState({ error: validationError });
+            this.setState({
+                parsedIgc: null,
+                validationError: validationError
+            });
             return;
         }
 
@@ -52,18 +62,31 @@ const FightTrackUpload = React.createClass({
             const parsedFile = igcService.parseIgc(igc);
 
             if (parsedFile instanceof Error) {
-                this.setState({ error: parsedFile });
+                this.setState({
+                    parsedIgc: null,
+                    validationError: parsedFile
+                });
                 return;
             }
 
             this.props.onLoad(parsedFile, igc);
-            this.setState({ igcData: parsedFile });
+            this.setState({ parsedIgc: parsedFile });
         };
         reader.onerror = error => {
-            this.setState({ error });
+            this.setState({ fileReadError: error });
         };
 
         reader.readAsText(file);
+    },
+
+    handleRemoveFile() {
+        this.setState({
+            fileName: null,
+            fileReadError: null,
+            parsedIgc: null,
+            validationError: null,
+        });
+        this.props.onLoad();
     },
 
     validateFile(file) {
@@ -80,30 +103,41 @@ const FightTrackUpload = React.createClass({
         return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
     },
 
-    renderMap: function() {
-        const trackCoords = this.state.igcData.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
+    renderMap() {
+        const trackCoords = this.state.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
 
         return TrackMap.create({
             trackCoords: trackCoords
         });
     },
 
-    render: function() {
+    render() {
         return (
-            <div>
-                <input type='file' accept='.igc' onChange={ this.handleFile } />
+            <div className='flight-track-upload-component'>
+                { this.state.fileReadError && <ErrorBox error={ this.state.fileReadError } /> }
 
-                { this.state.igcData && (
+                <FileInput
+                    fileName={this.state.fileName}
+                    fileTypes='.igc'
+                    errorMessage={this.state.validationError ? this.state.validationError.message : null}
+                    onSelect={this.handleFile}
+                    onRemove={this.handleRemoveFile}
+                />
+
+                {this.state.parsedIgc && (
                     <div>
-                        <div className='flight-track-upload-map'>{ this.renderMap() }</div>
-                        <div>
-                            Airtime: { Util.formatTime(this.state.igcData.airtime) },{ '\u0020' }
-                            max altitude: { Altitude.formatAltitude(this.state.igcData.maxAltitude) }
+                        <div className='map'>{this.renderMap()}</div>
+                        <div className='stats'>
+                            Date: { Util.formatDate(this.state.parsedIgc.date) || 'Unknown' }
+                            ,{ '\u0020' }
+                            airtime: { Util.formatTime(this.state.parsedIgc.airtime) }
+                            ,{ '\u0020' }
+                            max altitude: { Altitude.formatAltitude(this.state.parsedIgc.maxAltitude) }
+                            ,{ '\u0020' }
+                            nearest site: { SiteModel.getSiteName(this.state.parsedIgc.siteId) || 'None' }
                         </div>
                     </div>
-                ) }
-
-                { this.state.error && <ErrorBox error={ this.state.error } /> }
+                )}
             </div>
         );
     }

@@ -62,6 +62,19 @@ var SiteModel = {
             }
         }
     },
+
+
+    /**
+     * Returns raw site list.
+     * @return {Array}
+     */
+    getList() {
+        const storeContent = this.getStoreContent();
+        if (!storeContent || storeContent.error) {
+            return [];
+        }
+        return objectValues(storeContent).map(site => site);
+    },
     
 
     /**

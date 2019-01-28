@@ -168,6 +168,15 @@ MapFacade.prototype.createFlightTrack = function(flightPoints) {
     this.zoomToFlightTrack();
 };
 
+MapFacade.prototype.updateFlightTrack = function(flightPoints) {
+    if (!this.flightTrack) {
+        this.createFlightTrack(flightPoints);
+    }
+
+    this.flightTrack.setPath(flightPoints);
+    this.zoomToFlightTrack();
+};
+
 MapFacade.prototype.zoomToFlightTrack = function() {
     if (!this.flightTrack || !this.flightTrack.getPath) {
         return;

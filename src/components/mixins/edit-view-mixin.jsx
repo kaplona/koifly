@@ -11,7 +11,7 @@ var Validation = require('../../utils/validation');
 var Button = require('../common/buttons/button');
 var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
+var SectionLoader = require('../common/section/section-loader');
 var MobileButton = require('../common/buttons/mobile-button');
 var MobileTopMenu = require('../common/menu/mobile-top-menu');
 var NavigationMenu = require('../common/menu/navigation-menu');
@@ -199,7 +199,9 @@ var editViewMixin = function(modelKey) {
         },
 
         renderLoader: function() {
-            return this.renderSimpleLayout(<Loader />);
+            return this.renderSimpleLayout(
+                <SectionLoader />
+            );
         },
 
         renderLoadingError: function() {

@@ -62,10 +62,18 @@ const FlightEditView = React.createClass({
     },
 
     handleFlightTrackData: function(flightTrackData, igc) {
-        const { altitude, hours, minutes } = this.state.item;
+        if (!flightTrackData || !igc) {
+            const newItem = _.extend({}, this.state.item, { igc: null });
+            this.setState({ item: newItem });
+            return;
+        }
+
+        const { altitude, date, hours, minutes, siteId } = this.state.item;
         const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
 
         const newItem = _.extend({}, this.state.item, {
+            date: flightTrackData.date || date,
+            siteId: flightTrackData.siteId || siteId,
             altitude: flightTrackData.maxAltitude || altitude,
             hours: flightTrackData.airtime ? flightTrackHoursMinutes.hours : hours,
             minutes: flightTrackData.airtime ? flightTrackHoursMinutes.minutes : minutes,
@@ -187,7 +195,7 @@ const FlightEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionRow>
+                        <SectionRow isMobileLast={true}>
                             <RemarksInput
                                 inputValue={ this.state.item.remarks }
                                 labelText='Remarks:'
@@ -198,12 +206,12 @@ const FlightEditView = React.createClass({
                                 />
                         </SectionRow>
 
-                        <SectionTitle isSubtitle={ true }>
+                        <SectionTitle isSubtitle={true} isDesktopOnly={true}>
                             Upload IGC:
                         </SectionTitle>
 
-                        <SectionRow isLast={ true }>
-                            <FightTrackUpload onLoad={ this.handleFlightTrackData } />
+                        <SectionRow isDesktopOnly={true}>
+                            <FightTrackUpload igc={this.state.item.igc} onLoad={this.handleFlightTrackData} />
                         </SectionRow>
 
                         { this.renderDesktopButtons() }
