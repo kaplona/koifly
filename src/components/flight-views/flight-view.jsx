@@ -13,6 +13,7 @@ const Util = require('../../utils/util');
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
 const BreadCrumbs = require('../common/bread-crumbs');
+const FlightSynchronizedCharts = require('./flight-synchronized-charts');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
 const RemarksRow = require('../common/section/remarks-row');
 const RowContent = require('../common/section/row-content');
@@ -44,7 +45,7 @@ var FlightView = React.createClass({
         );
     },
 
-    renderMap: function() {
+    renderMapAndCharts: function() {
         const igc = this.state.item.igc;
         if (!igc || typeof igc !== 'string') {
             return this.renderSiteMap();
@@ -56,9 +57,16 @@ var FlightView = React.createClass({
         }
 
         const trackCoords = parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
-        return TrackMap.create({
+        const map = TrackMap.create({
             trackCoords: trackCoords
         });
+
+        return (
+            <div>
+                {map}
+                <FlightSynchronizedCharts flightPoints={parsedIgc.flightPoints} minAltitude={parsedIgc.minAltitude} />
+            </div>
+        );
     },
 
     renderSiteMap: function() {
@@ -151,7 +159,7 @@ var FlightView = React.createClass({
 
                     <RemarksRow value={ this.state.item.remarks } />
 
-                    { this.renderMap() }
+                    { this.renderMapAndCharts() }
                 </Section>
             </View>
         );

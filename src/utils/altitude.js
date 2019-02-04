@@ -1,10 +1,10 @@
 'use strict';
 
-var dataService = require('../services/data-service');
-var Util = require('./util');
+const dataService = require('../services/data-service');
+const Util = require('./util');
 
 
-var Altitude = {
+const Altitude = {
     meterConverter: {
         meters: 1,
         feet: 3.28084
@@ -13,6 +13,16 @@ var Altitude = {
     altitudeUnitsShort: {
         meters: 'm',
         feet: 'ft'
+    },
+
+    velocityUnits: {
+        meters: 'm/s',
+        feet: 'ft/min'
+    },
+
+    velocityConverter: {
+        'm/s': 1,
+        'ft/min': 196.85
     },
 
     /**
@@ -31,11 +41,20 @@ var Altitude = {
     },
 
     /**
+     * Based on user's altitude unit, gets user's altitude velocity unit, e.g. "m/s' for "meters".
+     * @return {string} – name of the altitude velocity unit
+     */
+    getUserVelocityUnit: function() {
+        const altUnit = this.getUserAltitudeUnit();
+        return this.velocityUnits[altUnit];
+    },
+
+    /**
      * @param {number} altitude
      * @returns {string} - altitude followed by user's altitude units or '–'
      */
     formatAltitude: function(altitude) {
-        var formattedAltitude = (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : null;
+        const formattedAltitude = (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : null;
         return Util.formatText(formattedAltitude);
     },
 
@@ -44,28 +63,28 @@ var Altitude = {
      * @returns {string} - altitude followed by short version of user's altitude units or '–'
      */
     formatAltitudeShort: function(altitude) {
-        var formattedAltitude = altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : null;
+        const formattedAltitude = altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : null;
         return Util.formatText(formattedAltitude);
     },
 
     /**
      * Modifies altitude in meters into current user's altitude units
-     * @param {number} altitude in meters
+     * @param {number|string} altitude in meters
      * @returns {number} altitude in pilot's altitude units
      */
     getAltitudeInPilotUnits: function(altitude) {
-        var increment = this.meterConverter[dataService.store.pilot.altitudeUnit];
+        const increment = this.meterConverter[this.getUserAltitudeUnit()];
         return Math.round(parseFloat(altitude) * increment);
     },
 
     /**
      * Modifies altitude in meters into provided altitude units
-     * @param {number} altitude in meters
+     * @param {number|string} altitude in meters
      * @param {string} units to convert into
      * @returns {number} altitude in given units
      */
     getAltitudeInGivenUnits: function(altitude, units) {
-        var multiplier = this.meterConverter[units];
+        const multiplier = this.meterConverter[units];
         return Math.round(parseFloat(altitude) * multiplier);
     },
 
@@ -81,8 +100,8 @@ var Altitude = {
      * @returns {number} altitude in meters
      */
     getAltitudeInMeters: function(nextValue, previousValue, units) {
-        var previousFilteredVal = this.getAltitudeInPilotUnits(previousValue);
-        if (nextValue !== previousFilteredVal || units !== dataService.store.pilot.altitudeUnit) {
+        const previousParsedVal = this.getAltitudeInPilotUnits(previousValue);
+        if (nextValue !== previousParsedVal || units !== this.getUserAltitudeUnit()) {
             return this.convertAltitudeToMeters(nextValue, units);
         }
         return previousValue;
@@ -119,7 +138,18 @@ var Altitude = {
                 text: unitName
             };
         });
-    }
+    },
+
+    /**
+     * Modifies velocity in meters per second into provided velocity units
+     * @param {number|string} value – Value in meters per second
+     * @param {string} units – Units to convert into
+     * @returns {number} – Altitude velocity in given units
+     */
+    getVelocityInGivenUnits: function(value, units) {
+        const multiplier = this.velocityConverter[units];
+        return Math.round(parseFloat(value) * multiplier);
+    },
 };
 
 

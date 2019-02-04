@@ -1,6 +1,7 @@
 'use strict';
 
 const Altitude = require('../utils/altitude');
+const distanceService = require('./distance-service');
 const ErrorTypes = require('../errors/error-types');
 const KoiflyError = require('../errors/error');
 const SiteModel = require('../models/site');
@@ -22,8 +23,8 @@ const Util = require('../utils/util');
  */
 const igcService = {
     /**
-     * Parses IGC file into list of flight points with IGC B record (Fixed record) information. Calculates airtime and
-     * max altitude from the records.
+     * Parses IGC file into list of flight points with IGC B record (Fixed record) information.
+     * Extract date, airtime, max altitude, and nearest site from the records.
      * @param {string} fileText – IGC file content as text.
      * @return {{flightPoints: igcRecord[], maxAltitude: number, airtime: number}|KoiflyError} – Parsed igc file or error.
      */
@@ -41,6 +42,7 @@ const igcService = {
 
         let flightStartTime;
         let maxAltitude;
+        let minAltitude;
         const parsedFixedRecords = fixedRecords.map((record, index) => {
             const { airtimeInSeconds, timeInSeconds } = this.getAirtimeFromBRecord(record, flightStartTime);
             if (index === 0) {
@@ -52,6 +54,7 @@ const igcService = {
             const altInPilotUnit = Altitude.getAltitudeInPilotUnits(altitude);
 
             maxAltitude = (!maxAltitude || maxAltitude < altInPilotUnit) ? altInPilotUnit : maxAltitude;
+            minAltitude = (!minAltitude || minAltitude > altInPilotUnit) ? altInPilotUnit : minAltitude;
 
             return {
                 altitude, // in meters
@@ -66,13 +69,25 @@ const igcService = {
         const firstRecord = parsedFixedRecords[0];
         const lastRecord = parsedFixedRecords[parsedFixedRecords.length - 1];
         const date = this.findFlightDate(records, firstRecord.timeInSeconds, firstRecord.lng);
-        const airtimeInMinutes = Math.round(lastRecord.airtimeInSeconds / 60);
+        const airtimeInMinutes = Math.ceil(lastRecord.airtimeInSeconds / 60);
         const nearestSite = this.findNearestSite(firstRecord.lat, firstRecord.lng) || {};
+
+        // If min altitude is less than zero, a vario was not adjusted to atmospheric pressure before the flight,
+        // thus make adjustment now by increasing altitude of each flight point so min altitude equals zero.
+        if (minAltitude < 0) {
+            const incrementInPilotUnit = Math.abs(minAltitude);
+            maxAltitude += incrementInPilotUnit;
+            minAltitude += incrementInPilotUnit;
+            parsedFixedRecords.forEach(point => {
+                point.altInPilotUnit += incrementInPilotUnit;
+            })
+        }
 
         return {
             date,
             flightPoints: parsedFixedRecords,
-            maxAltitude: maxAltitude,
+            maxAltitude,
+            minAltitude,
             airtime: airtimeInMinutes,
             siteId: nearestSite.id ? nearestSite.id.toString() : null,
         };
@@ -267,9 +282,9 @@ const igcService = {
                 return !!siteLat && !!siteLng && (Math.abs(siteLat - lat) < 0.1) && (Math.abs(siteLng - lng) < 0.1);
             })
             .forEach(site => {
-                const distance = this.getDistance(lat, lng, site.coordinates.lat, site.coordinates.lng);
+                const distance = distanceService.getDistance(lat, lng, site.coordinates.lat, site.coordinates.lng);
                 // Take only sites within 1 km radius.
-                if ((distance < 1) && (!nearestSite || distance < nearestSite.distance)) {
+                if ((distance < 1000) && (!nearestSite || distance < nearestSite.distance)) {
                     nearestSite = {
                         id: site.id,
                         distance
@@ -279,43 +294,6 @@ const igcService = {
 
         return nearestSite;
     },
-
-    /**
-     * Returns distance between two points in km.
-     * Stolen from here: https://www.geodatasource.com/developers/javascript
-     * Theory: https://en.wikipedia.org/wiki/Great-circle_distance
-     * @param {number} lat1
-     * @param {number} lng1
-     * @param {number} lat2
-     * @param {number} lng2
-     * @return {number}
-     */
-    getDistance(lat1, lng1, lat2, lng2) {
-        if ((lat1 === lat2) && (lng1 === lng2)) {
-            return 0;
-        }
-
-        // Converting Latitude to Radians:
-        const radlat1 = Math.PI * lat1 / 180;
-        const radlat2 = Math.PI * lat2 / 180;
-
-        // Converting Longitude degrees between two points to Radians:
-        const theta = lng1 - lng2;
-        const radtheta = Math.PI * theta / 180;
-
-        // Calculations of great-circle distance between points using trigonometric functions.
-        let acosDist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        if (acosDist > 1) {
-            acosDist = 1;
-        }
-        const radDist = Math.acos(acosDist);
-
-        // Converting Radians to distance (km):
-        const earthRadius = 6371;
-        const kmDist = radDist * earthRadius;
-
-        return kmDist;
-    }
 };
 
 module.exports = igcService;
