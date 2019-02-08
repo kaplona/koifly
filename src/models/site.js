@@ -104,7 +104,7 @@ var SiteModel = {
 
     /**
      * Prepare data to show to user
-     * @param {string} siteId
+     * @param {number} siteId
      * @returns {object|null} - site
      * null - if no data in front end
      * error object - if data wasn't loaded due to error

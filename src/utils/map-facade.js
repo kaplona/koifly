@@ -188,6 +188,17 @@ MapFacade.prototype.zoomToFlightTrack = function() {
     this.map.fitBounds(bounds);
 };
 
+MapFacade.prototype.moveTrackMarker = function(coords) {
+    if (!this.trackMarker) {
+        this.trackMarker = new this.mapsApi.Marker({
+            position: coords,
+            map: this.map,
+        });
+    } else {
+        this.trackMarker.setPosition(coords);
+    }
+};
+
 
 
 MapFacade.prototype.addSearchBarControl = function(siteId) {

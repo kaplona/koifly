@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, number, shape} = React.PropTypes;
+const {arrayOf, func, number, shape} = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const chartService = require('../../services/chart-service');
 const distanceService = require('../../services/distance-service');
@@ -19,6 +19,7 @@ const FlightSynchronizedCharts = React.createClass({
             airtimeInSeconds: number.isRequired,
         })),
         minAltitude: number,
+        onPointHover: func.isRequired,
     },
 
     componentDidMount() {
@@ -26,15 +27,9 @@ const FlightSynchronizedCharts = React.createClass({
             return;
         }
 
-        this.addHoverEventListeners();
-
-        // Override the reset function, we don't need to hide the tooltips and crosshairs.
-        Highcharts.Pointer.prototype.reset = function () {
-            return undefined;
-        };
-
+        // Adding a method to Highcharts Point prototype.
         // Highlight a point by showing tooltip, setting hover state and draw crosshair
-        Highcharts.Point.prototype.highlight = function (event) {
+        Highcharts.Point.prototype.koiHighlight = function (event) {
             event = this.series.chart.pointer.normalize(event);
             this.onMouseOver(); // Show the hover marker
             this.series.chart.tooltip.refresh(this); // Show the tooltip
@@ -42,24 +37,29 @@ const FlightSynchronizedCharts = React.createClass({
         };
 
         this.createCharts();
+
+        ['mousemove', 'touchmove', 'touchstart'].forEach(eventType => {
+            document.getElementById('charts-container').addEventListener(eventType, this.handleChartHoverListener);
+        });
+
+        // Override the reset function, we don't need to hide the tooltips and crosshairs.
+        this.charts.forEach(chartInstance => {
+            chartInstance.pointer.reset = function() {
+                return undefined;
+            }
+        });
     },
 
-    addHoverEventListeners() {
-        ['mousemove', 'touchmove', 'touchstart'].forEach(function (eventType) {
-            document.getElementById('charts-container').addEventListener(
-                eventType,
-                function (e) {
-                    Highcharts.charts.forEach(chart => {
-                        // Find coordinates within the chart
-                        const event = chart.pointer.normalize(e);
-                        // Get the hovered point
-                        const point = chart.series[0].searchPoint(event, true);
-                        if (point) {
-                            point.highlight(e);
-                        }
-                    });
-                }
-            );
+    handleChartHoverListener(e) {
+        this.charts.forEach(chart => {
+            // Find coordinates within the chart
+            const event = chart.pointer.normalize(e);
+            // Get the hovered point
+            const point = chart.series[0].searchPoint(event, true);
+            if (point) {
+                point.koiHighlight(e);
+                this.props.onPointHover(point.index);
+            }
         });
     },
 
@@ -79,7 +79,6 @@ const FlightSynchronizedCharts = React.createClass({
             minYAxis: this.props.minAltitude,
             series: chartService.getAltitudeSeries(this.props.flightPoints)
         };
-        this.altChart = this.createChartInstance(altChartConfig, minAirtime, maxAirtime);
 
         const liftChartConfig = {
             renderTo: 'lift-chart',
@@ -89,7 +88,6 @@ const FlightSynchronizedCharts = React.createClass({
             },
             series: chartService.getLiftSeries(this.props.flightPoints, pilotAltVelocityUnit)
         };
-        this.liftChart = this.createChartInstance(liftChartConfig, minAirtime, maxAirtime);
 
         const launchDistChartConfig = {
             renderTo: 'launch-distance-chart',
@@ -99,7 +97,6 @@ const FlightSynchronizedCharts = React.createClass({
             },
             series: chartService.getDistanceFromLaunchSeries(this.props.flightPoints, pilotDistanceUnit)
         };
-        this.launchDistChart = this.createChartInstance(launchDistChartConfig, minAirtime, maxAirtime);
 
         const glideRatioChartConfig = {
             renderTo: 'glide-ratio-chart',
@@ -114,7 +111,13 @@ const FlightSynchronizedCharts = React.createClass({
             },
             series: chartService.getGlideRatioSeries(this.props.flightPoints)
         };
-        this.glideRatioChart = this.createChartInstance(glideRatioChartConfig, minAirtime, maxAirtime);
+
+        this.charts = [
+            this.createChartInstance(altChartConfig, minAirtime, maxAirtime),
+            this.createChartInstance(liftChartConfig, minAirtime, maxAirtime),
+            this.createChartInstance(launchDistChartConfig, minAirtime, maxAirtime),
+            this.createChartInstance(glideRatioChartConfig, minAirtime, maxAirtime),
+        ];
     },
 
     createChartInstance(config, minAirtime, maxAirtime) {

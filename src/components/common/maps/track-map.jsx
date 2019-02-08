@@ -15,9 +15,10 @@ const { arrayOf, bool } = React.PropTypes;
 const TrackMap = React.createClass({
 
     propTypes: {
-        trackCoords: arrayOf(PROP_TYPES.coordinates).isRequired,
         isFullScreen: bool,
-        mapFacadePromise: PROP_TYPES.promise.isRequired
+        markerCoords: PROP_TYPES.coordinates,
+        trackCoords: arrayOf(PROP_TYPES.coordinates).isRequired,
+        mapFacadePromise: PROP_TYPES.promise.isRequired,
     },
 
     getDefaultProps: function() {
@@ -37,6 +38,13 @@ const TrackMap = React.createClass({
         if (this.mapFacade && nextProps.trackCoords !== this.props.trackCoords) {
             this.mapFacade.updateFlightTrack(nextProps.trackCoords);
         }
+        if (
+            this.mapFacade && !!nextProps.markerCoords && !!this.props.markerCoords &&
+            nextProps.markerCoords.lat !== this.props.markerCoords.lat &&
+            nextProps.markerCoords.lng !== this.props.markerCoords.lng
+        ) {
+            this.mapFacade.moveTrackMarker(nextProps.markerCoords);
+        }
     },
 
     shouldComponentUpdate: function() {
@@ -48,7 +56,12 @@ const TrackMap = React.createClass({
         const center = this.props.trackCoords[0] || CENTER.region;
         this.mapFacade.createMap(mapContainer, center, ZOOM_LEVEL.track);
 
-        this.mapFacade.createFlightTrack(this.props.trackCoords);
+        if (this.props.trackCoords) {
+            this.mapFacade.createFlightTrack(this.props.trackCoords);
+        }
+        if (this.props.markerCoords) {
+            this.mapFacade.moveTrackMarker(this.props.markerCoords);
+        }
     },
 
     render: function() {
