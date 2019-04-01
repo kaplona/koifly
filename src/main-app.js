@@ -1,47 +1,49 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+const React = require('react');
+const ReactDOM = require('react-dom');
 
-var ReactRouter = require('react-router');
-var Router = ReactRouter.Router;
-var IndexRoute = ReactRouter.IndexRoute;
-var Route = ReactRouter.Route;
-var browserHistory = ReactRouter.browserHistory;
-var applyRouterMiddleware = ReactRouter.applyRouterMiddleware;
-var useScroll = require('react-router-scroll');
+const ReactRouter = require('react-router');
+const Router = ReactRouter.Router;
+const IndexRoute = ReactRouter.IndexRoute;
+const Route = ReactRouter.Route;
+const browserHistory = ReactRouter.browserHistory;
+const applyRouterMiddleware = ReactRouter.applyRouterMiddleware;
+const useScroll = require('react-router-scroll');
 
-var Koifly = require('./components/koifly');
+const Koifly = require('./components/koifly');
 
-var FlightEditView = require('./components/flight-views/flight-edit-view');
-var FlightListView = require('./components/flight-views/flight-list-view');
-var FlightView = require('./components/flight-views/flight-view');
+const FlightEditView = require('./components/flight-views/flight-edit-view');
+const FlightListView = require('./components/flight-views/flight-list-view');
+const FlightView = require('./components/flight-views/flight-view');
 
-var SiteEditView = require('./components/site-views/site-edit-view');
-var SiteListMapView = require('./components/site-views/site-list-map-view');
-var SiteListView = require('./components/site-views/site-list-view');
-var SiteView = require('./components/site-views/site-view');
+const SiteEditView = require('./components/site-views/site-edit-view');
+const SiteListMapView = require('./components/site-views/site-list-map-view');
+const SiteListView = require('./components/site-views/site-list-view');
+const SiteView = require('./components/site-views/site-view');
 
-var GliderEditView = require('./components/glider-views/glider-edit-view');
-var GliderListView = require('./components/glider-views/glider-list-view');
-var GliderView = require('./components/glider-views/glider-view');
+const GliderEditView = require('./components/glider-views/glider-edit-view');
+const GliderListView = require('./components/glider-views/glider-list-view');
+const GliderView = require('./components/glider-views/glider-view');
 
-var PilotFlightsUpload = require('./components/pilot-views/pilot-flights-upload');
-var PilotChangePassword = require('./components/pilot-views/pilot-change-password');
-var PilotEditView = require('./components/pilot-views/pilot-edit-view');
-var PilotView = require('./components/pilot-views/pilot-view');
+const StatsView = require('./components/stats-views/stats-view');
 
-var Signup = require('./components/public-views/signup');
-var Login = require('./components/public-views/login');
-var OneTimeLogin = require('./components/public-views/one-time-login');
+const PilotFlightsUpload = require('./components/pilot-views/pilot-flights-upload');
+const PilotChangePassword = require('./components/pilot-views/pilot-change-password');
+const PilotEditView = require('./components/pilot-views/pilot-edit-view');
+const PilotView = require('./components/pilot-views/pilot-view');
 
-var InitiateResetPassword = require('./components/public-views/initiate-reset-password');
-var ResetPassword = require('./components/public-views/reset-password');
+const Signup = require('./components/public-views/signup');
+const Login = require('./components/public-views/login');
+const OneTimeLogin = require('./components/public-views/one-time-login');
 
-var EmailVerified = require('./components/public-views/email-verified');
-var InvalidVerificationLink = require('./components/public-views/invalid-verification-link');
+const InitiateResetPassword = require('./components/public-views/initiate-reset-password');
+const ResetPassword = require('./components/public-views/reset-password');
 
-var pageNotFound = require('./components/public-views/page-not-found');
+const EmailVerified = require('./components/public-views/email-verified');
+const InvalidVerificationLink = require('./components/public-views/invalid-verification-link');
+
+const pageNotFound = require('./components/public-views/page-not-found');
 
 
 require('./components/koifly.less');
@@ -53,8 +55,7 @@ function mainApp() {
         <Router
             history={ browserHistory }
             render={ applyRouterMiddleware(useScroll(() => [0, 0])) } // Scroll to the top on each transition
-            >
-
+        >
             <Route path='/'>
                 <Route path='app' component={ Koifly }>
                     <IndexRoute component={ FlightListView } />
@@ -71,6 +72,7 @@ function mainApp() {
                     <Route path='/glider/0/edit' component={ GliderEditView } />
                     <Route path='/glider/:id/edit' component={ GliderEditView } />
                     <Route path='/glider/:id' component={ GliderView } />
+                    <Route path='/stats' component={ StatsView } />
                     <Route path='/pilot/edit/change-password' component={ PilotChangePassword } />
                     <Route path='/pilot/edit/flights-upload' component={ PilotFlightsUpload } />
                     <Route path='/pilot/edit' component={ PilotEditView } />
@@ -90,7 +92,6 @@ function mainApp() {
         document.getElementById('koifly')
     );
 }
-
 
 
 document.addEventListener('DOMContentLoaded', mainApp);

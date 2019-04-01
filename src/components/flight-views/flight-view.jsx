@@ -76,7 +76,7 @@ const FlightView = React.createClass({
                             value={ [
                                 Util.addOrdinalSuffix(this.state.item.flightNum),
                                 ', in ',
-                                Util.getDateYear(date),
+                                Util.getDateYear(date).toString(),
                                 ': ',
                                 Util.addOrdinalSuffix(this.state.item.flightNumYear)
                             ].join('') }

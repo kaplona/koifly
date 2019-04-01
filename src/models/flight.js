@@ -446,7 +446,74 @@ var FlightModel = {
                 },
                 0
             );
-    }
+    },
+
+    getFlightStatsForEachSite() {
+        const flights = this.getStoreContent();
+        if (!flights || flights.error) {
+            return flights;
+        }
+
+        const years = [];
+        const siteList = SiteModel.getList();
+        const siteStats = {};
+        siteList.forEach(site => {
+            siteStats[site.id] = {
+                siteId: site.id,
+                siteName: site.name,
+                totalAirtime: 0,
+                totalFlightNum: 0,
+                siteColor: undefined, // TODO
+                yearly: {},
+            };
+        });
+
+        objectValues(flights).forEach(flight => {
+            siteStats[flight.siteId].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].totalFlightNum++;
+
+            const flightYear = Util.getDateYear(flight.date);
+            if (!years.includes(flightYear)) {
+                years.push(flightYear);
+            }
+            if (!siteStats[flight.siteId].yearly[flightYear]) {
+                siteStats[flight.siteId].yearly[flightYear] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                    monthly: {},
+                };
+            }
+            siteStats[flight.siteId].yearly[flightYear].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].totalFlightNum++;
+
+            const flightMonth = Util.getDateMonth(flight.date);
+            if (!siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth]) {
+                siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                    daily: {},
+                };
+            }
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].totalFlightNum++;
+
+            const flightDayOfMonth = Util.getDateDayOfMonth(flight.date);
+            if (!siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth]) {
+                siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                };
+            }
+
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth].totalFlightNum++;
+        });
+
+        return {
+            years: years.sort(),
+            bySite: objectValues(siteStats),
+        };
+    },
 };
 
 

@@ -73,7 +73,7 @@ var SiteModel = {
         if (!storeContent || storeContent.error) {
             return [];
         }
-        return objectValues(storeContent).map(site => site);
+        return objectValues(storeContent);
     },
     
 

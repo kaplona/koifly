@@ -34,6 +34,10 @@ DataService.prototype.getLoadingError = function() {
     return this.loadingError;
 };
 
+DataService.prototype.emit = function() {
+    setTimeout(() => PubSub.emit(STORE_MODIFIED_EVENT), 0);
+};
+
 
 /**
  * Requests for all user data and populates store with it
@@ -68,7 +72,7 @@ DataService.prototype.logout = function() {
         .post('/api/logout')
         .then(() => {
             this.clearStore();
-            PubSub.emit(STORE_MODIFIED_EVENT);
+            this.emit();
         });
 };
 
@@ -112,7 +116,7 @@ DataService.prototype.createPilot = function(pilotCredentials) {
             this.clearStore();
             this.addPilotInfo(newPilotInfo);
             this.initializeStore();
-            PubSub.emit(STORE_MODIFIED_EVENT);
+            this.emit();
         });
 };
 
@@ -268,7 +272,7 @@ DataService.prototype.populateStore =  function(serverResponse) {
     }
 
     if (isStoreModified) {
-        PubSub.emit(STORE_MODIFIED_EVENT);
+        this.emit();
     }
 };
 
@@ -285,7 +289,7 @@ DataService.prototype.setLoadingError = function(error, isRetry) {
         this.loadingError.type !== error.type
     ) {
         this.loadingError = error;
-        PubSub.emit(STORE_MODIFIED_EVENT);
+        this.emit();
     }
 
     // try to get data again

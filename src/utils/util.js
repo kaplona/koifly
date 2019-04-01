@@ -5,6 +5,8 @@ const EMPTY_FIELD = require('../constants/general-constants').EMPTY_FIELD;
 
 var Util = {
 
+    shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+
     /**
      * @param {string} monthIndex - represents month number
      * @returns {string} - short month name
@@ -93,10 +95,39 @@ var Util = {
 
     /**
      * @param {string} date
-     * @returns {string} - four digit year
+     * @returns {number} - four digit year
      */
     getDateYear: function(date) {
-        return date.substring(0, 4);
+        return Number(date.substring(0, 4));
+    },
+
+
+    /**
+     * @param {string} date
+     * @returns {number} - month index from 1 to 12.
+     */
+    getDateMonth: function(date) {
+        return Number(date.substring(5, 7));
+    },
+
+
+    /**
+     * @param {string} date
+     * @return {number}
+     */
+    getDateDayOfMonth: function(date) {
+        return Number(date.substring(8, 10));
+    },
+
+
+    /**
+     * Returns how many days in a given month in a given year.
+     * @param {number} year
+     * @param {number} month - Month index from 1 to 12.
+     * @return {number}
+     */
+    getDaysInMonth: function(year, month) {
+        return new Date(year, month, 0).getDate();
     },
 
 
