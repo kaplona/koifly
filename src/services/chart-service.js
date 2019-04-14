@@ -2,9 +2,40 @@
 
 const Altitude = require('../utils/altitude');
 const distanceService = require('./distance-service');
+const FlightModel = require('../models/flight');
 const Highcharts = require('highcharts');
+const objectValues = require('object.values');
+const SiteModel = require('../models/site');
+const Util = require('../utils/util');
 
 const chartService = {
+
+    _colors: [
+        '#0AB2FF',
+        '#6C3D3D',
+        '#41A669',
+        '#FFA509',
+        '#AC67FA',
+        '#FA6767',
+        '#F3EE4C',
+        '#84F34C',
+        '#4C57F3',
+        '#D24CF3',
+        '#4CD7F3',
+        '#F29B38',
+        '#38F2AE',
+        '#6938F2',
+        '#FA9393',
+        '#ACACAC',
+        '#4E145C',
+        '#6065F0',
+        '#D4F060',
+        '#1D67A8',
+    ],
+
+    getColor(index) {
+        return this._colors[index % this._colors.length];
+    },
 
     /**
      * Composes chart series options for flight altitude visualisation.
@@ -105,6 +136,107 @@ const chartService = {
             data: glideRatioPoints,
             name: 'Glide Ratio',
             type: 'line'
+        };
+    },
+
+    getFlightStatsForEachSite() {
+        const flights = FlightModel.getStoreContent();
+        if (!flights || flights.error) {
+            return flights;
+        }
+
+        const years = [];
+        const siteList = SiteModel.getList();
+        const siteStats = {};
+        siteList.forEach((site, index) => {
+            siteStats[site.id] = {
+                siteId: site.id,
+                siteName: site.name,
+                launchAltitude: site.launchAltitude,
+                totalAirtime: 0,
+                totalFlightNum: 0,
+                siteColor: this.getColor(index),
+                yearly: {},
+            };
+        });
+
+        const bucketHeight = 200; // meters
+        function addToMaxAltBuckets(maxAltBuckets, flightBucket, flightId) {
+            const existingBucket = maxAltBuckets.find(({from}) => (from === flightBucket.from));
+            if (existingBucket) {
+                existingBucket.flightIds.push(flightId);
+            } else {
+                maxAltBuckets.push(Object.assign({}, flightBucket, { flightIds: [flightId] }));
+                maxAltBuckets.sort((a, b) => (a.from - b.from));
+            }
+        }
+
+        objectValues(flights).forEach(flight => {
+            // Calculate flight max altitude bucket
+            const siteAlt = siteStats[flight.siteId].launchAltitude;
+            const bucketNumber = (flight.altitude - siteAlt) / bucketHeight;
+            const from = (flight.altitude < siteAlt || bucketNumber < 1) ? 0 : Math.floor(bucketNumber) * bucketHeight + siteAlt;
+            const to = (flight.altitude < siteAlt) ? (siteAlt + bucketHeight) : Math.ceil(bucketNumber) * bucketHeight + siteAlt;
+            const mid = (to - bucketHeight / 2);
+            const flightBucket = {
+                from: Altitude.getAltitudeInPilotUnits(from),
+                to: Altitude.getAltitudeInPilotUnits(to),
+                mid: Altitude.getAltitudeInPilotUnits(mid),
+            };
+
+            // Total stats.
+            siteStats[flight.siteId].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].totalFlightNum++;
+
+            // Increment stats for flight year.
+            const flightYear = Util.getDateYear(flight.date);
+            if (!years.includes(flightYear)) {
+                years.push(flightYear);
+            }
+            if (!siteStats[flight.siteId].yearly[flightYear]) {
+                siteStats[flight.siteId].yearly[flightYear] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                    maxAltBuckets: [],
+                    monthly: {},
+                };
+            }
+            siteStats[flight.siteId].yearly[flightYear].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].totalFlightNum++;
+            addToMaxAltBuckets(siteStats[flight.siteId].yearly[flightYear].maxAltBuckets, flightBucket, flight.id);
+
+            // Increment stats for flight month.
+            const flightMonth = Util.getDateMonth(flight.date);
+            if (!siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth]) {
+                siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                    maxAltBuckets: [],
+                    daily: {},
+                };
+            }
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].totalFlightNum++;
+            addToMaxAltBuckets(siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].maxAltBuckets, flightBucket, flight.id);
+
+            // Increment stats for flight day of the month.
+            const flightDayOfMonth = Util.getDateDayOfMonth(flight.date);
+            if (!siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth]) {
+                siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth] = {
+                    totalAirtime: 0,
+                    totalFlightNum: 0,
+                    maxAltBuckets: [],
+                };
+            }
+
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth].totalAirtime += flight.airtime;
+            siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth].totalFlightNum++;
+            addToMaxAltBuckets(siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth].maxAltBuckets, flightBucket, flight.id);
+        });
+
+        return {
+            years: years.sort(),
+            bySite: objectValues(siteStats),
         };
     },
 };

@@ -1,41 +1,42 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, oneOfType, shape, string} = React.PropTypes;
+const {arrayOf, func, number, oneOfType, shape, string} = React.PropTypes;
 const Highcharts = require('highcharts');
+require('highcharts/highcharts-more')(Highcharts);
 
 
-const HistogramChart = React.createClass({
+const BubbleChart = React.createClass({
 
     propTypes: {
-        canSelect: bool,
         categories: arrayOf(oneOfType([string, number])),
         chartData: arrayOf(shape({
-            name: string.isRequired,
-            color: string,
-            data: arrayOf(number).isRequired,
+            data: arrayOf(shape({
+                x: number.isRequired,
+                y: number.isRequired,
+                z: number.isRequired,
+                name: string.isRequired,
+                color: string.isRequired,
+                from: number.isRequired,
+                to: number.isRequired,
+                flightIds: arrayOf(oneOfType([string, number])),
+            })).isRequired,
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
         title: string,
-        onClick: func.isRequired,
     },
 
     getDefaultProps: function() {
         return {
-            canSelect: true,
-            id: 'histogramChart',
+            id: 'bubbleChart',
         };
     },
 
     componentDidMount() {
-        // Need to assign a props callback to a local variable,
-        // since `this` keyword will be pointing to a chart instance in any functions passed to Highcharts.
-        const onClick = this.props.onClick;
-
         this.chart = Highcharts.chart({
             chart: {
                 renderTo: this.props.id,
-                type: 'column',
+                type: 'bubble',
             },
             title: {
                 text: this.props.title || null,
@@ -46,31 +47,19 @@ const HistogramChart = React.createClass({
                 categories: this.props.categories,
             },
             yAxis: {
-                min: 0,
                 title: { text: null },
-                stackLabels: {
-                    enabled: true,
-                    style: {
-                        fontWeight: 'bold',
-                        color: 'gray'
-                    }
-                }
+                min: 0,
+            },
+            plotOptions: {
+                bubble: {
+                    opacity: 0.4,
+                    minSize: 5,
+                    maxSize: 30,
+                },
             },
             tooltip: {
                 headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
-            },
-            plotOptions: {
-                column: {
-                    stacking: 'normal',
-                    dataLabels: { enabled: false },
-                    cursor: this.props.canSelect ? 'pointer' : 'default',
-                    events: {
-                        click: function(event) {
-                            onClick(event.point.category);
-                        }
-                    },
-                }
+                pointFormat: '{point.name}: {point.z} flights<br/>from: {point.from}<br/>to: {point.to}'
             },
             legend: {enabled: false},
             credits: {enabled: false},
@@ -83,11 +72,6 @@ const HistogramChart = React.createClass({
             this.chart.update({
                 xAxis: {
                     categories: nextProps.categories,
-                },
-                plotOptions: {
-                    column: {
-                        cursor: nextProps.canSelect ? 'pointer' : 'default',
-                    },
                 },
                 series: nextProps.chartData
             }, true, false);
@@ -111,4 +95,4 @@ const HistogramChart = React.createClass({
 });
 
 
-module.exports = HistogramChart;
+module.exports = BubbleChart;

@@ -1,12 +1,12 @@
 'use strict';
 
 const React = require('react');
-
-const FlightModel = require('../../models/flight');
+const chartService = require('../../services/chart-service');
 const PublicLinksMixin = require('../mixins/public-links-mixin');
 const SiteModel = require('../../models/site');
 const Util = require('../../utils/util');
 
+const BubbleChart = require('../common/charts/buble-chart');
 const ErrorBox = require('../common/notice/error-box');
 const HistogramChart = require('../common/charts/histogram-chart');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
@@ -36,7 +36,7 @@ const StatsView = React.createClass({
     },
 
     handleStoreModified() {
-        const flightStats = FlightModel.getFlightStatsForEachSite();
+        const flightStats = chartService.getFlightStatsForEachSite();
         if (!flightStats) {
             return;
         }
@@ -113,20 +113,33 @@ const StatsView = React.createClass({
         }];
         const flightNumberHistogram = [];
         const airtimeHistogram = [];
+        const maxAltitudeBubble = [{ data: [] }];
         let timeRangeCategories;
         if (this.state.flightStats) {
             this.state.flightStats.bySite.forEach(stats => {
                 const piePoint = {
                     siteId: stats.siteId,
                     name: stats.siteName,
-                    // color: stats.siteColor,
+                    color: stats.siteColor,
                     sliced: (stats.siteId === selectedSiteId),
                 };
                 const histogramPoint = {
                     id: stats.siteId,
                     name: stats.siteName,
-                    // color: stats.siteColor,
+                    color: stats.siteColor,
                 };
+                function getBubblePoint(bucket, categoryIndex) {
+                    return {
+                        x: categoryIndex,
+                        y: bucket ? bucket.mid : 0,
+                        z: bucket ? bucket.flightIds.length : 0,
+                        name: stats.siteName,
+                        color: bucket ? stats.siteColor : 'rgba(255,255,255,0)',
+                        from: bucket ? bucket.from : 0,
+                        to: bucket ? bucket.to : 0,
+                        flightIds: bucket ? bucket.flightIds : [],
+                    };
+                }
 
                 let flightNum = 0;
                 let airtime = 0;
@@ -148,10 +161,15 @@ const StatsView = React.createClass({
                         ) {
                             flightNumHistogramData.push(0);
                             airtimeHistogramData.push(0);
+                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
                             continue;
                         }
                         flightNumHistogramData.push(stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].totalFlightNum);
                         airtimeHistogramData.push(stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].totalAirtime);
+                        stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].maxAltBuckets.forEach(bucket => {
+                            // Bubble chart x-axis value is an index of a category, in this case day of a month.
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
+                        });
                     }
                 } else if (selectedYear) {
                     if (stats.yearly[selectedYear]) {
@@ -166,10 +184,15 @@ const StatsView = React.createClass({
                         ) {
                             flightNumHistogramData.push(0);
                             airtimeHistogramData.push(0);
+                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
                             continue;
                         }
                         flightNumHistogramData.push(stats.yearly[selectedYear].monthly[i].totalFlightNum);
                         airtimeHistogramData.push(stats.yearly[selectedYear].monthly[i].totalAirtime);
+                        stats.yearly[selectedYear].monthly[i].maxAltBuckets.forEach(bucket => {
+                            // Bubble chart x-axis value is an index of a category, in this case month.
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
+                        });
                     }
                 } else {
                     flightNum = stats.totalFlightNum;
@@ -183,6 +206,9 @@ const StatsView = React.createClass({
                         }
                         flightNumHistogramData.push(stats.yearly[flightYear].totalFlightNum);
                         airtimeHistogramData.push(stats.yearly[flightYear].totalAirtime);
+                        stats.yearly[flightYear].maxAltBuckets.forEach(bucket => {
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, flightYear));
+                        });
                     });
                 }
 
@@ -249,6 +275,12 @@ const StatsView = React.createClass({
                             id='airtimeHistogram'
                             title='Airtime'
                             onClick={this.handleTimeRangeSelect}
+                        />
+
+                        <BubbleChart
+                            categories={timeRangeCategories}
+                            chartData={maxAltitudeBubble}
+                            title='Max Altitude'
                         />
                     </SectionRow>
                 </Section>
