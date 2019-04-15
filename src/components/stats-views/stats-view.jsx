@@ -1,7 +1,9 @@
 'use strict';
 
 const React = require('react');
+const Altitude = require('../../utils/altitude');
 const chartService = require('../../services/chart-service');
+const FlightModel = require('../../models/flight');
 const PublicLinksMixin = require('../mixins/public-links-mixin');
 const SiteModel = require('../../models/site');
 const Util = require('../../utils/util');
@@ -26,6 +28,7 @@ const StatsView = React.createClass({
 
     getInitialState: function() {
         return {
+            flightIds: [],
             flightStats: null,
             isLoading: true,
             loadingError: null,
@@ -57,27 +60,31 @@ const StatsView = React.createClass({
 
     handleSiteSelect(siteId) {
         const selectedSiteId = (this.state.selectedSiteId === siteId) ? null : siteId;
-        this.setState({ selectedSiteId });
+        this.setState({ selectedSiteId, flightIds: [] });
     },
 
     handleTimeRangeSelect(timeRange) {
         if (!this.state.selectedYear) {
-            this.setState({ selectedYear: timeRange });
+            this.setState({ selectedYear: timeRange, flightIds: [] });
         } else if (!this.state.selectedMonth) {
-            this.setState({ selectedMonth: timeRange });
+            this.setState({ selectedMonth: timeRange, flightIds: [] });
         }
     },
 
     handleRemoveSiteId() {
-        this.setState({ selectedSiteId: null });
+        this.setState({ selectedSiteId: null, flightIds: [] });
     },
 
     handleRemoveYear() {
-        this.setState({ selectedYear: null, selectedMonth: null });
+        this.setState({ selectedYear: null, selectedMonth: null, flightIds: [] });
     },
 
     handleRemoveMonth() {
-        this.setState({ selectedMonth: null });
+        this.setState({ selectedMonth: null, flightIds: [] });
+    },
+
+    handleBubbleClick(flightIds) {
+        this.setState({ flightIds });
     },
 
     renderSimpleLayout(children) {
@@ -219,6 +226,10 @@ const StatsView = React.createClass({
             });
         }
 
+        const bubbleFlights = this.state.flightIds
+            .map(flightId => FlightModel.getItemOutput(flightId))
+            .filter(flight => !!flight && !flight.error);
+
         return (
             <View onStoreModified={ this.handleStoreModified }>
                 <MobileTopMenu header='Stats' />
@@ -281,7 +292,24 @@ const StatsView = React.createClass({
                             categories={timeRangeCategories}
                             chartData={maxAltitudeBubble}
                             title='Max Altitude'
+                            onClick={this.handleBubbleClick}
                         />
+
+                        {!!bubbleFlights.length && (
+                            <table className='stats-view__flights-table'>
+                                <tbody>
+                                {bubbleFlights.map((flight, index) => (
+                                    <tr key={flight.id}>
+                                        <td><a href={`/flight/${flight.id}`}>Flight {index + 1}:</a></td>
+                                        <td>{Util.formatDate(flight.date)}</td>
+                                        <td>{flight.siteName}</td>
+                                        <td>{Altitude.formatAltitudeShort(flight.altitude)}</td>
+                                        <td>{Util.formatTime(flight.airtime)}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        )}
                     </SectionRow>
                 </Section>
             </View>

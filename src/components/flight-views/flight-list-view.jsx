@@ -1,23 +1,21 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const _ = require('lodash');
+const Altitude = require('../../utils/altitude');
+const listViewMixin = require('../mixins/list-view-mixin');
+const FlightModel = require('../../models/flight');
+const Util = require('../../utils/util');
 
-var Altitude = require('../../utils/altitude');
-var listViewMixin = require('../mixins/list-view-mixin');
-var FlightModel = require('../../models/flight');
-var Util = require('../../utils/util');
-
-var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Section = require('../common/section/section');
-var Table = require('../common/table');
-var View = require('../common/view');
-
+const DesktopTopGrid = require('../common/grids/desktop-top-grid');
+const ErrorBox = require('../common/notice/error-box');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Section = require('../common/section/section');
+const Table = require('../common/table');
+const View = require('../common/view');
 
 
-var FlightListView = React.createClass({
+const FlightListView = React.createClass({
 
     mixins: [ listViewMixin(FlightModel.getModelKey()) ],
     
@@ -42,7 +40,7 @@ var FlightListView = React.createClass({
     },
   
     renderTable: function() {
-        var columns = [
+        const columns = [
             {
                 key: 'formattedDate',
                 label: 'Date',
@@ -67,29 +65,22 @@ var FlightListView = React.createClass({
                 sortingKey: 'airtime'
             }
         ];
-        
-        var rows = [];
-        if (this.state.items) {
-            for (var i = 0; i < this.state.items.length; i++) {
-                rows.push(_.extend(
-                    {},
-                    this.state.items[i],
-                    {
-                        formattedDate: Util.formatDate(this.state.items[i].date),
-                        formattedAltitude: Altitude.formatAltitudeShort(this.state.items[i].altitude),
-                        formattedAirtime: Util.formatTime(this.state.items[i].airtime)
-                    }
-                ));
-            }
-        }
-        
+
+        const rows = (this.state.items || []).map(flight => (
+            Object.assign({}, flight, {
+                formattedDate: Util.formatDate(flight.date),
+                formattedAltitude: Altitude.formatAltitudeShort(flight.altitude),
+                formattedAirtime: Util.formatTime(flight.airtime),
+            })
+        ));
+
         return (
             <Table
                 columns={ columns }
                 rows={ rows }
                 initialSortingField='date'
                 onRowClick={ this.handleRowClick }
-                />
+            />
         );
     },
 

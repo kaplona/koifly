@@ -24,6 +24,7 @@ const BubbleChart = React.createClass({
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
         title: string,
+        onClick: func.isRequired,
     },
 
     getDefaultProps: function() {
@@ -33,6 +34,10 @@ const BubbleChart = React.createClass({
     },
 
     componentDidMount() {
+        // Need to assign onClick callback to a local variable, since `this` inside any functions passed to Highchart
+        // options will refer to chart instance (or instance of an element this callback attached to).
+        const onClick = this.props.onClick;
+
         this.chart = Highcharts.chart({
             chart: {
                 renderTo: this.props.id,
@@ -51,7 +56,15 @@ const BubbleChart = React.createClass({
                 min: 0,
             },
             plotOptions: {
+                series: {
+                    events: {
+                        click: function(event) {
+                            onClick(event.point.flightIds);
+                        }
+                    },
+                },
                 bubble: {
+                    cursor: 'pointer',
                     opacity: 0.4,
                     minSize: 5,
                     maxSize: 30,
