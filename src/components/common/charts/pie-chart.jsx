@@ -3,6 +3,7 @@
 const React = require('react');
 const {arrayOf, bool, func, number, shape, string} = React.PropTypes;
 const Highcharts = require('highcharts');
+const Util = require('../../../utils/util');
 
 
 const PieChart = React.createClass({
@@ -17,6 +18,7 @@ const PieChart = React.createClass({
             })).isRequired,
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
+        isAirtime: bool,
         width: number,
         onClick: func.isRequired,
     },
@@ -24,14 +26,17 @@ const PieChart = React.createClass({
     getDefaultProps: function() {
         return {
             id: 'pieChart',
+            isAirtime: false,
             width: 200,
         };
     },
 
     componentDidMount() {
-        // Need to assign a props callback to a local variable,
-        // since `this` keyword will be pointing to a chart instance in any functions passed to Highcharts.
+        // Need to assign a props callback or value to a local variable,
+        // since `this` keyword will be pointing to some Highcharts class instance in any functions passed to Highcharts.
+        // Check which context is applied to which functions in Highcharts documentation.
         const onClick = this.props.onClick;
+        const isAirtime = this.props.isAirtime;
 
         this.chart = Highcharts.chart({
             chart: {
@@ -51,7 +56,10 @@ const PieChart = React.createClass({
                 }
             },
             tooltip: {
-                pointFormat: '<b>{point.y}</b>'
+                pointFormatter: function() {
+                    const value = isAirtime ? Util.formatTime(this.y) : this.y;
+                    return `<b>${value}</b>`;
+                },
             },
             legend: {enabled: false},
             credits: {enabled: false},
@@ -75,9 +83,7 @@ const PieChart = React.createClass({
             height: this.props.width + 'px'
         };
 
-        return (
-            <div id={this.props.id} style={style} />
-        );
+        return <div id={this.props.id} style={style} />;
     }
 });
 

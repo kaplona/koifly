@@ -3,6 +3,7 @@
 const React = require('react');
 const {arrayOf, bool, func, number, oneOfType, shape, string} = React.PropTypes;
 const Highcharts = require('highcharts');
+const Util = require('../../../utils/util');
 
 
 const HistogramChart = React.createClass({
@@ -16,7 +17,7 @@ const HistogramChart = React.createClass({
             data: arrayOf(number).isRequired,
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
-        title: string,
+        isAirtime: bool,
         onClick: func.isRequired,
     },
 
@@ -24,32 +25,39 @@ const HistogramChart = React.createClass({
         return {
             canSelect: true,
             id: 'histogramChart',
+            isAirtime: false,
         };
     },
 
     componentDidMount() {
-        // Need to assign a props callback to a local variable,
-        // since `this` keyword will be pointing to a chart instance in any functions passed to Highcharts.
+        // Need to assign a props callback or value to a local variable,
+        // since `this` keyword will be pointing to some Highcharts class instance in any functions passed to Highcharts.
+        // Check which context is applied to which functions in Highcharts documentation.
         const onClick = this.props.onClick;
+        const isAirtime = this.props.isAirtime;
 
         this.chart = Highcharts.chart({
             chart: {
                 renderTo: this.props.id,
                 type: 'column',
             },
-            title: {
-                text: this.props.title || null,
-                align: 'left',
-                margin: 0,
-            },
+            title: { text: null },
             xAxis: {
                 categories: this.props.categories,
             },
             yAxis: {
                 min: 0,
                 title: { text: null },
+                labels: {
+                    formatter: function() {
+                        return isAirtime ? Math.round(this.value / 60) : this.value;
+                    },
+                },
                 stackLabels: {
                     enabled: true,
+                    formatter: function() {
+                        return isAirtime ? Util.formatTimeShort(this.total) : this.total;
+                    },
                     style: {
                         fontWeight: 'bold',
                         color: 'gray'
@@ -58,7 +66,15 @@ const HistogramChart = React.createClass({
             },
             tooltip: {
                 headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                pointFormatter: function() {
+                    const value = isAirtime ? Util.formatTime(this.y) : this.y;
+                    const totalValue = isAirtime ? Util.formatTime(this.stackTotal) : this.stackTotal;
+                    return `
+                        ${this.series.name}: <b>${value}</b> (${Math.round(this.percentage)}%)
+                        <br/>
+                        Total: <b>${totalValue}</b>
+                    `;
+                },
             },
             plotOptions: {
                 column: {

@@ -136,8 +136,8 @@ var Util = {
      * @returns {string} - time in '3 h 45 min' format
      */
     formatTime: function(timeInMinutes) {
-        var hoursMinutes = this.getHoursMinutes(timeInMinutes);
-        var result = null;
+        const hoursMinutes = this.getHoursMinutes(timeInMinutes);
+        let result = null;
 
         if (hoursMinutes.hours) {
             result = `${hoursMinutes.hours} h`;
@@ -147,7 +147,26 @@ var Util = {
             result = result ? `${result} ${hoursMinutes.minutes} min` : `${hoursMinutes.minutes} min`;
         }
 
-        return this.formatText(result);
+        return result;
+    },
+
+
+    /**
+     * @param {number} timeInMinutes
+     * @returns {string} - time in '3:45' format
+     */
+    formatTimeShort: function(timeInMinutes) {
+        const hoursMinutes = this.getHoursMinutes(timeInMinutes);
+
+        const hours = hoursMinutes.hours ? `${hoursMinutes.hours}` : '0';
+        let minutes;
+        if (!hoursMinutes.minutes) {
+            minutes = '00';
+        } else {
+            minutes = (hoursMinutes.minutes < 10) ? `0${hoursMinutes.minutes}` : hoursMinutes.minutes;
+        }
+
+        return `${hours}:${minutes}`;
     },
 
 
@@ -160,11 +179,15 @@ var Util = {
      * both are null when timeInMinutes is 0
      */
     getHoursMinutes: function(timeInMinutes) {
+        if (timeInMinutes === null || timeInMinutes === undefined) {
+            return { hours: null, minutes: null };
+        }
         return {
-            hours: timeInMinutes >= 60 ? Math.floor(timeInMinutes / 60) : null,
-            minutes: timeInMinutes ? timeInMinutes % 60 : null
+            hours: Math.floor(timeInMinutes / 60),
+            minutes: timeInMinutes % 60
         };
     },
+
 
     /**
      * @param {string|null} text

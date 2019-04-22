@@ -256,42 +256,52 @@ const StatsView = React.createClass({
                             )}
                         </div>
 
-                        <div className='stats-view__pie'>
-                            <PieChart
-                                chartData={flightNumberBySitePie}
-                                id='flightNumberBySitePie'
-                                onClick={this.handleSiteSelect}
-                            />
+                        <div className='stats-view__pie-container'>
+                            <div className='stats-view__chart-title'>Total number of flights</div>
+                            <div className='stats-view__pie'>
+                                <PieChart
+                                    chartData={flightNumberBySitePie}
+                                    id='flightNumberBySitePie'
+                                    onClick={this.handleSiteSelect}
+                                />
+                            </div>
                         </div>
-                        <div className='stats-view__pie'>
-                            <PieChart
-                                chartData={airtimeBySitePie}
-                                id='airtimeBySitePie'
-                                onClick={this.handleSiteSelect}
-                            />
+                        <div className='stats-view__pie-container'>
+                            <div className='stats-view__chart-title'>Total airtime</div>
+                            <div className='stats-view__pie'>
+                                <PieChart
+                                    chartData={airtimeBySitePie}
+                                    id='airtimeBySitePie'
+                                    isAirtime={true}
+                                    onClick={this.handleSiteSelect}
+                                />
+                            </div>
                         </div>
 
+                        <div className='stats-view__chart-title'>Number of flights</div>
                         <HistogramChart
                             canSelect={!this.state.selectedMonth}
                             categories={timeRangeCategories}
                             chartData={flightNumberHistogram}
                             id='flightNumberHistogram'
-                            title='Number of flights'
                             onClick={this.handleTimeRangeSelect}
                         />
+
+                        <div className='stats-view__chart-title'>Airtime</div>
                         <HistogramChart
                             canSelect={!this.state.selectedMonth}
                             categories={timeRangeCategories}
                             chartData={airtimeHistogram}
                             id='airtimeHistogram'
-                            title='Airtime'
+                            isAirtime={true}
                             onClick={this.handleTimeRangeSelect}
                         />
 
+                        <div className='stats-view__chart-title'>Max altitude</div>
                         <BubbleChart
+                            altitudeUnit={Altitude.getUserAltitudeUnitShort()}
                             categories={timeRangeCategories}
                             chartData={maxAltitudeBubble}
-                            title='Max Altitude'
                             onClick={this.handleBubbleClick}
                         />
 

@@ -1,8 +1,25 @@
+@import (reference) '../constants';
+
 .stats-view__cancel {
   display: inline-block;
   color: red;
   font-size: 20px;
   cursor: pointer;
+}
+
+.stats-view__chart-title {
+  margin-top: 1.1em;
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+.stats-view__pie-container {
+  text-align: center;
+
+  @media (min-width: @small-viewport) {
+    width: 50%;
+    display: inline-block;
+  }
 }
 
 .stats-view__pie {

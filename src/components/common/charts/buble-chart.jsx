@@ -9,6 +9,7 @@ require('highcharts/highcharts-more')(Highcharts);
 const BubbleChart = React.createClass({
 
     propTypes: {
+        altitudeUnit: string,
         categories: arrayOf(oneOfType([string, number])),
         chartData: arrayOf(shape({
             data: arrayOf(shape({
@@ -23,7 +24,6 @@ const BubbleChart = React.createClass({
             })).isRequired,
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
-        title: string,
         onClick: func.isRequired,
     },
 
@@ -34,20 +34,18 @@ const BubbleChart = React.createClass({
     },
 
     componentDidMount() {
-        // Need to assign onClick callback to a local variable, since `this` inside any functions passed to Highchart
-        // options will refer to chart instance (or instance of an element this callback attached to).
+        // Need to assign a props callback or value to a local variable,
+        // since `this` keyword will be pointing to some Highcharts class instance in any functions passed to Highcharts.
+        // Check which context is applied to which functions in Highcharts documentation.
         const onClick = this.props.onClick;
+        const altitudeUnit = this.props.altitudeUnit;
 
         this.chart = Highcharts.chart({
             chart: {
                 renderTo: this.props.id,
                 type: 'bubble',
             },
-            title: {
-                text: this.props.title || null,
-                align: 'left',
-                margin: 0,
-            },
+            title: { text: null },
             xAxis: {
                 categories: this.props.categories,
             },
@@ -71,8 +69,16 @@ const BubbleChart = React.createClass({
                 },
             },
             tooltip: {
-                headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{point.name}: {point.z} flights<br/>from: {point.from}<br/>to: {point.to}'
+                formatter: function() {
+                    const point = this.point;
+                    return `
+                        <b>${point.x}</b>
+                        <br/>
+                        ${point.name}: <b>${point.z}</b> flights
+                        <br/>
+                        (${point.from} ${altitudeUnit} - ${point.to} ${altitudeUnit})
+                    `;
+                },
             },
             legend: {enabled: false},
             credits: {enabled: false},
