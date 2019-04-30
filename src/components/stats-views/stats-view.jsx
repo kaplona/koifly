@@ -98,6 +98,125 @@ const StatsView = React.createClass({
         this.setState({ flightIds });
     },
 
+    getChartData() {
+        const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
+        const flightNumberBySitePie = [{ data: [] }];
+        const airtimeBySitePie = [{ data: [] }];
+        const flightNumberHistogram = [];
+        const airtimeHistogram = [];
+        const maxAltitudeBubble = [{ data: [] }];
+        let timeRangeCategories;
+
+        if (this.state.flightStats) {
+            this.state.flightStats.bySite.forEach(stats => {
+                const piePoint = {
+                    siteId: stats.siteId,
+                    name: stats.siteName,
+                    color: stats.siteColor,
+                    sliced: (stats.siteId === this.state.selectedSiteId),
+                };
+                const histogramPoint = {
+                    id: stats.siteId,
+                    name: stats.siteName,
+                    color: stats.siteColor,
+                };
+                function getBubblePoint(bucket, categoryIndex) {
+                    return {
+                        x: categoryIndex,
+                        y: bucket ? bucket.mid : 0,
+                        z: bucket ? bucket.flightIds.length : 0,
+                        name: stats.siteName,
+                        color: bucket ? stats.siteColor : 'rgba(255,255,255,0)',
+                        from: bucket ? bucket.from : 0,
+                        to: bucket ? bucket.to : 0,
+                        flightIds: bucket ? bucket.flightIds : [],
+                    };
+                }
+
+                let flightNum = 0;
+                let airtime = 0;
+                const flightNumHistogramData = [];
+                const airtimeHistogramData = [];
+
+                if (this.state.selectedYear && selectedMonthIndex) {
+                    const yearStats = stats.yearly[this.state.selectedYear] || null;
+                    const monthStats = yearStats ? yearStats.monthly[selectedMonthIndex] || null : null;
+                    const daysInMonth = Util.getDaysInMonth(this.state.selectedYear, selectedMonthIndex);
+                    flightNum = monthStats ? monthStats.totalFlightNum : 0;
+                    airtime = monthStats ? monthStats.totalAirtime : 0;
+                    timeRangeCategories = [];
+                    for (let i = 1; i <= daysInMonth; i++) {
+                        timeRangeCategories.push(i);
+                        const dayStats = monthStats ? monthStats.daily[i] || null : null;
+                        if (!dayStats || (this.state.selectedSiteId && stats.siteId !== this.state.selectedSiteId)) {
+                            flightNumHistogramData.push(0);
+                            airtimeHistogramData.push(0);
+                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
+                            continue;
+                        }
+                        flightNumHistogramData.push(dayStats.totalFlightNum);
+                        airtimeHistogramData.push(dayStats.totalAirtime);
+                        dayStats.maxAltBuckets.forEach(bucket => {
+                            // Bubble chart x-axis value is an index of a category, in this case day of a month.
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
+                        });
+                    }
+                } else if (this.state.selectedYear) {
+                    const yearStats = stats.yearly[this.state.selectedYear] || null;
+                    flightNum = yearStats ? yearStats.totalFlightNum : 0;
+                    airtime = yearStats ? yearStats.totalAirtime : 0;
+                    timeRangeCategories = Util.shortMonthNames;
+                    for (let i = 1; i <= 12; i++) {
+                        const monthStats = yearStats ? yearStats.monthly[i] || null : null;
+                        if (!monthStats || (this.state.selectedSiteId && stats.siteId !== this.state.selectedSiteId)) {
+                            flightNumHistogramData.push(0);
+                            airtimeHistogramData.push(0);
+                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
+                            continue;
+                        }
+                        flightNumHistogramData.push(monthStats.totalFlightNum);
+                        airtimeHistogramData.push(monthStats.totalAirtime);
+                        monthStats.maxAltBuckets.forEach(bucket => {
+                            // Bubble chart x-axis value is an index of a category, in this case month.
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
+                        });
+                    }
+                } else {
+                    flightNum = stats.totalFlightNum;
+                    airtime = stats.totalAirtime;
+                    timeRangeCategories = this.state.flightStats.years;
+                    this.state.flightStats.years.forEach(flightYear => {
+                        const yearStats = stats.yearly[flightYear] || null;
+                        if (!yearStats || (this.state.selectedSiteId && stats.siteId !== this.state.selectedSiteId)) {
+                            flightNumHistogramData.push(0);
+                            airtimeHistogramData.push(0);
+                            return;
+                        }
+                        flightNumHistogramData.push(yearStats.totalFlightNum);
+                        airtimeHistogramData.push(yearStats.totalAirtime);
+                        yearStats.maxAltBuckets.forEach(bucket => {
+                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, flightYear));
+                        });
+                    });
+                }
+
+                flightNumberBySitePie[0].data.push(Object.assign({}, piePoint, { y: flightNum }));
+                airtimeBySitePie[0].data.push(Object.assign({}, piePoint, { y: airtime }));
+                flightNumberHistogram.push(Object.assign({}, histogramPoint, { data: flightNumHistogramData }));
+                airtimeHistogram.push(Object.assign({}, histogramPoint, { data: airtimeHistogramData }));
+            });
+        }
+
+        return {
+            flightNumberBySitePie,
+            airtimeBySitePie,
+            flightNumberHistogram,
+            airtimeHistogram,
+            maxAltitudeBubble,
+            timeRangeCategories
+        };
+    },
+
     renderSimpleLayout(children) {
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
@@ -135,121 +254,14 @@ const StatsView = React.createClass({
             return this.renderSimpleLayout(<SectionLoader />);
         }
 
-        const { selectedSiteId, selectedYear } = this.state;
-        const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
-        const flightNumberBySitePie = [{
-            data: [],
-        }];
-        const airtimeBySitePie = [{
-            data: [],
-        }];
-        const flightNumberHistogram = [];
-        const airtimeHistogram = [];
-        const maxAltitudeBubble = [{ data: [] }];
-        let timeRangeCategories;
-        if (this.state.flightStats) {
-            this.state.flightStats.bySite.forEach(stats => {
-                const piePoint = {
-                    siteId: stats.siteId,
-                    name: stats.siteName,
-                    color: stats.siteColor,
-                    sliced: (stats.siteId === selectedSiteId),
-                };
-                const histogramPoint = {
-                    id: stats.siteId,
-                    name: stats.siteName,
-                    color: stats.siteColor,
-                };
-                function getBubblePoint(bucket, categoryIndex) {
-                    return {
-                        x: categoryIndex,
-                        y: bucket ? bucket.mid : 0,
-                        z: bucket ? bucket.flightIds.length : 0,
-                        name: stats.siteName,
-                        color: bucket ? stats.siteColor : 'rgba(255,255,255,0)',
-                        from: bucket ? bucket.from : 0,
-                        to: bucket ? bucket.to : 0,
-                        flightIds: bucket ? bucket.flightIds : [],
-                    };
-                }
-
-                let flightNum = 0;
-                let airtime = 0;
-                const flightNumHistogramData = [];
-                const airtimeHistogramData = [];
-                if (selectedYear && selectedMonthIndex) {
-                    if (stats.yearly[selectedYear] && stats.yearly[selectedYear].monthly[selectedMonthIndex]) {
-                        flightNum = stats.yearly[selectedYear].monthly[selectedMonthIndex].totalFlightNum;
-                        airtime = stats.yearly[selectedYear].monthly[selectedMonthIndex].totalAirtime;
-                    }
-
-                    const daysInMonth = Util.getDaysInMonth(selectedYear, selectedMonthIndex);
-                    timeRangeCategories = [];
-                    for (let i = 1; i <= daysInMonth; i++) {
-                        timeRangeCategories.push(i);
-                        if (
-                            !(stats.yearly[selectedYear] && stats.yearly[selectedYear].monthly[selectedMonthIndex] && stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i]) ||
-                            (selectedSiteId && stats.siteId !== selectedSiteId)
-                        ) {
-                            flightNumHistogramData.push(0);
-                            airtimeHistogramData.push(0);
-                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
-                            continue;
-                        }
-                        flightNumHistogramData.push(stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].totalFlightNum);
-                        airtimeHistogramData.push(stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].totalAirtime);
-                        stats.yearly[selectedYear].monthly[selectedMonthIndex].daily[i].maxAltBuckets.forEach(bucket => {
-                            // Bubble chart x-axis value is an index of a category, in this case day of a month.
-                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
-                        });
-                    }
-                } else if (selectedYear) {
-                    if (stats.yearly[selectedYear]) {
-                        flightNum = stats.yearly[selectedYear].totalFlightNum;
-                        airtime = stats.yearly[selectedYear].totalAirtime;
-                    }
-                    timeRangeCategories = Util.shortMonthNames;
-                    for (let i = 1; i <= 12; i++) {
-                        if (
-                            !(stats.yearly[selectedYear] && stats.yearly[selectedYear].monthly[i]) ||
-                            (selectedSiteId && stats.siteId !== selectedSiteId)
-                        ) {
-                            flightNumHistogramData.push(0);
-                            airtimeHistogramData.push(0);
-                            maxAltitudeBubble[0].data.push(getBubblePoint(null, i - 1));
-                            continue;
-                        }
-                        flightNumHistogramData.push(stats.yearly[selectedYear].monthly[i].totalFlightNum);
-                        airtimeHistogramData.push(stats.yearly[selectedYear].monthly[i].totalAirtime);
-                        stats.yearly[selectedYear].monthly[i].maxAltBuckets.forEach(bucket => {
-                            // Bubble chart x-axis value is an index of a category, in this case month.
-                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
-                        });
-                    }
-                } else {
-                    flightNum = stats.totalFlightNum;
-                    airtime = stats.totalAirtime;
-                    timeRangeCategories = this.state.flightStats.years;
-                    this.state.flightStats.years.forEach(flightYear => {
-                        if (!stats.yearly[flightYear] || (selectedSiteId && stats.siteId !== selectedSiteId)) {
-                            flightNumHistogramData.push(0);
-                            airtimeHistogramData.push(0);
-                            return;
-                        }
-                        flightNumHistogramData.push(stats.yearly[flightYear].totalFlightNum);
-                        airtimeHistogramData.push(stats.yearly[flightYear].totalAirtime);
-                        stats.yearly[flightYear].maxAltBuckets.forEach(bucket => {
-                            maxAltitudeBubble[0].data.push(getBubblePoint(bucket, flightYear));
-                        });
-                    });
-                }
-
-                flightNumberBySitePie[0].data.push(Object.assign({}, piePoint, { y: flightNum }));
-                airtimeBySitePie[0].data.push(Object.assign({}, piePoint, { y: airtime }));
-                flightNumberHistogram.push(Object.assign({}, histogramPoint, { data: flightNumHistogramData }));
-                airtimeHistogram.push(Object.assign({}, histogramPoint, { data: airtimeHistogramData }));
-            });
-        }
+        const {
+            flightNumberBySitePie,
+            airtimeBySitePie,
+            flightNumberHistogram,
+            airtimeHistogram,
+            maxAltitudeBubble,
+            timeRangeCategories
+        } = this.getChartData();
 
         const siteOptions = SiteModel.getSiteValueTextList();
         const yearOptions = this.state.flightStats.years.map(year => ({ value: year, text: year }));
