@@ -12,8 +12,10 @@ const Button = React.createClass({
         buttonStyle: oneOf(['primary', 'secondary', 'warning']),
         caption: string.isRequired,
         fitContent: bool,
+        isAllScreens: bool,
         isEnabled: bool,
         isMobile: bool,
+        isSmall: bool,
         type: oneOf(['button', 'submit']),
         onClick: func.isRequired,
     },
@@ -21,8 +23,10 @@ const Button = React.createClass({
     getDefaultProps: function() {
         return {
             fitContent: false,
+            isAllScreens: false,
             isEnabled: true,
             isMobile: false,
+            isSmall: false,
             type: 'button',
         };
     },
@@ -40,6 +44,12 @@ const Button = React.createClass({
         }
         if (this.props.fitContent) {
             className += ' x-content-width';
+        }
+        if (!this.props.isAllScreens) {
+            className += ' desktop-only';
+        }
+        if (this.props.isSmall) {
+            className += ' x-small';
         }
 
         return (

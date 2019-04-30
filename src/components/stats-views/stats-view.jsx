@@ -9,6 +9,8 @@ const SiteModel = require('../../models/site');
 const Util = require('../../utils/util');
 
 const BubbleChart = require('../common/charts/buble-chart');
+const Button = require('../common/buttons/button');
+const DropdownInput = require('../common/inputs/dropdown-input');
 const ErrorBox = require('../common/notice/error-box');
 const HistogramChart = require('../common/charts/histogram-chart');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
@@ -17,6 +19,7 @@ const PieChart = require('../common/charts/pie-chart');
 const Section = require('../common/section/section');
 const SectionLoader = require('../common/section/section-loader');
 const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
 const View = require('../common/view');
 
 require('./stats-view.less');
@@ -71,16 +74,24 @@ const StatsView = React.createClass({
         }
     },
 
-    handleRemoveSiteId() {
-        this.setState({ selectedSiteId: null, flightIds: [] });
+    handleYearSelect(year) {
+        if (year) {
+            this.setState({ selectedYear: year, flightIds: [] });
+        } else {
+            this.setState({ selectedYear: null, selectedMonth: null, flightIds: [] });
+        }
     },
 
-    handleRemoveYear() {
-        this.setState({ selectedYear: null, selectedMonth: null, flightIds: [] });
+    handleMonthSelect(monthShort) {
+        this.setState({ selectedMonth: monthShort, flightIds: [] });
     },
 
-    handleRemoveMonth() {
-        this.setState({ selectedMonth: null, flightIds: [] });
+    handleUnzoom() {
+        if (this.state.selectedMonth) {
+            this.handleMonthSelect(null);
+        } else if (this.state.selectedYear) {
+            this.handleYearSelect(null);
+        }
     },
 
     handleBubbleClick(flightIds) {
@@ -97,6 +108,22 @@ const StatsView = React.createClass({
         );
     },
 
+    renderUnzoomButton() {
+        if (this.state.selectedYear) {
+            return (
+                <div className='stats-view__unzoom'>
+                    <Button
+                        caption={this.state.selectedMonth ? '< Months' : '< Years'}
+                        fitContent={true}
+                        isAllScreens={true}
+                        isSmall={true}
+                        onClick={this.handleUnzoom}
+                    />
+                </div>
+            );
+        }
+    },
+
     render() {
         if (this.state.loadingError) {
             return this.renderSimpleLayout(
@@ -111,11 +138,9 @@ const StatsView = React.createClass({
         const { selectedSiteId, selectedYear } = this.state;
         const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
         const flightNumberBySitePie = [{
-            // colorByPoint: true,
             data: [],
         }];
         const airtimeBySitePie = [{
-            // colorByPoint: true,
             data: [],
         }];
         const flightNumberHistogram = [];
@@ -226,6 +251,9 @@ const StatsView = React.createClass({
             });
         }
 
+        const siteOptions = SiteModel.getSiteValueTextList();
+        const yearOptions = this.state.flightStats.years.map(year => ({ value: year, text: year }));
+        const monthOptions = Util.shortMonthNames.map(month => ({ value: month, text: month }));
         const bubbleFlights = this.state.flightIds
             .map(flightId => FlightModel.getItemOutput(flightId))
             .filter(flight => !!flight && !flight.error);
@@ -236,26 +264,52 @@ const StatsView = React.createClass({
                 <NavigationMenu currentView='stats' />
 
                 <Section>
-                    <SectionRow isLast={true}>
-                        <div>
-                            Selected site: {SiteModel.getSiteName(this.state.selectedSiteId) || 'None'}
-                            {!!this.state.selectedSiteId && (
-                                <div className='stats-view__cancel' onClick={this.handleRemoveSiteId}>x</div>
-                            )}
-                        </div>
-                        <div>
-                            Selected year: {this.state.selectedYear || 'None'}
-                            {!!this.state.selectedYear && (
-                                <div className='stats-view__cancel' onClick={this.handleRemoveYear}>x</div>
-                            )}
-                        </div>
-                        <div>
-                            Selected month: {this.state.selectedMonth || 'None'}
-                            {!!this.state.selectedMonth && (
-                                <div className='stats-view__cancel' onClick={this.handleRemoveMonth}>x</div>
-                            )}
-                        </div>
+                    <SectionTitle>
+                        Stats filters:
+                    </SectionTitle>
 
+                    <SectionRow>
+                        <DropdownInput
+                            selectedValue={ this.state.selectedSiteId }
+                            options={ siteOptions }
+                            labelText='Selected site:'
+                            emptyText='All sites'
+                            onChangeFunc={ (inputName, inputValue) => {
+                                this.handleSiteSelect(inputValue ? Number(inputValue) : inputValue);
+                            } }
+                        />
+                    </SectionRow>
+
+                    <SectionRow>
+                        <DropdownInput
+                            selectedValue={ this.state.selectedYear }
+                            options={ yearOptions }
+                            labelText='Selected year:'
+                            emptyText='All time'
+                            onChangeFunc={ (inputName, inputValue) => {
+                                this.handleYearSelect(inputValue ? Number(inputValue) : null);
+                            } }
+                        />
+                    </SectionRow>
+
+                    <SectionRow isLast={ true }>
+                        <DropdownInput
+                            selectedValue={ this.state.selectedMonth }
+                            options={ monthOptions }
+                            labelText='Selected month:'
+                            emptyText='All time'
+                            noSort={ true }
+                            onChangeFunc={ (inputName, inputValue) => this.handleMonthSelect(inputValue) }
+                        />
+                    </SectionRow>
+
+                    <SectionRow>
+                        <div className='stats-view__description'>
+                            Or click on the charts to select corresponding site or time range.
+                        </div>
+                    </SectionRow>
+
+                    <SectionRow isLast={true}>
                         <div className='stats-view__pie-container'>
                             <div className='stats-view__chart-title'>Total number of flights</div>
                             <div className='stats-view__pie'>
@@ -278,7 +332,10 @@ const StatsView = React.createClass({
                             </div>
                         </div>
 
-                        <div className='stats-view__chart-title'>Number of flights</div>
+                        <div className='stats-view__chart-title-container'>
+                            <div className='stats-view__chart-title'>Number of flights</div>
+                            {this.renderUnzoomButton()}
+                        </div>
                         <HistogramChart
                             canSelect={!this.state.selectedMonth}
                             categories={timeRangeCategories}
@@ -287,7 +344,10 @@ const StatsView = React.createClass({
                             onClick={this.handleTimeRangeSelect}
                         />
 
-                        <div className='stats-view__chart-title'>Airtime</div>
+                        <div className='stats-view__chart-title-container'>
+                            <div className='stats-view__chart-title'>Airtime</div>
+                            {this.renderUnzoomButton()}
+                        </div>
                         <HistogramChart
                             canSelect={!this.state.selectedMonth}
                             categories={timeRangeCategories}

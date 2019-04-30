@@ -42,6 +42,7 @@ const PieChart = React.createClass({
             chart: {
                 renderTo: this.props.id,
                 type: 'pie',
+                margin: [0, 0, 0, 0],
             },
             title: { text: null },
             plotOptions: {

@@ -1,16 +1,26 @@
 @import (reference) '../constants';
 
-.stats-view__cancel {
-  display: inline-block;
-  color: red;
-  font-size: 20px;
-  cursor: pointer;
+.stats-view__description {
+  padding-top: 1em;
+  font-style: italic;
+}
+
+.stats-view__chart-title-container {
+  padding-right: 80px;
+  position: relative;
 }
 
 .stats-view__chart-title {
   margin-top: 1.1em;
+  margin-bottom: 0.8em;
   font-size: 1.1em;
   font-weight: 700;
+}
+
+.stats-view__unzoom {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .stats-view__pie-container {

@@ -5,7 +5,9 @@
 .button {
 
   @media (max-width: (@medium-viewport - 1)) {
-    display: none;
+    &.desktop-only {
+      display: none;
+    }
   }
 
   @media (min-width: @medium-viewport) {
@@ -26,6 +28,11 @@
 
     &.x-content-width {
       width: auto;
+    }
+
+    &.x-small {
+      height: auto;
+      padding: 0.2em 0.5em;
     }
 
     &.x-primary {
