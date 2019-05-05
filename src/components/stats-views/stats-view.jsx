@@ -5,9 +5,12 @@ const Altitude = require('../../utils/altitude');
 const chartService = require('../../services/chart-service');
 const FlightModel = require('../../models/flight');
 const PublicLinksMixin = require('../mixins/public-links-mixin');
+const pubSub = require('../../utils/pubsub');
 const SiteModel = require('../../models/site');
+const statsViewStore = require('./stats-view-store');
 const Util = require('../../utils/util');
 
+const AppLink = require('../common/app-link');
 const BubbleChart = require('../common/charts/buble-chart');
 const Button = require('../common/buttons/button');
 const DropdownInput = require('../common/inputs/dropdown-input');
@@ -31,17 +34,34 @@ const StatsView = React.createClass({
 
     getInitialState: function() {
         return {
-            flightIds: [],
             flightStats: null,
             isLoading: true,
             loadingError: null,
-            selectedSiteId: null,
-            selectedYear: null,
-            selectedMonth: null,
+            selectedFlightIds: statsViewStore.selectedFlightIds,
+            selectedSiteId: statsViewStore.selectedSiteId,
+            selectedYear: statsViewStore.selectedYear,
+            selectedMonth: statsViewStore.selectedMonth,
         };
     },
 
-    handleStoreModified() {
+    componentDidMount: function() {
+        pubSub.on(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
+    },
+
+    componentWillUnmount: function() {
+        pubSub.removeListener(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
+    },
+
+    handleStatsViewStoreModified() {
+        this.setState({
+            selectedFlightIds: statsViewStore.selectedFlightIds,
+            selectedSiteId: statsViewStore.selectedSiteId,
+            selectedYear: statsViewStore.selectedYear,
+            selectedMonth: statsViewStore.selectedMonth,
+        });
+    },
+
+    handleDataStoreModified() {
         const flightStats = chartService.getFlightStatsForEachSite();
         if (!flightStats) {
             return;
@@ -63,27 +83,27 @@ const StatsView = React.createClass({
 
     handleSiteSelect(siteId) {
         const selectedSiteId = (this.state.selectedSiteId === siteId) ? null : siteId;
-        this.setState({ selectedSiteId, flightIds: [] });
+        statsViewStore.updateState({ selectedSiteId, selectedFlightIds: [] });
     },
 
     handleTimeRangeSelect(timeRange) {
         if (!this.state.selectedYear) {
-            this.setState({ selectedYear: timeRange, flightIds: [] });
+            statsViewStore.updateState({ selectedYear: timeRange, selectedFlightIds: [] });
         } else if (!this.state.selectedMonth) {
-            this.setState({ selectedMonth: timeRange, flightIds: [] });
+            statsViewStore.updateState({ selectedMonth: timeRange, selectedFlightIds: [] });
         }
     },
 
     handleYearSelect(year) {
         if (year) {
-            this.setState({ selectedYear: year, flightIds: [] });
+            statsViewStore.updateState({ selectedYear: year, selectedFlightIds: [] });
         } else {
-            this.setState({ selectedYear: null, selectedMonth: null, flightIds: [] });
+            statsViewStore.updateState({ selectedYear: null, selectedMonth: null, selectedFlightIds: [] });
         }
     },
 
     handleMonthSelect(monthShort) {
-        this.setState({ selectedMonth: monthShort, flightIds: [] });
+        statsViewStore.updateState({ selectedMonth: monthShort, selectedFlightIds: [] });
     },
 
     handleUnzoom() {
@@ -95,7 +115,7 @@ const StatsView = React.createClass({
     },
 
     handleBubbleClick(flightIds) {
-        this.setState({ flightIds });
+        statsViewStore.updateState({ selectedFlightIds: flightIds });
     },
 
     getChartData() {
@@ -219,7 +239,7 @@ const StatsView = React.createClass({
 
     renderSimpleLayout(children) {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={ this.handleDataStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu header='Stats' />
                 <NavigationMenu currentView='stats' />
                 { children }
@@ -246,7 +266,7 @@ const StatsView = React.createClass({
     render() {
         if (this.state.loadingError) {
             return this.renderSimpleLayout(
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataStoreModified } />
             );
         }
 
@@ -266,12 +286,12 @@ const StatsView = React.createClass({
         const siteOptions = SiteModel.getSiteValueTextList();
         const yearOptions = this.state.flightStats.years.map(year => ({ value: year, text: year }));
         const monthOptions = Util.shortMonthNames.map(month => ({ value: month, text: month }));
-        const bubbleFlights = this.state.flightIds
+        const bubbleFlights = this.state.selectedFlightIds
             .map(flightId => FlightModel.getItemOutput(flightId))
             .filter(flight => !!flight && !flight.error);
 
         return (
-            <View onStoreModified={ this.handleStoreModified }>
+            <View onStoreModified={ this.handleDataStoreModified }>
                 <MobileTopMenu header='Stats' />
                 <NavigationMenu currentView='stats' />
 
@@ -382,7 +402,7 @@ const StatsView = React.createClass({
                                 <tbody>
                                 {bubbleFlights.map((flight, index) => (
                                     <tr key={flight.id}>
-                                        <td><a href={`/flight/${flight.id}`}>Flight {index + 1}:</a></td>
+                                        <td><AppLink href={`/flight/${flight.id}`}>Flight {index + 1}:</AppLink></td>
                                         <td>{Util.formatDate(flight.date)}</td>
                                         <td>{flight.siteName}</td>
                                         <td>{Altitude.formatAltitudeShort(flight.altitude)}</td>
