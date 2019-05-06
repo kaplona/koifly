@@ -118,7 +118,7 @@ var PilotChangePassword = React.createClass({
         return null;
     },
 
-    isButtonsEnabled: function() {
+    isSaveButtonsEnabled: function() {
         return this.state.isUserActivated && !this.state.isSaving;
     },
 
@@ -129,7 +129,7 @@ var PilotChangePassword = React.createClass({
                 'Follow the link we sent you.'
             ].join(' ');
 
-            return <EmailVerificationNotice text={ noticeText } type='error' />;
+            return <EmailVerificationNotice isPadded={ true } text={ noticeText } type='error' />;
         }
     },
     
@@ -156,7 +156,7 @@ var PilotChangePassword = React.createClass({
 
     renderError: function() {
         if (this.state.error) {
-            return <ErrorBox error={ this.state.error } />;
+            return <ErrorBox isPadded={ true } error={ this.state.error } />;
         }
     },
 
@@ -178,7 +178,7 @@ var PilotChangePassword = React.createClass({
                 type='submit'
                 buttonStyle='primary'
                 onClick={ this.handleSubmit }
-                isEnabled={ this.isButtonsEnabled() }
+                isEnabled={ this.isSaveButtonsEnabled() }
                 />
         );
     },
@@ -189,7 +189,7 @@ var PilotChangePassword = React.createClass({
                 caption='Cancel'
                 buttonStyle='secondary'
                 onClick={ this.handleGoToPilotView }
-                isEnabled={ this.isButtonsEnabled() }
+                isEnabled={ !this.state.isSaving }
                 />
         );
     },
@@ -202,7 +202,7 @@ var PilotChangePassword = React.createClass({
                     type='submit'
                     buttonStyle='primary'
                     onClick={ this.handleSubmit }
-                    isEnabled={ this.isButtonsEnabled() }
+                    isEnabled={ this.isSaveButtonsEnabled() }
                     />
 
                 <MobileButton
@@ -231,12 +231,11 @@ var PilotChangePassword = React.createClass({
         return (
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 { this.renderMobileTopMenu() }
+                { this.renderEmailVerificationNotice() }
+                { this.renderError() }
 
                 <CompactContainer>
                     <form>
-                        { this.renderEmailVerificationNotice() }
-                        { this.renderError() }
-                        
                         <Section>
                             <SectionTitle>Change Password</SectionTitle>
     

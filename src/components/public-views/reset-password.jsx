@@ -142,11 +142,10 @@ var ResetPassword = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
+                { this.renderError() }
 
                 <CompactContainer>
                     <form>
-                        { this.renderError() }
-    
                         <Section>
     
                             <SectionTitle>Reset Password</SectionTitle>

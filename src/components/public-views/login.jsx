@@ -158,11 +158,10 @@ var Login = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
+                { this.renderError() }
 
                 <CompactContainer>
                     <form>
-                        { this.renderError() }
-    
                         <Section>
                             <SectionTitle>Please, log in</SectionTitle>
     

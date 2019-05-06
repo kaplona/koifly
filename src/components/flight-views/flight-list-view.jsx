@@ -34,7 +34,7 @@ const FlightListView = React.createClass({
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu header='Flights' />
                 { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
             </View>
         );
     },
@@ -89,8 +89,7 @@ const FlightListView = React.createClass({
             return this.renderError();
         }
         
-        var content = this.renderEmptyList();
-
+        let content = this.renderEmptyList();
         if (!content) {
             content = this.renderTable();
         }

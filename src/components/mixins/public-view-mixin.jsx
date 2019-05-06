@@ -1,14 +1,13 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const PublicLinksMixin = require('./public-links-mixin');
 
-var PublicLinksMixin = require('./public-links-mixin');
-
-var NavigationMenu = require('../common/menu/navigation-menu');
-var Notice = require('../common/notice/notice');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const Notice = require('../common/notice/notice');
 
 
-var PublicViewMixin = {
+const PublicViewMixin = {
 
     mixins: [ PublicLinksMixin ],
 
@@ -48,7 +47,7 @@ var PublicViewMixin = {
 
     renderError: function() {
         if (this.state.error) {
-            return <Notice type='error' text={ this.state.error.message } />;
+            return <Notice isPadded={ true } type='error' text={ this.state.error.message } />;
         }
     }
 };

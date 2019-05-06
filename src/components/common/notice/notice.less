@@ -1,7 +1,18 @@
-
 @import (reference) '../../constants';
 @import (reference) '../../general';
 
+
+.notice__padded-container {
+  @hp: (@row-height * 0.3); // horizontal padding
+
+  padding: 0 @hp;
+
+  @media (min-width: @medium-viewport) {
+    @hp: (@row-height * 0.6); // horizontal padding (desktop)
+
+    padding: @hp @hp 3px @hp; // 3px bottom to see card shadow
+  }
+}
 
 .notice {
   .border-box();
@@ -17,7 +28,7 @@
 
     @row-height: @row-height-desktop;
     @vp: @row-height * 0.23;
-    margin: (@row-height * 0.3) 0;
+    //margin: (@row-height * 0.3) 0;
     padding: @vp 1.5em @vp 1em;
   }
 

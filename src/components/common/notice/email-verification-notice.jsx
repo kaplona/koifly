@@ -1,17 +1,20 @@
 'use strict';
 
-var React = require('react');
-var dataService = require('../../../services/data-service');
-var PilotModel = require('../../../models/pilot');
-var Notice = require('./notice');
+const React = require('react');
+const { bool, func, string } = React.PropTypes;
+const dataService = require('../../../services/data-service');
+const PilotModel = require('../../../models/pilot');
+
+const Notice = require('./notice');
 
 
-var EmailVerificationNotice = React.createClass({
+const EmailVerificationNotice = React.createClass({
 
     propTypes: {
-        text: React.PropTypes.string.isRequired,
-        type: React.PropTypes.string,
-        onClose: React.PropTypes.func
+        isPadded: bool,
+        text: string,
+        type: string,
+        onClose: func
     },
 
     getDefaultProps: function() {
@@ -40,24 +43,24 @@ var EmailVerificationNotice = React.createClass({
     },
 
     render: function() {
-        var noticeText = this.props.text;
-        var type = this.props.type;
-        var onClick = this.handleEmailVerification;
+        let noticeText = this.props.text;
+        let type = this.props.type;
+        let onClick = this.handleEmailVerification;
 
         if (this.state.isEmailSent) {
-            var email = PilotModel.getEmailAddress();
-            noticeText = 'The verification link was sent to your email ' + email;
+            noticeText = 'The verification link was sent to your email ' + PilotModel.getEmailAddress();
             type = 'success';
             onClick = null;
         }
 
         return (
             <Notice
+                buttonText={ this.state.isSending ? 'Sending...' : 'Send email again' }
+                isButtonEnabled={ !this.state.isSending }
+                isPadded={this.props.isPadded}
                 text={ noticeText }
                 type={ type }
                 onClick={ onClick }
-                buttonText={ this.state.isSending ? 'Sending...' : 'Send email again' }
-                isButtonEnabled={ !this.state.isSending }
                 onClose={ this.props.onClose }
                 />
         );

@@ -1,22 +1,21 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const _ = require('lodash');
+const listViewMixin = require('../mixins/list-view-mixin');
+const GliderModel = require('../../models/glider');
+const Util = require('../../utils/util');
 
-var listViewMixin = require('../mixins/list-view-mixin');
-var GliderModel = require('../../models/glider');
-var Util = require('../../utils/util');
-
-var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Section = require('../common/section/section');
-var Table = require('../common/table');
-var View = require('../common/view');
-
+const DesktopTopGrid = require('../common/grids/desktop-top-grid');
+const ErrorBox = require('../common/notice/error-box');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Section = require('../common/section/section');
+const Table = require('../common/table');
+const View = require('../common/view');
 
 
-var GliderListView = React.createClass({
+
+const GliderListView = React.createClass({
 
     mixins: [ listViewMixin(GliderModel.getModelKey()) ],
 
@@ -35,13 +34,13 @@ var GliderListView = React.createClass({
             <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
                 <MobileTopMenu header='Gliders' />
                 { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
             </View>
         );
     },
 
     renderTable: function() {
-        var columnsConfig = [
+        const columnsConfig = [
             {
                 key: 'name',
                 label: 'Name',
@@ -60,9 +59,9 @@ var GliderListView = React.createClass({
             }
         ];
 
-        var rows = [];
+        const rows = [];
         if (this.state.items) {
-            for (var i = 0; i < this.state.items.length; i++) {
+            for (let i = 0; i < this.state.items.length; i++) {
                 rows.push(_.extend(
                     {},
                     this.state.items[i],
@@ -88,8 +87,7 @@ var GliderListView = React.createClass({
             return this.renderError();
         }
 
-        var content = this.renderEmptyList();
-
+        let content = this.renderEmptyList();
         if (!content) {
             content = this.renderTable();
         }

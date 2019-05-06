@@ -1,19 +1,20 @@
 'use strict';
 
-var React = require('react');
-var { bool, element, func, oneOfType, string } = React.PropTypes;
-var DomUtil = require('../../../utils/dom-util');
+const React = require('react');
+const { bool, element, func, oneOfType, string } = React.PropTypes;
+const DomUtil = require('../../../utils/dom-util');
 
 require('./notice.less');
 
 
-var Notice = React.createClass({
+const Notice = React.createClass({
     propTypes: {
+        buttonText: string,
+        isButtonEnabled: bool,
+        isPadded: bool, // adds margin around notice, use it for rendering Notice on the top of content container
         text: oneOfType([element, string]).isRequired,
         type: string,
         onClick: func, // if not provided button won't be rendered no matter if buttonText or isButtonEnabled present
-        buttonText: string,
-        isButtonEnabled: bool.isRequired,
         onClose: func // if not provided close-button won't be rendered
     },
 
@@ -73,16 +74,18 @@ var Notice = React.createClass({
     },
 
     render: function() {
-        var className = 'notice';
+        let className = 'notice';
         if (this.props.type) {
             className += ' x-' + this.props.type;
         }
 
         return (
-            <div className={ className }>
-                { this.props.text }
-                { this.renderButton() }
-                { this.renderCloseButton() }
+            <div className={this.props.isPadded ? 'notice__padded-container' : ''}>
+                <div className={ className }>
+                    { this.props.text }
+                    { this.renderButton() }
+                    { this.renderCloseButton() }
+                </div>
             </div>
         );
     }

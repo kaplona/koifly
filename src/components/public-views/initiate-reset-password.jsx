@@ -1,28 +1,27 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const dataService = require('../../services/data-service');
+const KoiflyError = require('../../errors/error');
+const PilotModel = require('../../models/pilot');
+const PublicViewMixin = require('../mixins/public-view-mixin');
+const Util = require('../../utils/util');
 
-var dataService = require('../../services/data-service');
-var PilotModel = require('../../models/pilot');
-var PublicViewMixin = require('../mixins/public-view-mixin');
-var Util = require('../../utils/util');
-
-var Button = require('../common/buttons/button');
-var CompactContainer = require('../common/compact-container');
-var Description = require('../common/section/description');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Notice = require('../common/notice/notice');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TextInput = require('../common/inputs/text-input');
+const Button = require('../common/buttons/button');
+const CompactContainer = require('../common/compact-container');
+const Description = require('../common/section/description');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const ErrorTypes = require('../../errors/error-types');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Notice = require('../common/notice/notice');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const TextInput = require('../common/inputs/text-input');
 
 
-var InitiateResetPassword = React.createClass({
+const InitiateResetPassword = React.createClass({
 
     mixins: [ PublicViewMixin ],
 
@@ -50,7 +49,7 @@ var InitiateResetPassword = React.createClass({
             error: null
         });
 
-        var EmailAddress = this.state.email;
+        const EmailAddress = this.state.email;
         dataService
             .sendInitiateResetPasswordEmail(EmailAddress)
             .then(() => {
@@ -87,8 +86,8 @@ var InitiateResetPassword = React.createClass({
 
     renderNotice: function() {
         if (this.state.lastSentEmailAddress) {
-            var noticeText = 'Email with reset password link was successfully sent to ' + this.state.lastSentEmailAddress;
-            return <Notice text={ noticeText } />;
+            const noticeText = 'Email with reset password link was successfully sent to ' + this.state.lastSentEmailAddress;
+            return <Notice isPadded={ true } text={ noticeText } />;
         }
     },
 
@@ -142,12 +141,11 @@ var InitiateResetPassword = React.createClass({
         return (
             <div>
                 { this.renderMobileTopMenu() }
+                { this.renderNotice() }
+                { this.renderError() }
 
                 <CompactContainer>
                     <form>
-                        { this.renderNotice() }
-                        { this.renderError() }
-    
                         <Section>
     
                             <SectionTitle>Reset Password</SectionTitle>

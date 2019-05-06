@@ -21,6 +21,8 @@ const SectionRow = require('../common/section/section-row');
 const SectionTitle = require('../common/section/section-title');
 const View = require('../common/view');
 
+require('./pilot-flight-upload.less');
+
 
 const PilotFlightsUpload = React.createClass({
 
@@ -152,19 +154,21 @@ const PilotFlightsUpload = React.createClass({
 
     renderSuccessMessage: function() {
         return (
-            <Notice
-                type='success'
-                text={(
-                    <div>
-                        Your records were successfully saved:
-                        <ul>
-                            <li>{ this.state.successSummary.flightsNum } flights added;</li>
-                            <li>{ this.state.successSummary.sitesNum } sites added;</li>
-                            <li>{ this.state.successSummary.glidersNum } gliders added.</li>
-                        </ul>
-                    </div>
-                )}
-            />
+            <div className='pilot-flight-upload__notice'>
+                <Notice
+                    type='success'
+                    text={(
+                        <div>
+                            Your records were successfully saved:
+                            <ul>
+                                <li>{ this.state.successSummary.flightsNum } flights added;</li>
+                                <li>{ this.state.successSummary.sitesNum } sites added;</li>
+                                <li>{ this.state.successSummary.glidersNum } gliders added.</li>
+                            </ul>
+                        </div>
+                    )}
+                />
+            </div>
         );
     },
 
@@ -197,7 +201,11 @@ const PilotFlightsUpload = React.createClass({
 
                         <SectionRow>
                             { !!this.state.successSummary && this.renderSuccessMessage() }
-                            { !!this.state.fileReadError && (<ImportError error={this.state.fileReadError} />) }
+                            { !!this.state.fileReadError && (
+                                <div className='pilot-flight-upload__notice'>
+                                    <ImportError error={this.state.fileReadError} />
+                                </div>
+                            ) }
 
                             <FileInput
                                 fileName={this.state.fileName}

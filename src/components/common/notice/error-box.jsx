@@ -1,18 +1,20 @@
 'use strict';
 
-var React = require('react');
-var ErrorTypes = require('../../../errors/error-types');
-var Notice = require('./notice');
+const React = require('react');
+const { bool, func, shape, string } = React.PropTypes;
+const ErrorTypes = require('../../../errors/error-types');
+const Notice = require('./notice');
 
 
 var ErrorBox = React.createClass({
     propTypes: {
-        error: React.PropTypes.shape({
-            type: React.PropTypes.string,
-            message: React.PropTypes.string
+        error: shape({
+            type: string,
+            message: string
         }).isRequired,
-        onTryAgain: React.PropTypes.func,
-        isTrying: React.PropTypes.bool.isRequired
+        isPadded: bool,
+        isTrying: bool,
+        onTryAgain: func,
     },
 
     getDefaultProps: function() {
@@ -22,7 +24,7 @@ var ErrorBox = React.createClass({
     },
 
     render: function() {
-        var onClick = this.props.onTryAgain;
+        let onClick = this.props.onTryAgain;
         if (this.props.error.type === ErrorTypes.RECORD_NOT_FOUND ||
             this.props.error.type === ErrorTypes.VALIDATION_ERROR
         ) {
@@ -31,10 +33,11 @@ var ErrorBox = React.createClass({
 
         return (
             <Notice
+                buttonText={ this.props.isTrying ? 'Trying ...' : 'Try Again' }
+                isPadded={ this.props.isPadded }
                 text={ this.props.error.message }
                 type='error'
                 onClick={ onClick }
-                buttonText={ this.props.isTrying ? 'Trying ...' : 'Try Again' }
                 />
         );
     }

@@ -46,7 +46,7 @@ var View = React.createClass({
 
     renderNotice: function() {
         if (this.state.isEmailVerificationNotice) {
-            return <EmailVerificationNotice onClose={ this.handleCloseNotice } />;
+            return <EmailVerificationNotice isPadded={ true } onClose={ this.handleCloseNotice } />;
         }
     },
 
