@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react');
-var { arrayOf, element, oneOfType, string } = React.PropTypes;
-var _ = require('lodash');
+const React = require('react');
+const { arrayOf, element, oneOfType, string } = React.PropTypes;
+const _ = require('lodash');
 
 require('./desktop-bottom-grid.less');
 
 
-var DesktopBottomGrid = React.createClass({
+const DesktopBottomGrid = React.createClass({
 
     propTypes: {
         leftElements: arrayOf(oneOfType([element, string])),
@@ -15,18 +15,18 @@ var DesktopBottomGrid = React.createClass({
     },
 
     render: function() {
-        var leftElements = _.map(this.props.leftElements, (el, index) => {
-            return <div key={ 'left-element-' + index }>{ el }</div>;
+        const leftElements = _.map(this.props.leftElements, (el, index) => {
+            return <div key={'left-element-' + index}>{el}</div>;
         });
 
         return (
             <div className='bottom-grid'>
                 <div className='left-elements'>
-                    { leftElements }
+                    {leftElements}
                 </div>
 
                 <div className='right-element'>
-                    { this.props.rightElement }
+                    {this.props.rightElement}
                 </div>
             </div>
         );

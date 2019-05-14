@@ -1,21 +1,20 @@
 'use strict';
-
-var chalk = require('chalk');
-var express = require('express');
-var webpack = require('webpack');
-var webpackDevMiddleware = require('webpack-dev-middleware');
-var webpackHotMiddleware = require('webpack-hot-middleware');
+/* eslint-disable no-console */
+const chalk = require('chalk');
+const express = require('express');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 
 if (process.env.NODE_ENV !== 'development') {
     throw new Error('ERROR: Webpack dev server only works in dev environment');
 }
 
-var config = require('./config/variables');
-var webpackConfig = require('./config/webpack-config');
+const config = require('./config/variables');
+const webpackConfig = require('./config/webpack-config');
 
-
-var app = express();
-var compiler = webpack(webpackConfig);
+const app = express();
+const compiler = webpack(webpackConfig);
 
 
 app.use(webpackDevMiddleware(compiler, {
@@ -36,5 +35,5 @@ app.listen(config.webpack.port, config.server.host, err => {
         return;
     }
 
-    console.log(chalk.green('Webpack dev server listening at ' + config.webpack.devServerUrl));
+    console.log(chalk.green(`Webpack dev server listening at ${config.webpack.devServerUrl}`));
 });

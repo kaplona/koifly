@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
+const dataService = require('../services/data-service');
+const ErrorTypes = require('../errors/error-types');
+const KoiflyError = require('../errors/error');
+const Util = require('../utils/util');
 
-var dataService = require('../services/data-service');
-var ErrorTypes = require('../errors/error-types');
-var KoiflyError = require('../errors/error');
-var Util = require('../utils/util');
 
-
-var BaseModel = {
+const BaseModel = {
     
     getModelKey: function() {
         return this.keys.single;
@@ -24,13 +23,13 @@ var BaseModel = {
      */
     getStoreContent: function(itemId) {
         // There is loading error
-        var loadingError = dataService.getLoadingError();
+        const loadingError = dataService.getLoadingError();
         if (loadingError) {
             return { error: loadingError };
         }
 
         // No data has been received yet
-        var storeContent = dataService.getStoreContent(this.keys.plural);
+        const storeContent = dataService.getStoreContent(this.keys.plural);
         if (!storeContent) {
             dataService.requestServerData();
             return null;
@@ -79,7 +78,7 @@ var BaseModel = {
      * @returns {object} - with replaced empty fields
      */
     setDefaultValues: function(newItem) {
-        var fieldsToReplace = {};
+        const fieldsToReplace = {};
         _.each(this.getValidationConfig(), (config, fieldName) => {
             // If there is default value for empty field - set it
             if (Util.isEmptyString(newItem[fieldName]) &&

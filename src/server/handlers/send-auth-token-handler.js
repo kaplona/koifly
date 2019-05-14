@@ -1,13 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
-
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var EmailMessageTemplates = require('../../constants/email-message-templates');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var sendAuthTokenToPilot = require('../helpers/send-auth-token');
+const _ = require('lodash');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const EmailMessageTemplates = require('../../constants/email-message-templates');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const sendAuthTokenToPilot = require('../helpers/send-auth-token');
 
 
 /**
@@ -18,8 +17,8 @@ var sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * @param {object} request
  * @param {function} reply
  */
-var sendAuthTokenHandler = function(request, reply) {
-    var payload = request.payload;
+const sendAuthTokenHandler = function(request, reply) {
+    const payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.email)) {
@@ -27,8 +26,8 @@ var sendAuthTokenHandler = function(request, reply) {
         return;
     }
 
-    var emailMessage;
-    var path;
+    let emailMessage;
+    let path;
 
     if (request.path === '/api/one-time-login') {
         emailMessage = EmailMessageTemplates.ONE_TIME_LOGIN;

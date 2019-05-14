@@ -1,29 +1,26 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
+const ErrorTypes = require('../../src/errors/error-types');
+const ErrorBox = require('../../src/components/common/notice/error-box');
 
-var expect = require('chai').expect;
-
-var ErrorTypes = require('../../src/errors/error-types');
-var ErrorBox = require('../../src/components/common/notice/error-box');
-
-var Notice = require('../../src/components/common/notice/notice');
-
+const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('ErrorBox component', () => {
     
-    var component;
+    let component;
 
-    var defaults = {
+    const defaults = {
         noticeType: 'error',
         buttonText: 'Try Again',
         buttonTryingText: 'Trying ...'
     };
 
-    var mocks = {
+    const mocks = {
         error: { type: 'testError', message: 'test error' },
         handleTryAgain: () => {}
     };
@@ -34,12 +31,12 @@ describe('ErrorBox component', () => {
         it('renders notice with proper default props', () => {
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
-                    error={ mocks.error }
-                    onTryAgain={ mocks.handleTryAgain }
-                    />
+                    error={mocks.error}
+                    onTryAgain={mocks.handleTryAgain}
+                />
             );
 
-            let notice = TestUtils.findRenderedComponentWithType(component, Notice);
+            const notice = TestUtils.findRenderedComponentWithType(component, Notice);
 
             expect(notice).to.have.deep.property('props.text', mocks.error.message);
             expect(notice).to.have.deep.property('props.type', defaults.noticeType);
@@ -50,13 +47,13 @@ describe('ErrorBox component', () => {
         it('renders notice with proper button text', () => {
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
-                    error={ mocks.error }
-                    isTrying={ true }
-                    onTryAgain={ mocks.handleTryAgain }
-                    />
+                    error={mocks.error}
+                    isTrying={true}
+                    onTryAgain={mocks.handleTryAgain}
+                />
             );
 
-            let notice = TestUtils.findRenderedComponentWithType(component, Notice);
+            const notice = TestUtils.findRenderedComponentWithType(component, Notice);
 
             expect(notice).to.have.deep.property('props.buttonText', defaults.buttonTryingText);
         });
@@ -65,9 +62,9 @@ describe('ErrorBox component', () => {
             let error = { type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
-                    error={ error }
-                    onTryAgain={ mocks.handleTryAgain }
-                    />
+                    error={error}
+                    onTryAgain={mocks.handleTryAgain}
+                />
             );
 
             let notice = TestUtils.findRenderedComponentWithType(component, Notice);
@@ -78,9 +75,9 @@ describe('ErrorBox component', () => {
             error = { type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
             component = TestUtils.renderIntoDocument(
                 <ErrorBox
-                    error={ error }
-                    onTryAgain={ mocks.handleTryAgain }
-                    />
+                    error={error}
+                    onTryAgain={mocks.handleTryAgain}
+                />
             );
 
             notice = TestUtils.findRenderedComponentWithType(component, Notice);

@@ -1,36 +1,33 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-var Promise = require('es6-promise').Promise;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Promise = require('es6-promise').Promise;
+const then = require('../../src/utils/then');
+const expect = require('chai').expect;
+const Sinon = require('sinon');
+const dataService = require('../../src/services/data-service');
+const PilotModel = require('../../src/models/pilot');
 
-var then = require('../../src/utils/then');
-var expect = require('chai').expect;
-var Sinon = require('sinon');
-
-var dataService = require('../../src/services/data-service');
-var PilotModel = require('../../src/models/pilot');
-
-var EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
-var Notice = require('../../src/components/common/notice/notice');
-
+const EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
+const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('EmailVerificationNotice component', () => {
 
-    var component;
+    let component;
 
-    var defaults = {
+    const defaults = {
         successNoticeText: 'The verification link was sent to your email',
         buttonText: 'Send email again',
         buttonSendingText: 'Sending...',
         successType: 'success'
     };
 
-    var mocks = {
+    const mocks = {
         noticeText: 'test text',
         noticeType: 'test type',
         email: 'testEmail@test.com',
@@ -50,10 +47,10 @@ describe('EmailVerificationNotice component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <EmailVerificationNotice
-                    text={ mocks.noticeText }
-                    type={ mocks.noticeType }
-                    onClose={ mocks.handleClose }
-                    />
+                    text={mocks.noticeText}
+                    type={mocks.noticeType}
+                    onClose={mocks.handleClose}
+                />
             );
         });
 
@@ -63,7 +60,7 @@ describe('EmailVerificationNotice component', () => {
         });
 
         it('sets default state and renders notice with proper props', () => {
-            let notice = TestUtils.findRenderedComponentWithType(component, Notice);
+            const notice = TestUtils.findRenderedComponentWithType(component, Notice);
 
             expect(component).to.have.deep.property('state.isEmailSent', false);
             expect(component).to.have.deep.property('state.isSending', false);
@@ -75,12 +72,12 @@ describe('EmailVerificationNotice component', () => {
         });
 
         it('changes state and view once send-email button clicked', done => {
-            let button = ReactDOM.findDOMNode(component).querySelector('input');
+            const button = ReactDOM.findDOMNode(component).querySelector('input');
 
             Simulate.click(button);
 
             then(() => {
-                let notice = TestUtils.findRenderedComponentWithType(component, Notice);
+                const notice = TestUtils.findRenderedComponentWithType(component, Notice);
 
                 expect(component).to.have.deep.property('state.isEmailSent', true);
                 expect(component).to.have.deep.property('state.isSending', true);

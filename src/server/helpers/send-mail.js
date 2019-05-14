@@ -1,12 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
-var Promise = require('es6-promise').Promise;
+const _ = require('lodash');
+const Promise = require('es6-promise').Promise;
+const NodeMailer = require('nodemailer');
 
 const MAILGUN_LOGIN = require('../../secrets').mailgunLogin;
 const MAILGUN_PASSWORD = require('../../secrets').mailgunPassword;
-
-var NodeMailer = require('nodemailer');
 
 
 /**
@@ -16,23 +15,23 @@ var NodeMailer = require('nodemailer');
  * e.g. { url: '/some-path' } will result in all '%url' in template to be replaced with '/some-path'
  * @returns {Promise} - whether email was send or error occurred
  */
-var SendMail = function(emailAddress, message, templateData) {
+const SendMail = function(emailAddress, message, templateData) {
     return new Promise((resolve, reject) => {
         // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
-        var smtpConfig = {
+        const smtpConfig = {
             service: 'Mailgun',
             auth: {
                 user: MAILGUN_LOGIN,
                 pass: MAILGUN_PASSWORD
             }
         };
-        var transporter = NodeMailer.createTransport(smtpConfig);
+        const transporter = NodeMailer.createTransport(smtpConfig);
 
         message = _.extend({}, message, { to: emailAddress });
 
         if (templateData) {
             _.each(templateData, (value, key) => {
-                var rex = new RegExp('%' + key, 'g');
+                const rex = new RegExp('%' + key, 'g');
                 message.text = message.text.replace(rex, value);
                 message.html = message.html.replace(rex, value);
             });

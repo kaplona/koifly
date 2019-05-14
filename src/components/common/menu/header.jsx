@@ -1,17 +1,16 @@
 'use strict';
 
-var React = require('react');
-var PubSub = require('../../../utils/pubsub');
-
-var PilotModel = require('../../../models/pilot');
-var PublicLinksMixin = require('../../mixins/public-links-mixin');
+const React = require('react');
+const PilotModel = require('../../../models/pilot');
+const PubSub = require('../../../utils/pubsub');
+const PublicLinksMixin = require('../../mixins/public-links-mixin');
 
 const STORE_MODIFIED_EVENT = require('../../../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 require('./header.less');
 
 
-var Header = React.createClass({
+const Header = React.createClass({
 
     mixins: [ PublicLinksMixin ],
 
@@ -40,15 +39,15 @@ var Header = React.createClass({
     },
 
     render: function() {
-        var loginText = this.state.isLoggedIn ? 'Log Out' : 'Log In';
-        var loginHandler = this.state.isLoggedIn ? this.handleLogOut : this.handleGoToLogin;
+        const loginText = this.state.isLoggedIn ? 'Log Out' : 'Log In';
+        const loginHandler = this.state.isLoggedIn ? this.handleLogOut : this.handleGoToLogin;
 
         return (
             <div className='main-header desktop'>
                 <div className='logo'>
-                    <a onClick={ this.handleGoToHomePage } >Koifly</a>
+                    <a onClick={this.handleGoToHomePage} >Koifly</a>
                 </div>
-                <a className='logout' onClick={ loginHandler } >{ loginText }</a>
+                <a className='logout' onClick={loginHandler} >{loginText}</a>
             </div>
         );
     }

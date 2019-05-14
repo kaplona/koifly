@@ -1,7 +1,7 @@
 'use strict';
 
 
-var DomUtil = {
+const DomUtil = {
 
     scrollToTheTop: function() {
         window.scrollTo(0, 0);

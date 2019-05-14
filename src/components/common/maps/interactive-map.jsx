@@ -1,7 +1,9 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const { func, number, string } = React.PropTypes;
+const _ = require('lodash');
+const Altitude = require('../../../utils/altitude');
 
 const CENTER = require('../../../constants/map-constants').CENTER;
 const OUT_OF_MAP_COORDINATES = require('../../../constants/map-constants').OUT_OF_MAP_COORDINATES;
@@ -10,14 +12,10 @@ const UNKNOWN_ADDRESS = require('../../../constants/map-constants').UNKNOWN_ADDR
 const UNKNOWN_ELEVATION = require('../../../constants/map-constants').UNKNOWN_ELEVATION;
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
-var Altitude = require('../../../utils/altitude');
-
 require('./map.less');
 
 
-var { func, number, string } = React.PropTypes;
-
-var InteractiveMap = React.createClass({
+const InteractiveMap = React.createClass({
 
     propTypes: {
         markerId: number.isRequired,
@@ -55,9 +53,7 @@ var InteractiveMap = React.createClass({
     },
 
     createMap: function(mapFacade) {
-        var mapContainer = this.refs.map;
-
-        mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+        mapFacade.createMap(this.refs.map, this.props.center, this.props.zoomLevel);
         mapFacade.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);
         mapFacade.createInfowindow(this.props.markerId, '');
         mapFacade.bindMarkerAndInfowindow(this.props.markerId);
@@ -74,14 +70,14 @@ var InteractiveMap = React.createClass({
 
     changeInfowindowContent: function(positionInfo, mapFacade) {
         // Format infowindow content
-        var location = positionInfo.address;
-        var altitude = positionInfo.elevation;
+        const location = positionInfo.address;
+        const coordinates = positionInfo.coordinates;
+        let altitude = positionInfo.elevation;
         if (altitude !== UNKNOWN_ELEVATION) {
             // Convert to user altitude unit as Google map returns elevation in meters
             altitude = Altitude.getAltitudeInPilotUnits(parseFloat(altitude));
         }
-        var coordinates = positionInfo.coordinates;
-        var infowindowContentHtml = this.composeInfowindowMessage(location, altitude, coordinates);
+        const infowindowContentHtml = this.composeInfowindowMessage(location, altitude, coordinates);
 
         mapFacade.setInfowindowContent(this.props.markerId, infowindowContentHtml);
         mapFacade.openInfowindow(this.props.markerId);
@@ -98,7 +94,7 @@ var InteractiveMap = React.createClass({
     composeInfowindowMessage: function(location, altitude, coordinates) {
         // Mark checkbox as checked if related form field is empty
         // Checked values will then be transferred to the fields
-        var checkboxParameters = {
+        const checkboxParameters = {
             location: this.props.location ? '' : 'checked',
             launchAltitude: this.props.launchAltitude ? '' : 'checked'
         };
@@ -110,7 +106,7 @@ var InteractiveMap = React.createClass({
             checkboxParameters.launchAltitude = 'disabled';
         }
 
-        var altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
+        const altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
 
         return '<div class="infowindow">' +
                     '<div>' +
@@ -142,8 +138,8 @@ var InteractiveMap = React.createClass({
         // If transferring elevation
         if (document.getElementById('launchAltitude_checkbox').checked) {
             // Convert elevation into units that user chose in the form
-            var altitudeUnit = this.props.altitudeUnit;
-            var launchAltitude = Altitude.getAltitudeInGivenUnits(parseFloat(elevation), altitudeUnit).toString();
+            const altitudeUnit = this.props.altitudeUnit;
+            const launchAltitude = Altitude.getAltitudeInGivenUnits(parseFloat(elevation), altitudeUnit).toString();
             this.props.onDataApply('launchAltitude', launchAltitude);
         }
         // Coordinates transfers anyway
@@ -155,7 +151,7 @@ var InteractiveMap = React.createClass({
         return (
             <div className='interactive-wrapper'>
                 <div className='map-container x-full-screen' ref='map' />
-                <div className='dimmer' onClick={ this.props.onMapClose } />
+                <div className='dimmer' onClick={this.props.onMapClose} />
             </div>
         );
     }
@@ -164,13 +160,13 @@ var InteractiveMap = React.createClass({
 
 InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     // this loads external google-maps-api
-    var mapFacadePromise = require('../../../utils/map-facade').createPromise();
+    const mapFacadePromise = require('../../../utils/map-facade').createPromise();
 
     return (
         <InteractiveMap
             {...props}
-            mapFacadePromise={ mapFacadePromise }
-            />
+            mapFacadePromise={mapFacadePromise}
+        />
     );
 };
 

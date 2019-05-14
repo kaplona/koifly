@@ -1,29 +1,26 @@
 'use strict';
 
-var React = require('react');
-
-var dataService = require('../../services/data-service');
-var PublicViewMixin = require('../mixins/public-view-mixin');
-var Util = require('../../utils/util');
-
-var AppLink = require('../common/app-link');
-var Button = require('../common/buttons/button');
-var CompactContainer = require('../common/compact-container');
-var Description = require('../common/section/description');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var PasswordInput = require('../common/inputs/password-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TextInput = require('../common/inputs/text-input');
+const React = require('react');
+const AppLink = require('../common/app-link');
+const Button = require('../common/buttons/button');
+const CompactContainer = require('../common/compact-container');
+const dataService = require('../../services/data-service');
+const Description = require('../common/section/description');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const PasswordInput = require('../common/inputs/password-input');
+const PublicViewMixin = require('../mixins/public-view-mixin');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const TextInput = require('../common/inputs/text-input');
+const Util = require('../../utils/util');
 
 
-
-var Signup = React.createClass({
+const Signup = React.createClass({
 
     mixins: [ PublicViewMixin ],
 
@@ -47,7 +44,7 @@ var Signup = React.createClass({
             event.preventDefault();
         }
 
-        var validationError = this.getValidationError();
+        const validationError = this.getValidationError();
         if (validationError) {
             this.updateError(validationError);
             return;
@@ -59,7 +56,7 @@ var Signup = React.createClass({
             error: null
         });
 
-        var pilotCredentials = {
+        const pilotCredentials = {
             email: this.state.email,
             password: this.state.password,
             isSubscribed: this.state.isSubscribed
@@ -77,7 +74,7 @@ var Signup = React.createClass({
         }
 
         if (this.state.password !== this.state.passwordConfirm) {
-            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'password and confirmed password must be the same');
+            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
         }
 
         return null;
@@ -88,45 +85,45 @@ var Signup = React.createClass({
             <MobileTopMenu
                 header='Koifly'
                 rightButtonCaption='Log In'
-                onRightClick={ this.handleGoToLogin }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onRightClick={this.handleGoToLogin}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
     renderDesktopButtons: function() {
-        return <DesktopBottomGrid leftElements={ [ this.renderSendButton() ] } />;
+        return <DesktopBottomGrid leftElements={[ this.renderSendButton() ]} />;
     },
 
     renderSendButton: function() {
         return (
             <Button
-                caption={ this.state.isSending ? 'Sending...' : 'Sign up' }
+                caption={this.state.isSending ? 'Sending...' : 'Sign up'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSending }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={!this.state.isSending}
+            />
         );
     },
 
     renderMobileButtons: function() {
         return (
             <MobileButton
-                caption={ this.state.isSending ? 'Saving...' : 'Sign Up' }
+                caption={this.state.isSending ? 'Saving...' : 'Sign Up'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSending }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={!this.state.isSending}
+            />
         );
     },
 
     render: function() {
         return (
             <div>
-                { this.renderMobileTopMenu() }
-                { this.renderError() }
+                {this.renderMobileTopMenu()}
+                {this.renderError()}
 
                 <CompactContainer>
                     <form>
@@ -136,14 +133,14 @@ var Signup = React.createClass({
 
                             <SectionRow>
                                 <TextInput
-                                    inputValue={ this.state.email }
+                                    inputValue={this.state.email}
                                     labelText='Email:'
                                     inputName='email'
-                                    isEmail={ true }
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    isEmail={true}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                                 <Description>
                                     Your email will be used only for authorisation and won't be seen by anyone else
                                 </Description>
@@ -151,52 +148,52 @@ var Signup = React.createClass({
 
                             <SectionRow>
                                 <PasswordInput
-                                    inputValue={ this.state.password }
+                                    inputValue={this.state.password}
                                     labelText='Password:'
                                     inputName='password'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
 
-                            <SectionRow isLast={ true }>
+                            <SectionRow isLast={true}>
                                 <PasswordInput
-                                    inputValue={ this.state.passwordConfirm }
+                                    inputValue={this.state.passwordConfirm}
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
 
-                            <SectionRow isLast={ true }>
+                            <SectionRow isLast={true}>
                                 <Description>
                                     <input
                                         id='isSubscribed'
                                         type='checkbox'
-                                        checked={ this.state.isSubscribed }
-                                        onChange={ this.handleCheckboxChange }
-                                        />
+                                        checked={this.state.isSubscribed}
+                                        onChange={this.handleCheckboxChange}
+                                    />
                                     <label htmlFor='isSubscribed'>
                                         Yes, let me know once new features will be added
                                     </label>
                                 </Description>
                             </SectionRow>
 
-                            { this.renderDesktopButtons() }
+                            {this.renderDesktopButtons()}
 
-                            <SectionRow isDesktopOnly={ true } isLast={ true } >
-                                <AppLink onClick={ this.handleGoToLogin }>Have an Account? Log in now!</AppLink>
+                            <SectionRow isDesktopOnly={true} isLast={true} >
+                                <AppLink onClick={this.handleGoToLogin}>Have an Account? Log in now!</AppLink>
                             </SectionRow>
                         </Section>
 
-                        { this.renderMobileButtons() }
+                        {this.renderMobileButtons()}
                     </form>
                 </CompactContainer>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </div>
         );
     }

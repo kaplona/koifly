@@ -1,28 +1,26 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var SignupButton = require('../../src/components/home-page/signup-button');
-
+const SignupButton = require('../../src/components/home-page/signup-button');
 
 
 describe('SignupButton component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var mocks = {
+    const mocks = {
         buttonCaption: 'test button text'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <SignupButton caption={ mocks.buttonCaption } />
+            <SignupButton caption={mocks.buttonCaption} />
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);

@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable new-cap */
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
@@ -12,7 +13,7 @@ module.exports = {
           }
       );
   },
-  down: (queryInterface) => {
+  down: queryInterface => {
       return queryInterface.removeColumn('flights', 'igc');
   }
 };

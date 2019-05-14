@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable new-cap */
 const Sequelize = require('sequelize');
 
 const SCOPES = require('../../constants/orm-constants').SCOPES;

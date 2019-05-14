@@ -2,27 +2,26 @@
 
 const React = require('react');
 const Altitude = require('../../utils/altitude');
-const chartService = require('../../services/chart-service');
-const FlightModel = require('../../models/flight');
-const PublicLinksMixin = require('../mixins/public-links-mixin');
-const pubSub = require('../../utils/pubsub');
-const SiteModel = require('../../models/site');
-const statsViewStore = require('./stats-view-store');
-const Util = require('../../utils/util');
-
 const AppLink = require('../common/app-link');
 const BubbleChart = require('../common/charts/buble-chart');
 const Button = require('../common/buttons/button');
+const chartService = require('../../services/chart-service');
 const DropdownInput = require('../common/inputs/dropdown-input');
 const ErrorBox = require('../common/notice/error-box');
+const FlightModel = require('../../models/flight');
 const HistogramChart = require('../common/charts/histogram-chart');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
 const NavigationMenu = require('../common/menu/navigation-menu');
 const PieChart = require('../common/charts/pie-chart');
+const PublicLinksMixin = require('../mixins/public-links-mixin');
+const pubSub = require('../../utils/pubsub');
 const Section = require('../common/section/section');
 const SectionLoader = require('../common/section/section-loader');
 const SectionRow = require('../common/section/section-row');
 const SectionTitle = require('../common/section/section-title');
+const SiteModel = require('../../models/site');
+const statsViewStore = require('./stats-view-store');
+const Util = require('../../utils/util');
 const View = require('../common/view');
 
 require('./stats-view.less');
@@ -40,7 +39,7 @@ const StatsView = React.createClass({
             selectedFlightIds: statsViewStore.selectedFlightIds,
             selectedSiteId: statsViewStore.selectedSiteId,
             selectedYear: statsViewStore.selectedYear,
-            selectedMonth: statsViewStore.selectedMonth,
+            selectedMonth: statsViewStore.selectedMonth
         };
     },
 
@@ -57,7 +56,7 @@ const StatsView = React.createClass({
             selectedFlightIds: statsViewStore.selectedFlightIds,
             selectedSiteId: statsViewStore.selectedSiteId,
             selectedYear: statsViewStore.selectedYear,
-            selectedMonth: statsViewStore.selectedMonth,
+            selectedMonth: statsViewStore.selectedMonth
         });
     },
 
@@ -69,7 +68,7 @@ const StatsView = React.createClass({
         if (flightStats && flightStats.error) {
             this.setState({
                 loadingError: flightStats.error,
-                isLoading: false,
+                isLoading: false
             });
             return;
         }
@@ -77,7 +76,7 @@ const StatsView = React.createClass({
         this.setState({
             flightStats,
             loadingError: null,
-            isLoading: false,
+            isLoading: false
         });
     },
 
@@ -120,11 +119,11 @@ const StatsView = React.createClass({
 
     getChartData() {
         const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
-        const flightNumberBySitePie = [{ data: [] }];
-        const airtimeBySitePie = [{ data: [] }];
+        const flightNumberBySitePie = [ { data: [] } ];
+        const airtimeBySitePie = [ { data: [] } ];
         const flightNumberHistogram = [];
         const airtimeHistogram = [];
-        const maxAltitudeBubble = [{ data: [] }];
+        const maxAltitudeBubble = [ { data: [] } ];
         let timeRangeCategories;
 
         if (this.state.flightStats) {
@@ -133,12 +132,12 @@ const StatsView = React.createClass({
                     siteId: stats.siteId,
                     name: stats.siteName,
                     color: stats.siteColor,
-                    sliced: (stats.siteId === this.state.selectedSiteId),
+                    sliced: (stats.siteId === this.state.selectedSiteId)
                 };
                 const histogramPoint = {
                     id: stats.siteId,
                     name: stats.siteName,
-                    color: stats.siteColor,
+                    color: stats.siteColor
                 };
                 function getBubblePoint(bucket, categoryIndex) {
                     return {
@@ -149,7 +148,7 @@ const StatsView = React.createClass({
                         color: bucket ? stats.siteColor : 'rgba(255,255,255,0)',
                         from: bucket ? bucket.from : 0,
                         to: bucket ? bucket.to : 0,
-                        flightIds: bucket ? bucket.flightIds : [],
+                        flightIds: bucket ? bucket.flightIds : []
                     };
                 }
 
@@ -176,7 +175,9 @@ const StatsView = React.createClass({
                         }
                         flightNumHistogramData.push(dayStats.totalFlightNum);
                         airtimeHistogramData.push(dayStats.totalAirtime);
-                        dayStats.maxAltBuckets.forEach(bucket => {
+
+                        // Disable eslint check since I immediately invoke function which uses loop incrementor variable
+                        dayStats.maxAltBuckets.forEach(bucket => { // eslint-disable-line no-loop-func
                             // Bubble chart x-axis value is an index of a category, in this case day of a month.
                             maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
                         });
@@ -196,7 +197,9 @@ const StatsView = React.createClass({
                         }
                         flightNumHistogramData.push(monthStats.totalFlightNum);
                         airtimeHistogramData.push(monthStats.totalAirtime);
-                        monthStats.maxAltBuckets.forEach(bucket => {
+
+                        // Disable eslint check since I immediately invoke function which uses loop incrementor variable
+                        monthStats.maxAltBuckets.forEach(bucket => { // eslint-disable-line no-loop-func
                             // Bubble chart x-axis value is an index of a category, in this case month.
                             maxAltitudeBubble[0].data.push(getBubblePoint(bucket, i - 1));
                         });
@@ -239,10 +242,10 @@ const StatsView = React.createClass({
 
     renderSimpleLayout(children) {
         return (
-            <View onStoreModified={ this.handleDataStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleDataStoreModified} error={this.state.loadingError}>
                 <MobileTopMenu header='Stats' />
                 <NavigationMenu currentView='stats' />
-                { children }
+                {children}
             </View>
         );
     },
@@ -266,7 +269,7 @@ const StatsView = React.createClass({
     render() {
         if (this.state.loadingError) {
             return this.renderSimpleLayout(
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleDataStoreModified } />
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleDataStoreModified} />
             );
         }
 
@@ -291,7 +294,7 @@ const StatsView = React.createClass({
             .filter(flight => !!flight && !flight.error);
 
         return (
-            <View onStoreModified={ this.handleDataStoreModified }>
+            <View onStoreModified={this.handleDataStoreModified}>
                 <MobileTopMenu header='Stats' />
                 <NavigationMenu currentView='stats' />
 
@@ -302,36 +305,36 @@ const StatsView = React.createClass({
 
                     <SectionRow>
                         <DropdownInput
-                            selectedValue={ this.state.selectedSiteId }
-                            options={ siteOptions }
+                            selectedValue={this.state.selectedSiteId}
+                            options={siteOptions}
                             labelText='Selected site:'
                             emptyText='All sites'
-                            onChangeFunc={ (inputName, inputValue) => {
+                            onChangeFunc={(inputName, inputValue) => {
                                 this.handleSiteSelect(inputValue ? Number(inputValue) : inputValue);
-                            } }
+                            }}
                         />
                     </SectionRow>
 
                     <SectionRow>
                         <DropdownInput
-                            selectedValue={ this.state.selectedYear }
-                            options={ yearOptions }
+                            selectedValue={this.state.selectedYear}
+                            options={yearOptions}
                             labelText='Selected year:'
                             emptyText='All time'
-                            onChangeFunc={ (inputName, inputValue) => {
+                            onChangeFunc={(inputName, inputValue) => {
                                 this.handleYearSelect(inputValue ? Number(inputValue) : null);
-                            } }
+                            }}
                         />
                     </SectionRow>
 
-                    <SectionRow isLast={ true }>
+                    <SectionRow isLast={true}>
                         <DropdownInput
-                            selectedValue={ this.state.selectedMonth }
-                            options={ monthOptions }
+                            selectedValue={this.state.selectedMonth}
+                            options={monthOptions}
                             labelText='Selected month:'
                             emptyText='All time'
-                            noSort={ true }
-                            onChangeFunc={ (inputName, inputValue) => this.handleMonthSelect(inputValue) }
+                            noSort={true}
+                            onChangeFunc={(inputName, inputValue) => this.handleMonthSelect(inputValue)}
                         />
                     </SectionRow>
 

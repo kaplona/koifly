@@ -16,7 +16,7 @@ module.exports = {
         password: PASSWORD,
         database: DATABASE,
         host: HOST,
-        dialect: 'mysql',
+        dialect: 'mysql'
         // By default the CLI will not save any seed that is executed, but it can be useful for testing
         // seederStorage: 'sequelize'
     },

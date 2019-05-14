@@ -3,31 +3,29 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var EmptyList = require('../../src/components/common/empty-list');
-
+const EmptyList = require('../../src/components/common/empty-list');
 
 
 describe('EmptyList component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         buttonClass: 'add-button'
     };
 
-    var mocks = {
+    const mocks = {
         itemsName: 'test type',
         handleAdding: Sinon.spy()
     };
@@ -35,16 +33,16 @@ describe('EmptyList component', () => {
     before(() => {
         component = TestUtils.renderIntoDocument(
             <EmptyList
-                ofWhichItems={ mocks.itemsName }
-                onAdding={ mocks.handleAdding }
-                />
+                ofWhichItems={mocks.itemsName}
+                onAdding={mocks.handleAdding}
+            />
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders proper text', () => {
-        let children = renderedDOMElement.children;
+        const children = renderedDOMElement.children;
 
         expect(children[0])
             .to.have.property('textContent')
@@ -52,7 +50,7 @@ describe('EmptyList component', () => {
     });
 
     it('triggers onAdding once button clicked', () => {
-        let button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
+        const button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
 
         Simulate.click(button);
 

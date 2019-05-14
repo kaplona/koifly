@@ -67,7 +67,6 @@ MapFacade.prototype.createMap = function(htmlContainer, centerCoordinates, zoomL
 };
 
 
-
 MapFacade.prototype.createMarker = function(siteId, position, draggable = false, changeInfowindowContent) {
     this.siteMarkers[siteId] = new this.mapsApi.Marker({
         position: position,
@@ -109,7 +108,6 @@ MapFacade.prototype.moveMarker = function(latLng, siteId, changeInfowindowConten
 };
 
 
-
 MapFacade.prototype.createInfowindow = function(siteId, content, onClickFunc) {
     this.siteInfowindows[siteId] = new this.mapsApi.InfoWindow({
         content: content,
@@ -129,7 +127,7 @@ MapFacade.prototype.openInfowindow = function(siteId) {
     this.siteInfowindows[siteId].open(this.map, this.siteMarkers[siteId]);
     
     if (this.infowindowOnClickFunctions[siteId]) {
-        document.getElementById('site-' + siteId).addEventListener('click', () => {
+        document.getElementById(`site-${siteId}`).addEventListener('click', () => {
             this.infowindowOnClickFunctions[siteId]();
         });
     }
@@ -152,7 +150,6 @@ MapFacade.prototype.bindMarkerAndInfowindow = function(siteId) {
         this.openInfowindow(siteId);
     });
 };
-
 
 
 MapFacade.prototype.createFlightTrack = function(flightPoints) {
@@ -192,13 +189,12 @@ MapFacade.prototype.moveTrackMarker = function(coords) {
     if (!this.trackMarker) {
         this.trackMarker = new this.mapsApi.Marker({
             position: coords,
-            map: this.map,
+            map: this.map
         });
     } else {
         this.trackMarker.setPosition(coords);
     }
 };
-
 
 
 MapFacade.prototype.addSearchBarControl = function(siteId) {
@@ -250,11 +246,10 @@ MapFacade.prototype.searchAddress = function(siteId) {
             const position = results[0].geometry.location;
             this.moveMarker(position, siteId);
         } else if (process.env.NODE_ENV === 'development') {
-            console.log('Geocode was not successful for the following reason: ' + status);
+            console.log(`Geocode was not successful for the following reason: ${status}`); // eslint-disable-line no-console
         }
     });
 };
-
 
 
 MapFacade.prototype.getPositionInfoPromise = function(latLng) {
@@ -337,7 +332,7 @@ MapFacade.prototype.getCoordinatesString = function(latLng) {
     lat = Math.round(lat * 1000000) / 1000000;
     lng = Math.round(lng * 1000000) / 1000000;
     
-    return lat + ' ' + lng;
+    return `${lat} ${lng}`;
 };
 
 // Examples of formated address:
@@ -386,7 +381,6 @@ MapFacade.prototype.formatGeocoderAddress = function(geocoderResult) {
 
     return addressList.join(', ');
 };
-
 
 
 MapFacade.createPromise = function() {

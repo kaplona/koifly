@@ -1,21 +1,19 @@
 'use strict';
 
 const React = require('react');
-const { func, number, string } = React.PropTypes;
-
-const igcService = require('../../services/igc-service');
-const SiteModel = require('../../models/site');
-const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
-
+const { number, string } = React.PropTypes;
 const FlightSynchronizedCharts = require('./flight-synchronized-charts');
+const igcService = require('../../services/igc-service');
 const StaticMap = require('../common/maps/static-map');
+const SiteModel = require('../../models/site');
 const TrackMap = require('../common/maps/track-map');
+const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
 
 const FightMapAndCharts = React.createClass({
     propTypes: {
         igc: string,
-        siteId: number,
+        siteId: number
     },
 
     getInitialState() {
@@ -26,13 +24,13 @@ const FightMapAndCharts = React.createClass({
             if (this.parsedIgc instanceof Error) {
                 this.parsedIgc = null;
             } else {
-                this.trackCoords = this.parsedIgc.flightPoints.map(({lat, lng}) => ({lat, lng}));
+                this.trackCoords = this.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
             }
         }
 
 
         return {
-            highlightedIndex: null,
+            highlightedIndex: null
         };
     },
 
@@ -70,7 +68,7 @@ const FightMapAndCharts = React.createClass({
             <div>
                 {TrackMap.create({
                     trackCoords: this.trackCoords,
-                    markerCoords: highlightedCoords,
+                    markerCoords: highlightedCoords
                 })}
                 <FlightSynchronizedCharts
                     flightPoints={this.parsedIgc.flightPoints}

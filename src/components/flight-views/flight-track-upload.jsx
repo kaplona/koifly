@@ -36,7 +36,7 @@ const FightTrackUpload = React.createClass({
             fileName: this.props.igc ? 'previously loaded IGC file' : null,
             fileReadError: null,
             parsedIgc: parsedFile,
-            validationError: validationError,
+            validationError: validationError
         };
     },
 
@@ -44,7 +44,7 @@ const FightTrackUpload = React.createClass({
         this.setState({
             fileName: file.name,
             fileReadError: null,
-            validationError: null,
+            validationError: null
         });
 
         const validationError = this.validateFile(file);
@@ -84,7 +84,7 @@ const FightTrackUpload = React.createClass({
             fileName: null,
             fileReadError: null,
             parsedIgc: null,
-            validationError: null,
+            validationError: null
         });
         this.props.onLoad();
     },
@@ -92,7 +92,7 @@ const FightTrackUpload = React.createClass({
     validateFile(file) {
         const lowerCaseName = file.name.toLowerCase();
 
-        let errors = [];
+        const errors = [];
         if (!lowerCaseName.includes('.igc')) {
             errors.push('File must be .igc format.');
         }
@@ -114,7 +114,7 @@ const FightTrackUpload = React.createClass({
     render() {
         return (
             <div className='flight-track-upload-component'>
-                { this.state.fileReadError && <ErrorBox error={ this.state.fileReadError } /> }
+                {this.state.fileReadError && <ErrorBox error={this.state.fileReadError} />}
 
                 <FileInput
                     fileName={this.state.fileName}
@@ -128,13 +128,13 @@ const FightTrackUpload = React.createClass({
                     <div>
                         <div className='map'>{this.renderMap()}</div>
                         <div className='stats'>
-                            Date: { Util.formatDate(this.state.parsedIgc.date) || 'Unknown' }
-                            ,{ '\u0020' }
-                            airtime: { Util.formatTime(this.state.parsedIgc.airtime) }
-                            ,{ '\u0020' }
-                            max altitude: { Altitude.formatAltitude(this.state.parsedIgc.maxAltitude) }
-                            ,{ '\u0020' }
-                            nearest site: { SiteModel.getSiteName(this.state.parsedIgc.siteId) || 'None' }
+                            Date: {Util.formatDate(this.state.parsedIgc.date) || 'Unknown'}
+                            ,{'\u0020'}
+                            airtime: {Util.formatTime(this.state.parsedIgc.airtime)}
+                            ,{'\u0020'}
+                            max altitude: {Altitude.formatAltitude(this.state.parsedIgc.maxAltitude)}
+                            ,{'\u0020'}
+                            nearest site: {SiteModel.getSiteName(this.state.parsedIgc.siteId) || 'None'}
                         </div>
                     </div>
                 )}

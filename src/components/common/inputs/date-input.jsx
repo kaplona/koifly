@@ -1,14 +1,13 @@
 'use strict';
 
-var React = require('react');
-var Label = require('../section/label');
-var InputContainer = require('./input-container');
-var ValidationError = require('../section/validation-error');
+const React = require('react');
+const { element, func, oneOfType, string } = React.PropTypes;
+const Label = require('../section/label');
+const InputContainer = require('./input-container');
+const ValidationError = require('../section/validation-error');
 
 
-var { element, func, oneOfType, string } = React.PropTypes;
-
-var DateInput = React.createClass({
+const DateInput = React.createClass({
 
     propTypes: {
         inputValue: string.isRequired,
@@ -29,34 +28,34 @@ var DateInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
     render: function() {
-        var className = 'x-date';
+        let className = 'x-date';
         if (this.props.errorMessage) {
             className += ' x-error';
         }
 
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
                     <input
-                        className={ className }
-                        value={ this.props.inputValue }
+                        className={className}
+                        value={this.props.inputValue}
                         type='date'
-                        onChange={ this.handleUserInput }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
+                        onChange={this.handleUserInput}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
                         ref='input'
-                        />
+                    />
                 </InputContainer>
             </div>
         );

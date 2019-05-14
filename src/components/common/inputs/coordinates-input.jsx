@@ -1,18 +1,16 @@
 'use strict';
 
-var React = require('react');
-
-var AppLink = require('../app-link');
-var InputContainer = require('./input-container');
-var Label = require('../section/label');
-var ValidationError = require('../section/validation-error');
+const React = require('react');
+const { element, func, oneOfType, string } = React.PropTypes;
+const AppLink = require('../app-link');
+const InputContainer = require('./input-container');
+const Label = require('../section/label');
+const ValidationError = require('../section/validation-error');
 
 require('./after-comment.less');
 
 
-var { element, func, oneOfType, string } = React.PropTypes;
-
-var TextInput = React.createClass({
+const TextInput = React.createClass({
 
     propTypes: {
         inputValue: string.isRequired,
@@ -20,7 +18,7 @@ var TextInput = React.createClass({
             string,
             element
         ]),
-        inputName: string.isRequired,
+        inputName: string,
         errorMessage: string,
         onChange: func.isRequired,
         onMapShow: func.isRequired,
@@ -40,39 +38,39 @@ var TextInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
     render: function() {
-        var className = 'x-text';
+        let className = 'x-text';
         if (this.props.errorMessage) {
             className += ' x-error';
         }
 
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
                     
                     <input
-                        className={ className }
-                        value={ this.props.inputValue }
+                        className={className}
+                        value={this.props.inputValue}
                         type='text'
                         placeholder='ex: 49.281082 -123.120888'
-                        onChange={ this.handleUserInput }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
+                        onChange={this.handleUserInput}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
                         ref='input'
-                        />
+                    />
 
                     <div className='after-comment'>
-                        <AppLink onClick={ this.props.onMapShow }>or use a map</AppLink>
+                        <AppLink onClick={this.props.onMapShow}>or use a map</AppLink>
                     </div>
                     
                 </InputContainer>

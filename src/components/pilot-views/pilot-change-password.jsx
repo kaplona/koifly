@@ -1,31 +1,29 @@
 'use strict';
 
-var React = require('react');
-
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var PilotModel = require('../../models/pilot');
-var PublicLinksMixin = require('../mixins/public-links-mixin');
-var Util = require('../../utils/util');
-
-var AppLink = require('../common/app-link');
-var Button = require('../common/buttons/button');
-var CompactContainer = require('../common/compact-container');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var EmailVerificationNotice = require('../common/notice/email-verification-notice');
-var ErrorBox = require('../common/notice/error-box');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
-var Notice = require('../common/notice/notice');
-var PasswordInput = require('../common/inputs/password-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var View = require('../common/view');
+const React = require('react');
+const AppLink = require('../common/app-link');
+const Button = require('../common/buttons/button');
+const CompactContainer = require('../common/compact-container');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const EmailVerificationNotice = require('../common/notice/email-verification-notice');
+const ErrorBox = require('../common/notice/error-box');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const Notice = require('../common/notice/notice');
+const PasswordInput = require('../common/inputs/password-input');
+const PilotModel = require('../../models/pilot');
+const PublicLinksMixin = require('../mixins/public-links-mixin');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const Util = require('../../utils/util');
+const View = require('../common/view');
 
 
-var PilotChangePassword = React.createClass({
+const PilotChangePassword = React.createClass({
 
     mixins: [ PublicLinksMixin ],
 
@@ -48,7 +46,7 @@ var PilotChangePassword = React.createClass({
     },
 
     handleStoreModified: function() {
-        var activationStatus = PilotModel.getUserActivationStatus();
+        const activationStatus = PilotModel.getUserActivationStatus();
         if (activationStatus && activationStatus.error) {
             this.setState({ loadingError: activationStatus.error });
             return;
@@ -76,7 +74,7 @@ var PilotChangePassword = React.createClass({
             event.preventDefault();
         }
 
-        var validationError = this.getValidationError();
+        const validationError = this.getValidationError();
         if (validationError) {
             this.updateError(validationError);
             return;
@@ -124,12 +122,12 @@ var PilotChangePassword = React.createClass({
 
     renderEmailVerificationNotice: function() {
         if (!this.state.isUserActivated) {
-            var noticeText = [
+            const noticeText = [
                 'You need to verify your email before changing your password.',
                 'Follow the link we sent you.'
             ].join(' ');
 
-            return <EmailVerificationNotice isPadded={ true } text={ noticeText } type='error' />;
+            return <EmailVerificationNotice isPadded={true} text={noticeText} type='error' />;
         }
     },
     
@@ -138,48 +136,48 @@ var PilotChangePassword = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Back'
                 rightButtonCaption='Save'
-                onLeftClick={ this.handleGoToPilotView }
-                onRightClick={ this.handleSubmit }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onLeftClick={this.handleGoToPilotView}
+                onRightClick={this.handleSubmit}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
     
     renderNavigationMenu: function() {
         return (
             <NavigationMenu
-                currentView={ PilotModel.getModelKey() }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                currentView={PilotModel.getModelKey()}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
     renderError: function() {
         if (this.state.error) {
-            return <ErrorBox isPadded={ true } error={ this.state.error } />;
+            return <ErrorBox isPadded={true} error={this.state.error} />;
         }
     },
 
     renderDesktopButtons: function() {
         return (
             <DesktopBottomGrid
-                leftElements={ [
+                leftElements={[
                     this.renderSaveButton(),
                     this.renderCancelButton()
-                ] }
-                />
+                ]}
+            />
         );
     },
 
     renderSaveButton: function() {
         return (
             <Button
-                caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                caption={this.state.isSaving ? 'Saving...' : 'Save'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ this.isSaveButtonsEnabled() }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={this.isSaveButtonsEnabled()}
+            />
         );
     },
 
@@ -188,9 +186,9 @@ var PilotChangePassword = React.createClass({
             <Button
                 caption='Cancel'
                 buttonStyle='secondary'
-                onClick={ this.handleGoToPilotView }
-                isEnabled={ !this.state.isSaving }
-                />
+                onClick={this.handleGoToPilotView}
+                isEnabled={!this.state.isSaving}
+            />
         );
     },
     
@@ -198,17 +196,17 @@ var PilotChangePassword = React.createClass({
         return (
             <div>
                 <MobileButton
-                    caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    caption={this.state.isSaving ? 'Saving...' : 'Save'}
                     type='submit'
                     buttonStyle='primary'
-                    onClick={ this.handleSubmit }
-                    isEnabled={ this.isSaveButtonsEnabled() }
-                    />
+                    onClick={this.handleSubmit}
+                    isEnabled={this.isSaveButtonsEnabled()}
+                />
 
                 <MobileButton
                     caption='Forgot Password?'
-                    onClick={ this.handleGoToResetPassword }
-                    />
+                    onClick={this.handleGoToResetPassword}
+                />
             </div>
         );
     },
@@ -216,8 +214,8 @@ var PilotChangePassword = React.createClass({
     renderSuccessNotice: function() {
         return (
             <div>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 <Notice text='Your password was successfully changed' type='success' />
             </div>
         );
@@ -229,10 +227,10 @@ var PilotChangePassword = React.createClass({
         }
         
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
-                { this.renderEmailVerificationNotice() }
-                { this.renderError() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
+                {this.renderEmailVerificationNotice()}
+                {this.renderError()}
 
                 <CompactContainer>
                     <form>
@@ -241,49 +239,49 @@ var PilotChangePassword = React.createClass({
     
                             <SectionRow>
                                 <PasswordInput
-                                    inputValue={ this.state.password }
+                                    inputValue={this.state.password}
                                     labelText='Current Password:'
                                     inputName='password'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
                             <SectionRow>
                                 <PasswordInput
-                                    inputValue={ this.state.newPassword }
+                                    inputValue={this.state.newPassword}
                                     labelText='New Password:'
                                     inputName='newPassword'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            <SectionRow isLast={ true }>
+                            <SectionRow isLast={true}>
                                 <PasswordInput
-                                    inputValue={ this.state.passwordConfirm }
+                                    inputValue={this.state.passwordConfirm}
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            { this.renderDesktopButtons() }
+                            {this.renderDesktopButtons()}
     
-                            <SectionRow isDesktopOnly={ true } isLast={ true }>
-                                <AppLink onClick={ this.handleGoToResetPassword }>Forgot Password?</AppLink>
+                            <SectionRow isDesktopOnly={true} isLast={true}>
+                                <AppLink onClick={this.handleGoToResetPassword}>Forgot Password?</AppLink>
                             </SectionRow>
                         </Section>
     
-                        { this.renderMobileButtons() }
+                        {this.renderMobileButtons()}
                     </form>
                 </CompactContainer>
                 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </View>
         );
     }

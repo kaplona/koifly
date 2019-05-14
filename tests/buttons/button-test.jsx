@@ -4,34 +4,32 @@
 
 // Our fake DOM must be required before React to be used by React
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var Chai = require('chai');
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-var expect = Chai.expect;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Chai = require('chai');
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = Chai.expect;
 Chai.use(sinonChai);
 
-var Button = require('../../src/components/common/buttons/button');
-
+const Button = require('../../src/components/common/buttons/button');
 
 
 describe('Button component', () => {
 
-    var component;
-    var renderedDOMElement;
-    var handleClick;
+    let component;
+    let renderedDOMElement;
+    let handleClick;
 
-    var defaults = {
+    const defaults = {
         type: 'button',
         className: 'button',
         mobileClassName: 'mobile-button'
     };
 
-    var mocks = {
+    const mocks = {
         buttonCaption: 'test button',
         buttonStyle: 'primary'
     };
@@ -44,10 +42,10 @@ describe('Button component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <Button
-                    caption={ mocks.buttonCaption }
-                    buttonStyle={ mocks.buttonStyle }
-                    onClick={ handleClick }
-                    />
+                    caption={mocks.buttonCaption}
+                    buttonStyle={mocks.buttonStyle}
+                    onClick={handleClick}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -64,7 +62,7 @@ describe('Button component', () => {
         });
 
         it('renders an element with proper default classes', () => {
-            let classList = renderedDOMElement.classList;
+            const classList = renderedDOMElement.classList;
 
             expect(classList).to.have.lengthOf(2);
             expect(classList[0]).to.equal(defaults.className);
@@ -74,7 +72,7 @@ describe('Button component', () => {
         // For example purpose only I included the same tests using React TestUtils methods
         // it saves same space and test running time (which is not an issue for me... yet)
         it('renders an input element with proper default classes (React TestUtils)', () => {
-            let button = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+            const button = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
 
             expect(button).to.have.property('className', `${defaults.className} x-${mocks.buttonStyle}`);
         });
@@ -97,12 +95,12 @@ describe('Button component', () => {
 
             component = TestUtils.renderIntoDocument(
                 <Button
-                    caption={ mocks.buttonCaption }
+                    caption={mocks.buttonCaption}
                     type='submit'
-                    isMobile={ true }
-                    isEnabled={ false }
-                    onClick={ handleClick }
-                    />
+                    isMobile={true}
+                    isEnabled={false}
+                    onClick={handleClick}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -117,7 +115,7 @@ describe('Button component', () => {
         });
 
         it('renders a button which css class we want', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(className).to.equal(defaults.mobileClassName);
         });
@@ -129,34 +127,33 @@ describe('Button component', () => {
     });
 
 
-
     // For the sake of example purpose only I'm doing shallow rendering tests here
     // it saves even more code-space and test running time (which is not an issue for me... yet)
     describe('Testing with React shallow rendering', () => {
 
-        var renderer = TestUtils.createRenderer();
+        const renderer = TestUtils.createRenderer();
 
         before(() => {
             handleClick = Sinon.spy();
 
             renderer.render(
                 <Button
-                    caption={ mocks.buttonCaption }
-                    buttonStyle={ mocks.buttonStyle }
-                    onClick={ handleClick }
-                    />
+                    caption={mocks.buttonCaption}
+                    buttonStyle={mocks.buttonStyle}
+                    onClick={handleClick}
+                />
             );
         });
 
         it('renders an input element with proper classes', () => {
-            let button = renderer.getRenderOutput();
+            const button = renderer.getRenderOutput();
 
             expect(button).to.have.property('type', 'input');
             expect(button).to.have.deep.property('props.className', `${defaults.className} x-${mocks.buttonStyle}`);
         });
 
         it('trigger onClick handler once clicked', () => {
-            let button = renderer.getRenderOutput();
+            const button = renderer.getRenderOutput();
 
             expect(button).to.have.deep.property('props.onClick');
 

@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-var objectValues = require('object.values');
+const _ = require('lodash');
+const Altitude = require('../utils/altitude');
+const BaseModel = require('./base-model');
+const objectValues = require('object.values');
+const Util = require('../utils/util');
 
-var Altitude = require('../utils/altitude');
-var BaseModel = require('./base-model');
-var Util = require('../utils/util');
 
-
-var SiteModel = {
+let SiteModel = {
 
     keys: {
         single: 'site',
@@ -84,7 +83,7 @@ var SiteModel = {
      * error object - if data wasn't loaded due to error
      */
     getListOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
@@ -110,14 +109,14 @@ var SiteModel = {
      * error object - if data wasn't loaded due to error
      */
     getItemOutput: function(siteId) {
-        var site = this.getStoreContent(siteId);
+        const site = this.getStoreContent(siteId);
         if (!site || site.error) {
             return site;
         }
 
         // require FlightModel here so as to avoid circle requirements
-        var FlightModel = require('./flight');
-        var flightStats = FlightModel.getNumberOfFlightsAtSite(site.id);
+        const FlightModel = require('./flight');
+        const flightStats = FlightModel.getNumberOfFlightsAtSite(site.id);
 
         return {
             id: site.id,
@@ -145,14 +144,14 @@ var SiteModel = {
             return this.getNewItemOutput();
         }
 
-        var site = this.getStoreContent(siteId);
+        const site = this.getStoreContent(siteId);
         if (!site || site.error) {
             return site;
         }
 
         // If launchAltitude is 0 show empty string to user
         // So user won't need to erase 0 before entering altitude
-        var launchAltitude = site.launchAltitude ? Altitude.getAltitudeInPilotUnits(site.launchAltitude) : '';
+        const launchAltitude = site.launchAltitude ? Altitude.getAltitudeInPilotUnits(site.launchAltitude) : '';
 
         return {
             id: site.id,
@@ -173,7 +172,7 @@ var SiteModel = {
      * error object - if data wasn't loaded due to error
      */
     getNewItemOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
@@ -201,7 +200,7 @@ var SiteModel = {
         newSite = this.setDefaultValues(newSite);
 
         // Create a site only with fields which will be send to the server
-        var site = {
+        const site = {
             id: newSite.id,
             name: newSite.name,
             location: newSite.location,
@@ -209,9 +208,9 @@ var SiteModel = {
             remarks: newSite.remarks
         };
 
-        var currentAltitude = (newSite.id !== undefined) ? this.getStoreContent(newSite.id).launchAltitude : 0;
-        var nextAltitude = parseInt(newSite.launchAltitude);
-        var nextAltitudeUnit = newSite.altitudeUnit;
+        const currentAltitude = (newSite.id !== undefined) ? this.getStoreContent(newSite.id).launchAltitude : 0;
+        const nextAltitude = parseInt(newSite.launchAltitude);
+        const nextAltitudeUnit = newSite.altitudeUnit;
         site.launchAltitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
         return site;
@@ -223,7 +222,7 @@ var SiteModel = {
      * @returns {string|null} - site's name or null if no site with given id
      */
     getSiteName: function(siteId) {
-        var getStoreContent = this.getStoreContent(siteId);
+        const getStoreContent = this.getStoreContent(siteId);
         return !getStoreContent.error ? getStoreContent.name : null;
     },
 
@@ -250,7 +249,7 @@ var SiteModel = {
      * @returns {number|null} - id of last created site or null if no sites yet
      */
     getLastAddedId: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (_.isEmpty(storeContent)) {
             return null;
         }

@@ -1,22 +1,21 @@
 'use strict';
 
-var React = require('react');
-var PubSub = require('../../utils/pubsub');
-
-var ErrorTypes = require('../../errors/error-types');
-var PilotModel = require('../../models/pilot');
+const React = require('react');
+const { func, object } = React.PropTypes;
+const EmailVerificationNotice = require('./notice/email-verification-notice');
+const ErrorTypes = require('../../errors/error-types');
+const Login = require('../public-views/login');
+const PilotModel = require('../../models/pilot');
+const PubSub = require('../../utils/pubsub');
 
 const STORE_MODIFIED_EVENT = require('../../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
-var EmailVerificationNotice = require('./notice/email-verification-notice');
-var Login = require('../public-views/login');
 
-
-var View = React.createClass({
+const View = React.createClass({
 
     propTypes: {
-        onStoreModified: React.PropTypes.func.isRequired,
-        error: React.PropTypes.object
+        onStoreModified: func.isRequired,
+        error: object
     },
 
     getInitialState: function() {
@@ -46,22 +45,23 @@ var View = React.createClass({
 
     renderNotice: function() {
         if (this.state.isEmailVerificationNotice) {
-            return <EmailVerificationNotice isPadded={ true } onClose={ this.handleCloseNotice } />;
+            return <EmailVerificationNotice isPadded={true} onClose={this.handleCloseNotice} />;
         }
     },
 
     render: function() {
         if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_ERROR) {
-            return <Login isStayOnThisPage={ true } />;
+            return <Login isStayOnThisPage={true} />;
         }
 
         return (
             <div>
-                { this.renderNotice() }
-                { this.props.children }
+                {this.renderNotice()}
+                {this.props.children}
             </div>
         );
     }
 });
+
 
 module.exports = View;

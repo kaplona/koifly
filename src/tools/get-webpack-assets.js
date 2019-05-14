@@ -1,16 +1,16 @@
 'use strict';
+/* eslint-disable no-console */
+const config = require('./../config/variables');
+const path = require('path');
 
-var config = require('./../config/variables');
-var path = require('path');
-
-var assetsJsonPath = path.resolve(config.webpack.assetsPath, config.webpack.assetsFilename);
+const assetsJsonPath = path.resolve(config.webpack.assetsPath, config.webpack.assetsFilename);
 
 /**
  * @type {function}
  * @returns {object}
  */
-var getWebpackAssets;
-var assets;
+let getWebpackAssets;
+let assets;
 
 if (process.env.NODE_ENV === 'production') {
     // Require the file only once for efficiency
@@ -22,12 +22,12 @@ if (process.env.NODE_ENV === 'production') {
     };
 
 } else {
-    var fs = require('fs');
-    var chalk = require('chalk');
+    const fs = require('fs');
+    const chalk = require('chalk');
 
     getWebpackAssets = () => {
         // On dev we read the file every time we need it. Not efficient, but easy to work with.
-        var fileContents = fs.readFileSync(assetsJsonPath).toString();
+        const fileContents = fs.readFileSync(assetsJsonPath).toString();
         try {
             return JSON.parse(fileContents);
 

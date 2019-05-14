@@ -1,33 +1,31 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var SectionTitle = require('../../src/components/common/section/section-title');
-
+const SectionTitle = require('../../src/components/common/section/section-title');
 
 
 describe('SectionTitle component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         subtitleClass: 'x-subtitle'
     };
 
-    var mocks = {
+    const mocks = {
         titleText: 'test children text'
     };
 
     describe('Defaults testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <SectionTitle>{ mocks.titleText }</SectionTitle>
+                <SectionTitle>{mocks.titleText}</SectionTitle>
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -38,7 +36,7 @@ describe('SectionTitle component', () => {
         });
 
         it('renders component with proper default classes', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(className).to.not.contain(defaults.subtitleClass);
         });
@@ -47,16 +45,14 @@ describe('SectionTitle component', () => {
     describe('Last row and desktop classes testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <SectionTitle
-                    isSubtitle={ true }
-                    >
-                    { mocks.sectionText }
+                <SectionTitle isSubtitle={true}>
+                    {mocks.titleText}
                 </SectionTitle>
             );
         });
 
         it('renders component with proper classes', () => {
-            let className = ReactDOM.findDOMNode(component).className;
+            const className = ReactDOM.findDOMNode(component).className;
 
             expect(className).to.contain(defaults.subtitleClass);
         });

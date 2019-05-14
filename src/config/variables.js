@@ -1,35 +1,34 @@
 'use strict';
-
-var chalk = require('chalk');
-var deepExtend = require('deep-extend');
-var path = require('path');
-var secrets = require('../secrets');
+/* eslint-disable no-console */
+const chalk = require('chalk');
+const deepExtend = require('deep-extend');
+const path = require('path');
+const secrets = require('../secrets');
 
 
 // This and anything in config.paths must be absolute.
-var ROOT_PATH = path.resolve(__dirname, '../..');
+const ROOT_PATH = path.resolve(__dirname, '../..');
 
-var SOURCE_DIRNAME = 'src';
-var WEB_ROOT_DIRNAME = 'public';
-var ASSETS_DIRNAME = 'static';
-var BUILD_DIRNAME = 'static/build';
+const SOURCE_DIRNAME = 'src';
+const WEB_ROOT_DIRNAME = 'public';
+const ASSETS_DIRNAME = 'static';
+const BUILD_DIRNAME = 'static/build';
 
-var ACME_CHALLENGE_DIRNAME = secrets.sslACMEChallengeDir;
+const ACME_CHALLENGE_DIRNAME = secrets.sslACMEChallengeDir;
 
-var SERVER_HOST = secrets.domain;
-var SERVER_BARE_HOST = secrets.bareDomain;
-var SERVER_PROTOCOL = secrets.protocol;
-var SERVER_HTTPS_PORT = secrets.port.https;
-var SERVER_HTTP_PORT = secrets.port.http;
+const SERVER_HOST = secrets.domain;
+const SERVER_BARE_HOST = secrets.bareDomain;
+const SERVER_PROTOCOL = secrets.protocol;
+const SERVER_HTTPS_PORT = secrets.port.https;
+const SERVER_HTTP_PORT = secrets.port.http;
 
-var DEV_SERVER_HOST = '0.0.0.0';
-var DEV_SERVER_PROTOCOL = 'http';
-var DEV_SERVER_PORT = 3000;
-var WEBPACK_DEV_SERVER_PORT = 3001;
+const DEV_SERVER_HOST = '0.0.0.0';
+const DEV_SERVER_PROTOCOL = 'http';
+const DEV_SERVER_PORT = 3000;
+const WEBPACK_DEV_SERVER_PORT = 3001;
 
 
-
-var config = {
+const config = {
     publicPaths: {
         assets: '/' + ASSETS_DIRNAME + '/',
         build: '/' + BUILD_DIRNAME + '/',
@@ -95,11 +94,10 @@ if (process.env.NODE_ENV === 'development') {
     });
 
 } else {
-    var errorText = '[' + path.basename(__filename) + '] ERROR: NODE_ENV is not set: ' + process.env.NODE_ENV;
+    const errorText = '[' + path.basename(__filename) + '] ERROR: NODE_ENV is not set: ' + process.env.NODE_ENV;
     console.log(chalk.red(errorText));
     throw new Error(errorText);
 }
-
 
 
 Object.freeze(config); // On a separate line because IntelliJ's JS code assistance is not very smart :(

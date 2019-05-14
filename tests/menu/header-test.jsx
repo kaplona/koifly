@@ -3,41 +3,37 @@
 'use strict';
 
 require('../../src/test-dom')();
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-var Promise = require('es6-promise').Promise;
-var PubSub = require('../../src/utils/pubsub');
-
-var then = require('../../src/utils/then');
-var Chai = require('chai');
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-var expect = Chai.expect;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Promise = require('es6-promise').Promise;
+const PubSub = require('../../src/utils/pubsub');
+const then = require('../../src/utils/then');
+const Chai = require('chai');
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = Chai.expect;
+const PilotModel = require('../../src/models/pilot');
 Chai.use(sinonChai);
-
-var PilotModel = require('../../src/models/pilot');
 
 const STORE_MODIFIED_EVENT = require('../../src/constants/data-service-constants').STORE_MODIFIED_EVENT;
 
-var Header = require('../../src/components/common/menu/header');
-
+const Header = require('../../src/components/common/menu/header');
 
 
 describe('Header component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         loginText: 'Log In',
         logoutText: 'Log Out',
         linkClassName: 'logout'
     };
 
-    var mocks = {
+    const mocks = {
         pilotLogout: null // will be used for stub function
     };
 
@@ -65,7 +61,7 @@ describe('Header component', () => {
     });
 
     it('renders link with login text', () => {
-        let loginLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
+        const loginLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
 
         expect(loginLink).to.have.property('textContent', defaults.loginText);
     });
@@ -82,7 +78,7 @@ describe('Header component', () => {
     });
 
     it('renders link with logout text and logout on click', () => {
-        let logoutLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
+        const logoutLink = renderedDOMElement.querySelector(`.${defaults.linkClassName}`);
 
         expect(logoutLink).to.have.property('textContent', defaults.logoutText);
 

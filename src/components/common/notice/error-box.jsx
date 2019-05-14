@@ -6,7 +6,7 @@ const ErrorTypes = require('../../../errors/error-types');
 const Notice = require('./notice');
 
 
-var ErrorBox = React.createClass({
+const ErrorBox = React.createClass({
     propTypes: {
         error: shape({
             type: string,
@@ -14,7 +14,7 @@ var ErrorBox = React.createClass({
         }).isRequired,
         isPadded: bool,
         isTrying: bool,
-        onTryAgain: func,
+        onTryAgain: func
     },
 
     getDefaultProps: function() {
@@ -33,12 +33,12 @@ var ErrorBox = React.createClass({
 
         return (
             <Notice
-                buttonText={ this.props.isTrying ? 'Trying ...' : 'Try Again' }
-                isPadded={ this.props.isPadded }
-                text={ this.props.error.message }
+                buttonText={this.props.isTrying ? 'Trying ...' : 'Try Again'}
+                isPadded={this.props.isPadded}
+                text={this.props.error.message}
                 type='error'
-                onClick={ onClick }
-                />
+                onClick={onClick}
+            />
         );
     }
 });

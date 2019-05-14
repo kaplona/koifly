@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable no-console */
 const Sequelize = require('sequelize');
 
 let Secrets = require('../secrets').dbApp;

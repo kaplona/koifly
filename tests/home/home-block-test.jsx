@@ -1,28 +1,26 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var HomeBlock = require('../../src/components/home-page/home-block');
-
+const HomeBlock = require('../../src/components/home-page/home-block');
 
 
 describe('HomeBlock component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var mocks = {
+    const mocks = {
         childText: 'test child text'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <HomeBlock>{ mocks.childText }</HomeBlock>
+            <HomeBlock>{mocks.childText}</HomeBlock>
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);

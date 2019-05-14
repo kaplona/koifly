@@ -1,11 +1,11 @@
 'use strict';
 
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var setAuthCookie = require('../helpers/set-auth-cookie');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const setAuthCookie = require('../helpers/set-auth-cookie');
 
 
 /**
@@ -13,14 +13,14 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} session
  * @param {function} callback - accepts (Error|null error, bool isSuccess)
  */
-var checkAuthCookie = function(request, session, callback) {
+const checkAuthCookie = function(request, session, callback) {
 
     if (!session.userId || session.expiryDate < Date.now()) {
         callback(new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR), false);
         return;
     }
 
-    var pilot; // we need it to have reference to current pilot
+    let pilot; // we need it to have reference to current pilot
 
     Pilot.findById(session.userId)
         .then(pilotRecord => {
@@ -30,7 +30,7 @@ var checkAuthCookie = function(request, session, callback) {
                 throw new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
             }
 
-            var secret = session.expiryDate.toString() + pilot.password;
+            const secret = session.expiryDate.toString() + pilot.password;
             return BcryptPromise.compare(secret, session.hash);
         })
         .then(() => {

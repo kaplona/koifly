@@ -1,24 +1,21 @@
 'use strict';
 
-var path = require('path');
-var webpack = require('webpack');
-var webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
-var AssetsWebpackPlugin = require('assets-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-// var SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
-var config = require('./variables');
+const path = require('path');
+const webpack = require('webpack');
+const webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
+const AssetsWebpackPlugin = require('assets-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const SlowWebpackPlugin = require('../tools/slow-webpack-plugin');
+const config = require('./variables');
+
+const APP_ENTRY = path.join(config.paths.source, 'main-app');
+const HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
+const WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=' + config.webpack.devServerUrl + '/__webpack_hmr';
+const JS_JSX = /\.(js|jsx)$/;
+const BABEL = 'babel'; // Transpile ES6/JSX into ES5
 
 
-
-var APP_ENTRY = path.join(config.paths.source, 'main-app');
-var HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
-var WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=' + config.webpack.devServerUrl + '/__webpack_hmr';
-var JS_JSX = /\.(js|jsx)$/;
-var BABEL = 'babel'; // Transpile ES6/JSX into ES5
-
-
-
-var webpackConfig = {
+let webpackConfig = {
     entry: {
         app: APP_ENTRY,
         home: HOME_ENTRY
@@ -59,7 +56,6 @@ var webpackConfig = {
         new ExtractTextPlugin(config.webpack.stylesFilename)
     ]
 };
-
 
 
 if (process.env.NODE_ENV === 'development') {

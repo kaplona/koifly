@@ -4,7 +4,8 @@
     "browser": true,
     "node": true,
     "commonjs": true,
-    "mocha": true
+    "mocha": true,
+    "es6": true
   },
   "plugins": [
     "react"
@@ -15,14 +16,15 @@
     "templateStrings": true,
     "jsx": true
   },
+  // All eslint rules: http://eslint.org/docs/rules/
+  // 0 = off, 1 = warning, 2 = error
   "rules": {
-    // All eslint rules: http://eslint.org/docs/rules/
-    "strict": [1, "global"],
+    "strict": [1, "global"], // remove it once I switch to ES6 imports
 
     // Possible errors
-    "comma-dangle": [1, "never"],
+    "comma-dangle": [1, "never"], // in IE8 trailing commas will throw an exception
     "no-cond-assign": [2, "always"],
-    // "no-console": 1,
+    "no-console": 1,
     "no-constant-condition": 1,
     "no-control-regex": 2,
     "no-debugger": 1,
@@ -35,37 +37,35 @@
     "no-extra-boolean-cast": 1,
     "no-extra-semi": 1,
     "no-func-assign": 2,
-    "no-inner-declarations": 2,
+    "no-inner-declarations": 1,
     "no-invalid-regexp": 2,
     "no-irregular-whitespace": 2,
-    "no-negated-in-lhs": 2,
+    "no-negated-in-lhs": 2, // TODO replace with no-unsafe-negation once eslint upgraded
     "no-regex-spaces": 2,
     "no-sparse-arrays": 2,
-    "no-unreachable": 1,
-    "use-isnan": 2,
-    "valid-jsdoc": [1, {"requireParamDescription": false, "requireReturn": false}],
-    "valid-typeof": 2,
     "no-unexpected-multiline": 1,
+    "no-unreachable": 2,
+    "use-isnan": 2,
+    "valid-typeof": 2,
 
     // Best practices
-    "consistent-return": 2,
-    "curly": 2,
+    "consistent-return": 1,
+    "curly": [1, "multi-line"],
     "dot-notation": 1,
-    "dot-location": [1, "property"],
+    "dot-location": [2, "property"],
     "eqeqeq": 1,
     // "no-alert": 1,
     "no-caller": 2,
     "no-div-regex": 2,
     "no-else-return": 1,
-    "no-empty-label": 2,
     "no-eval": 2,
     "no-floating-decimal": 1,
     "no-implied-eval": 2,
     "no-labels": 2,
-    "no-lone-blocks": 2,
-//    "no-loop-func": 2,
+    "no-lone-blocks": 1,
+    "no-loop-func": 2,
     "no-multi-str": 1,
-    "no-native-reassign": 2,
+    "no-native-reassign": 2, // TODO replace with no-global-assign once elint upgraded
     "no-new-func": 2,
     "no-new-wrappers": 2,
     "no-new": 1,
@@ -83,94 +83,90 @@
     "no-void": 2,
     "no-warning-comments": [1, {"terms": ["@nocommit"], "location": "anywhere"}],
     "no-with": 2,
-    "wrap-iife": 1,
+    "wrap-iife": [2, "inside"],
     "yoda": [1, "never"],
 
     // Variables
-    "no-catch-shadow": 2,
+    "no-catch-shadow": 2, // TODO replace with no-shadow once elint upgraded
     "no-delete-var": 2,
     "no-label-var": 2,
     "no-shadow-restricted-names": 2,
     "no-shadow": 2,
-    "no-undef-init": 2,
+    "no-undef-init": 1,
     "no-undef": 2,
     "no-unused-vars": 1,
     "no-use-before-define": 1,
 
     // Node.js & CommonJS
-    "no-mixed-requires": 2,
+    "no-mixed-requires": 1,
     "no-new-require": 2,
     "no-path-concat": 1,
 
     // Stylistic Issues
     "array-bracket-spacing": [1, "never", { "singleValue": true }],
     "block-spacing": [1, "always"],
-    "brace-style": [1, "1tbs"],
+    "brace-style": [1, "1tbs", { "allowSingleLine": false }],
     "camelcase": 1,
-    "comma-spacing": 1,
-    "comma-style": 1,
+    "comma-spacing": [1, { "before": false, "after": true }],
+    "comma-style": [2, "last"],
     "computed-property-spacing": [1, "never"],
-    "consistent-this": [1, "this"],
+    "consistent-this": [1, "self"],
     "eol-last": 1,
     "jsx-quotes": [1, "prefer-single"],
-    "key-spacing": [1, {"beforeColon": false, "afterColon": true, "mode": "minimum"}],
+    "key-spacing": [1, {"beforeColon": false, "afterColon": true, "mode": "strict"}],
     "linebreak-style": [1, "unix"],
     "new-cap": 1,
     "new-parens": 1,
     "no-array-constructor": 1,
     "no-lonely-if": 1,
     "no-mixed-spaces-and-tabs": 1,
-    "no-multiple-empty-lines": [1, {"max": 5}],
+    "no-multiple-empty-lines": [1, {"max": 2}],
     "no-nested-ternary": 1,
     "no-new-object": 1,
-    "no-spaced-func": 1,
+    "no-spaced-func": 1, // TODO replace with func-call-spacing once elint upgraded
     "no-trailing-spaces": [1, { "skipBlankLines": true }],
     "no-unneeded-ternary": 1,
     "object-curly-spacing": [1, "always"],
-    "one-var": [2, { uninitialized: "never", initialized: "never" }],
-    "operator-linebreak": 1,
+    "one-var": [1, { "uninitialized": "never", "initialized": "never" }],
+    "operator-linebreak": [1, "after", { "overrides": { "?": "before", ":": "before" } }],
     "quotes": [1, "single", "avoid-escape"],
-    // http://eslint.org/docs/rules/require-jsdoc
     "semi-spacing": [1, {"before": false, "after": true}],
     "semi": 1,
-    "space-after-keywords": [1, "always"],
-    "space-before-keywords": [1, "always"],
+    "space-after-keywords": [1, "always"], // TODO replace with keyword-spacing once elint upgraded
+    "space-before-keywords": [1, "always"], // TODO replace with keyword-spacing once elint upgraded
     "space-before-blocks": [1, "always"],
     "space-before-function-paren": [1, "never"],
     "space-in-parens": [1, "never"],
     "space-infix-ops": 1,
-    "space-return-throw-case": 1,
+    "space-return-throw-case": 1, // TODO replace with keyword-spacing once elint upgraded
     "space-unary-ops": [1, {"words": true, "nonwords": false}],
     "spaced-comment": [1, "always"],
 
     // EcmaScript 6
     "arrow-parens": [1, "as-needed"],
     "arrow-spacing": [1, {"before": true, "after": true}],
-    "constructor-super": 1,
-    "no-class-assign": 1,
-    "no-const-assign": 1,
-    "no-dupe-class-members": 1,
+    "constructor-super": 2,
+    "no-class-assign": 2,
+    "no-const-assign": 2,
+    "no-dupe-class-members": 2,
     "no-this-before-super": 1,
+    "no-var": 1,
     "prefer-arrow-callback": 1,
-    // http://eslint.org/docs/rules/prefer-const
+    "prefer-const": 1,
     "prefer-spread": 1,
-    // http://eslint.org/docs/rules/prefer-reflect
-    // http://eslint.org/docs/rules/prefer-template
-
-
 
     // React plugin rules
     // Full list: https://github.com/yannickcr/eslint-plugin-react
     // https://github.com/yannickcr/eslint-plugin-react/blob/master/docs/rules/forbid-prop-types.md
-    // "react/jsx-boolean-value": 1,
-    // "react/jsx-closing-bracket-location": [1, "props-aligned"],
-    "react/jsx-curly-spacing": [1, "always"],
-    "react/jsx-max-props-per-line": [1, {"maximum": 3}],
+    "react/jsx-boolean-value": [1, "always"],
+    "react/jsx-closing-bracket-location": 1,
+    "react/jsx-curly-spacing": [1, "never"],
+    "react/jsx-max-props-per-line": [1, {"maximum": 4}],
     "react/jsx-no-duplicate-props": [1, {"ignoreCase": true}],
-    "react/jsx-no-undef": 1,
+    "react/jsx-no-undef": 2,
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,
-    "react/no-direct-mutation-state": 1,
+    "react/no-direct-mutation-state": 2,
     "react/no-multi-comp": 1,
     "react/no-unknown-property": 1,
     "react/prop-types": [1, {"ignore": ["children"]}],
@@ -213,7 +209,6 @@
           "render"
         ]
       }
-    }],
-    "react/wrap-multilines": 1
+    }]
   }
 }

@@ -1,8 +1,7 @@
 'use strict';
 
 
-var ErrorMessages = {
-
+const ErrorMessages = {
     COORDINATES: 'Coordinates must be in Decimal Degrees format, like 38.8897°, -77.0089° or 45.455678 56.452332',
     DATE_FORMAT: 'Date must be in yyyy-mm-dd format',
     DOUBLE_VALUE: '%field with this name already exists',

@@ -1,10 +1,9 @@
 'use strict';
 
-var _ = require('lodash');
-
-var generateToken = require('../helpers/generate-token');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
+const _ = require('lodash');
+const generateToken = require('../helpers/generate-token');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
 
 
 /**
@@ -16,9 +15,9 @@ var KoiflyError = require('../../errors/error');
  * @param {object} request
  * @param {function} reply
  */
-var checkCsrfToken = function(request, reply) {
-    var requestCsrfToken;
-    var cookieCsrfToken = request.state.csrf;
+const checkCsrfToken = function(request, reply) {
+    let requestCsrfToken;
+    const cookieCsrfToken = request.state.csrf;
 
     if (request.method === 'get') {
         requestCsrfToken = JSON.parse(request.query.csrf);
@@ -28,11 +27,12 @@ var checkCsrfToken = function(request, reply) {
         requestCsrfToken = request.payload.csrf;
     }
 
-    if (!_.isString(cookieCsrfToken) ||
+    if (
+        !_.isString(cookieCsrfToken) ||
         !_.isString(requestCsrfToken) ||
         cookieCsrfToken !== requestCsrfToken
     ) {
-        var csrfToken = generateToken(10);
+        const csrfToken = generateToken(10);
         reply({ error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN) })
             .takeover() // doesn't invoke route handler and reply directly to the browser
             .state('csrf', csrfToken);

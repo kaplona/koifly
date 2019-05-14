@@ -1,25 +1,21 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
-
-var editViewMixin = require('../mixins/edit-view-mixin');
-var GliderModel = require('../../models/glider');
-
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var RemarksInput = require('../common/inputs/remarks-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TextInput = require('../common/inputs/text-input');
-var TimeInput = require('../common/inputs/time-input');
-var View = require('../common/view');
-
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const _ = require('lodash');
+const editViewMixin = require('../mixins/edit-view-mixin');
+const GliderModel = require('../../models/glider');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const RemarksInput = require('../common/inputs/remarks-input');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const TextInput = require('../common/inputs/text-input');
+const TimeInput = require('../common/inputs/time-input');
+const View = require('../common/view');
 
 
-var { shape, string } = React.PropTypes;
-
-var GliderEditView = React.createClass({
+const GliderEditView = React.createClass({
 
     propTypes: {
         params: shape({ // url args
@@ -40,10 +36,10 @@ var GliderEditView = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Cancel'
                 rightButtonCaption='Save'
-                onLeftClick={ this.handleCancelEdit }
-                onRightClick={ this.handleSubmit }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onLeftClick={this.handleCancelEdit}
+                onRightClick={this.handleSubmit}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
@@ -57,11 +53,11 @@ var GliderEditView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
 
                 <form>
-                    { this.renderProcessingError() }
+                    {this.renderProcessingError()}
 
                     <Section>
                         <SectionTitle>
@@ -70,68 +66,68 @@ var GliderEditView = React.createClass({
 
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.item.name }
+                                inputValue={this.state.item.name}
                                 labelText='Name*:'
                                 inputName='name'
-                                errorMessage={ this.state.validationErrors.name }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.name}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
-                        <SectionTitle isSubtitle={ true }>
+                        <SectionTitle isSubtitle={true}>
                             Glider usage before Koifly:
                         </SectionTitle>
 
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.item.initialFlightNum }
+                                inputValue={this.state.item.initialFlightNum}
                                 labelText='Number of flights:'
                                 inputName='initialFlightNum'
-                                isNumber={ true }
-                                errorMessage={ this.state.validationErrors.initialFlightNum }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                isNumber={true}
+                                errorMessage={this.state.validationErrors.initialFlightNum}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <TimeInput
-                                hours={ this.state.item.hours }
-                                minutes={ this.state.item.minutes }
+                                hours={this.state.item.hours}
+                                minutes={this.state.item.minutes}
                                 labelText='Airtime:'
                                 errorMessage={
                                     this.state.validationErrors.initialAirtime ||
                                     this.state.validationErrors.hours ||
                                     this.state.validationErrors.minutes
                                 }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
-                        <SectionRow isLast={ true }>
+                        <SectionRow isLast={true}>
                             <RemarksInput
-                                inputValue={ this.state.item.remarks }
+                                inputValue={this.state.item.remarks}
                                 labelText='Remarks'
-                                errorMessage={ this.state.validationErrors.remarks }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.remarks}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
-                        { this.renderDesktopButtons() }
+                        {this.renderDesktopButtons()}
 
                     </Section>
 
-                    { this.renderMobileButtons() }
+                    {this.renderMobileButtons()}
                 </form>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </View>
         );
     }

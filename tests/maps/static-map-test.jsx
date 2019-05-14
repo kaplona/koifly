@@ -3,31 +3,29 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var TestUtils = require('react-addons-test-utils');
-var Promise = require('es6-promise').Promise;
-
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const TestUtils = require('react-addons-test-utils');
+const Promise = require('es6-promise').Promise;
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var StaticMap = require('../../src/components/common/maps/static-map');
-
+const StaticMap = require('../../src/components/common/maps/static-map');
 
 
 describe('StaticMap component', () => {
 
-    var component;
-    var renderedDOMMapContainer;
+    let component;
+    let renderedDOMMapContainer;
 
-    var defaults = {
+    const defaults = {
         refsName: 'map',
         fullScreenClass: 'x-full-screen'
     };
 
-    var mocks = {
+    const mocks = {
         mapCenter: { lat: 56.78, lng: 34.567 },
         mapZoomLevel: 4,
 
@@ -73,15 +71,15 @@ describe('StaticMap component', () => {
     describe('Defaults and behavior testing', () => {
         before(() => {
 
-            var mapFacadePromise = Promise.resolve(mocks.mapFacade);
+            const mapFacadePromise = Promise.resolve(mocks.mapFacade);
 
             component = TestUtils.renderIntoDocument(
                 <StaticMap
-                    center={ mocks.mapCenter }
-                    zoomLevel={ mocks.mapZoomLevel }
-                    sites={ mocks.sites }
-                    mapFacadePromise={ mapFacadePromise }
-                    />
+                    center={mocks.mapCenter}
+                    zoomLevel={mocks.mapZoomLevel}
+                    sites={mocks.sites}
+                    mapFacadePromise={mapFacadePromise}
+                />
             );
 
             renderedDOMMapContainer = component.refs[defaults.refsName];
@@ -89,7 +87,7 @@ describe('StaticMap component', () => {
 
 
         it('doesn\'t render full screen map by default', () => {
-            let className = renderedDOMMapContainer.className;
+            const className = renderedDOMMapContainer.className;
 
             expect(className).to.not.contain(defaults.fullScreenClass);
         });
@@ -109,7 +107,7 @@ describe('StaticMap component', () => {
             expect(mocks.mapFacade.createInfowindow.getCall(2)).to.have.been.calledWith(mocks.sites[2].id);
 
             // Check that second parameter (infowindow content) contains site information
-            let infowindowContents = [
+            const infowindowContents = [
                 mocks.mapFacade.createInfowindow.getCall(0).args[1],
                 mocks.mapFacade.createInfowindow.getCall(1).args[1],
                 mocks.mapFacade.createInfowindow.getCall(2).args[1]
@@ -146,21 +144,21 @@ describe('StaticMap component', () => {
 
     describe('Full screen testing', () => {
 
-        var mapFacadePromise = Promise.reject();
+        const mapFacadePromise = Promise.reject();
 
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <StaticMap
-                    center={ mocks.mapCenter }
-                    zoomLevel={ mocks.mapZoomLevel }
-                    isFullScreen={ true }
-                    mapFacadePromise={ mapFacadePromise }
-                    />
+                    center={mocks.mapCenter}
+                    zoomLevel={mocks.mapZoomLevel}
+                    isFullScreen={true}
+                    mapFacadePromise={mapFacadePromise}
+                />
             );
         });
 
         it('renders full screen map', () => {
-            let className = component.refs[defaults.refsName].className;
+            const className = component.refs[defaults.refsName].className;
 
             expect(className).to.contain(defaults.fullScreenClass);
         });

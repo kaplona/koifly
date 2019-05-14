@@ -50,7 +50,7 @@ const AltitudeInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
@@ -61,9 +61,9 @@ const AltitudeInput = React.createClass({
                     <input
                         id='sled-ride'
                         type='checkbox'
-                        checked={ this.props.isSledRide }
-                        onChange={ this.handleCheckboxChange }
-                        />
+                        checked={this.props.isSledRide}
+                        onChange={this.handleCheckboxChange}
+                    />
                     <label htmlFor='sled-ride'>was a sled ride :(</label>
                 </div>
             );
@@ -75,40 +75,40 @@ const AltitudeInput = React.createClass({
 
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
 
                     <input
-                        className={ 'col-of-two x-number' + (this.props.errorMessage ? ' x-error' : '') }
-                        value={ this.props.inputValue || '' }
+                        className={'col-of-two x-number' + (this.props.errorMessage ? ' x-error' : '')}
+                        value={this.props.inputValue || ''}
                         type='text'
                         pattern='[0-9]*'
                         placeholder='0'
-                        disabled={ this.props.isSledRide }
-                        onChange={ () => this.handleUserInput(this.props.inputName) }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
-                        ref={ this.props.inputName }
-                        />
+                        disabled={this.props.isSledRide}
+                        onChange={() => this.handleUserInput(this.props.inputName)}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
+                        ref={this.props.inputName}
+                    />
 
                     <div className='col-of-two'>
                         <Dropdown
-                            selectedValue={ this.props.selectedAltitudeUnit }
-                            options={ altitudeUnitsList }
+                            selectedValue={this.props.selectedAltitudeUnit}
+                            options={altitudeUnitsList}
                             inputName='altitudeUnit'
-                            isEnabled={ !this.props.isSledRide }
-                            onChangeFunc={ this.handleUserInput }
-                            onFocus={ this.props.onFocus }
-                            onBlur={ this.props.onBlur }
-                            />
+                            isEnabled={!this.props.isSledRide}
+                            onChangeFunc={this.handleUserInput}
+                            onFocus={this.props.onFocus}
+                            onBlur={this.props.onBlur}
+                        />
                     </div>
 
-                    { this.renderSledRideCheckbox() }
+                    {this.renderSledRideCheckbox()}
                 </InputContainer>
             </div>
         );

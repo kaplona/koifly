@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, oneOf, string} = React.PropTypes;
+const { bool, func, oneOf, string } = React.PropTypes;
 
 require('./button.less');
 
@@ -17,7 +17,7 @@ const Button = React.createClass({
         isMobile: bool,
         isSmall: bool,
         type: oneOf(['button', 'submit']),
-        onClick: func.isRequired,
+        onClick: func.isRequired
     },
 
     getDefaultProps: function() {
@@ -27,7 +27,7 @@ const Button = React.createClass({
             isEnabled: true,
             isMobile: false,
             isSmall: false,
-            type: 'button',
+            type: 'button'
         };
     },
 
@@ -40,7 +40,7 @@ const Button = React.createClass({
     render: function() {
         let className = this.props.isMobile ? 'mobile-button' : 'button';
         if (this.props.buttonStyle) {
-            className += ' x-' + this.props.buttonStyle;
+            className += ` x-${this.props.buttonStyle}`;
         }
         if (this.props.fitContent) {
             className += ' x-content-width';
@@ -54,11 +54,11 @@ const Button = React.createClass({
 
         return (
             <input
-                className={ className }
-                type={ this.props.type }
-                disabled={ !this.props.isEnabled }
-                value={ this.props.caption }
-                onClick={ this.handleClick }
+                className={className}
+                type={this.props.type}
+                disabled={!this.props.isEnabled}
+                value={this.props.caption}
+                onClick={this.handleClick}
             />
         );
     }

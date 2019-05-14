@@ -1,18 +1,17 @@
 'use strict';
+/* eslint-disable no-use-before-define */
+/* since I define helpers functions which are not invoked in this file  */
+const _ = require('lodash');
+const getAllData = require('../helpers/get-all-data');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const sequelize = require('../../orm/sequelize');
 
-var _ = require('lodash');
-
-var getAllData = require('../helpers/get-all-data');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var sequelize = require('../../orm/sequelize');
-
-var Flight = require('../../orm/models/flights');
-var Glider = require('../../orm/models/gliders');
-var Pilot = require('../../orm/models/pilots');
-var Site = require('../../orm/models/sites');
-
+const Flight = require('../../orm/models/flights');
+const Glider = require('../../orm/models/gliders');
+const Pilot = require('../../orm/models/pilots');
+const Site = require('../../orm/models/sites');
 
 
 /**
@@ -21,7 +20,7 @@ var Site = require('../../orm/models/sites');
  * @param {object} request
  * @param {function} reply
  */
-var queryHandler = function(request, reply) {
+const queryHandler = function(request, reply) {
 
     Pilot
         .findById(request.auth.credentials.userId)
@@ -32,7 +31,7 @@ var queryHandler = function(request, reply) {
             }
 
             if (request.method === 'post') {
-                var requestPayload = request.payload;
+                const requestPayload = request.payload;
 
                 // Check that user are trying to change his/her own data
                 if (requestPayload.pilotId !== pilot.id) {
@@ -65,13 +64,12 @@ var queryHandler = function(request, reply) {
         })
         .catch(error => {
             if (process.env.NODE_ENV === 'development') {
-                console.log('Error => ', error);
+                console.log('Error => ', error); // eslint-disable-line no-console
             }
 
             reply({ error: normalizeError(error) });
         });
 };
-
 
 
 /**
@@ -81,7 +79,7 @@ var queryHandler = function(request, reply) {
  * @returns {Promise} - whether the saving was successful
  */
 function saveData(dataType, data, pilot) {
-    var pilotId = pilot.id;
+    const pilotId = pilot.id;
     switch (dataType) {
         case 'flight':
             return saveFlight(data, pilotId);

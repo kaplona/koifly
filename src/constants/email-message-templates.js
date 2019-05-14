@@ -1,7 +1,7 @@
 'use strict';
 
 
-var EmailMessageTemplates = {
+const EmailMessageTemplates = {
 
     PASSWORD_CHANGE: {
         from: 'Koifly <noreply@koifly.com>',

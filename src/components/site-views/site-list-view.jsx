@@ -1,24 +1,21 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
-var _ = require('lodash');
-
-var Altitude = require('../../utils/altitude');
-var listViewMixin = require('../mixins/list-view-mixin');
-var SiteModel = require('../../models/site');
-
-var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Section = require('../common/section/section');
-var Switcher = require('../common/switcher');
-var Table = require('../common/table');
-var View = require('../common/view');
+const React = require('react');
+const _ = require('lodash');
+const Altitude = require('../../utils/altitude');
+const browserHistory = require('react-router').browserHistory;
+const DesktopTopGrid = require('../common/grids/desktop-top-grid');
+const ErrorBox = require('../common/notice/error-box');
+const listViewMixin = require('../mixins/list-view-mixin');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Section = require('../common/section/section');
+const SiteModel = require('../../models/site');
+const Switcher = require('../common/switcher');
+const Table = require('../common/table');
+const View = require('../common/view');
 
 
-
-var SiteListView = React.createClass({
+const SiteListView = React.createClass({
 
     mixins: [ listViewMixin(SiteModel.getModelKey()) ],
 
@@ -32,18 +29,18 @@ var SiteListView = React.createClass({
                 header='Sites'
                 leftButtonCaption='Map'
                 rightButtonCaption='Add'
-                onLeftClick={ this.handleGoToMapView }
-                onRightClick={ this.handleAddItem }
-                />
+                onLeftClick={this.handleGoToMapView}
+                onRightClick={this.handleAddItem}
+            />
         );
     },
 
     renderError: function() {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                 <MobileTopMenu header='Sites' />
-                { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+                {this.renderNavigationMenu()}
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />;
             </View>
         );
     },
@@ -53,14 +50,14 @@ var SiteListView = React.createClass({
             <Switcher
                 leftButtonCaption='List'
                 rightButtonCaption='Map'
-                onRightClick={ this.handleGoToMapView }
+                onRightClick={this.handleGoToMapView}
                 initialPosition='left'
-                />
+            />
         );
     },
 
     renderTable: function() {
-        var columnsConfig = [
+        const columnsConfig = [
             {
                 key: 'name',
                 label: 'Name',
@@ -79,9 +76,9 @@ var SiteListView = React.createClass({
             }
         ];
 
-        var rows = [];
+        const rows = [];
         if (this.state.items) {
-            for (var i = 0; i < this.state.items.length; i++) {
+            for (let i = 0; i < this.state.items.length; i++) {
                 rows.push(_.extend(
                     {},
                     this.state.items[i],
@@ -94,11 +91,11 @@ var SiteListView = React.createClass({
 
         return (
             <Table
-                columns={ columnsConfig }
-                rows={ rows }
+                columns={columnsConfig}
+                rows={rows}
                 initialSortingField='name'
-                onRowClick={ this.handleRowClick }
-                />
+                onRowClick={this.handleRowClick}
+            />
         );
     },
 
@@ -107,24 +104,23 @@ var SiteListView = React.createClass({
             return this.renderError();
         }
 
-        var content = this.renderEmptyList();
-
+        let content = this.renderEmptyList();
         if (!content) {
             content = this.renderTable();
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 
                 <Section>
                     <DesktopTopGrid
-                        leftElement={ this.renderAddItemButton() }
-                        middleElement={ this.renderSwitcher() }
-                        />
-                    { content }
-                    { this.renderLoader() }
+                        leftElement={this.renderAddItemButton()}
+                        middleElement={this.renderSwitcher()}
+                    />
+                    {content}
+                    {this.renderLoader()}
                 </Section>
                 
             </View>

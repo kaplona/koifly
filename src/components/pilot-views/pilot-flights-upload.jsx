@@ -2,19 +2,17 @@
 
 const React = require('react');
 const browserHistory = require('react-router').browserHistory;
-const ErrorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-
-const PilotModel = require('../../models/pilot');
-
 const Button = require('../common/buttons/button');
 const Description = require('../common/section/description');
 const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
 const ErrorBox = require('../common/notice/error-box');
+const ErrorTypes = require('../../errors/error-types');
 const FileInput = require('../common/inputs/file-input');
 const ImportError = require('../common/notice/import-error');
+const KoiflyError = require('../../errors/error');
 const NavigationMenu = require('../common/menu/navigation-menu');
 const Notice = require('../common/notice/notice');
+const PilotModel = require('../../models/pilot');
 const Section = require('../common/section/section');
 const SectionLoader = require('../common/section/section-loader');
 const SectionRow = require('../common/section/section-row');
@@ -41,7 +39,7 @@ const PilotFlightsUpload = React.createClass({
     },
 
     handleStoreModified: function() {
-        let pilot = PilotModel.getEditOutput();
+        const pilot = PilotModel.getEditOutput();
 
         if (pilot && pilot.error) {
             this.setState({ loadingError: pilot.error });
@@ -67,7 +65,7 @@ const PilotFlightsUpload = React.createClass({
             fileName: file.name,
             fileReadError: null,
             successSummary: null,
-            validationError: null,
+            validationError: null
         });
 
         const validationError = this.validateFile(file);
@@ -95,7 +93,7 @@ const PilotFlightsUpload = React.createClass({
             fileName: null,
             fileReadError: null,
             successSummary: null,
-            validationError: null,
+            validationError: null
         });
     },
 
@@ -119,7 +117,7 @@ const PilotFlightsUpload = React.createClass({
     },
 
     validateFile(file) {
-        let errors = [];
+        const errors = [];
         if (file.type !== 'text/csv') {
             errors.push('File must be .csv format.');
         }
@@ -131,14 +129,14 @@ const PilotFlightsUpload = React.createClass({
     },
 
     renderNavigationMenu: function() {
-        return <NavigationMenu currentView={ PilotModel.getModelKey() } />;
+        return <NavigationMenu currentView={PilotModel.getModelKey()} />;
     },
 
     renderSimpleLayout: function(children) {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderNavigationMenu() }
-                { children }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderNavigationMenu()}
+                {children}
             </View>
         );
     },
@@ -148,7 +146,7 @@ const PilotFlightsUpload = React.createClass({
     },
 
     renderLoadingError: function() {
-        const errorBox = <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+        const errorBox = <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />;
         return this.renderSimpleLayout(errorBox);
     },
 
@@ -161,9 +159,9 @@ const PilotFlightsUpload = React.createClass({
                         <div>
                             Your records were successfully saved:
                             <ul>
-                                <li>{ this.state.successSummary.flightsNum } flights added;</li>
-                                <li>{ this.state.successSummary.sitesNum } sites added;</li>
-                                <li>{ this.state.successSummary.glidersNum } gliders added.</li>
+                                <li>{this.state.successSummary.flightsNum} flights added;</li>
+                                <li>{this.state.successSummary.sitesNum} sites added;</li>
+                                <li>{this.state.successSummary.glidersNum} gliders added.</li>
                             </ul>
                         </div>
                     )}
@@ -187,25 +185,25 @@ const PilotFlightsUpload = React.createClass({
         );
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                 <form>
                     <Section>
                         <SectionTitle>
-                            <div>{ this.state.userName }</div>
-                            <div>{ this.state.email }</div>
+                            <div>{this.state.userName}</div>
+                            <div>{this.state.email}</div>
                         </SectionTitle>
 
-                        <SectionTitle isSubtitle={ true }>
+                        <SectionTitle isSubtitle={true}>
                             Import you flights:
                         </SectionTitle>
 
                         <SectionRow>
-                            { !!this.state.successSummary && this.renderSuccessMessage() }
-                            { !!this.state.fileReadError && (
+                            {!!this.state.successSummary && this.renderSuccessMessage()}
+                            {!!this.state.fileReadError && (
                                 <div className='pilot-flight-upload__notice'>
                                     <ImportError error={this.state.fileReadError} />
                                 </div>
-                            ) }
+                            )}
 
                             <FileInput
                                 fileName={this.state.fileName}
@@ -216,7 +214,7 @@ const PilotFlightsUpload = React.createClass({
                             />
                         </SectionRow>
 
-                        <SectionRow isLast={ true }>
+                        <SectionRow isLast={true}>
                             <Description>
                                 <div>
                                     File should be .csv format. First line should be a header with next column names:
@@ -239,23 +237,23 @@ const PilotFlightsUpload = React.createClass({
 
                         <DesktopBottomGrid
                             leftElements={[
-                                (<Button
+                                <Button
                                     buttonStyle='primary'
                                     caption={this.state.isImporting ? 'Importing...' : 'Import'}
                                     isEnabled={canImport}
                                     onClick={this.handleImportFile}
-                                />),
-                                (<Button
+                                />,
+                                <Button
                                     buttonStyle='secondary'
                                     caption='Cancel'
                                     onClick={this.handleGoToPilotEdit}
-                                />)
+                                />
                             ]}
                         />
                     </Section>
                 </form>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </View>
         );
     }

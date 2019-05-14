@@ -3,34 +3,32 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var then = require('../../src/utils/then');
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const then = require('../../src/utils/then');
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var Switcher = require('../../src/components/common/switcher');
-
+const Switcher = require('../../src/components/common/switcher');
 
 
 describe('Switcher component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         leftPosition: 'left',
         rightPosition: 'right',
         activeClass: 'active'
     };
 
-    var mocks = {
+    const mocks = {
         leftButtonCaption: 'left test caption',
         rightButtonCaption: 'right test caption',
         handleLeftClick: Sinon.spy(),
@@ -42,12 +40,12 @@ describe('Switcher component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Switcher
-                    leftButtonCaption={ mocks.leftButtonCaption }
-                    rightButtonCaption={ mocks.rightButtonCaption }
-                    onLeftClick={ mocks.handleLeftClick }
-                    onRightClick={ mocks.handleRightClick }
-                    initialPosition={ defaults.leftPosition }
-                    />
+                    leftButtonCaption={mocks.leftButtonCaption}
+                    rightButtonCaption={mocks.rightButtonCaption}
+                    onLeftClick={mocks.handleLeftClick}
+                    onRightClick={mocks.handleRightClick}
+                    initialPosition={defaults.leftPosition}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -58,7 +56,7 @@ describe('Switcher component', () => {
         });
 
         it('renders parsed text at proper places and highlights proper switcher part', () => {
-            let switcherParts = renderedDOMElement.children;
+            const switcherParts = renderedDOMElement.children;
 
             expect(switcherParts).to.have.lengthOf(2);
             expect(switcherParts[0]).to.have.property('textContent', mocks.leftButtonCaption);
@@ -81,8 +79,8 @@ describe('Switcher component', () => {
                 expect(mocks.handleLeftClick).to.have.not.been.called;
                 expect(component).to.have.deep.property('state.isLeftPosition', false);
 
-                let leftPartClass = renderedDOMElement.children[0].className;
-                let rightPartClass = renderedDOMElement.children[1].className;
+                const leftPartClass = renderedDOMElement.children[0].className;
+                const rightPartClass = renderedDOMElement.children[1].className;
 
                 expect(leftPartClass).to.not.contain(defaults.activeClass);
                 expect(rightPartClass).to.contain(defaults.activeClass);
@@ -94,8 +92,8 @@ describe('Switcher component', () => {
                 expect(mocks.handleLeftClick).to.have.been.calledOnce;
                 expect(component).to.have.deep.property('state.isLeftPosition', true);
 
-                let leftPartClass = renderedDOMElement.children[0].className;
-                let rightPartClass = renderedDOMElement.children[1].className;
+                const leftPartClass = renderedDOMElement.children[0].className;
+                const rightPartClass = renderedDOMElement.children[1].className;
 
                 expect(leftPartClass).to.contain(defaults.activeClass);
                 expect(rightPartClass).to.not.contain(defaults.activeClass);
@@ -109,12 +107,12 @@ describe('Switcher component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Switcher
-                    leftButtonCaption={ mocks.leftButtonCaption }
-                    rightButtonCaption={ mocks.rightButtonCaption }
-                    onLeftClick={ mocks.handleLeftClick }
-                    onRightClick={ mocks.handleRightClick }
-                    initialPosition={ defaults.rightPosition }
-                    />
+                    leftButtonCaption={mocks.leftButtonCaption}
+                    rightButtonCaption={mocks.rightButtonCaption}
+                    onLeftClick={mocks.handleLeftClick}
+                    onRightClick={mocks.handleRightClick}
+                    initialPosition={defaults.rightPosition}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -125,8 +123,8 @@ describe('Switcher component', () => {
         });
 
         it('highlights proper switcher part', () => {
-            let leftPartClass = renderedDOMElement.children[0].className;
-            let rightPartClass = renderedDOMElement.children[1].className;
+            const leftPartClass = renderedDOMElement.children[0].className;
+            const rightPartClass = renderedDOMElement.children[1].className;
 
             expect(leftPartClass).to.not.contain(defaults.activeClass);
             expect(rightPartClass).to.contain(defaults.activeClass);

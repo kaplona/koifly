@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var getAllData = require('../helpers/get-all-data');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var setAuthCookie = require('../helpers/set-auth-cookie');
-var verifyAuthToken = require('../helpers/verify-auth-token');
+const _ = require('lodash');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const getAllData = require('../helpers/get-all-data');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const setAuthCookie = require('../helpers/set-auth-cookie');
+const verifyAuthToken = require('../helpers/verify-auth-token');
 
 
 /**
@@ -19,9 +18,9 @@ var verifyAuthToken = require('../helpers/verify-auth-token');
  * @param {object} request
  * @param {function} reply
  */
-var resetPasswordHandler = function(request, reply) {
-    var pilot; // we need it to have reference to current pilot
-    var payload = request.payload;
+const resetPasswordHandler = function(request, reply) {
+    let pilot; // we need it to have reference to current pilot
+    const payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.pilotId) ||

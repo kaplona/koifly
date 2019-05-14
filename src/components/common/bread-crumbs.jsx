@@ -1,40 +1,29 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const { arrayOf, element, number, oneOfType, string } = React.PropTypes;
+const _ = require('lodash');
 
 require('./bread-crumbs.less');
 
 
-var BreadCrumbs = React.createClass({
+function BreadCrumbs(props) {
+    const separator = ' / ';
+    return (
+        <div className='bread-crumbs'>
+            {_.map(props.elements, (el, index, elements) => (
+                <span key={`bread-crumb-${index}`}>
+                    {el}
+                    {index < (elements.length - 1) ? separator : null}
+                </span>
+            ))}
+        </div>
+    );
+}
 
-    propTypes: {
-        elements: React.PropTypes.arrayOf(
-            React.PropTypes.oneOfType([
-                React.PropTypes.element,
-                React.PropTypes.string,
-                React.PropTypes.number
-            ])
-        ).isRequired
-    },
-
-    render: function() {
-        var separator = ' / ';
-        var breadCrumbs = _.map(this.props.elements, (element, index, elements) => {
-            return (
-                <span key={ 'bread-crumb-' + index }>
-                    { element }
-                    { index < (elements.length - 1) ? separator : null }
-                </span>);
-        });
-
-        return (
-            <div className='bread-crumbs'>
-                { breadCrumbs }
-            </div>
-        );
-    }
-});
+BreadCrumbs.propTypes = {
+    elements: arrayOf(oneOfType([element, string, number])).isRequired
+};
 
 
 module.exports = BreadCrumbs;

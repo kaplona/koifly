@@ -1,17 +1,15 @@
 'use strict';
 
-var _ = require('lodash');
-
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var getPilotValuesForFrontend = require('../helpers/get-pilot-values');
-var EmailMessageTemplates = require('../../constants/email-message-templates');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var sendAuthTokenToPilot = require('../helpers/send-auth-token');
-var setAuthCookie = require('../helpers/set-auth-cookie');
-
+const _ = require('lodash');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const getPilotValuesForFrontend = require('../helpers/get-pilot-values');
+const EmailMessageTemplates = require('../../constants/email-message-templates');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const sendAuthTokenToPilot = require('../helpers/send-auth-token');
+const setAuthCookie = require('../helpers/set-auth-cookie');
 
 
 /**
@@ -23,9 +21,9 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {function} reply
  */
-var signupHandler = function(request, reply) {
-    var pilot; // we need it to have reference to current pilot
-    var payload = request.payload;
+const signupHandler = function(request, reply) {
+    let pilot; // we need it to have reference to current pilot
+    const payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.email) || !_.isString(payload.password)) {
@@ -36,7 +34,7 @@ var signupHandler = function(request, reply) {
     BcryptPromise
         .hash(payload.password)
         .then(hash => {
-            var newPilot = {
+            const newPilot = {
                 email: payload.email,
                 password: hash,
                 isSubscribed: payload.isSubscribed,

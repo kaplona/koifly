@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
 require('./desktop-top-grid.less');
 
 
-var DesktopTopGrid = React.createClass({
+const DesktopTopGrid = React.createClass({
 
     propTypes: {
         leftElement: React.PropTypes.element,
@@ -17,15 +17,15 @@ var DesktopTopGrid = React.createClass({
         return (
             <div className='top-grid'>
                 <div className='left-element'>
-                    { this.props.leftElement }
+                    {this.props.leftElement}
                 </div>
 
                 <div className='middle-element'>
-                    { this.props.middleElement }
+                    {this.props.middleElement}
                 </div>
 
                 <div className='right-element'>
-                    { this.props.rightElement }
+                    {this.props.rightElement}
                 </div>
             </div>
         );

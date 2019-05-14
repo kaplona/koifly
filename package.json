@@ -25,6 +25,7 @@
     "db_init": "MYSQL_ADMIN=true      node --harmony src/orm/init.js",
     "db_migrate": "MYSQL_ADMIN=true      /node_modules/.bin/sequelize db:migrate",
     "lint": "eslint . --ext .js --ext .jsx",
+    "lint_fix": "eslint . --ext .js --ext .jsx --fix",
     "test": "./node_modules/.bin/mocha --compilers jsx:babel-register --require ignore-styles ./tests/ --recursive"
   },
   "dependencies": {

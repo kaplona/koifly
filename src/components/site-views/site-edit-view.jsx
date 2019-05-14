@@ -1,31 +1,26 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
-
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const _ = require('lodash');
+const AltitudeInput = require('../common/inputs/altitude-input');
+const CoordinatesInput = require('../common/inputs/coordinates-input');
+const DomUtil = require('../../utils/dom-util');
+const editViewMixin = require('../mixins/edit-view-mixin');
+const InteractiveMap = require('../common/maps/interactive-map');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const RemarksInput = require('../common/inputs/remarks-input');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const SiteModel = require('../../models/site');
+const TextInput = require('../common/inputs/text-input');
+const Util = require('../../utils/util');
+const View = require('../common/view');
 const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
 
-var DomUtil = require('../../utils/dom-util');
-var editViewMixin = require('../mixins/edit-view-mixin');
-var SiteModel = require('../../models/site');
-var Util = require('../../utils/util');
 
-var AltitudeInput = require('../common/inputs/altitude-input');
-var CoordinatesInput = require('../common/inputs/coordinates-input');
-var InteractiveMap = require('../common/maps/interactive-map');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var RemarksInput = require('../common/inputs/remarks-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TextInput = require('../common/inputs/text-input');
-var View = require('../common/view');
-
-
-
-var { shape, string } = React.PropTypes;
-
-var SiteEditView = React.createClass({
+const SiteEditView = React.createClass({
 
     propTypes: {
         params: shape({ // url args
@@ -52,7 +47,7 @@ var SiteEditView = React.createClass({
     getMarkerPosition: function() {
         if (!Util.isEmptyString(this.state.item.coordinates)) {
             // Hard validation in order to check coordinates format
-            var validationErrors = this.getValidationErrors();
+            const validationErrors = this.getValidationErrors();
             if (!validationErrors || !validationErrors.coordinates) {
                 // Change user input in { lat: 56.56734543, lng: 123.4567543 } format
                 return Util.stringToCoordinates(this.state.item.coordinates);
@@ -64,12 +59,12 @@ var SiteEditView = React.createClass({
     renderMobileTopMenu: function() {
         return (
             <MobileTopMenu
-                leftButtonCaption={ this.state.isMapShown ? 'Back' : 'Cancel' }
-                rightButtonCaption={ this.state.isMapShown ? null : 'Save' }
-                onLeftClick={ this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit }
-                onRightClick={ this.state.isMapShown ? null : this.handleSubmit }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                leftButtonCaption={this.state.isMapShown ? 'Back' : 'Cancel'}
+                rightButtonCaption={this.state.isMapShown ? null : 'Save'}
+                onLeftClick={this.state.isMapShown ? this.handleMapHide : this.handleCancelEdit}
+                onRightClick={this.state.isMapShown ? null : this.handleSubmit}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
@@ -80,7 +75,7 @@ var SiteEditView = React.createClass({
 
         DomUtil.scrollToTheTop();
 
-        var markerPosition = this.getMarkerPosition();
+        const markerPosition = this.getMarkerPosition();
 
         return InteractiveMap.create({
             markerId: this.state.item.id,
@@ -105,11 +100,11 @@ var SiteEditView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
 
                 <form>
-                    { this.renderProcessingError() }
+                    {this.renderProcessingError()}
                     
                     <Section>
                         <SectionTitle>
@@ -118,74 +113,74 @@ var SiteEditView = React.createClass({
                         
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.item.name }
+                                inputValue={this.state.item.name}
                                 labelText='Name*:'
                                 inputName='name'
-                                errorMessage={ this.state.validationErrors.name }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.name}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <CoordinatesInput
-                                inputValue={ this.state.item.coordinates }
+                                inputValue={this.state.item.coordinates}
                                 labelText='Coordinates:'
-                                errorMessage={ this.state.validationErrors.coordinates }
-                                onChange={ this.handleInputChange }
-                                onMapShow={ this.handleMapShow }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.coordinates}
+                                onChange={this.handleInputChange}
+                                onMapShow={this.handleMapShow}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <TextInput
-                                inputValue={ this.state.item.location }
+                                inputValue={this.state.item.location}
                                 labelText='Location:'
                                 inputName='location'
-                                errorMessage={ this.state.validationErrors.location }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.location}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <AltitudeInput
-                                inputValue={ this.state.item.launchAltitude }
-                                selectedAltitudeUnit={ this.state.item.altitudeUnit }
+                                inputValue={this.state.item.launchAltitude}
+                                selectedAltitudeUnit={this.state.item.altitudeUnit}
                                 labelText='Launch altitude:'
                                 inputName='launchAltitude'
-                                errorMessage={ this.state.validationErrors.launchAltitude }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.launchAltitude}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
-                        <SectionRow isLast={ true }>
+                        <SectionRow isLast={true}>
                             <RemarksInput
-                                inputValue={ this.state.item.remarks }
+                                inputValue={this.state.item.remarks}
                                 labelText='Remarks:'
-                                errorMessage={ this.state.validationErrors.remarks }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.remarks}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
-                        { this.renderDesktopButtons() }
+                        {this.renderDesktopButtons()}
 
-                        { this.renderMap() }
+                        {this.renderMap()}
 
                     </Section>
 
-                    { this.renderMobileButtons() }
+                    {this.renderMobileButtons()}
                 </form>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </View>
         );
     }

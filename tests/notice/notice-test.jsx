@@ -3,32 +3,30 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var Chai = require('chai');
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-var expect = Chai.expect;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Chai = require('chai');
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = Chai.expect;
 Chai.use(sinonChai);
 
-var Notice = require('../../src/components/common/notice/notice');
-
+const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('Notice component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         noticeClassName: 'notice',
         closeButtonClassName: 'close'
     };
 
-    var mocks = {
+    const mocks = {
         noticeText: 'test text',
         noticeType: 'success',
         buttonText: 'test button text',
@@ -40,7 +38,7 @@ describe('Notice component', () => {
     describe('Defaults testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <Notice text={ mocks.noticeText } />
+                <Notice text={mocks.noticeText} />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -52,8 +50,8 @@ describe('Notice component', () => {
         });
 
         it('doesn\'t show buttons if onClick events weren\'t provided', () => {
-            let inputs = renderedDOMElement.getElementsByTagName('input');
-            let closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
+            const inputs = renderedDOMElement.getElementsByTagName('input');
+            const closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
 
             expect(inputs).to.have.lengthOf(0);
             expect(closeButton).to.equal(null);
@@ -65,26 +63,26 @@ describe('Notice component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Notice
-                    text={ mocks.noticeText }
-                    type={ mocks.noticeType }
-                    buttonText={ mocks.buttonText }
-                    onClick={ mocks.handleClick }
-                    onClose={ mocks.handleClose }
-                    />
+                    text={mocks.noticeText}
+                    type={mocks.noticeType}
+                    buttonText={mocks.buttonText}
+                    onClick={mocks.handleClick}
+                    onClose={mocks.handleClose}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders notice with proper class', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(className).to.contain(`x-${mocks.noticeType}`);
         });
 
         it('renders buttons and triggers onClick functions', () => {
-            let actionButton = renderedDOMElement.querySelector('input');
-            let closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
+            const actionButton = renderedDOMElement.querySelector('input');
+            const closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
 
             expect(actionButton).to.have.property('value', mocks.buttonText);
             expect(closeButton).to.be.ok;
@@ -101,19 +99,19 @@ describe('Notice component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <Notice
-                    text={ mocks.noticeText }
-                    type={ mocks.noticeType }
-                    buttonText={ mocks.buttonText }
-                    onClick={ mocks.handleClick }
-                    isButtonEnabled={ false }
-                    />
+                    text={mocks.noticeText}
+                    type={mocks.noticeType}
+                    buttonText={mocks.buttonText}
+                    onClick={mocks.handleClick}
+                    isButtonEnabled={false}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders disabled buttons and doesn\'t call onClick functions', () => {
-            let actionButton = renderedDOMElement.querySelector('input');
+            const actionButton = renderedDOMElement.querySelector('input');
 
             expect(actionButton).to.have.property('disabled', true);
 

@@ -1,28 +1,26 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var ValidationError = require('../../src/components/common/section/validation-error');
-
+const ValidationError = require('../../src/components/common/section/validation-error');
 
 
 describe('ValidationError component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var mocks = {
+    const mocks = {
         errorMessage: 'test error message'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <ValidationError message={ mocks.errorMessage } />
+            <ValidationError message={mocks.errorMessage} />
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);

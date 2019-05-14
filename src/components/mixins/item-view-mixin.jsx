@@ -1,19 +1,18 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
+const React = require('react');
+const browserHistory = require('react-router').browserHistory;
+const ErrorBox = require('../common/notice/error-box');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const SectionLoader = require('../common/section/section-loader');
+const View = require('../common/view');
 
-var ErrorBox = require('../common/notice/error-box');
-var SectionLoader = require('../common/section/section-loader');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
-var View = require('../common/view');
 
-
-var itemViewMixin = function(modelKey) {
+const itemViewMixin = function(modelKey) {
 
     const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
-    var Model = VIEW_ASSETS.model;
+    const Model = VIEW_ASSETS.model;
 
     return {
 
@@ -30,7 +29,7 @@ var itemViewMixin = function(modelKey) {
          * and updates component's state
          */
         handleStoreModified: function() {
-            var storeContent = Model.getItemOutput(this.props.params.id);
+            const storeContent = Model.getItemOutput(this.props.params.id);
             
             if (storeContent && storeContent.error) {
                 this.setState({ loadingError: storeContent.error });
@@ -53,18 +52,18 @@ var itemViewMixin = function(modelKey) {
         },
 
         renderNavigationMenu: function() {
-            return <NavigationMenu currentView={ Model.getModelKey() } />;
+            return <NavigationMenu currentView={Model.getModelKey()} />;
         },
         
         renderSimpleLayout: function(children) {
             return (
-                <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+                <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                     <MobileTopMenu
                         leftButtonCaption='Back'
-                        onLeftClick={ this.handleGoToListView }
-                        />
-                    { this.renderNavigationMenu() }
-                    { children }
+                        onLeftClick={this.handleGoToListView}
+                    />
+                    {this.renderNavigationMenu()}
+                    {children}
                 </View>
             );
         },
@@ -75,7 +74,7 @@ var itemViewMixin = function(modelKey) {
 
         renderError: function() {
             return this.renderSimpleLayout(
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />
             );
         }
     };

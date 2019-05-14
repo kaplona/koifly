@@ -1,16 +1,17 @@
 'use strict';
 
-var React = require('react');
-var Button = require('../buttons/button');
+const React = require('react');
+const { bool, func } = React.PropTypes;
+const Button = require('../buttons/button');
 
 require('./section.less');
 
 
-var Section = React.createClass({
+const Section = React.createClass({
 
     propTypes: {
-        isFullScreen: React.PropTypes.bool.isRequired,
-        onEditClick: React.PropTypes.func
+        isFullScreen: bool,
+        onEditClick: func
     },
 
     getDefaultProps: function() {
@@ -23,22 +24,22 @@ var Section = React.createClass({
         if (this.props.onEditClick) {
             return (
                 <div className='edit-button'>
-                    <Button caption='Edit' onClick={ this.props.onEditClick } />
+                    <Button caption='Edit' onClick={this.props.onEditClick} />
                 </div>
             );
         }
     },
 
     render: function() {
-        var className = 'section';
+        let className = 'section';
         if (this.props.isFullScreen) {
             className += ' x-full-screen';
         }
 
         return (
-            <div className={ className }>
-                { this.props.children }
-                { this.renderEditButton() }
+            <div className={className}>
+                {this.props.children}
+                {this.renderEditButton()}
             </div>
         );
     }

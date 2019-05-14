@@ -3,35 +3,33 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var AppLink = require('../../src/components/common/app-link');
-
+const AppLink = require('../../src/components/common/app-link');
 
 
 describe('AppLink component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var mocks = {
+    const mocks = {
         childText: 'test child type',
         handleClick: Sinon.spy()
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
-            <AppLink onClick={ mocks.handleClick }>
-                { mocks.childText }
+            <AppLink onClick={mocks.handleClick}>
+                {mocks.childText}
             </AppLink>
         );
 

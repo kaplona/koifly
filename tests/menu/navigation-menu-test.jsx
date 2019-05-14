@@ -1,34 +1,31 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
+const FlightModel = require('../../src/models/flight');
+const GliderModel = require('../../src/models/glider');
+const SiteModel = require('../../src/models/site');
+const PilotModel = require('../../src/models/pilot');
 
-var expect = require('chai').expect;
-
-var FlightModel = require('../../src/models/flight');
-var GliderModel = require('../../src/models/glider');
-var SiteModel = require('../../src/models/site');
-var PilotModel = require('../../src/models/pilot');
-
-var NavigationMenu = require('../../src/components/common/menu/navigation-menu');
-var NavigationItem = require('../../src/components/common/menu/navigation-item');
-
+const NavigationMenu = require('../../src/components/common/menu/navigation-menu');
+const NavigationItem = require('../../src/components/common/menu/navigation-item');
 
 
 describe('BottomMenu component', () => {
 
-    var component;
+    let component;
 
-    var defaults = {
+    const defaults = {
         mobileClassName: 'x-mobile'
     };
 
     it('renders default class and doesn\'t highlight any navigation items', () => {
         component = TestUtils.renderIntoDocument(<NavigationMenu />);
-        let className = ReactDOM.findDOMNode(component).className;
-        let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+        const className = ReactDOM.findDOMNode(component).className;
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(className).to.not.contain(defaults.mobileClassName);
         expect(navigationItems).to.have.lengthOf(4);
@@ -39,15 +36,15 @@ describe('BottomMenu component', () => {
     });
 
     it('renders mobile class if required', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu isMobile={ true } />);
-        let className = ReactDOM.findDOMNode(component).className;
+        component = TestUtils.renderIntoDocument(<NavigationMenu isMobile={true} />);
+        const className = ReactDOM.findDOMNode(component).className;
 
         expect(className).to.contain(defaults.mobileClassName);
     });
 
     it('highlights only flights navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ FlightModel.getModelKey() } />);
-        let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={FlightModel.getModelKey()} />);
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', true);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
@@ -56,8 +53,8 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only sites navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ SiteModel.getModelKey() } />);
-        let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={SiteModel.getModelKey()} />);
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', true);
@@ -66,8 +63,8 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only gliders navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ GliderModel.getModelKey() } />);
-        let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={GliderModel.getModelKey()} />);
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
@@ -76,8 +73,8 @@ describe('BottomMenu component', () => {
     });
 
     it('highlights only pilot navigation item', () => {
-        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={ PilotModel.getModelKey() } />);
-        let navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView={PilotModel.getModelKey()} />);
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);

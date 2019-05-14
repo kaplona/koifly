@@ -1,8 +1,8 @@
 'use strict';
+/* eslint-disable no-console */
+const chalk = require('chalk');
 
-var chalk = require('chalk');
-
-var logPrefix = '[WebpackSlowPlugin]: ';
+const logPrefix = '[WebpackSlowPlugin]: ';
 
 
 function SlowWebpackPlugin(options) {
@@ -15,12 +15,12 @@ function SlowWebpackPlugin(options) {
 
 
 SlowWebpackPlugin.prototype.apply = function(compiler) {
-    var delay = this.options.delay;
+    const delay = this.options.delay;
 
     compiler.plugin('done', () => {
-        var beginTime = Date.now();
-        var curTime = beginTime;
-        var secondsElapsed = 0;
+        const beginTime = Date.now();
+        let curTime = beginTime;
+        let secondsElapsed = 0;
         console.log('');
         console.log(chalk.yellow(logPrefix + 'Begin'));
         while (curTime - beginTime < delay) {

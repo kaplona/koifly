@@ -1,30 +1,26 @@
 'use strict';
 
-var React = require('react');
-
-var dataService = require('../../services/data-service');
-var PublicViewMixin = require('../mixins/public-view-mixin');
-var Util = require('../../utils/util');
-
-var AppLink = require('../common/app-link');
-var Button = require('../common/buttons/button');
-var CompactContainer = require('../common/compact-container');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var PasswordInput = require('../common/inputs/password-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var TextInput = require('../common/inputs/text-input');
-
+const React = require('react');
+const { bool } = React.PropTypes;
+const AppLink = require('../common/app-link');
+const Button = require('../common/buttons/button');
+const CompactContainer = require('../common/compact-container');
+const dataService = require('../../services/data-service');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const PasswordInput = require('../common/inputs/password-input');
+const PublicViewMixin = require('../mixins/public-view-mixin');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const TextInput = require('../common/inputs/text-input');
+const Util = require('../../utils/util');
 
 
-var { bool } = React.PropTypes;
-
-var Login = React.createClass({
+const Login = React.createClass({
 
     propTypes: {
         isStayOnThisPage: bool.isRequired
@@ -52,7 +48,7 @@ var Login = React.createClass({
             event.preventDefault();
         }
 
-        var validationError = this.getValidationError();
+        const validationError = this.getValidationError();
         if (validationError) {
             this.updateError(validationError);
             return;
@@ -64,7 +60,7 @@ var Login = React.createClass({
             error: null
         });
 
-        var pilotCredentials = {
+        const pilotCredentials = {
             email: this.state.email,
             password: this.state.password
         };
@@ -99,26 +95,26 @@ var Login = React.createClass({
                 header='Koifly'
                 leftButtonCaption='About'
                 rightButtonCaption='Sign Up'
-                onLeftClick={ this.handleGoToHomePage }
-                onRightClick={ this.handleGoToSignup }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onLeftClick={this.handleGoToHomePage}
+                onRightClick={this.handleGoToSignup}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
     
     renderDesktopButtons: function() {
-        return <DesktopBottomGrid leftElements={ [ this.renderSendButton() ] } />;
+        return <DesktopBottomGrid leftElements={[ this.renderSendButton() ]} />;
     },
 
     renderSendButton: function() {
         return (
             <Button
-                caption={ this.state.isSending ? 'Sending...' : 'Log in' }
+                caption={this.state.isSending ? 'Sending...' : 'Log in'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSending }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={!this.state.isSending}
+            />
         );
     },
     
@@ -126,30 +122,30 @@ var Login = React.createClass({
         return (
             <div>
                 <MobileButton
-                    caption={ this.state.isSending ? 'Sending...' : 'Log in' }
+                    caption={this.state.isSending ? 'Sending...' : 'Log in'}
                     type='submit'
                     buttonStyle='primary'
-                    onClick={ this.handleSubmit }
-                    isEnabled={ !this.state.isSending }
-                    />
+                    onClick={this.handleSubmit}
+                    isEnabled={!this.state.isSending}
+                />
 
                 <MobileButton
                     caption='Forgot Password?'
-                    onClick={ this.handleGoToResetPassword }
-                    isEnabled={ !this.state.isSending }
-                    />
+                    onClick={this.handleGoToResetPassword}
+                    isEnabled={!this.state.isSending}
+                />
 
                 <MobileButton
                     caption='Log In Without Password'
-                    onClick={ this.handleGoToOneTimeLogin }
-                    isEnabled={ !this.state.isSending }
-                    />
+                    onClick={this.handleGoToOneTimeLogin}
+                    isEnabled={!this.state.isSending}
+                />
 
                 <MobileButton
                     caption='Don&#39;t Have Account?'
-                    onClick={ this.handleGoToSignup }
-                    isEnabled={ !this.state.isSending }
-                    />
+                    onClick={this.handleGoToSignup}
+                    isEnabled={!this.state.isSending}
+                />
             </div>
         );
     },
@@ -157,8 +153,8 @@ var Login = React.createClass({
     render: function() {
         return (
             <div>
-                { this.renderMobileTopMenu() }
-                { this.renderError() }
+                {this.renderMobileTopMenu()}
+                {this.renderError()}
 
                 <CompactContainer>
                     <form>
@@ -167,47 +163,47 @@ var Login = React.createClass({
     
                             <SectionRow>
                                 <TextInput
-                                    inputValue={ this.state.email }
+                                    inputValue={this.state.email}
                                     labelText='Email:'
                                     inputName='email'
-                                    isEmail={ true }
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    isEmail={true}
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            <SectionRow isLast={ true }>
+                            <SectionRow isLast={true}>
                                 <PasswordInput
-                                    inputValue={ this.state.password }
+                                    inputValue={this.state.password}
                                     labelText='Password:'
                                     inputName='password'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            { this.renderDesktopButtons() }
+                            {this.renderDesktopButtons()}
     
-                            <SectionRow isDesktopOnly={ true } >
-                                <AppLink onClick={ this.handleGoToResetPassword }>Forgot Password?</AppLink>
+                            <SectionRow isDesktopOnly={true} >
+                                <AppLink onClick={this.handleGoToResetPassword}>Forgot Password?</AppLink>
                             </SectionRow>
     
-                            <SectionRow isDesktopOnly={ true } >
-                                <AppLink onClick={ this.handleGoToOneTimeLogin }>Log in without Password</AppLink>
+                            <SectionRow isDesktopOnly={true} >
+                                <AppLink onClick={this.handleGoToOneTimeLogin}>Log in without Password</AppLink>
                             </SectionRow>
     
-                            <SectionRow isDesktopOnly={ true } isLast={ true } >
-                                <AppLink onClick={ this.handleGoToSignup }>Sign up Now!</AppLink>
+                            <SectionRow isDesktopOnly={true} isLast={true} >
+                                <AppLink onClick={this.handleGoToSignup}>Sign up Now!</AppLink>
                             </SectionRow>
                         </Section>
     
-                        { this.renderMobileButtons() }
+                        {this.renderMobileButtons()}
                     </form>
                 </CompactContainer>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </div>
         );
     }

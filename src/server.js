@@ -1,39 +1,38 @@
 'use strict';
+/* eslint-disable no-console */
 
 // Perform babel transforms defined in .babelrc (ES6, JSX, etc.) on server-side code
 // Note: the options in .babelrc are also used for client-side code
 // because we use a babel loader in webpack config
 require('babel-register');
 
-var config = require('./config/variables');
-var fs = require('fs');
-var Hapi = require('hapi');
-var HapiReactViews = require('hapi-react-views');
-var Inert = require('inert');
-var path = require('path');
-var secrets = require('./secrets');
-var Vision = require('vision');
-var Url = require('url');
+const config = require('./config/variables');
+const fs = require('fs');
+const Hapi = require('hapi');
+const HapiReactViews = require('hapi-react-views');
+const Inert = require('inert');
+const path = require('path');
+const secrets = require('./secrets');
+const Vision = require('vision');
+const Url = require('url');
 
-var AuthCookie = require('hapi-auth-cookie');
-var setAuthCookie = require('./server/helpers/set-auth-cookie');
-var checkAuthCookie = require('./server/auth/check-auth-cookie');
-var checkCsrfToken = require('./server/auth/check-csrf-token');
+const AuthCookie = require('hapi-auth-cookie');
+const setAuthCookie = require('./server/helpers/set-auth-cookie');
+const checkAuthCookie = require('./server/auth/check-auth-cookie');
+const checkCsrfToken = require('./server/auth/check-csrf-token');
 
-var changePasswordHandler = require('./server/handlers/change-password-handler');
-var importFlightsHandler = require('./server/handlers/import-flights-handler');
-var loginHandler = require('./server/handlers/login-handler');
-var queryHandler = require('./server/handlers/query-handler');
-var resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
-var resetPasswordHandler = require('./server/handlers/reset-password-handler');
-var sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
-var signupHandler = require('./server/handlers/signup-handler');
-var verifyAuthToken = require('./server/helpers/verify-auth-token');
-
-
+const changePasswordHandler = require('./server/handlers/change-password-handler');
+const importFlightsHandler = require('./server/handlers/import-flights-handler');
+const loginHandler = require('./server/handlers/login-handler');
+const queryHandler = require('./server/handlers/query-handler');
+const resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
+const resetPasswordHandler = require('./server/handlers/reset-password-handler');
+const sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
+const signupHandler = require('./server/handlers/signup-handler');
+const verifyAuthToken = require('./server/helpers/verify-auth-token');
 
 
-var server = new Hapi.Server();
+const server = new Hapi.Server();
 
 
 // http connection
@@ -51,7 +50,7 @@ if (secrets.shouldUseSSL) {
         port: config.server.httpsPort,
         tls: {
             key: fs.readFileSync(secrets.sslKeyFileName, 'utf8'),
-            cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8'),
+            cert: fs.readFileSync(secrets.sslCrtFileName, 'utf8')
             // ssl certificate chain (uncomment if your CA cert file doesn't include the full chain)
             // ca: [
             //     fs.readFileSync(secrets.sslIntermediateCrtFileName, 'utf8'),
@@ -91,17 +90,16 @@ if (secrets.shouldUseSSL) {
 }
 
 
-var plugins = [
+const plugins = [
     { register: Inert }, // enables serving static files (file and directory handlers)
     { register: Vision }, // enables rendering views with custom engines (view handler)
     { register: AuthCookie } // cookie authentication scheme
 ];
 // Enable proxying requests to webpack dev server (proxy handler)
 if (process.env.NODE_ENV === 'development') {
-    var H2o2 = require('h2o2');
+    const H2o2 = require('h2o2');
     plugins.push({ register: H2o2 });
 }
-
 
 
 server.register(plugins, err => {
@@ -215,7 +213,7 @@ server.register(plugins, err => {
             }
         },
         handler: function(request, reply) {
-            var isLoggedIn = request.auth.isAuthenticated;
+            const isLoggedIn = request.auth.isAuthenticated;
             reply.view('about', { isLoggedIn: isLoggedIn }); // about.jsx in /views
         }
     });

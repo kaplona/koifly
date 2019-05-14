@@ -1,9 +1,8 @@
 'use strict';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-
-var NavigationMenu = require('./components/common/menu/navigation-menu');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const NavigationMenu = require('./components/common/menu/navigation-menu');
 
 
 if (process.env.NODE_ENV !== 'development') {

@@ -1,27 +1,25 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
-var _ = require('lodash');
-
-var DomUtil = require('../../utils/dom-util');
-var ErrorTypes = require('../../errors/error-types');
-var Validation = require('../../utils/validation');
-
-var Button = require('../common/buttons/button');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorBox = require('../common/notice/error-box');
-var SectionLoader = require('../common/section/section-loader');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
-var View = require('../common/view');
+const React = require('react');
+const _ = require('lodash');
+const browserHistory = require('react-router').browserHistory;
+const Button = require('../common/buttons/button');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const DomUtil = require('../../utils/dom-util');
+const ErrorBox = require('../common/notice/error-box');
+const ErrorTypes = require('../../errors/error-types');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const SectionLoader = require('../common/section/section-loader');
+const Validation = require('../../utils/validation');
+const View = require('../common/view');
 
 
-var editViewMixin = function(modelKey) {
+const editViewMixin = function(modelKey) {
 
     const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
-    var Model = VIEW_ASSETS.model;
+    const Model = VIEW_ASSETS.model;
 
     return {
 
@@ -49,7 +47,7 @@ var editViewMixin = function(modelKey) {
             }
 
             // Fetch item
-            var item = Model.getEditOutput(this.props.params.id);
+            const item = Model.getEditOutput(this.props.params.id);
 
             // Check for errors
             if (item && item.error) {
@@ -69,7 +67,7 @@ var editViewMixin = function(modelKey) {
          * @param {string} inputValue
          */
         handleInputChange: function(inputName, inputValue) {
-            var newItem = _.extend({}, this.state.item, { [inputName]: inputValue });
+            const newItem = _.extend({}, this.state.item, { [inputName]: inputValue });
             this.setState({ item: newItem }, () => {
                 this.updateValidationErrors(this.getValidationErrors(true));
             });
@@ -84,7 +82,7 @@ var editViewMixin = function(modelKey) {
         },
 
         handleCancelEdit: function() {
-            var path;
+            let path;
             if (this.props.params.id) {
                 path = `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}`;
             } else {
@@ -99,7 +97,7 @@ var editViewMixin = function(modelKey) {
                 event.preventDefault();
             }
 
-            var validationErrors = this.getValidationErrors();
+            const validationErrors = this.getValidationErrors();
             if (validationErrors) {
                 DomUtil.scrollToTheTop();
                 this.updateValidationErrors(validationErrors);
@@ -115,7 +113,7 @@ var editViewMixin = function(modelKey) {
         },
 
         handleDeleteItem: function() {
-            var alertMessage = VIEW_ASSETS.deleteAlertMessage;
+            const alertMessage = VIEW_ASSETS.deleteAlertMessage;
 
             if (window.confirm(alertMessage)) {
                 this.setState({ isDeleting: true });
@@ -179,21 +177,21 @@ var editViewMixin = function(modelKey) {
         renderNavigationMenu: function() {
             return (
                 <NavigationMenu
-                    currentView={ Model.getModelKey() }
-                    isPositionFixed={ !this.state.isInputInFocus }
-                    />
+                    currentView={Model.getModelKey()}
+                    isPositionFixed={!this.state.isInputInFocus}
+                />
             );
         },
 
         renderSimpleLayout: function(children) {
             return (
-                <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+                <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                     <MobileTopMenu
                         leftButtonCaption='Cancel'
-                        onLeftClick={ this.handleCancelEdit }
-                        />
-                    { this.renderNavigationMenu() }
-                    { children }
+                        onLeftClick={this.handleCancelEdit}
+                    />
+                    {this.renderNavigationMenu()}
+                    {children}
                 </View>
             );
         },
@@ -206,13 +204,13 @@ var editViewMixin = function(modelKey) {
 
         renderLoadingError: function() {
             return this.renderSimpleLayout(
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />
             );
         },
         
         renderProcessingError: function() {
             if (this.state.processingError) {
-                return <ErrorBox error={ this.state.processingError } />;
+                return <ErrorBox error={this.state.processingError} />;
             }
         },
         
@@ -220,13 +218,13 @@ var editViewMixin = function(modelKey) {
             return (
                 <div>
                     <MobileButton
-                        caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                        caption={this.state.isSaving ? 'Saving...' : 'Save'}
                         type='submit'
                         buttonStyle='primary'
-                        onClick={ this.handleSubmit }
-                        isEnabled={ !this.isProcessing() }
-                        />
-                    { this.renderMobileDeleteButton() }
+                        onClick={this.handleSubmit}
+                        isEnabled={!this.isProcessing()}
+                    />
+                    {this.renderMobileDeleteButton()}
                 </div>
             );
         },
@@ -235,11 +233,11 @@ var editViewMixin = function(modelKey) {
             if (this.props.params.id) {
                 return (
                     <MobileButton
-                        caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                        caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
                         buttonStyle='warning'
-                        onClick={ this.handleDeleteItem }
-                        isEnabled={ !this.isProcessing() }
-                        />
+                        onClick={this.handleDeleteItem}
+                        isEnabled={!this.isProcessing()}
+                    />
                 );
             }
         },
@@ -247,24 +245,24 @@ var editViewMixin = function(modelKey) {
         renderDesktopButtons: function() {
             return (
                 <DesktopBottomGrid
-                    leftElements={ [
+                    leftElements={[
                         this.renderSaveButton(),
                         this.renderCancelButton()
-                    ] }
-                    rightElement={ this.renderDeleteButton() }
-                    />
+                    ]}
+                    rightElement={this.renderDeleteButton()}
+                />
             );
         },
 
         renderSaveButton: function() {
             return (
                 <Button
-                    caption={ this.state.isSaving ? 'Saving...' : 'Save' }
+                    caption={this.state.isSaving ? 'Saving...' : 'Save'}
                     type='submit'
                     buttonStyle='primary'
-                    onClick={ this.handleSubmit }
-                    isEnabled={ !this.isProcessing() }
-                    />
+                    onClick={this.handleSubmit}
+                    isEnabled={!this.isProcessing()}
+                />
             );
         },
 
@@ -273,9 +271,9 @@ var editViewMixin = function(modelKey) {
                 <Button
                     caption='Cancel'
                     buttonStyle='secondary'
-                    onClick={ this.handleCancelEdit }
-                    isEnabled={ !this.isProcessing() }
-                    />
+                    onClick={this.handleCancelEdit}
+                    isEnabled={!this.isProcessing()}
+                />
             );
         },
         
@@ -283,11 +281,11 @@ var editViewMixin = function(modelKey) {
             if (this.props.params.id) {
                 return (
                     <Button
-                        caption={ this.state.isDeleting ? 'Deleting...' : 'Delete' }
+                        caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
                         buttonStyle='warning'
-                        onClick={ this.handleDeleteItem }
-                        isEnabled={ !this.isProcessing() }
-                        />
+                        onClick={this.handleDeleteItem}
+                        isEnabled={!this.isProcessing()}
+                    />
                 );
             }
         }

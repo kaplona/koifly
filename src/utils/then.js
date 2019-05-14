@@ -1,7 +1,7 @@
 'use strict';
 
 
-var then = (callback, timeout) => {
+const then = (callback, timeout) => {
     setTimeout(callback, timeout ? timeout : 10);
     return { then: then };
 };

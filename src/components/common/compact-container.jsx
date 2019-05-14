@@ -1,20 +1,17 @@
 'use strict';
 
-
-var React = require('react');
+const React = require('react');
 
 require('./compact-container.less');
 
 
-var CompactContainer = React.createClass({
-    render: function() {
-        return (
-            <div className='compact-container'>
-                { this.props.children }
-            </div>
-        );
-    }
-});
+function CompactContainer(props) {
+    return (
+        <div className='compact-container'>
+            {props.children}
+        </div>
+    );
+}
 
 
 module.exports = CompactContainer;

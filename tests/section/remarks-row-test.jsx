@@ -1,25 +1,23 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var RemarksRow = require('../../src/components/common/section/remarks-row');
-
+const RemarksRow = require('../../src/components/common/section/remarks-row');
 
 
 describe('RemarksRow component', () => {
 
-    var component;
+    let component;
 
-    var defaults = {
+    const defaults = {
         className: 'remarks'
     };
 
-    var mocks = {
+    const mocks = {
         firstLine: 'first test line',
         secondLine: 'second test line',
         thirdLine: 'third test line'
@@ -29,19 +27,19 @@ describe('RemarksRow component', () => {
     before(() => {
         component = TestUtils.renderIntoDocument(
             <RemarksRow
-                value={ [
+                value={[
                     mocks.firstLine,
                     mocks.secondLine,
                     mocks.thirdLine
-                ].join('\n') }
-                />
+                ].join('\n')}
+            />
         );
     });
 
     it('renders remarks in proper place and split it into new lines', () => {
-        let remarks = ReactDOM.findDOMNode(component).querySelector(`.${defaults.className}`);
-        let remarksSpans = remarks.children;
-        let remarksNewLines = remarks.getElementsByTagName('br');
+        const remarks = ReactDOM.findDOMNode(component).querySelector(`.${defaults.className}`);
+        const remarksSpans = remarks.children;
+        const remarksNewLines = remarks.getElementsByTagName('br');
 
         expect(remarksSpans).to.have.lengthOf(3);
         expect(remarksNewLines).to.have.lengthOf(3);

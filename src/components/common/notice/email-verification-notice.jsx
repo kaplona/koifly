@@ -3,9 +3,8 @@
 const React = require('react');
 const { bool, func, string } = React.PropTypes;
 const dataService = require('../../../services/data-service');
-const PilotModel = require('../../../models/pilot');
-
 const Notice = require('./notice');
+const PilotModel = require('../../../models/pilot');
 
 
 const EmailVerificationNotice = React.createClass({
@@ -55,14 +54,14 @@ const EmailVerificationNotice = React.createClass({
 
         return (
             <Notice
-                buttonText={ this.state.isSending ? 'Sending...' : 'Send email again' }
-                isButtonEnabled={ !this.state.isSending }
+                buttonText={this.state.isSending ? 'Sending...' : 'Send email again'}
+                isButtonEnabled={!this.state.isSending}
                 isPadded={this.props.isPadded}
-                text={ noticeText }
-                type={ type }
-                onClick={ onClick }
-                onClose={ this.props.onClose }
-                />
+                text={noticeText}
+                type={type}
+                onClick={onClick}
+                onClose={this.props.onClose}
+            />
         );
     }
 });

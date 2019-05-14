@@ -1,15 +1,14 @@
 'use strict';
 
-var React = require('react');
-var Label = require('../section/label');
-var InputContainer = require('./input-container');
-var Dropdown = require('./dropdown');
-var ValidationError = require('../section/validation-error');
+const React = require('react');
+const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
+const Label = require('../section/label');
+const InputContainer = require('./input-container');
+const Dropdown = require('./dropdown');
+const ValidationError = require('../section/validation-error');
 
 
-var { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
-
-var DropdownInput = React.createClass({
+const DropdownInput = React.createClass({
 
     propTypes: {
         selectedValue: oneOfType([string, number]),
@@ -30,32 +29,32 @@ var DropdownInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
     render: function() {
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
                     <Dropdown
-                        className={ (this.props.errorMessage) ? 'x-error' : null }
-                        selectedValue={ this.props.selectedValue }
-                        options={ this.props.options }
-                        inputName={ this.props.inputName }
-                        emptyText={ this.props.emptyText }
-                        emptyValue={ this.props.emptyValue }
-                        noSort={ this.props.noSort }
-                        onChangeFunc={ this.props.onChangeFunc }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
-                        />
+                        className={(this.props.errorMessage) ? 'x-error' : null}
+                        selectedValue={this.props.selectedValue}
+                        options={this.props.options}
+                        inputName={this.props.inputName}
+                        emptyText={this.props.emptyText}
+                        emptyValue={this.props.emptyValue}
+                        noSort={this.props.noSort}
+                        onChangeFunc={this.props.onChangeFunc}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
+                    />
                 </InputContainer>
             </div>
         );

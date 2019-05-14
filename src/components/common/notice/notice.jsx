@@ -51,10 +51,10 @@ const Notice = React.createClass({
             return (
                 <input
                     type='button'
-                    value={ this.props.buttonText }
-                    disabled={ !this.props.isButtonEnabled }
-                    onClick={ this.handleClick }
-                    />
+                    value={this.props.buttonText}
+                    disabled={!this.props.isButtonEnabled}
+                    onClick={this.handleClick}
+                />
             );
         }
     },
@@ -64,9 +64,9 @@ const Notice = React.createClass({
             return (
                 <div
                     className='close'
-                    onClick={ this.handleClose }
-                    onTouchStart={ () => {} } // required for iOS webkit browser to trigger :active pseudo state
-                    >
+                    onClick={this.handleClose}
+                    onTouchStart={() => {}} // required for iOS webkit browser to trigger :active pseudo state
+                >
                     x
                 </div>
             );
@@ -81,10 +81,10 @@ const Notice = React.createClass({
 
         return (
             <div className={this.props.isPadded ? 'notice__padded-container' : ''}>
-                <div className={ className }>
-                    { this.props.text }
-                    { this.renderButton() }
-                    { this.renderCloseButton() }
+                <div className={className}>
+                    {this.props.text}
+                    {this.renderButton()}
+                    {this.renderCloseButton()}
                 </div>
             </div>
         );

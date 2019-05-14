@@ -1,22 +1,20 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var Label = require('../../src/components/common/section/label');
-var RowContent = require('../../src/components/common/section/row-content');
-var ValueContainer = require('../../src/components/common/section/value-container');
-
+const Label = require('../../src/components/common/section/label');
+const RowContent = require('../../src/components/common/section/row-content');
+const ValueContainer = require('../../src/components/common/section/value-container');
 
 
 describe('RowContent component', () => {
 
-    var component;
+    let component;
 
-    var mocks = {
+    const mocks = {
         labelText: 'test label text',
         valueText: 'test value text'
     };
@@ -25,15 +23,15 @@ describe('RowContent component', () => {
     before(() => {
         component = TestUtils.renderIntoDocument(
             <RowContent
-                label={ mocks.labelText }
-                value={ mocks.valueText }
-                />
+                label={mocks.labelText}
+                value={mocks.valueText}
+            />
         );
     });
 
     it('renders passed props text in proper places', () => {
-        let label = TestUtils.findRenderedComponentWithType(component, Label);
-        let valueContainer = TestUtils.findRenderedComponentWithType(component, ValueContainer);
+        const label = TestUtils.findRenderedComponentWithType(component, Label);
+        const valueContainer = TestUtils.findRenderedComponentWithType(component, ValueContainer);
 
         expect(label).to.have.deep.property('props.children', mocks.labelText);
         expect(valueContainer).to.have.deep.property('props.children', mocks.valueText);

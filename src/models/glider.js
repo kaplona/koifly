@@ -1,13 +1,12 @@
 'use strict';
 
-var _ = require('lodash');
-var objectValues = require('object.values');
+const _ = require('lodash');
+const BaseModel = require('./base-model');
+const objectValues = require('object.values');
+const Util = require('../utils/util');
 
-var BaseModel = require('./base-model');
-var Util = require('../utils/util');
 
-
-var GliderModel = {
+let GliderModel = {
 
     keys: {
         single: 'glider',
@@ -69,13 +68,13 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getListOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
 
         // require FlightModel here so as to avoid circle requirements
-        var FlightModel = require('./flight');
+        const FlightModel = require('./flight');
 
         return objectValues(storeContent).map(glider => {
             return {
@@ -96,17 +95,17 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getItemOutput: function(gliderId) {
-        var glider = this.getStoreContent(gliderId);
+        const glider = this.getStoreContent(gliderId);
         if (!glider || glider.error) {
             return glider;
         }
 
         // require FlightModel here so as to avoid circle requirements
-        var FlightModel = require('./flight');
+        const FlightModel = require('./flight');
 
-        var flightNumObj = FlightModel.getNumberOfFlightsOnGlider(glider.id);
-        var trueFlightNum = glider.initialFlightNum + flightNumObj.total;
-        var flightNumThisYear = flightNumObj.thisYear;
+        const flightNumObj = FlightModel.getNumberOfFlightsOnGlider(glider.id);
+        const trueFlightNum = glider.initialFlightNum + flightNumObj.total;
+        const flightNumThisYear = flightNumObj.thisYear;
 
         return {
             id: glider.id,
@@ -133,15 +132,15 @@ var GliderModel = {
             return this.getNewItemOutput();
         }
 
-        var glider = this.getStoreContent(gliderId);
+        const glider = this.getStoreContent(gliderId);
         if (!glider || glider.error) {
             return glider;
         }
         
         // If initialFlightNum or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
-        var initialFlightNum = glider.initialFlightNum || '';
-        var hoursMinutes = Util.getHoursMinutes(glider.initialAirtime);
+        const initialFlightNum = glider.initialFlightNum || '';
+        const hoursMinutes = Util.getHoursMinutes(glider.initialAirtime);
 
         return {
             id: glider.id,
@@ -161,7 +160,7 @@ var GliderModel = {
      * error object - if data wasn't loaded due to error
      */
     getNewItemOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
@@ -203,7 +202,7 @@ var GliderModel = {
      * @returns {string|null} - glider's name or null if no glider with given id
      */
     getGliderName: function(gliderId) {
-        var getStoreContent = this.getStoreContent(gliderId);
+        const getStoreContent = this.getStoreContent(gliderId);
         return !getStoreContent.error ? getStoreContent.name : null;
     },
     
@@ -212,7 +211,7 @@ var GliderModel = {
      * @returns {number|null} - id of last created glider or null if no gliders yet
      */
     getLastAddedId: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (_.isEmpty(storeContent)) {
             return null;
         }

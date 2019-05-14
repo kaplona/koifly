@@ -18,7 +18,7 @@ const TrackMap = React.createClass({
         isFullScreen: bool,
         markerCoords: PROP_TYPES.coordinates,
         trackCoords: arrayOf(PROP_TYPES.coordinates).isRequired,
-        mapFacadePromise: PROP_TYPES.promise.isRequired,
+        mapFacadePromise: PROP_TYPES.promise.isRequired
     },
 
     getDefaultProps: function() {
@@ -68,13 +68,12 @@ const TrackMap = React.createClass({
         const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
         return (
-            <div className={ this.props.isFullScreen ? 'static-wrapper' : null }>
-                <div className={ className } ref='map'/>
+            <div className={this.props.isFullScreen ? 'static-wrapper' : null}>
+                <div className={className} ref='map' />
             </div>
         );
     }
 });
-
 
 
 TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
@@ -84,8 +83,8 @@ TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     return (
         <TrackMap
             {...props}
-            mapFacadePromise={ mapFacadePromise }
-            />
+            mapFacadePromise={mapFacadePromise}
+        />
     );
 };
 

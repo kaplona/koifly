@@ -1,14 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
+const BaseModel = require('./base-model');
+const dataService = require('../services/data-service');
+const ErrorTypes = require('../errors/error-types');
+const Util = require('../utils/util');
 
-var BaseModel = require('./base-model');
-var dataService = require('../services/data-service');
-var ErrorTypes = require('../errors/error-types');
-var Util = require('../utils/util');
 
-
-var PilotModel = {
+let PilotModel = {
     
     keys: {
         single: 'pilot',
@@ -33,7 +32,7 @@ var PilotModel = {
                 field: 'Initial Number of Flights'
             }
         },
-        hours:  {
+        hours: {
             method: 'number',
             rules: {
                 min: 0,
@@ -63,20 +62,20 @@ var PilotModel = {
      * error object - if data wasn't loaded due to error
      */
     getPilotOutput: function() {
-        var pilot = this.getStoreContent();
+        const pilot = this.getStoreContent();
         if (!pilot || pilot.error) {
             return pilot;
         }
 
         // require FlightModel here so as to avoid circle requirements
-        var FlightModel = require('./flight');
+        const FlightModel = require('./flight');
 
-        var flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
-        var flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
-        var airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
-        var siteNum = FlightModel.getNumberOfVisitedSites();
-        var gliderNum = FlightModel.getNumberOfUsedGliders();
-        var daysSinceLastFlight = FlightModel.getDaysSinceLastFlight();
+        const flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
+        const flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();
+        const airtimeTotal = pilot.initialAirtime + FlightModel.getTotalAirtime();
+        const siteNum = FlightModel.getNumberOfVisitedSites();
+        const gliderNum = FlightModel.getNumberOfUsedGliders();
+        const daysSinceLastFlight = FlightModel.getDaysSinceLastFlight();
 
         return {
             email: pilot.email,
@@ -99,15 +98,15 @@ var PilotModel = {
      * error object - if data wasn't loaded due to error
      */
     getEditOutput: function() {
-        var pilot = this.getStoreContent();
+        const pilot = this.getStoreContent();
         if (!pilot || pilot.error) {
             return pilot;
         }
 
         // If initialFlightNum or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
-        var initialFlightNum = pilot.initialFlightNum || '';
-        var hoursMinutes = Util.getHoursMinutes(pilot.initialAirtime);
+        const initialFlightNum = pilot.initialFlightNum || '';
+        const hoursMinutes = Util.getHoursMinutes(pilot.initialAirtime);
 
         return {
             email: pilot.email,
@@ -165,7 +164,7 @@ var PilotModel = {
 
 
     isLoggedIn: function() {
-        var pilot = this.getStoreContent();
+        const pilot = this.getStoreContent();
         return (
             pilot !== null &&
             (!pilot.error || pilot.error.type !== ErrorTypes.AUTHENTICATION_ERROR)
@@ -177,7 +176,7 @@ var PilotModel = {
      * @returns {string|null} - email address or null if no pilot information in front end yet
      */
     getEmailAddress: function() {
-        var pilot = this.getStoreContent();
+        const pilot = this.getStoreContent();
         if (!pilot || pilot.error) {
             return null;
         }
@@ -191,7 +190,7 @@ var PilotModel = {
      * so he won't get email verification notice until we know for sure that email is not verified
      */
     getUserActivationStatus: function() {
-        var pilot = this.getStoreContent();
+        const pilot = this.getStoreContent();
         if (!pilot) {
             return true;
         }

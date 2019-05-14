@@ -6,7 +6,7 @@ module.exports = function(markup) {
         return;
     }
 
-    var jsdom = require('jsdom').jsdom;
+    const jsdom = require('jsdom').jsdom;
     global.document = jsdom(markup || '<html><body></body></html>');
     global.window = document.defaultView;
     global.navigator = window.navigator;

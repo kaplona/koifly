@@ -1,36 +1,32 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var InputContainer = require('../../src/components/common/inputs/input-container');
-
+const InputContainer = require('../../src/components/common/inputs/input-container');
 
 
 describe('InputContainer component', () => {
 
-    var component;
+    let component;
 
-    var mocks = {
+    const mocks = {
         inputText: 'test input text'
     };
 
     before(() => {
         component = TestUtils.renderIntoDocument(
             <InputContainer>
-                <input
-                    value={ mocks.inputText }
-                    />
+                <input value={mocks.inputText} />
             </InputContainer>
         );
     });
 
     it('renders parsed children', () => {
-        let input = ReactDOM.findDOMNode(component).querySelector('input');
+        const input = ReactDOM.findDOMNode(component).querySelector('input');
 
         expect(input).to.have.property('value', mocks.inputText);
     });

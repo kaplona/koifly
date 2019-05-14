@@ -1,31 +1,32 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
-var Util = require('../../utils/util');
+const React = require('react');
+const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
+const _ = require('lodash');
+const Util = require('../../utils/util');
 
 require('./table.less');
 
 
-var Table = React.createClass({
+const Table = React.createClass({
 
     propTypes: {
-        rows: React.PropTypes.arrayOf(React.PropTypes.shape({
-            id: React.PropTypes.number.isRequired
+        rows: arrayOf(shape({
+            id: number.isRequired
         })),
-        columns: React.PropTypes.arrayOf(React.PropTypes.shape({
-            key: React.PropTypes.string.isRequired,
-            label: React.PropTypes.string.isRequired,
-            defaultSortingDirection: React.PropTypes.bool.isRequired,
-            sortingKey: React.PropTypes.string
+        columns: arrayOf(shape({
+            key: string.isRequired,
+            label: string.isRequired,
+            defaultSortingDirection: bool.isRequired,
+            sortingKey: string
         })).isRequired,
-        initialSortingField: React.PropTypes.string.isRequired,
-        onRowClick: React.PropTypes.func
+        initialSortingField: string.isRequired,
+        onRowClick: func
     },
 
     getInitialState: function() {
-        var sortingField = this.props.initialSortingField;
-        var sortingDirection = this.getDefaultSortingDirection(sortingField);
+        const sortingField = this.props.initialSortingField;
+        const sortingDirection = this.getDefaultSortingDirection(sortingField);
 
         return {
             sortingField: sortingField,
@@ -43,7 +44,7 @@ var Table = React.createClass({
             return;
         }
 
-        var newsortingDirection = this.getDefaultSortingDirection(newSortingField);
+        const newsortingDirection = this.getDefaultSortingDirection(newSortingField);
         this.setState({
             sortingField: newSortingField,
             sortingDirection: newsortingDirection
@@ -57,9 +58,9 @@ var Table = React.createClass({
     },
 
     getDefaultSortingDirection: function(fieldName) {
-        var sortingDirection = true;
-        for (var i = 0; i < this.props.columns.length; i++) {
-            var column = this.props.columns[i];
+        let sortingDirection = true;
+        for (let i = 0; i < this.props.columns.length; i++) {
+            const column = this.props.columns[i];
             // If sortingKey column property presents, compare it to fieldName
             // otherwise compare fieldName with key property
             if ((column.sortingKey && column.sortingKey === fieldName) ||
@@ -74,9 +75,9 @@ var Table = React.createClass({
 
     render: function() {
 
-        var headerNodes = _.map(this.props.columns, column => {
-            var arrow = '\u25bc';
-            var arrowClassName = 'arrow';
+        const headerNodes = _.map(this.props.columns, column => {
+            let arrow = '\u25bc';
+            let arrowClassName = 'arrow';
             if (column.key === this.state.sortingField ||
                 column.sortingKey === this.state.sortingField
             ) {
@@ -87,40 +88,40 @@ var Table = React.createClass({
 
             return (
                 <th
-                    key={ 'column-' + column.key }
-                    onClick={ () => this.handleSorting(column.sortingKey || column.key) }
-                    >
-                    { column.label }
-                    <span className={ arrowClassName }>{ arrow }</span>
+                    key={'column-' + column.key}
+                    onClick={() => this.handleSorting(column.sortingKey || column.key)}
+                >
+                    {column.label}
+                    <span className={arrowClassName}>{arrow}</span>
                 </th>
             );
         });
 
 
-        var sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
-        var sortedRows = _.sortByOrder(
+        const sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
+        const sortedRows = _.sortByOrder(
             this.props.rows,
             // make string uppercase so as to avoid ABCabc type of sorting
             [ row => Util.upperCaseString(row[this.state.sortingField]) ],
             [ sortingOrder ]
         );
 
-        var rowNodes = _.map(sortedRows, row => {
-            var rowToDisplay = [];
-            for (var i = 0; i < this.props.columns.length; i++) {
-                var columnKey = this.props.columns[i].key;
+        const rowNodes = _.map(sortedRows, row => {
+            const rowToDisplay = [];
+            for (let i = 0; i < this.props.columns.length; i++) {
+                const columnKey = this.props.columns[i].key;
                 rowToDisplay.push(
-                    <td key={ 'cell-' + row.id + '-' + columnKey } >
-                        { Util.formatText(row[columnKey]) }
+                    <td key={'cell-' + row.id + '-' + columnKey} >
+                        {Util.formatText(row[columnKey])}
                     </td>
                 );
             }
             return (
                 <tr
-                    key={ 'row-' + row.id }
-                    onClick={ () => this.handleRowClick(row.id) }
-                    >
-                    { rowToDisplay }
+                    key={'row-' + row.id}
+                    onClick={() => this.handleRowClick(row.id)}
+                >
+                    {rowToDisplay}
                 </tr>
             );
         });
@@ -128,9 +129,9 @@ var Table = React.createClass({
         return (
             <table className='koifly-table'>
                 <thead>
-                    <tr>{ headerNodes }</tr>
+                    <tr>{headerNodes}</tr>
                 </thead>
-                <tbody>{ rowNodes }</tbody>
+                <tbody>{rowNodes}</tbody>
             </table>
         );
     }

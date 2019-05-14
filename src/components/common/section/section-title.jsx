@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool} = React.PropTypes;
+const { bool } = React.PropTypes;
 
 require('./section-title.less');
 
@@ -10,13 +10,13 @@ const SectionTitle = React.createClass({
 
     propTypes: {
         isDesktopOnly: bool,
-        isSubtitle: bool,
+        isSubtitle: bool
     },
 
     getDefaultProps: function() {
         return {
             isDesktopOnly: false,
-            isSubtitle: false,
+            isSubtitle: false
         };
     },
 
@@ -30,8 +30,8 @@ const SectionTitle = React.createClass({
         }
 
         return (
-            <div className={ className }>
-                { this.props.children }
+            <div className={className}>
+                {this.props.children}
             </div>
         );
     }

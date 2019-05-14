@@ -1,10 +1,9 @@
 'use strict';
 
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var Pilot = require('../../orm/models/pilots');
-
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const Pilot = require('../../orm/models/pilots');
 
 
 /**
@@ -16,8 +15,8 @@ var Pilot = require('../../orm/models/pilots');
  * @param {string} authToken
  * @returns {Promise.<pilot>} - sequelize instance of pilot record
  */
-var verifyAuthToken = function(pilotId, authToken) {
-    var pilot; // we need it to have reference to current pilot
+const verifyAuthToken = function(pilotId, authToken) {
+    let pilot; // we need it to have reference to current pilot
 
     return Pilot
         .findById(pilotId)

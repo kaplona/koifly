@@ -30,7 +30,7 @@ const chartService = {
         '#8D54FF',
         '#FA9393',
         '#4E145C',
-        '#6065F0',
+        '#6065F0'
     ],
 
     getColor(index) {
@@ -52,7 +52,7 @@ const chartService = {
             color: Highcharts.getOptions().colors[0],
             data: altitudePoints,
             name: 'Altitude',
-            type: 'line',
+            type: 'line'
         };
     },
 
@@ -73,7 +73,7 @@ const chartService = {
             return {
                 x: point.airtimeInSeconds,
                 y: liftInPilotUnits
-            }
+            };
         });
 
         return {
@@ -81,7 +81,7 @@ const chartService = {
             data: liftPoints,
             name: 'Lift',
             negativeColor: '#0088FF',
-            type: 'area',
+            type: 'area'
         };
     },
 
@@ -100,14 +100,14 @@ const chartService = {
             return {
                 x: point.airtimeInSeconds,
                 y: distanceService.getDistanceInGivenUnits(distance, unit)
-            }
+            };
         });
 
         return {
             color: Highcharts.getOptions().colors[2],
             data: distancePoints,
             name: 'Distance to launch',
-            type: 'line',
+            type: 'line'
         };
     },
 
@@ -128,7 +128,7 @@ const chartService = {
             return {
                 x: point.airtimeInSeconds,
                 y: (altitude > 10) ? distance / altitude : 0
-            }
+            };
         });
 
         return {
@@ -156,17 +156,17 @@ const chartService = {
                 totalAirtime: 0,
                 totalFlightNum: 0,
                 siteColor: this.getColor(index),
-                yearly: {},
+                yearly: {}
             };
         });
 
         const bucketHeight = 200; // meters
         function addToMaxAltBuckets(maxAltBuckets, flightBucket, flightId) {
-            const existingBucket = maxAltBuckets.find(({from}) => (from === flightBucket.from));
+            const existingBucket = maxAltBuckets.find(({ from }) => (from === flightBucket.from));
             if (existingBucket) {
                 existingBucket.flightIds.push(flightId);
             } else {
-                maxAltBuckets.push(Object.assign({}, flightBucket, { flightIds: [flightId] }));
+                maxAltBuckets.push(Object.assign({}, flightBucket, { flightIds: [ flightId ] }));
                 maxAltBuckets.sort((a, b) => (a.from - b.from));
             }
         }
@@ -181,7 +181,7 @@ const chartService = {
             const flightBucket = {
                 from: Altitude.getAltitudeInPilotUnits(from),
                 to: Altitude.getAltitudeInPilotUnits(to),
-                mid: Altitude.getAltitudeInPilotUnits(mid),
+                mid: Altitude.getAltitudeInPilotUnits(mid)
             };
 
             // Total stats.
@@ -198,7 +198,7 @@ const chartService = {
                     totalAirtime: 0,
                     totalFlightNum: 0,
                     maxAltBuckets: [],
-                    monthly: {},
+                    monthly: {}
                 };
             }
             siteStats[flight.siteId].yearly[flightYear].totalAirtime += flight.airtime;
@@ -212,7 +212,7 @@ const chartService = {
                     totalAirtime: 0,
                     totalFlightNum: 0,
                     maxAltBuckets: [],
-                    daily: {},
+                    daily: {}
                 };
             }
             siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].totalAirtime += flight.airtime;
@@ -225,7 +225,7 @@ const chartService = {
                 siteStats[flight.siteId].yearly[flightYear].monthly[flightMonth].daily[flightDayOfMonth] = {
                     totalAirtime: 0,
                     totalFlightNum: 0,
-                    maxAltBuckets: [],
+                    maxAltBuckets: []
                 };
             }
 
@@ -236,9 +236,9 @@ const chartService = {
 
         return {
             years: years.sort(),
-            bySite: objectValues(siteStats),
+            bySite: objectValues(siteStats)
         };
-    },
+    }
 };
 
 module.exports = chartService;

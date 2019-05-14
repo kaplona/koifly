@@ -1,7 +1,7 @@
 'use strict';
 
 
-var GeneralConstants = {
+const GeneralConstants = {
     
     EMPTY_FIELD: '—'
 };

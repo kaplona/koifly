@@ -1,10 +1,9 @@
 'use strict';
 
 const React = require('react');
-const PublicLinksMixin = require('./public-links-mixin');
-
 const NavigationMenu = require('../common/menu/navigation-menu');
 const Notice = require('../common/notice/notice');
+const PublicLinksMixin = require('./public-links-mixin');
 
 
 const PublicViewMixin = {
@@ -39,15 +38,15 @@ const PublicViewMixin = {
     renderNavigationMenu: function() {
         return (
             <NavigationMenu
-                isMobile={ true }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                isMobile={true}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
     renderError: function() {
         if (this.state.error) {
-            return <Notice isPadded={ true } type='error' text={ this.state.error.message } />;
+            return <Notice isPadded={true} type='error' text={this.state.error.message} />;
         }
     }
 };

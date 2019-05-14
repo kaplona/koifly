@@ -27,7 +27,7 @@ const TimeInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
@@ -39,37 +39,37 @@ const TimeInput = React.createClass({
 
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
                     <input
-                        className={ inputClassName }
-                        value={ this.props.hours || '' }
+                        className={inputClassName}
+                        value={this.props.hours || ''}
                         type='text'
                         pattern='[0-9]*'
                         placeholder='0'
-                        onChange={ () => this.handleUserInput('hours') }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
+                        onChange={() => this.handleUserInput('hours')}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
                         ref='hours'
-                        />
+                    />
                     <div className='mobile col-of-four'>h</div>
                     <div className='desktop col-of-four'>hours</div>
                     <input
-                        className={ inputClassName }
-                        value={ this.props.minutes || '' }
+                        className={inputClassName}
+                        value={this.props.minutes || ''}
                         type='text'
                         pattern='[0-9]*'
                         placeholder='0'
-                        onChange={ () => this.handleUserInput('minutes') }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
+                        onChange={() => this.handleUserInput('minutes')}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
                         ref='minutes'
-                        />
+                    />
                     <div className='mobile col-of-four'>min</div>
                     <div className='desktop col-of-four'>minutes</div>
                 </InputContainer>

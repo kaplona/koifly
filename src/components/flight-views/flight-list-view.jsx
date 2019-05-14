@@ -1,17 +1,15 @@
 'use strict';
 
 const React = require('react');
-const _ = require('lodash');
 const Altitude = require('../../utils/altitude');
-const listViewMixin = require('../mixins/list-view-mixin');
-const FlightModel = require('../../models/flight');
-const Util = require('../../utils/util');
-
 const DesktopTopGrid = require('../common/grids/desktop-top-grid');
 const ErrorBox = require('../common/notice/error-box');
+const listViewMixin = require('../mixins/list-view-mixin');
+const FlightModel = require('../../models/flight');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
 const Section = require('../common/section/section');
 const Table = require('../common/table');
+const Util = require('../../utils/util');
 const View = require('../common/view');
 
 
@@ -24,17 +22,17 @@ const FlightListView = React.createClass({
             <MobileTopMenu
                 header='Flights'
                 rightButtonCaption='Add'
-                onRightClick={ this.handleAddItem }
-                />
+                onRightClick={this.handleAddItem}
+            />
         );
     },
 
     renderError: function() {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                 <MobileTopMenu header='Flights' />
-                { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+                {this.renderNavigationMenu()}
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />
             </View>
         );
     },
@@ -70,16 +68,16 @@ const FlightListView = React.createClass({
             Object.assign({}, flight, {
                 formattedDate: Util.formatDate(flight.date),
                 formattedAltitude: Altitude.formatAltitudeShort(flight.altitude),
-                formattedAirtime: Util.formatTime(flight.airtime),
+                formattedAirtime: Util.formatTime(flight.airtime)
             })
         ));
 
         return (
             <Table
-                columns={ columns }
-                rows={ rows }
+                columns={columns}
+                rows={rows}
                 initialSortingField='date'
-                onRowClick={ this.handleRowClick }
+                onRowClick={this.handleRowClick}
             />
         );
     },
@@ -95,14 +93,14 @@ const FlightListView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 
                 <Section>
-                    <DesktopTopGrid leftElement={ this.renderAddItemButton() } />
-                    { content }
-                    { this.renderLoader() }
+                    <DesktopTopGrid leftElement={this.renderAddItemButton()} />
+                    {content}
+                    {this.renderLoader()}
                 </Section>
                 
             </View>

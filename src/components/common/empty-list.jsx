@@ -1,25 +1,24 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const { func, string } = React.PropTypes;
 
 require('./empty-list.less');
 
 
-var EmptyList = React.createClass({
-    propTypes: {
-        ofWhichItems: React.PropTypes.string.isRequired, // plural
-        onAdding: React.PropTypes.func.isRequired
-    },
+function EmptyList(props) {
+    return (
+        <div className='empty-list'>
+            <div>{'You don\'t have any ' + props.ofWhichItems + ' yet'}</div>
+            <div className='add-button' onClick={props.onAdding}>+</div>
+        </div>
+    );
+}
 
-    render: function() {
-        return (
-            <div className='empty-list'>
-                <div>{ 'You don\'t have any ' + this.props.ofWhichItems + ' yet' }</div>
-                <div className='add-button' onClick={ this.props.onAdding }>+</div>
-            </div>
-        );
-    }
-});
+EmptyList.propTypes = {
+    ofWhichItems: string.isRequired, // plural
+    onAdding: func.isRequired
+};
 
 
 module.exports = EmptyList;

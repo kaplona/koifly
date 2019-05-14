@@ -1,22 +1,20 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
-
-var listViewMixin = require('../mixins/list-view-mixin');
-var SiteModel = require('../../models/site');
-
-var DesktopTopGrid = require('../common/grids/desktop-top-grid');
-var ErrorBox = require('../common/notice/error-box');
-var Loader = require('../common/loader');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Section = require('../common/section/section');
-var StaticMap = require('../common/maps/static-map');
-var Switcher = require('../common/switcher');
-var View = require('../common/view');
+const React = require('react');
+const browserHistory = require('react-router').browserHistory;
+const DesktopTopGrid = require('../common/grids/desktop-top-grid');
+const ErrorBox = require('../common/notice/error-box');
+const listViewMixin = require('../mixins/list-view-mixin');
+const Loader = require('../common/loader');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Section = require('../common/section/section');
+const SiteModel = require('../../models/site');
+const StaticMap = require('../common/maps/static-map');
+const Switcher = require('../common/switcher');
+const View = require('../common/view');
 
 
-var SiteListMapView = React.createClass({
+const SiteListMapView = React.createClass({
 
     mixins: [ listViewMixin(SiteModel.getModelKey()) ],
 
@@ -30,18 +28,18 @@ var SiteListMapView = React.createClass({
                 header='Sites'
                 leftButtonCaption='List'
                 rightButtonCaption='Add'
-                onLeftClick={ this.handleGoToListView }
-                onRightClick={ this.handleAddItem }
-                />
+                onLeftClick={this.handleGoToListView}
+                onRightClick={this.handleAddItem}
+            />
         );
     },
 
     renderError: function() {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                 <MobileTopMenu header='Sites' />
-                { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />;
+                {this.renderNavigationMenu()}
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />;
             </View>
         );
     },
@@ -51,14 +49,14 @@ var SiteListMapView = React.createClass({
             <Switcher
                 leftButtonCaption='List'
                 rightButtonCaption='Map'
-                onLeftClick={ this.handleGoToListView }
+                onLeftClick={this.handleGoToListView}
                 initialPosition='right'
-                />
+            />
         );
     },
 
     renderMap: function() {
-        var siteList = this.state.items;
+        const siteList = this.state.items;
         return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader />;
     },
 
@@ -68,17 +66,17 @@ var SiteListMapView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 
-                <Section isFullScreen={ true }>
+                <Section isFullScreen={true}>
                     <DesktopTopGrid
-                        leftElement={ this.renderAddItemButton() }
-                        middleElement={ this.renderSwitcher() }
-                        />
+                        leftElement={this.renderAddItemButton()}
+                        middleElement={this.renderSwitcher()}
+                    />
 
-                    { this.renderMap() }
+                    {this.renderMap()}
                 </Section>
             </View>
         );

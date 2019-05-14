@@ -1,36 +1,34 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
-var Label = require('./label');
+const React = require('react');
+const { string } = React.PropTypes;
+const _ = require('lodash');
+const Label = require('./label');
 
 require('./remarks-row.less');
 
 
-var RemarksRow = React.createClass({
-
-    propTypes: {
-        value: React.PropTypes.string.isRequired // can be an empty string
-    },
-
-    render: function() {
-        if (!this.props.value) {
-            return null;
-        }
-
-        var newLines = this.props.value.split('\n');
-        var remarks = _.map(newLines, (newLine, index) => {
-            return <span key={ 'remark-' + index }>{ newLine }<br/></span>;
-        });
-
-        return (
-            <div className='remarks-row'>
-                <Label>Remarks:</Label>
-                <div className='remarks'>{ remarks }</div>
-            </div>
-        );
+function RemarksRow(props) {
+    if (!props.value) {
+        return null;
     }
-});
+
+    const newLines = props.value.split('\n');
+    const remarks = _.map(newLines, (newLine, index) => {
+        return <span key={'remark-' + index}>{newLine}<br/></span>;
+    });
+
+    return (
+        <div className='remarks-row'>
+            <Label>Remarks:</Label>
+            <div className='remarks'>{remarks}</div>
+        </div>
+    );
+}
+
+RemarksRow.propTypes = {
+    value: string.isRequired // can be an empty string
+};
 
 
 module.exports = RemarksRow;

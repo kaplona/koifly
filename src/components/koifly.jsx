@@ -1,19 +1,16 @@
 'use strict';
 
-var React = require('react');
-var Header = require('./common/menu/header');
+const React = require('react');
+const Header = require('./common/menu/header');
 
 
-var Koifly = React.createClass({
-
-    render: function() {
-        return (
-            <div className='content'>
-                <Header />
-                { this.props.children }
-            </div>
-        );
-    }
-});
+function Koifly(props) {
+    return (
+        <div className='content'>
+            <Header />
+            {props.children}
+        </div>
+    );
+}
 
 module.exports = Koifly;

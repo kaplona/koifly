@@ -1,32 +1,30 @@
 'use strict';
 
-var React = require('react');
-
-var dataService = require('../../services/data-service');
-var PublicViewMixin = require('../mixins/public-view-mixin');
-var Util = require('../../utils/util');
-
-var Button = require('../common/buttons/button');
-var CompactContainer = require('../common/compact-container');
-var DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var MobileButton = require('../common/buttons/mobile-button');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var Notice = require('../common/notice/notice');
-var PasswordInput = require('../common/inputs/password-input');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const Button = require('../common/buttons/button');
+const CompactContainer = require('../common/compact-container');
+const dataService = require('../../services/data-service');
+const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const MobileButton = require('../common/buttons/mobile-button');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const Notice = require('../common/notice/notice');
+const PublicViewMixin = require('../mixins/public-view-mixin');
+const PasswordInput = require('../common/inputs/password-input');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const Util = require('../../utils/util');
 
 
-var ResetPassword = React.createClass({
+const ResetPassword = React.createClass({
 
     propTypes: {
-        params: React.PropTypes.shape({ // url args
-            pilotId: React.PropTypes.string.isRequired,
-            authToken: React.PropTypes.string.isRequired
+        params: shape({ // url args
+            pilotId: string.isRequired,
+            authToken: string.isRequired
         })
     },
 
@@ -47,7 +45,7 @@ var ResetPassword = React.createClass({
             event.preventDefault();
         }
 
-        var validationError = this.getValidationError();
+        const validationError = this.getValidationError();
         if (validationError) {
             this.updateError(validationError);
             return;
@@ -59,9 +57,9 @@ var ResetPassword = React.createClass({
             error: null
         });
 
-        var password = this.state.password;
-        var pilotId = this.props.params.pilotId;
-        var authToken = this.props.params.authToken;
+        const password = this.state.password;
+        const pilotId = this.props.params.pilotId;
+        const authToken = this.props.params.authToken;
         dataService
             .resetPassword(password, pilotId, authToken)
             .then(() => this.setState({ successNotice: true }))
@@ -74,7 +72,7 @@ var ResetPassword = React.createClass({
         }
 
         if (this.state.password !== this.state.passwordConfirm) {
-            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'password and confirmed password must be the same');
+            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
         }
 
         return null;
@@ -85,51 +83,51 @@ var ResetPassword = React.createClass({
             <MobileTopMenu
                 header='Koifly'
                 rightButtonCaption='Log in'
-                onRightClick={ this.handleGoToLogin }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onRightClick={this.handleGoToLogin}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
     
     renderDesktopButtons: function() {
-        return <DesktopBottomGrid leftElements={ [ this.renderSaveButton() ] } />;
+        return <DesktopBottomGrid leftElements={[ this.renderSaveButton() ]} />;
     },
 
     renderSaveButton: function() {
         return (
             <Button
-                caption={ this.state.isSending ? 'Saving...' : 'Save' }
+                caption={this.state.isSending ? 'Saving...' : 'Save'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSending }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={!this.state.isSending}
+            />
         );
     },
     
     renderMobileButtons: function() {
         return (
             <MobileButton
-                caption={ this.state.isSending ? 'Saving ...' : 'Save' }
+                caption={this.state.isSending ? 'Saving ...' : 'Save'}
                 type='submit'
                 buttonStyle='primary'
-                onClick={ this.handleSubmit }
-                isEnabled={ !this.state.isSending }
-                />
+                onClick={this.handleSubmit}
+                isEnabled={!this.state.isSending}
+            />
         );
     },
 
     renderSuccessNotice: function() {
         return (
             <div>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 <Notice
                     text='Your password was successfully reset'
                     type='success'
-                    onClick={ this.handleGoToFlightLog }
+                    onClick={this.handleGoToFlightLog}
                     buttonText='Go to App'
-                    />
+                />
             </div>
         );
     },
@@ -141,8 +139,8 @@ var ResetPassword = React.createClass({
 
         return (
             <div>
-                { this.renderMobileTopMenu() }
-                { this.renderError() }
+                {this.renderMobileTopMenu()}
+                {this.renderError()}
 
                 <CompactContainer>
                     <form>
@@ -152,34 +150,34 @@ var ResetPassword = React.createClass({
     
                             <SectionRow>
                                 <PasswordInput
-                                    inputValue={ this.state.password }
+                                    inputValue={this.state.password}
                                     labelText='New Password:'
                                     inputName='password'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            <SectionRow isLast={ true }>
+                            <SectionRow isLast={true}>
                                 <PasswordInput
-                                    inputValue={ this.state.passwordConfirm }
+                                    inputValue={this.state.passwordConfirm}
                                     labelText='Confirm password:'
                                     inputName='passwordConfirm'
-                                    onChange={ this.handleInputChange }
-                                    onFocus={ this.handleInputFocus }
-                                    onBlur={ this.handleInputBlur }
-                                    />
+                                    onChange={this.handleInputChange}
+                                    onFocus={this.handleInputFocus}
+                                    onBlur={this.handleInputBlur}
+                                />
                             </SectionRow>
     
-                            { this.renderDesktopButtons() }
+                            {this.renderDesktopButtons()}
                         </Section>
     
-                        { this.renderMobileButtons() }
+                        {this.renderMobileButtons()}
                     </form>
                 </CompactContainer>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </div>
         );
     }

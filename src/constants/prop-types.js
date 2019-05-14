@@ -1,10 +1,9 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const { func, number, shape } = React.PropTypes;
 
-var { func, number, shape } = React.PropTypes;
-
-var PropTypes = {
+const PropTypes = {
     
     promise: shape({
         then: func.isRequired,

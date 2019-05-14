@@ -1,12 +1,11 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
+const ErrorMessages = require('../errors/error-messages');
+const Util = require('./util');
 
-var ErrorMessages = require('../errors/error-messages');
-var Util = require('./util');
 
-
-var Validation = {
+const Validation = {
 
     /**
      * @param {object} validationConfig - config rules to check user inputs against { fieldName: rulesObj }
@@ -15,11 +14,11 @@ var Validation = {
      * @returns {object|null} - object with validation error messages { fieldName: msg } or null if no errors found
      */
     getValidationErrors: function(validationConfig, formData, isSoft) {
-        var validationErrors = {};
+        const validationErrors = {};
 
         // For each field of given form
         _.each(validationConfig, (config, fieldName) => {
-            var nextError = null;
+            let nextError = null;
 
             // It's error if required field is empty and it isn't soft validation mode
             if (Util.isEmptyString(formData[fieldName]) && !isSoft && config.isRequired) {
@@ -28,8 +27,8 @@ var Validation = {
 
             // If field isn't empty check its value against its validation config
             if (!Util.isEmptyString(formData[fieldName])) {
-                var methodName = config.method;
-                var rules = config.rules;
+                const methodName = config.method;
+                const rules = config.rules;
                 nextError = this.methods[methodName](formData, fieldName, rules, isSoft);
             }
 
@@ -78,7 +77,7 @@ var Validation = {
                 return ErrorMessages.NUMBER.replace('%field', rules.field);
             }
 
-            var errorElements = [];
+            const errorElements = [];
 
             // Check number quality against each given rule
             if (rules.round && !Util.isInteger(formData[fieldName])) {
@@ -87,16 +86,16 @@ var Validation = {
 
             if (!Util.isNumberWithin(formData[fieldName], rules.min, rules.max)) {
                 if (rules.min !== undefined) {
-                    errorElements.push(' greater than ' + rules.min);
+                    errorElements.push(` greater than ${rules.min}`);
                 }
                 if (rules.max !== undefined) {
-                    errorElements.push(' less than ' + rules.max);
+                    errorElements.push(` less than ${rules.max}`);
                 }
             }
 
             // If quality control failed
             if (!_.isEmpty(errorElements)) {
-                return rules.field + ' must be' + errorElements.join(',');
+                return `${rules.field} must be${errorElements.join(',')}`;
             }
 
             return null;
@@ -112,7 +111,7 @@ var Validation = {
          */
         text: function(formData, fieldName, rules) {
             if (formData[fieldName].length > rules.maxLength) {
-                var errorMessage = ErrorMessages.MAX_LENGTH;
+                const errorMessage = ErrorMessages.MAX_LENGTH;
                 return errorMessage.replace('%field', rules.field).replace('%max', rules.maxLength);
             }
 
@@ -141,11 +140,11 @@ var Validation = {
             }
 
             // Replace all degree characters by space
-            var coord = formData[fieldName].replace(/°/g, ' ').trim();
+            const coord = formData[fieldName].replace(/°/g, ' ').trim();
 
             // Split user input by reg:
             // any number of space | any number of ',' | space or ',' | any number of ',' | any number of space
-            var coordArray = coord.split(/\s*,*[,\s],*\s*/);
+            const coordArray = coord.split(/\s*,*[,\s],*\s*/);
 
             // If user input is two char sets (presumably latitude and longitude)
             if (coordArray.length === 2) {

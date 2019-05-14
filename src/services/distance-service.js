@@ -57,7 +57,7 @@ const distanceService = {
     getDistanceInGivenUnits: function(distance, units) {
         const multiplier = this.unitConverter[units];
         return Math.round(parseFloat(distance) * multiplier);
-    },
+    }
 };
 
 module.exports = distanceService;

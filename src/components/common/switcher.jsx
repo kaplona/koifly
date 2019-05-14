@@ -1,18 +1,19 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const { func, oneOf, string } = React.PropTypes;
 
 require('./switcher.less');
 
 
-var Switcher = React.createClass({
+const Switcher = React.createClass({
 
     propTypes: {
-        leftButtonCaption: React.PropTypes.string.isRequired,
-        rightButtonCaption: React.PropTypes.string.isRequired,
-        onLeftClick: React.PropTypes.func,
-        onRightClick: React.PropTypes.func,
-        initialPosition: React.PropTypes.oneOf(['left', 'right']).isRequired
+        leftButtonCaption: string.isRequired,
+        rightButtonCaption: string.isRequired,
+        onLeftClick: func,
+        onRightClick: func,
+        initialPosition: oneOf(['left', 'right']).isRequired
     },
 
     getInitialState: function() {
@@ -32,12 +33,12 @@ var Switcher = React.createClass({
 
     render: function() {
         return (
-            <div className='switcher' onClick={ this.handleClick }>
-                <div className={ this.state.isLeftPosition ? 'active' : null }>
-                    { this.props.leftButtonCaption }
+            <div className='switcher' onClick={this.handleClick}>
+                <div className={this.state.isLeftPosition ? 'active' : null}>
+                    {this.props.leftButtonCaption}
                 </div>
-                <div className={ this.state.isLeftPosition ? null : 'active' }>
-                    { this.props.rightButtonCaption }
+                <div className={this.state.isLeftPosition ? null : 'active'}>
+                    {this.props.rightButtonCaption}
                 </div>
             </div>
         );

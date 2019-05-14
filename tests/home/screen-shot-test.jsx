@@ -1,26 +1,25 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var _ = require('lodash');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const _ = require('lodash');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var ScreenShot = require('../../src/components/home-page/screen-shot');
+const ScreenShot = require('../../src/components/home-page/screen-shot');
 
 
 describe('ScreenShot component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         types: ['flights', 'sites', 'gliders']
     };
 
-    var mocks = {
+    const mocks = {
         randomType: null
     };
 
@@ -28,14 +27,14 @@ describe('ScreenShot component', () => {
         mocks.randomType = _.sample(defaults.types);
 
         component = TestUtils.renderIntoDocument(
-            <ScreenShot type={ mocks.randomType } />
+            <ScreenShot type={mocks.randomType} />
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders header component and parsed children', () => {
-        let children = renderedDOMElement.children;
+        const children = renderedDOMElement.children;
 
         expect(children).to.have.lengthOf(2);
         expect(children[0])

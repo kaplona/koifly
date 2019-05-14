@@ -1,19 +1,17 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
 
 require('./label.less');
 
 
-var Label = React.createClass({
-    render: function() {
-        return (
-            <div className='label'>
-                { this.props.children }
-            </div>
-        );
-    }
-});
+function Label(props) {
+    return (
+        <div className='label'>
+            {props.children}
+        </div>
+    );
+}
 
 
 module.exports = Label;

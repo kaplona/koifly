@@ -43,8 +43,8 @@ const AppLink = React.createClass({
 
     render: function() {
         return (
-            <a href={ this.props.href } className='app-link' onClick={ this.handleClick }>
-                { this.props.children }
+            <a href={this.props.href} className='app-link' onClick={this.handleClick}>
+                {this.props.children}
             </a>
         );
     }

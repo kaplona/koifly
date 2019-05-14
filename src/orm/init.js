@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable no-console */
 const chalk = require('chalk');
 const sequelize = require('./sequelize');
 

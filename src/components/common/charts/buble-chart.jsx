@@ -1,8 +1,9 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, func, number, oneOfType, shape, string} = React.PropTypes;
+const { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
 const Highcharts = require('highcharts');
+
 require('highcharts/highcharts-more')(Highcharts);
 
 
@@ -20,16 +21,16 @@ const BubbleChart = React.createClass({
                 color: string.isRequired,
                 from: number.isRequired,
                 to: number.isRequired,
-                flightIds: arrayOf(oneOfType([string, number])),
-            })).isRequired,
+                flightIds: arrayOf(oneOfType([string, number]))
+            })).isRequired
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
-        onClick: func.isRequired,
+        onClick: func.isRequired
     },
 
     getDefaultProps: function() {
         return {
-            id: 'bubbleChart',
+            id: 'bubbleChart'
         };
     },
 
@@ -43,15 +44,15 @@ const BubbleChart = React.createClass({
         this.chart = Highcharts.chart({
             chart: {
                 renderTo: this.props.id,
-                type: 'bubble',
+                type: 'bubble'
             },
             title: { text: null },
             xAxis: {
-                categories: this.props.categories,
+                categories: this.props.categories
             },
             yAxis: {
                 title: { text: null },
-                min: 0,
+                min: 0
             },
             plotOptions: {
                 series: {
@@ -59,14 +60,14 @@ const BubbleChart = React.createClass({
                         click: function(event) {
                             onClick(event.point.flightIds);
                         }
-                    },
+                    }
                 },
                 bubble: {
                     cursor: 'pointer',
                     opacity: 0.4,
                     minSize: 5,
-                    maxSize: 30,
-                },
+                    maxSize: 30
+                }
             },
             tooltip: {
                 formatter: function() {
@@ -78,11 +79,11 @@ const BubbleChart = React.createClass({
                         <br/>
                         (${point.from} ${altitudeUnit} - ${point.to} ${altitudeUnit})
                     `;
-                },
+                }
             },
-            legend: {enabled: false},
-            credits: {enabled: false},
-            series: this.props.chartData,
+            legend: { enabled: false },
+            credits: { enabled: false },
+            series: this.props.chartData
         });
     },
 
@@ -90,7 +91,7 @@ const BubbleChart = React.createClass({
         if (nextProps.chartData !== this.props.chartData) {
             this.chart.update({
                 xAxis: {
-                    categories: nextProps.categories,
+                    categories: nextProps.categories
                 },
                 series: nextProps.chartData
             }, true, false);
@@ -102,10 +103,7 @@ const BubbleChart = React.createClass({
     },
 
     render() {
-        const style = {
-            width: '100%',
-            height: '200px',
-        };
+        const style = { width: '100%', height: '200px' };
 
         return (
             <div id={this.props.id} style={style} />

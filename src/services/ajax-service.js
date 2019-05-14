@@ -1,16 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-var Promise = require('es6-promise').Promise;
-
+const _ = require('lodash');
+const ErrorTypes = require('../errors/error-types');
+const KoiflyError = require('../errors/error');
+const Promise = require('es6-promise').Promise;
 const TIMEOUT = require('../constants/data-service-constants').TIMEOUT;
 
-var KoiflyError = require('../errors/error');
-var ErrorTypes = require('../errors/error-types');
 
-
-
-var AjaxService = {
+const AjaxService = {
 
     /**
      * Sends Ajax requests to the server,
@@ -32,9 +29,9 @@ var AjaxService = {
      */
     send: function(options, isRetry) {
 
-        var url = options.url;
-        var data = options.data;
-        var csrfCookie = this.getCsrfCookie();
+        let url = options.url;
+        const data = options.data;
+        const csrfCookie = this.getCsrfCookie();
 
         if (options.method === 'get') {
             // Make valid query string from params object
@@ -49,7 +46,7 @@ var AjaxService = {
 
         return new Promise((resolve, reject) => {
 
-            var ajaxRequest = new XMLHttpRequest();
+            const ajaxRequest = new XMLHttpRequest();
             ajaxRequest.timeout = TIMEOUT;
 
             // If we got response from the server
@@ -64,10 +61,10 @@ var AjaxService = {
                     return;
                 }
 
-                var serverResponse = JSON.parse(ajaxRequest.responseText);
+                const serverResponse = JSON.parse(ajaxRequest.responseText);
 
                 if (process.env.NODE_ENV === 'development') {
-                    console.log('server response:', serverResponse);
+                    console.log('server response:', serverResponse); // eslint-disable-line no-console
                 }
 
                 if (!serverResponse.error) {
@@ -152,11 +149,11 @@ var AjaxService = {
         // Prepend '; ' to cookie string
         // so as to have '; name=value; name=value;'
         // in this case we are sure that 'csrf' is a full cookie name
-        var value = '; ' + document.cookie;
+        const value = '; ' + document.cookie;
 
         // divide cookie string into two parts,
         // where the second one starts with the csrf cookie value
-        var parts = value.split('; csrf=');
+        const parts = value.split('; csrf=');
 
         // If there is a cookie with 'csrf' name
         if (parts.length === 2) {

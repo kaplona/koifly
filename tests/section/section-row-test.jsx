@@ -1,34 +1,32 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var SectionRow = require('../../src/components/common/section/section-row');
-
+const SectionRow = require('../../src/components/common/section/section-row');
 
 
 describe('SectionRow component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         lastRowClass: 'x-last',
         desktopClass: 'x-desktop'
     };
 
-    var mocks = {
+    const mocks = {
         sectionRowText: 'test children text'
     };
 
     describe('Defaults testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <SectionRow>{ mocks.sectionRowText }</SectionRow>
+                <SectionRow>{mocks.sectionRowText}</SectionRow>
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
@@ -39,7 +37,7 @@ describe('SectionRow component', () => {
         });
 
         it('renders component with proper default classes', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(className).to.not.contain(defaults.lastRowClass);
             expect(className).to.not.contain(defaults.desktopClass);
@@ -49,17 +47,14 @@ describe('SectionRow component', () => {
     describe('Last row and desktop classes testing', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
-                <SectionRow
-                    isLast={ true }
-                    isDesktopOnly={ true }
-                    >
-                    { mocks.sectionText }
+                <SectionRow isLast={true} isDesktopOnly={true}>
+                    {mocks.sectionText}
                 </SectionRow>
             );
         });
 
         it('renders component with proper classes', () => {
-            let className = ReactDOM.findDOMNode(component).className;
+            const className = ReactDOM.findDOMNode(component).className;
 
             expect(className).to.contain(defaults.lastRowClass);
             expect(className).to.contain(defaults.desktopClass);

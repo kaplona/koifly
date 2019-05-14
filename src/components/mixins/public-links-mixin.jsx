@@ -1,9 +1,9 @@
 'use strict';
 
-var browserHistory = require('react-router').browserHistory;
+const browserHistory = require('react-router').browserHistory;
 
 
-var PublicLinksMixin = {
+const PublicLinksMixin = {
 
     handleGoToFlightLog: function() {
         browserHistory.push('/flights');

@@ -3,40 +3,37 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-var PubSub = require('../../src/utils/pubsub');
-
-var then = require('../../src/utils/then');
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const PubSub = require('../../src/utils/pubsub');
+const then = require('../../src/utils/then');
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const ErrorTypes = require('../../src/errors/error-types');
+const PilotModel = require('../../src/models/pilot');
 Chai.use(sinonChai);
-
-var ErrorTypes = require('../../src/errors/error-types');
-var PilotModel = require('../../src/models/pilot');
 
 const STORE_MODIFIED_EVENT = require('../../src/constants/data-service-constants').STORE_MODIFIED_EVENT;
 
-var View = require('../../src/components/common/view');
-var EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
-var Login = require('../../src/components/public-views/login');
-
+const View = require('../../src/components/common/view');
+const EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
+const Login = require('../../src/components/public-views/login');
 
 
 describe('View component.', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         noticeCloseButtonClass: 'close'
     };
 
-    var mocks = {
+    const mocks = {
         childText: 'test child text',
         childClassName: 'testChild',
         authError: { type: ErrorTypes.AUTHENTICATION_ERROR },
@@ -58,10 +55,10 @@ describe('View component.', () => {
 
             component = TestUtils.renderIntoDocument(
                 <View
-                    onStoreModified={ mocks.handleStoreModified }
-                    error={ mocks.notAuthError }
-                    >
-                    { mocks.childText }
+                    onStoreModified={mocks.handleStoreModified}
+                    error={mocks.notAuthError}
+                >
+                    {mocks.childText}
                 </View>
             );
 
@@ -74,8 +71,8 @@ describe('View component.', () => {
         });
 
         it('sets default state and renders only parsed children', () => {
-            let notices = TestUtils.scryRenderedComponentsWithType(component, EmailVerificationNotice);
-            let loginForm = TestUtils.scryRenderedComponentsWithType(component, Login);
+            const notices = TestUtils.scryRenderedComponentsWithType(component, EmailVerificationNotice);
+            const loginForm = TestUtils.scryRenderedComponentsWithType(component, Login);
 
             expect(component).to.have.deep.property('state.isEmailVerificationNotice', false);
             expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
@@ -100,16 +97,16 @@ describe('View component.', () => {
         });
 
         it('renders email not verified notice with proper props', () => {
-            let notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
+            const notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
 
             expect(notice).to.be.ok;
             expect(notice).to.have.deep.property('props.onClose');
         });
 
         it('close email-not-verified notice when close button clicked', done => {
-            let notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
-            let renderedDOMNotice = ReactDOM.findDOMNode(notice);
-            let closeButton = renderedDOMNotice.querySelector(`.${defaults.noticeCloseButtonClass}`);
+            const notice = TestUtils.findRenderedComponentWithType(component, EmailVerificationNotice);
+            const renderedDOMNotice = ReactDOM.findDOMNode(notice);
+            const closeButton = renderedDOMNotice.querySelector(`.${defaults.noticeCloseButtonClass}`);
 
             Simulate.click(closeButton);
 
@@ -129,10 +126,10 @@ describe('View component.', () => {
 
             component = TestUtils.renderIntoDocument(
                 <View
-                    onStoreModified={ mocks.handleStoreModified }
-                    error={ mocks.authError }
-                    >
-                    <div className={ mocks.childClassName } >{ mocks.childText }</div>
+                    onStoreModified={mocks.handleStoreModified}
+                    error={mocks.authError}
+                >
+                    <div className={mocks.childClassName} >{mocks.childText}</div>
                 </View>
             );
 
@@ -144,8 +141,8 @@ describe('View component.', () => {
         });
 
         it('renders login form instead of parsed children', () => {
-            let loginForm = TestUtils.findRenderedComponentWithType(component, Login);
-            let parsedChildren = renderedDOMElement.querySelectorAll(`.${mocks.childClassName}`);
+            const loginForm = TestUtils.findRenderedComponentWithType(component, Login);
+            const parsedChildren = renderedDOMElement.querySelectorAll(`.${mocks.childClassName}`);
 
             expect(loginForm).to.be.ok;
             expect(parsedChildren).to.have.lengthOf(0);

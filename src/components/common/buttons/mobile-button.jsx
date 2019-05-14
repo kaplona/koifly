@@ -1,12 +1,12 @@
 'use strict';
 
-var React = require('react');
-var Button = require('./button');
+const React = require('react');
+const Button = require('./button');
 
 require('./mobile-button.less');
 
 
-var MobileButton = React.createClass({
+const MobileButton = React.createClass({
 
     propTypes: {
         caption: React.PropTypes.string.isRequired,
@@ -17,7 +17,7 @@ var MobileButton = React.createClass({
     },
 
     render: function() {
-        return <Button { ...this.props } isMobile={ true } />;
+        return <Button { ...this.props } isMobile={true} />;
     }
 });
 

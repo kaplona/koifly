@@ -2,17 +2,15 @@
 
 const React = require('react');
 const _ = require('lodash');
-const listViewMixin = require('../mixins/list-view-mixin');
-const GliderModel = require('../../models/glider');
-const Util = require('../../utils/util');
-
 const DesktopTopGrid = require('../common/grids/desktop-top-grid');
 const ErrorBox = require('../common/notice/error-box');
+const GliderModel = require('../../models/glider');
+const listViewMixin = require('../mixins/list-view-mixin');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
 const Section = require('../common/section/section');
 const Table = require('../common/table');
+const Util = require('../../utils/util');
 const View = require('../common/view');
-
 
 
 const GliderListView = React.createClass({
@@ -24,17 +22,17 @@ const GliderListView = React.createClass({
             <MobileTopMenu
                 header='Gliders'
                 rightButtonCaption='Add'
-                onRightClick={ this.handleAddItem }
-                />
+                onRightClick={this.handleAddItem}
+            />
         );
     },
 
     renderError: function() {
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
                 <MobileTopMenu header='Gliders' />
-                { this.renderNavigationMenu() }
-                <ErrorBox error={ this.state.loadingError } onTryAgain={ this.handleStoreModified } />
+                {this.renderNavigationMenu()}
+                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />
             </View>
         );
     },
@@ -74,11 +72,11 @@ const GliderListView = React.createClass({
 
         return (
             <Table
-                columns={ columnsConfig }
-                rows={ rows }
+                columns={columnsConfig}
+                rows={rows}
                 initialSortingField='name'
-                onRowClick={ this.handleRowClick }
-                />
+                onRowClick={this.handleRowClick}
+            />
         );
     },
 
@@ -93,16 +91,15 @@ const GliderListView = React.createClass({
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
                 
                 <Section>
-                    <DesktopTopGrid leftElement={ this.renderAddItemButton() } />
-                    { content }
-                    { this.renderLoader() }
+                    <DesktopTopGrid leftElement={this.renderAddItemButton()} />
+                    {content}
+                    {this.renderLoader()}
                 </Section>
-                
             </View>
         );
     }

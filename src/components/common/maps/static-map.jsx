@@ -1,20 +1,18 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
-var _ = require('lodash');
+const React = require('react');
+const { arrayOf, bool, number, shape, string } = React.PropTypes;
+const _ = require('lodash');
+const browserHistory = require('react-router').browserHistory;
 
 const CENTER = require('../../../constants/map-constants').CENTER;
 const PROP_TYPES = require('../../../constants/prop-types');
 const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 
-
 require('./map.less');
 
 
-var { arrayOf, bool, number, shape, string } = React.PropTypes;
-
-var StaticMap = React.createClass({
+const StaticMap = React.createClass({
 
     propTypes: {
         center: PROP_TYPES.coordinates.isRequired,
@@ -56,15 +54,14 @@ var StaticMap = React.createClass({
     },
 
     createMap: function(mapFacade) {
-        var markerId;
-        var markerPosition;
-        var infowindowContent;
-        var infowindowOnClickFunc;
-        var mapContainer = this.refs.map;
+        let markerId;
+        let markerPosition;
+        let infowindowContent;
+        let infowindowOnClickFunc;
 
-        mapFacade.createMap(mapContainer, this.props.center, this.props.zoomLevel);
+        mapFacade.createMap(this.refs.map, this.props.center, this.props.zoomLevel);
 
-        for (var i = 0; i < this.props.sites.length; i++) {
+        for (let i = 0; i < this.props.sites.length; i++) {
             if (this.props.sites[i].latLng) {
                 markerId = this.props.sites[i].id;
                 markerPosition = this.props.sites[i].latLng;
@@ -96,27 +93,26 @@ var StaticMap = React.createClass({
     },
 
     render: function() {
-        var className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
+        const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
         return (
-            <div className={ this.props.isFullScreen ? 'static-wrapper' : null }>
-                <div className={ className } ref='map'/>
+            <div className={this.props.isFullScreen ? 'static-wrapper' : null}>
+                <div className={className} ref='map'/>
             </div>
         );
     }
 });
 
 
-
 StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     // this loads external google-maps-api
-    var mapFacadePromise = require('../../../utils/map-facade').createPromise();
+    const mapFacadePromise = require('../../../utils/map-facade').createPromise();
 
     return (
         <StaticMap
             {...props}
-            mapFacadePromise={ mapFacadePromise }
-            />
+            mapFacadePromise={mapFacadePromise}
+        />
     );
 };
 

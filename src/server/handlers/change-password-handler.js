@@ -1,17 +1,14 @@
 'use strict';
 
-var _ = require('lodash');
-
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var EmailMessageTemplates = require('../../constants/email-message-templates');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var sendAuthTokenToPilot = require('../helpers/send-auth-token');
-var setAuthCookie = require('../helpers/set-auth-cookie');
-
-
+const _ = require('lodash');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const EmailMessageTemplates = require('../../constants/email-message-templates');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const sendAuthTokenToPilot = require('../helpers/send-auth-token');
+const setAuthCookie = require('../helpers/set-auth-cookie');
 
 
 /**
@@ -23,9 +20,9 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {function} reply
  */
-var changePasswordHandler = function(request, reply) {
-    var pilot; // we need it to have reference to current pilot
-    var payload = request.payload;
+const changePasswordHandler = function(request, reply) {
+    let pilot; // we need it to have reference to current pilot
+    const payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {

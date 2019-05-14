@@ -1,15 +1,14 @@
 'use strict';
 
-var React = require('react');
-var Label = require('../section/label');
-var ValidationError = require('../section/validation-error');
+const React = require('react');
+const { func, string } = React.PropTypes;
+const Label = require('../section/label');
+const ValidationError = require('../section/validation-error');
 
 require('./remarks.less');
 
 
-var { func, string } = React.PropTypes;
-
-var RemarksInput = React.createClass({
+const RemarksInput = React.createClass({
 
     propTypes: {
         inputValue: string.isRequired,
@@ -33,23 +32,23 @@ var RemarksInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
     render: function() {
         return (
             <div>
-                { this.renderErrorMessage() }
-                <Label>{ this.props.labelText }</Label>
+                {this.renderErrorMessage()}
+                <Label>{this.props.labelText}</Label>
                 <textarea
-                    className={ this.props.errorMessage ? 'x-error' : null }
-                    value={ this.props.inputValue }
-                    onChange={ this.handleUserInput }
-                    onFocus={ this.props.onFocus }
-                    onBlur={ this.props.onBlur }
+                    className={this.props.errorMessage ? 'x-error' : null}
+                    value={this.props.inputValue}
+                    onChange={this.handleUserInput}
+                    onFocus={this.props.onFocus}
+                    onBlur={this.props.onBlur}
                     ref='textarea'
-                    />
+                />
             </div>
         );
     }

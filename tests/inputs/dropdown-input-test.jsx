@@ -1,31 +1,28 @@
 'use strict';
 
 require('../../src/test-dom')();
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-
-var expect = require('chai').expect;
-
-var DropdownInput = require('../../src/components/common/inputs/dropdown-input');
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
-var Dropdown = require('../../src/components/common/inputs/dropdown');
-
+const DropdownInput = require('../../src/components/common/inputs/dropdown-input');
+const Label = require('../../src/components/common/section/label');
+const ValidationError = require('../../src/components/common/section/validation-error');
+const Dropdown = require('../../src/components/common/inputs/dropdown');
 
 
 describe('DropdownInput component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         emptyText: '',
         errorClassName: 'x-error'
     };
 
-    var mocks = {
+    const mocks = {
         selectedValue: 'test value',
         labelText: 'test text',
         options: [
@@ -46,27 +43,27 @@ describe('DropdownInput component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <DropdownInput
-                    selectedValue={ mocks.selectedValue }
-                    options={ mocks.options }
-                    labelText={ mocks.labelText }
-                    emptyValue={ mocks.emptyValue }
-                    inputName={ mocks.inputName }
-                    onChangeFunc={ mocks.handleSelectChange }
-                    onFocus={ mocks.handleSelectFocus }
-                    onBlur={ mocks.handleSelectBlur }
-                    />
+                    selectedValue={mocks.selectedValue}
+                    options={mocks.options}
+                    labelText={mocks.labelText}
+                    emptyValue={mocks.emptyValue}
+                    inputName={mocks.inputName}
+                    onChangeFunc={mocks.handleSelectChange}
+                    onFocus={mocks.handleSelectFocus}
+                    onBlur={mocks.handleSelectBlur}
+                />
             );
         });
 
         it('renders label with proper text', () => {
-            let label = TestUtils.findRenderedComponentWithType(component, Label);
+            const label = TestUtils.findRenderedComponentWithType(component, Label);
 
             expect(label).to.have.deep.property('props.children', mocks.labelText);
         });
 
         it('renders dropdown with proper props', () => {
-            let dropdown = TestUtils.findRenderedComponentWithType(component, Dropdown);
-            let className = ReactDOM.findDOMNode(component).querySelector('select').className;
+            const dropdown = TestUtils.findRenderedComponentWithType(component, Dropdown);
+            const className = ReactDOM.findDOMNode(component).querySelector('select').className;
 
             expect(dropdown).to.have.deep.property('props.selectedValue', mocks.selectedValue);
             expect(dropdown).to.have.deep.property('props.options', mocks.options);
@@ -79,7 +76,7 @@ describe('DropdownInput component', () => {
         });
 
         it('doesn\'t show error message if wasn\'t provided', () => {
-            let errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
+            const errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
 
             expect(errorMessages).to.have.lengthOf(0);
         });
@@ -90,26 +87,26 @@ describe('DropdownInput component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <DropdownInput
-                    selectedValue={ mocks.selectedValue }
-                    options={ mocks.options }
-                    labelText={ mocks.labelText }
-                    inputName={ mocks.inputName }
-                    errorMessage={ mocks.errorMessage }
-                    onChangeFunc={ mocks.handleSelectChange }
-                    />
+                    selectedValue={mocks.selectedValue}
+                    options={mocks.options}
+                    labelText={mocks.labelText}
+                    inputName={mocks.inputName}
+                    errorMessage={mocks.errorMessage}
+                    onChangeFunc={mocks.handleSelectChange}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {
-            let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
+            const errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
 
             expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
         });
 
         it('renders select with error classes if error message presents', () => {
-            let selectClassName = renderedDOMElement.querySelector('select').className;
+            const selectClassName = renderedDOMElement.querySelector('select').className;
 
             expect(selectClassName).to.contain(defaults.errorClassName);
         });

@@ -1,14 +1,13 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const Notice = require('../common/notice/notice');
+const PublicLinksMixin = require('../mixins/public-links-mixin');
 
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var NavigationMenu = require('../common/menu/navigation-menu');
-var Notice = require('../common/notice/notice');
-var PublicLinksMixin = require('../mixins/public-links-mixin');
 
-
-var InvalidVerificationLink = React.createClass({
+const InvalidVerificationLink = React.createClass({
 
     mixins: [ PublicLinksMixin ],
 
@@ -18,9 +17,9 @@ var InvalidVerificationLink = React.createClass({
                 <MobileTopMenu
                     header='Koifly'
                     rightButtonCaption='Log in'
-                    onRightClick={ this.handleGoToLogin }
-                    />
-                <NavigationMenu isMobile={ true } />
+                    onRightClick={this.handleGoToLogin}
+                />
+                <NavigationMenu isMobile={true} />
                 
                 <Notice text='Verification link is invalid or expired' type='error' />
             </div>

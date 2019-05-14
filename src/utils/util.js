@@ -3,7 +3,7 @@
 const EMPTY_FIELD = require('../constants/general-constants').EMPTY_FIELD;
 
 
-var Util = {
+const Util = {
 
     shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 
@@ -12,7 +12,7 @@ var Util = {
      * @returns {string} - short month name
      */
     getMonthName: function(monthIndex) {
-        var monthNames = {
+        const monthNames = {
             '01': 'Jan',
             '02': 'Feb',
             '03': 'Mar',
@@ -34,7 +34,7 @@ var Util = {
      * @returns {string} - today date in yyyy-mm-dd format
      */
     today: function() {
-        var date = new Date();
+        const date = new Date();
         return this.dateToString(date);
     },
 
@@ -44,19 +44,19 @@ var Util = {
      * @returns {string} - String date in yyyy-mm-dd format.
      */
     dateToString(date) {
-        var dd = date.getDate();
-        var mm = date.getMonth() + 1;
-        var yyyy = date.getFullYear();
+        let dd = date.getDate();
+        let mm = date.getMonth() + 1;
+        const yyyy = date.getFullYear();
 
         if (dd < 10) {
-            dd = '0' + dd;
+            dd = `0${dd}`;
         }
 
         if (mm < 10) {
-            mm = '0' + mm;
+            mm = `0${mm}`;
         }
 
-        return yyyy + '-' + mm + '-' + dd;
+        return `${yyyy}-${mm}-${dd}`;
     },
 
 
@@ -65,7 +65,7 @@ var Util = {
      * @returns {boolean} - whether the parsed date in yyyy-mm-dd format
      */
     isRightDateFormat: function(date) {
-        var dateElements = date.split('-');
+        const dateElements = date.split('-');
 
         return (
             dateElements.length === 3 &&
@@ -88,7 +88,7 @@ var Util = {
             return null;
         }
 
-        var dateElements = date.split('-');
+        const dateElements = date.split('-');
         return `${this.getMonthName(dateElements[1])} ${parseInt(dateElements[2])}, ${dateElements[0]}`;
     },
 
@@ -203,18 +203,18 @@ var Util = {
      * @returns {string} - number with ordinal suffix like '1st' , '32nd' , '53rd' , '14th'
      */
     addOrdinalSuffix: function(number) {
-        var lastDigit = number % 10;
-        var twoLastDigits = number % 100;
+        const lastDigit = number % 10;
+        const twoLastDigits = number % 100;
         if (lastDigit === 1 && twoLastDigits !== 11) {
-            return number + 'st';
+            return `${number}st`;
         }
         if (lastDigit === 2 && twoLastDigits !== 12) {
-            return number + 'nd';
+            return `${number}nd`;
         }
         if (lastDigit === 3 && twoLastDigits !== 13) {
-            return number + 'rd';
+            return `${number}rd`;
         }
-        return number + 'th';
+        return `${number}th`;
     },
 
 
@@ -243,7 +243,7 @@ var Util = {
      * @returns {boolean} - whether value is a number within min and max limits (or a string representing a number)
      */
     isNumberWithin: function(val, min, max) {
-        var number = val * 1;
+        const number = val * 1;
         if (min !== undefined && number < min) {
             return false;
         }
@@ -260,13 +260,13 @@ var Util = {
      * @returns {boolean} - whether string is empty
      */
     isEmptyString: function(string) {
-        return (!string || (string + '').trim() === '');
+        return string === undefined || string === null || (typeof string === 'string' && string.trim() === '');
     },
 
 
     /**
      * @param {string} key
-     * @returns {function()} - iteratee for reduce to get list of unique values of certain field
+     * @returns {Function} - iteratee for reduce to get list of unique values of certain field
      */
     uniqueValues: function(key) {
         return (uniqueValues, nextItem) => {
@@ -281,7 +281,7 @@ var Util = {
     /**
      * @param {string} valueKey
      * @param {string} textKey
-     * @returns {function()} - iteratee for map to get value-text pairs
+     * @returns {Function} - iteratee for map to get value-text pairs
      */
     valueTextPairs: function(valueKey, textKey) {
         return item => {
@@ -320,7 +320,7 @@ var Util = {
         // Split user input by reg:
         // any number of space | any number of ',' | space or ',' | any number of ',' | any number of space
         string = string.replace(/°/g, ' ').trim();
-        var latLng = string.split(/\s*,*[,\s],*\s*/);
+        const latLng = string.split(/\s*,*[,\s],*\s*/);
 
         if (latLng.length === 2 &&
             Util.isNumber(latLng[0]) &&

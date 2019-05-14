@@ -2,9 +2,9 @@
 
 const ROOT_URL = require('../../config/variables').server.rootUrl;
 
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var generateToken = require('./generate-token');
-var sendMail = require('./send-mail');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const generateToken = require('./generate-token');
+const sendMail = require('./send-mail');
 
 
 /**
@@ -16,13 +16,13 @@ var sendMail = require('./send-mail');
  * @param {string} path - link that will be included in email
  * @returns {Promise} - whether email was sent successfully
  */
-var sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
-    var authToken = generateToken();
+const sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
+    const authToken = generateToken();
     // Create hash out of token to store in DB since it's a password equivalent
     return BcryptPromise
         .hash(authToken)
         .then(hash => {
-            var newPilotInfo = {
+            const newPilotInfo = {
                 token: hash,
                 tokenExpirationTime: Date.now() + (1000 * 60 * 60 * 6) // 6 hours starting from now
             };
@@ -32,7 +32,7 @@ var sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
         })
         .then(newPilot => {
             // Send email which includes link with the randomly generated token
-            var templateData = {
+            const templateData = {
                 url: `${ROOT_URL}${path}/${newPilot.id}/${authToken}`
             };
             return sendMail(newPilot.email, EmailMessageTemplate, templateData);

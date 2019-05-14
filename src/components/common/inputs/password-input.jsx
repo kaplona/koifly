@@ -1,15 +1,13 @@
 'use strict';
 
-var React = require('react');
+const React = require('react');
+const { element, func, oneOfType, string } = React.PropTypes;
+const InputContainer = require('./input-container');
+const Label = require('../section/label');
+const ValidationError = require('../section/validation-error');
 
-var InputContainer = require('./input-container');
-var Label = require('../section/label');
-var ValidationError = require('../section/validation-error');
 
-
-var { element, func, oneOfType, string } = React.PropTypes;
-
-var PasswordInput = React.createClass({
+const PasswordInput = React.createClass({
 
     propTypes: {
         inputValue: string.isRequired,
@@ -27,34 +25,34 @@ var PasswordInput = React.createClass({
 
     renderErrorMessage: function() {
         if (this.props.errorMessage) {
-            return <ValidationError message={ this.props.errorMessage } />;
+            return <ValidationError message={this.props.errorMessage} />;
         }
     },
 
     render: function() {
-        var className = 'x-text';
+        let className = 'x-text';
         if (this.props.errorMessage) {
             className += ' x-error';
         }
 
         return (
             <div>
-                { this.renderErrorMessage() }
+                {this.renderErrorMessage()}
 
                 <Label>
-                    { this.props.labelText }
+                    {this.props.labelText}
                 </Label>
 
                 <InputContainer>
                     <input
-                        className={ className }
-                        value={ this.props.inputValue }
+                        className={className}
+                        value={this.props.inputValue}
                         type='password'
-                        onChange={ this.handleUserInput }
-                        onFocus={ this.props.onFocus }
-                        onBlur={ this.props.onBlur }
+                        onChange={this.handleUserInput}
+                        onFocus={this.props.onFocus}
+                        onBlur={this.props.onBlur}
                         ref='input'
-                        />
+                    />
                 </InputContainer>
             </div>
         );

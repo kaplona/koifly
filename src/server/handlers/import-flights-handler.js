@@ -1,5 +1,6 @@
 'use strict';
-
+/* eslint-disable no-use-before-define */
+/* since I define helpers functions which are not invoked in this file  */
 const Altitude = require('../../utils/altitude');
 const Converter = require('csvtojson').Converter;
 const ErrorTypes = require('../../errors/error-types');
@@ -80,11 +81,11 @@ function  importFlightsHandler(request, reply) {
             return sequelize.transaction(transactionId => {
                 // We need to save each row data sequentially in order to correctly add new sites and gliders to the DB.
                 let lastPromise = Promise.resolve();
-                for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+                rows.forEach((row, index) => {
                     lastPromise = lastPromise.then(() => {
-                        return saveRow(rows[rowIndex], rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId, altitudeUnit);
+                        return saveRow(row, index, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId, altitudeUnit);
                     });
-                }
+                });
 
                 // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
                 return lastPromise.then(() => {
@@ -105,7 +106,7 @@ function  importFlightsHandler(request, reply) {
             if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
                 reply({ error: validationErrors });
             // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
-            } else if(normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
+            } else if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
                 reply({ error: normalisedError.errors });
             // Otherwise reply with generic Koifly error.
             } else {
@@ -132,7 +133,7 @@ function convertCsvToJson(csvString) {
     });
 
     return new Promise((resolve, reject) => {
-        csvConverter.fromString(csvString, function(err, res){
+        csvConverter.fromString(csvString, (err, res) => {
             if (res && !err) {
                 resolve(res);
                 return;
@@ -142,13 +143,13 @@ function convertCsvToJson(csvString) {
             // an error – pass it to KoiflyError constructor.
             const errors = [];
             const csvToJsonErrorMessages = {
-                column_mismatched: 'A file line has more (or less) columns than file header.',
-                unclosed_quote: 'There is an unclosed quote in a line.',
+                column_mismatched: 'A file line has more (or less) columns than file header.', // eslint-disable-line camelcase
+                unclosed_quote: 'There is an unclosed quote in a line.' // eslint-disable-line camelcase
             };
             if (err.err && (err.line || err.line === 0)) {
                 errors.push({
                     row: err.line + 1,
-                    error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err]),
+                    error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err])
                 });
             }
 
@@ -256,7 +257,7 @@ function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validatio
         .catch(error => saveValidationError(error, rowIndex, validationErrors))
         .then(() => {
             successCounts.flightsNum++;
-        })
+        });
 }
 
 /**

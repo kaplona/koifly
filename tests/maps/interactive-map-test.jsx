@@ -3,33 +3,31 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-var Promise = require('es6-promise').Promise;
-
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Promise = require('es6-promise').Promise;
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var InteractiveMap = require('../../src/components/common/maps/interactive-map');
-
+const InteractiveMap = require('../../src/components/common/maps/interactive-map');
 
 
 describe('InteractiveMap component', () => {
 
-    var component;
-    var renderedDOMMapContainer;
+    let component;
+    let renderedDOMMapContainer;
 
-    var defaults = {
+    const defaults = {
         refsName: 'map',
         dimmerClass: 'dimmer'
     };
 
-    var mocks = {
+    const mocks = {
         markerId: 42,
         mapCenter: { lat: 56.78, lng: 34.567 },
         mapZoomLevel: 4,
@@ -54,21 +52,21 @@ describe('InteractiveMap component', () => {
     describe('Defaults and behavior testing', () => {
         before(() => {
 
-            var mapFacadePromise = Promise.resolve(mocks.mapFacade);
+            const mapFacadePromise = Promise.resolve(mocks.mapFacade);
             
             component = TestUtils.renderIntoDocument(
                 <InteractiveMap
-                    markerId={ mocks.markerId }
-                    center={ mocks.mapCenter }
-                    zoomLevel={ mocks.mapZoomLevel }
-                    markerPosition={ mocks.markerPosition }
-                    location={ mocks.siteLocation }
-                    launchAltitude={ mocks.siteLaunchAltitude }
-                    altitudeUnit={ mocks.altitudeUnit }
-                    onDataApply={ mocks.handleDataApply }
-                    onMapClose={ mocks.handleMapClose }
-                    mapFacadePromise={ mapFacadePromise }
-                    />
+                    markerId={mocks.markerId}
+                    center={mocks.mapCenter}
+                    zoomLevel={mocks.mapZoomLevel}
+                    markerPosition={mocks.markerPosition}
+                    location={mocks.siteLocation}
+                    launchAltitude={mocks.siteLaunchAltitude}
+                    altitudeUnit={mocks.altitudeUnit}
+                    onDataApply={mocks.handleDataApply}
+                    onMapClose={mocks.handleMapClose}
+                    mapFacadePromise={mapFacadePromise}
+                />
             );
 
             renderedDOMMapContainer = component.refs[defaults.refsName];
@@ -95,8 +93,8 @@ describe('InteractiveMap component', () => {
         });
 
         it('calls close function when map background is clicked', () => {
-            let renderedDOMElement = ReactDOM.findDOMNode(component);
-            let backGround = renderedDOMElement.querySelector(`.${defaults.dimmerClass}`);
+            const renderedDOMElement = ReactDOM.findDOMNode(component);
+            const backGround = renderedDOMElement.querySelector(`.${defaults.dimmerClass}`);
 
             Simulate.click(backGround);
 
@@ -108,14 +106,14 @@ describe('InteractiveMap component', () => {
     describe('Empty marker position testing (creating new site)', () => {
         before(() => {
 
-            var mapFacadePromise = Promise.resolve(mocks.mapFacade);
+            const mapFacadePromise = Promise.resolve(mocks.mapFacade);
 
             component = TestUtils.renderIntoDocument(
                 <InteractiveMap
-                    onDataApply={ mocks.handleDataApply }
-                    onMapClose={ mocks.handleMapClose }
-                    mapFacadePromise={ mapFacadePromise }
-                    />
+                    onDataApply={mocks.handleDataApply}
+                    onMapClose={mocks.handleMapClose}
+                    mapFacadePromise={mapFacadePromise}
+                />
             );
         });
 

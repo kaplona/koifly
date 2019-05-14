@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
 const Highcharts = require('highcharts');
 const Util = require('../../../utils/util');
 
@@ -14,20 +14,20 @@ const PieChart = React.createClass({
                 color: string,
                 name: string.isRequired,
                 y: number.isRequired,
-                sliced: bool,
-            })).isRequired,
+                sliced: bool
+            })).isRequired
         })).isRequired,
         id: string, // pass it if there is several charts of the same type on the page.
         isAirtime: bool,
         width: number,
-        onClick: func.isRequired,
+        onClick: func.isRequired
     },
 
     getDefaultProps: function() {
         return {
             id: 'pieChart',
             isAirtime: false,
-            width: 200,
+            width: 200
         };
     },
 
@@ -42,7 +42,7 @@ const PieChart = React.createClass({
             chart: {
                 renderTo: this.props.id,
                 type: 'pie',
-                margin: [0, 0, 0, 0],
+                margin: [0, 0, 0, 0]
             },
             title: { text: null },
             plotOptions: {
@@ -53,18 +53,18 @@ const PieChart = React.createClass({
                         click: function(event) {
                             onClick(event.point.siteId);
                         }
-                    },
+                    }
                 }
             },
             tooltip: {
                 pointFormatter: function() {
                     const value = isAirtime ? Util.formatTime(this.y) : this.y;
                     return `<b>${value}</b>`;
-                },
+                }
             },
-            legend: {enabled: false},
-            credits: {enabled: false},
-            series: this.props.chartData,
+            legend: { enabled: false },
+            credits: { enabled: false },
+            series: this.props.chartData
         });
     },
 

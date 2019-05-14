@@ -4,22 +4,21 @@ const React = require('react');
 const { shape, string } = React.PropTypes;
 const _ = require('lodash');
 const Altitude = require('../../utils/altitude');
-const editViewMixin = require('../mixins/edit-view-mixin');
-const FlightModel = require('../../models/flight');
-const GliderModel = require('../../models/glider');
-const SiteModel = require('../../models/site');
-const Util = require('../../utils/util');
-
 const AltitudeInput = require('../common/inputs/altitude-input');
 const DateInput = require('../common/inputs/date-input');
 const DropdownInput = require('../common/inputs/dropdown-input');
+const editViewMixin = require('../mixins/edit-view-mixin');
+const FlightModel = require('../../models/flight');
 const FightTrackUpload = require('./flight-track-upload');
+const GliderModel = require('../../models/glider');
 const MobileTopMenu = require('../common/menu/mobile-top-menu');
 const RemarksInput = require('../common/inputs/remarks-input');
 const Section = require('../common/section/section');
 const SectionRow = require('../common/section/section-row');
 const SectionTitle = require('../common/section/section-title');
+const SiteModel = require('../../models/site');
 const TimeInput = require('../common/inputs/time-input');
+const Util = require('../../utils/util');
 const View = require('../common/view');
 
 
@@ -90,10 +89,10 @@ const FlightEditView = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Cancel'
                 rightButtonCaption='Save'
-                onLeftClick={ this.handleCancelEdit }
-                onRightClick={ this.handleSubmit }
-                isPositionFixed={ !this.state.isInputInFocus }
-                />
+                onLeftClick={this.handleCancelEdit}
+                onRightClick={this.handleSubmit}
+                isPositionFixed={!this.state.isInputInFocus}
+            />
         );
     },
 
@@ -110,11 +109,11 @@ const FlightEditView = React.createClass({
         const gliders = GliderModel.getGliderValueTextList();
 
         return (
-            <View onStoreModified={ this.handleStoreModified } error={ this.state.loadingError }>
-                { this.renderMobileTopMenu() }
+            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+                {this.renderMobileTopMenu()}
 
                 <form>
-                    { this.renderProcessingError() }
+                    {this.renderProcessingError()}
 
                     <Section>
                         <SectionTitle>
@@ -123,87 +122,87 @@ const FlightEditView = React.createClass({
                         
                         <SectionRow>
                             <DateInput
-                                inputValue={ this.state.item.date }
+                                inputValue={this.state.item.date}
                                 labelText='Date*:'
                                 inputName='date'
-                                errorMessage={ this.state.validationErrors.date }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.date}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <DropdownInput
-                                selectedValue={ this.state.item.siteId || '0' }
-                                options={ sites }
+                                selectedValue={this.state.item.siteId || '0'}
+                                options={sites}
                                 labelText='Site:'
                                 inputName='siteId'
-                                emptyValue={ '0' }
-                                errorMessage={ this.state.validationErrors.siteId }
-                                onChangeFunc={ (inputName, inputValue) => {
+                                emptyValue={'0'}
+                                errorMessage={this.state.validationErrors.siteId}
+                                onChangeFunc={(inputName, inputValue) => {
                                     this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
-                                } }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                }}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <AltitudeInput
-                                inputValue={ this.state.item.altitude }
-                                selectedAltitudeUnit={ this.state.item.altitudeUnit }
+                                inputValue={this.state.item.altitude}
+                                selectedAltitudeUnit={this.state.item.altitudeUnit}
                                 labelText='Max altitude:'
-                                errorMessage={ this.state.validationErrors.altitude }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                onSledRide={ this.handleSledRide }
-                                isSledRide={ this.state.isSledRide }
-                                />
+                                errorMessage={this.state.validationErrors.altitude}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                                onSledRide={this.handleSledRide}
+                                isSledRide={this.state.isSledRide}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <TimeInput
-                                hours={ this.state.item.hours }
-                                minutes={ this.state.item.minutes }
+                                hours={this.state.item.hours}
+                                minutes={this.state.item.minutes}
                                 labelText='Airtime:'
                                 errorMessage={
                                     this.state.validationErrors.airtime ||
                                     this.state.validationErrors.hours ||
                                     this.state.validationErrors.minutes
                                 }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow>
                             <DropdownInput
-                                selectedValue={ this.state.item.gliderId || '0' }
-                                options={ gliders }
+                                selectedValue={this.state.item.gliderId || '0'}
+                                options={gliders}
                                 labelText='Glider:'
                                 inputName='gliderId'
-                                emptyValue={ '0' }
-                                errorMessage={ this.state.validationErrors.gliderId }
-                                onChangeFunc={ (inputName, inputValue) => {
+                                emptyValue={'0'}
+                                errorMessage={this.state.validationErrors.gliderId}
+                                onChangeFunc={(inputName, inputValue) => {
                                     this.handleInputChange(inputName, inputValue === '0' ? null : inputValue);
-                                } }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                }}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionRow isMobileLast={true}>
                             <RemarksInput
-                                inputValue={ this.state.item.remarks }
+                                inputValue={this.state.item.remarks}
                                 labelText='Remarks:'
-                                errorMessage={ this.state.validationErrors.remarks }
-                                onChange={ this.handleInputChange }
-                                onFocus={ this.handleInputFocus }
-                                onBlur={ this.handleInputBlur }
-                                />
+                                errorMessage={this.state.validationErrors.remarks}
+                                onChange={this.handleInputChange}
+                                onFocus={this.handleInputFocus}
+                                onBlur={this.handleInputBlur}
+                            />
                         </SectionRow>
 
                         <SectionTitle isSubtitle={true} isDesktopOnly={true}>
@@ -214,15 +213,15 @@ const FlightEditView = React.createClass({
                             <FightTrackUpload igc={this.state.item.igc} onLoad={this.handleFlightTrackData} />
                         </SectionRow>
 
-                        { this.renderDesktopButtons() }
+                        {this.renderDesktopButtons()}
 
                     </Section>
 
-                    { this.renderMobileButtons() }
+                    {this.renderMobileButtons()}
 
                 </form>
 
-                { this.renderNavigationMenu() }
+                {this.renderNavigationMenu()}
             </View>
         );
     }

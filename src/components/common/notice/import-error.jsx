@@ -12,7 +12,7 @@ require('./import-error.less');
 function ImportError(props) {
     if (!(props.error instanceof Array)) {
         const errorMessage = props.error.message || 'Couldn\'t import your file';
-        return <Notice text={ errorMessage } type='error' />;
+        return <Notice text={errorMessage} type='error' />;
     }
 
     const noticeText = (
@@ -27,9 +27,9 @@ function ImportError(props) {
                 </thead>
                 <tbody>
                 {props.error.map((importError, index) => (
-                    <tr key={ index }>
-                        <td>{ importError.row }</td>
-                        <td>{ importError.error.message }</td>
+                    <tr key={index}>
+                        <td>{importError.row}</td>
+                        <td>{importError.error.message}</td>
                     </tr>
                 ))}
                 </tbody>
@@ -37,7 +37,7 @@ function ImportError(props) {
         </div>
     );
 
-    return <Notice text={ noticeText } type='error' />;
+    return <Notice text={noticeText} type='error' />;
 }
 
 ImportError.propTypes = {

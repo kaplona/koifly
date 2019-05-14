@@ -1,10 +1,9 @@
 'use strict';
 
-var EmailMessageTemplates = require('../../constants/email-message-templates');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var sendAuthTokenToPilot = require('../helpers/send-auth-token');
-
+const EmailMessageTemplates = require('../../constants/email-message-templates');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const sendAuthTokenToPilot = require('../helpers/send-auth-token');
 
 
 /**
@@ -14,7 +13,7 @@ var sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * @param {object} request
  * @param {function} reply
  */
-var resendAuthTokenHandler = function(request, reply) {
+const resendAuthTokenHandler = function(request, reply) {
     Pilot
         .findById(request.auth.credentials.userId)
         .then(pilot => {

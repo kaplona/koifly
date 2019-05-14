@@ -1,18 +1,17 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
+const React = require('react');
+const browserHistory = require('react-router').browserHistory;
+const Button = require('../common/buttons/button');
+const EmptyList = require('../common/empty-list');
+const NavigationMenu = require('../common/menu/navigation-menu');
+const SectionLoader = require('../common/section/section-loader');
 
-var Button = require('../common/buttons/button');
-var EmptyList = require('../common/empty-list');
-var SectionLoader = require('../common/section/section-loader');
-var NavigationMenu = require('../common/menu/navigation-menu');
 
-
-var listViewMixin = function(modelKey) {
+const listViewMixin = function(modelKey) {
 
     const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
-    var Model = VIEW_ASSETS.model;
+    const Model = VIEW_ASSETS.model;
 
     return {
 
@@ -29,7 +28,7 @@ var listViewMixin = function(modelKey) {
          * and updates component's state
          */
         handleStoreModified: function() {
-            var storeContent = Model.getListOutput();
+            const storeContent = Model.getListOutput();
 
             if (storeContent && storeContent.error) {
                 this.setState({ loadingError: storeContent.error });
@@ -53,7 +52,7 @@ var listViewMixin = function(modelKey) {
         },
         
         renderNavigationMenu: function() {
-            return <NavigationMenu currentView={ Model.getModelKey() } />;
+            return <NavigationMenu currentView={Model.getModelKey()} />;
         },
 
         renderLoader: function() {
@@ -64,12 +63,12 @@ var listViewMixin = function(modelKey) {
             if (this.state.items &&
                 this.state.items.length === 0
             ) {
-                return <EmptyList ofWhichItems={ Model.keys.plural } onAdding={ this.handleAddItem } />;
+                return <EmptyList ofWhichItems={Model.keys.plural} onAdding={this.handleAddItem} />;
             }
         },
 
         renderAddItemButton: function() {
-            return <Button caption={ VIEW_ASSETS.addButtonCaption } onClick={ this.handleAddItem } />;
+            return <Button caption={VIEW_ASSETS.addButtonCaption} onClick={this.handleAddItem} />;
         }
     };
 };

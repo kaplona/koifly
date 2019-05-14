@@ -1,15 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-var AjaxService = require('./ajax-service');
-var PubSub = require('../utils/pubsub');
-
-var ErrorTypes = require('../errors/error-types');
-
+const _ = require('lodash');
+const AjaxService = require('./ajax-service');
+const ErrorTypes = require('../errors/error-types');
+const PubSub = require('../utils/pubsub');
 const STORE_MODIFIED_EVENT = require('../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 
-var DataService = function() {
+const DataService = function() {
 
     this.lastModified = null;
 
@@ -133,7 +131,7 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
     // We are sending lastModified date along with user's credentials
     // in case if user was logged out due to expiring cookie and still has data in js
     // this saves amount of data sending between server and client
-    var data = _.extend({}, pilotCredentials, { lastModified: null });
+    const data = _.extend({}, pilotCredentials, { lastModified: null });
 
     return AjaxService
         .post('/api/login', data)
@@ -151,7 +149,7 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
  * @returns {Promise} - whether request was successful
  */
 DataService.prototype.changePassword = function(currentPassword, nextPassword) {
-    var passwords = {
+    const passwords = {
         currentPassword: currentPassword,
         nextPassword: nextPassword,
         pilotId: this.store.pilot ? this.store.pilot.id : null
@@ -184,7 +182,7 @@ DataService.prototype.sendInitiateResetPasswordEmail = function(email) {
  * @returns {Promise} - whether request was successful
  */
 DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken) {
-    var data = {
+    const data = {
         password: nextPassword,
         pilotId: pilotId,
         authToken: authToken
@@ -244,7 +242,7 @@ DataService.prototype.clearStore = function() {
  * @param {Object} serverResponse
  */
 DataService.prototype.populateStore =  function(serverResponse) {
-    var isStoreModified = !!this.loadingError; // if store went from error to no-error, then it changed
+    let isStoreModified = !!this.loadingError; // if store went from error to no-error, then it changed
 
     // If we got a valid response, there were no errors
     this.loadingError = null;
@@ -330,7 +328,6 @@ DataService.prototype.addItems = function(storeKey, newItems) {
         }
     });
 };
-
 
 
 module.exports = new DataService();

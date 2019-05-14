@@ -1,16 +1,14 @@
 'use strict';
 
-var _ = require('lodash');
-
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var getPilotValuesForFrontend = require('./get-pilot-values');
+const _ = require('lodash');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const getPilotValuesForFrontend = require('./get-pilot-values');
 const SCOPES = require('../../constants/orm-constants').SCOPES;
 
-var Flight = require('../../orm/models/flights');
-var Site = require('../../orm/models/sites');
-var Glider = require('../../orm/models/gliders');
-
+const Flight = require('../../orm/models/flights');
+const Site = require('../../orm/models/sites');
+const Glider = require('../../orm/models/gliders');
 
 
 /**
@@ -45,19 +43,19 @@ function getRecordsValues(sequelizeRecordInstances) {
  * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
-var getAllData = function(pilot, dateFrom) {
+const getAllData = function(pilot, dateFrom) {
 
-    var result = {};
+    const result = {};
 
     // If no dateFrom => it's first request from the user, so retrieve all data
-    var scope = dateFrom ? SCOPES.all : SCOPES.visible;
+    const scope = dateFrom ? SCOPES.all : SCOPES.visible;
 
     // We are sending all the data to the browser along with the latest date at which DB records were modified
     // So front-end can compare it with the latest date it has in its store
     // And update data if needed
-    var maxLastModified = pilot.updatedAt;
+    let maxLastModified = pilot.updatedAt;
 
-    var whereQuery = { pilotId: pilot.id };
+    const whereQuery = { pilotId: pilot.id };
     if (dateFrom) {
         whereQuery.updatedAt = { $gt: dateFrom };
         maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;

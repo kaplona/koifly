@@ -1,29 +1,27 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var DesktopTopGrid = require('../../src/components/common/grids/desktop-top-grid');
-
+const DesktopTopGrid = require('../../src/components/common/grids/desktop-top-grid');
 
 
 describe('DesktopTopGrid component', () => {
 
-    var component;
-    var renderedDomElement;
+    let component;
+    let renderedDomElement;
 
-    var defaults = {
+    const defaults = {
         containerClass: 'top-grid',
         leftElementClass: 'left-element',
         middleElementClass: 'middle-element',
         rightElementClass: 'right-element'
     };
 
-    var mocks = {
+    const mocks = {
         leftElementText: 'left-element',
         middleElementText: 'middle-element',
         rightElementText: 'right-element'
@@ -32,18 +30,18 @@ describe('DesktopTopGrid component', () => {
     before(() => {
         component = TestUtils.renderIntoDocument(
             <DesktopTopGrid
-                leftElement={ <div>{ mocks.leftElementText }</div> }
-                middleElement={ <div>{ mocks.middleElementText }</div> }
-                rightElement={ <div>{ mocks.rightElementText }</div> }
-                />
+                leftElement={<div>{mocks.leftElementText}</div>}
+                middleElement={<div>{mocks.middleElementText}</div>}
+                rightElement={<div>{mocks.rightElementText}</div>}
+            />
         );
 
         renderedDomElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders proper layout for parsed elements', () => {
-        let parentClass = renderedDomElement.className;
-        let children = renderedDomElement.children;
+        const parentClass = renderedDomElement.className;
+        const children = renderedDomElement.children;
 
         expect(parentClass).to.equal(defaults.containerClass);
         expect(children).to.have.lengthOf(3);
@@ -53,13 +51,13 @@ describe('DesktopTopGrid component', () => {
     });
 
     it('renders parsed Components in proper places', () => {
-        let leftElement = renderedDomElement.querySelector(`.${defaults.leftElementClass} div`);
+        const leftElement = renderedDomElement.querySelector(`.${defaults.leftElementClass} div`);
         expect(leftElement).to.have.property('textContent', mocks.leftElementText);
 
-        let middleElement = renderedDomElement.querySelector(`.${defaults.middleElementClass} div`);
+        const middleElement = renderedDomElement.querySelector(`.${defaults.middleElementClass} div`);
         expect(middleElement).to.have.property('textContent', mocks.middleElementText);
 
-        let rightElement = renderedDomElement.querySelector(`.${defaults.rightElementClass} div`);
+        const rightElement = renderedDomElement.querySelector(`.${defaults.rightElementClass} div`);
         expect(rightElement).to.have.property('textContent', mocks.rightElementText);
     });
 });

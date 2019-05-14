@@ -1,36 +1,34 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var then = require('../../src/utils/then');
-var Chai = require('chai');
-var expect = Chai.expect;
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const then = require('../../src/utils/then');
+const Chai = require('chai');
+const expect = Chai.expect;
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 Chai.use(sinonChai);
 
-var Table = require('../../src/components/common/table');
-
+const Table = require('../../src/components/common/table');
 
 
 describe('Table component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         arrowUp: '\u25b2',
         arrowDown: '\u25bc',
         arrowClass: 'arrow',
         hiddenClass: 'x-hidden'
     };
 
-    var keys = ['firstKey', 'secondKey', 'thirdKey'];
-    var columnsObject = {
+    const keys = ['firstKey', 'secondKey', 'thirdKey'];
+    const columnsObject = {
         [keys[0]]: {
             key: keys[0],
             label: 'firstLabel',
@@ -48,7 +46,7 @@ describe('Table component', () => {
         }
     };
 
-    var mocks = {
+    const mocks = {
         rows: [
             {
                 id: 0,
@@ -75,28 +73,28 @@ describe('Table component', () => {
     before(() => {
         component = TestUtils.renderIntoDocument(
             <Table
-                rows={ mocks.rows }
-                columns={ mocks.columns }
-                initialSortingField={ mocks.columns[1].key }
-                onRowClick={ mocks.handleRowClick }
-                />
+                rows={mocks.rows}
+                columns={mocks.columns}
+                initialSortingField={mocks.columns[1].key}
+                onRowClick={mocks.handleRowClick}
+            />
         );
 
         renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('sets right initial state', () => {
-        let sortingFieldKey = mocks.columns[1].key;
+        const sortingFieldKey = mocks.columns[1].key;
 
         expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
         expect(component).to.have.deep.property('state.sortingDirection', columnsObject[sortingFieldKey].defaultSortingDirection);
     });
 
     it('renders proper table layout', () => {
-        let columnHeaders = renderedDOMElement.querySelectorAll('th');
-        let firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
-        let secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
-        let thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
+        const columnHeaders = renderedDOMElement.querySelectorAll('th');
+        const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
+        const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
+        const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
 
         // table has proper amount of columns
         // all column headers have proper text
@@ -117,13 +115,13 @@ describe('Table component', () => {
             .that.contain(mocks.columns[2].label);
         expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
 
-        let bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
+        const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
 
         // table has proper amount of rows
         expect(bodyRows).to.have.lengthOf(mocks.rows.length);
 
-        let firstRowCells = bodyRows[0].querySelectorAll('td');
-        let secondRowCells = bodyRows[1].querySelectorAll('td');
+        const firstRowCells = bodyRows[0].querySelectorAll('td');
+        const secondRowCells = bodyRows[1].querySelectorAll('td');
 
         // each row has proper amount of columns
         expect(firstRowCells).to.have.lengthOf(mocks.columns.length);
@@ -146,16 +144,16 @@ describe('Table component', () => {
         Simulate.click(columnHeaders[0]);
 
         then(() => {
-            let sortingFieldKey = mocks.columns[0].key;
+            const sortingFieldKey = mocks.columns[0].key;
 
             // now table is sorted by 'clicked' field by its default sorting direction
             expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
             expect(component).to.have.deep.property('state.sortingDirection', columnsObject[sortingFieldKey].defaultSortingDirection);
 
             columnHeaders = renderedDOMElement.querySelectorAll('th');
-            let firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
-            let secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
-            let thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
+            const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
+            const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
+            const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
 
             // first column header now have sorting-arrow pointing down
             expect(columnHeaders[0])
@@ -166,9 +164,9 @@ describe('Table component', () => {
             expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
             expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
 
-            let bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
-            let firstRowCells = bodyRows[0].querySelectorAll('td');
-            let secondRowCells = bodyRows[1].querySelectorAll('td');
+            const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
+            const firstRowCells = bodyRows[0].querySelectorAll('td');
+            const secondRowCells = bodyRows[1].querySelectorAll('td');
 
             // first element in mocks.rows will be rendered first
             // since sorting is ascendant (default sorting direction is 'true')
@@ -179,16 +177,16 @@ describe('Table component', () => {
             Simulate.click(columnHeaders[0]);
         })
         .then(() => {
-            let sortingFieldKey = mocks.columns[0].key;
+            const sortingFieldKey = mocks.columns[0].key;
 
             // table is still sorted by 'clicked' field, but different direction than it was
             expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
             expect(component).to.have.deep.property('state.sortingDirection', !columnsObject[sortingFieldKey].defaultSortingDirection);
 
             columnHeaders = renderedDOMElement.querySelectorAll('th');
-            let firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
-            let secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
-            let thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
+            const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
+            const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
+            const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
 
             // first column header now have sorting-arrow pointing up
             expect(columnHeaders[0])
@@ -199,9 +197,9 @@ describe('Table component', () => {
             expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
             expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
 
-            let bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
-            let firstRowCells = bodyRows[0].querySelectorAll('td');
-            let secondRowCells = bodyRows[1].querySelectorAll('td');
+            const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
+            const firstRowCells = bodyRows[0].querySelectorAll('td');
+            const secondRowCells = bodyRows[1].querySelectorAll('td');
 
             // now second element in mocks.rows will be rendered first
             // since sorting is descendant (sorting direction is 'false')

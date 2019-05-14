@@ -1,15 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
-
-var BcryptPromise = require('../../utils/bcrypt-promise');
-var getAllData = require('../helpers/get-all-data');
-var ErrorTypes = require('../../errors/error-types');
-var KoiflyError = require('../../errors/error');
-var normalizeError = require('../../errors/normalize-error');
-var Pilot = require('../../orm/models/pilots');
-var setAuthCookie = require('../helpers/set-auth-cookie');
-
+const _ = require('lodash');
+const BcryptPromise = require('../../utils/bcrypt-promise');
+const getAllData = require('../helpers/get-all-data');
+const ErrorTypes = require('../../errors/error-types');
+const KoiflyError = require('../../errors/error');
+const normalizeError = require('../../errors/normalize-error');
+const Pilot = require('../../orm/models/pilots');
+const setAuthCookie = require('../helpers/set-auth-cookie');
 
 
 /**
@@ -19,9 +17,9 @@ var setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {function} reply
  */
-var loginHandler = function(request, reply) {
-    var pilot; // we need it to have reference to current pilot
-    var payload = request.payload;
+const loginHandler = function(request, reply) {
+    let pilot; // we need it to have reference to current pilot
+    const payload = request.payload;
 
     // Checks payload for required fields
     if (!_.isString(payload.email) || !_.isString(payload.password)) {

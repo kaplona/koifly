@@ -1,21 +1,23 @@
 'use strict';
 
-var React = require('react');
-var SignupButton = require('./signup-button.jsx');
-var Separator = require('./separator.jsx');
-var FeatureColumn = require('./feature-column.jsx');
-var ScreenShort = require('./screen-shot.jsx');
-var HomeBlock = require('./home-block.jsx');
+const React = require('react');
+const { bool } = React.PropTypes;
+const FeatureColumn = require('./feature-column.jsx');
+const HomeBlock = require('./home-block.jsx');
+const ScreenShort = require('./screen-shot.jsx');
+const Separator = require('./separator.jsx');
+const SignupButton = require('./signup-button.jsx');
+
 
 if (process.env.BROWSER) {
     require('./home.less');
 }
 
 
-var Home = React.createClass({
+const Home = React.createClass({
 
     propTypes: {
-        isLoggedIn: React.PropTypes.bool.isRequired
+        isLoggedIn: bool.isRequired
     },
 
     renderSignupHeaderLink: function() {
@@ -25,7 +27,6 @@ var Home = React.createClass({
     },
 
     render: function() {
-
         return (
             <div className='home'>
                 <div className='home-pic' >
@@ -34,12 +35,12 @@ var Home = React.createClass({
                             Koifly
                         </div>
                         <a
-                            href={ this.props.isLoggedIn ? '/flights' : '/login' }
+                            href={this.props.isLoggedIn ? '/flights' : '/login'}
                             className='app-enter right-float'
-                            >
-                            { this.props.isLoggedIn ? 'Go to App' : 'Log in' }
+                        >
+                            {this.props.isLoggedIn ? 'Go to App' : 'Log in'}
                         </a>
-                        { this.renderSignupHeaderLink() }
+                        {this.renderSignupHeaderLink()}
                     </div>
                     <div className='home-pic-text'>
                         <div>Flight logging app for freeflight pilots</div>
@@ -187,8 +188,8 @@ var Home = React.createClass({
                 </div>
 
                 <div className='footer'>
-                    { '\u00A9' }
-                    { new Date().getFullYear() } Anastasia Kaplina
+                    {'\u00A9'}
+                    {new Date().getFullYear()} Anastasia Kaplina
                     <div className='icons-credits'>
                         icons by <a href='http://www.flaticon.com/authors/hand-drawn-goods' title='Hand Drawn Goods'> Hand Drawn Goods </a>
                         <br />

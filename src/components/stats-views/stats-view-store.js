@@ -8,12 +8,12 @@ class StatsViewStore {
             selectedFlightIds: [],
             selectedSiteId: null,
             selectedYear: null,
-            selectedMonth: null,
+            selectedMonth: null
         };
 
         this._events = {
             STATS_VIEW_STORE_UPDATED: 'STATS_VIEW_STORE_UPDATED'
-        }
+        };
     }
 
     get events() {

@@ -1,14 +1,13 @@
 'use strict';
 
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
+const _ = require('lodash');
 
 require('./dropdown.less');
 
 
-var { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
-
-var Dropdown = React.createClass({
+const Dropdown = React.createClass({
 
     propTypes: {
         selectedValue: oneOfType([string, number]),
@@ -34,8 +33,6 @@ var Dropdown = React.createClass({
         };
     },
 
-    emptyValue: '__EMPTY__',
-
     handleUserInput: function() {
         let value = this.refs.selectInput.value;
         if (value === this.emptyValue) {
@@ -43,6 +40,8 @@ var Dropdown = React.createClass({
         }
         this.props.onChangeFunc(this.props.inputName, value);
     },
+
+    emptyValue: '__EMPTY__',
 
     render: function() {
         // Sort options in ascending order if needed
@@ -64,8 +63,8 @@ var Dropdown = React.createClass({
         // Make an array of React elements
         const selectOptions = _.map(sortedOptions, option => {
             return (
-                <option key={ option.value } value={ option.value }>
-                    { option.text }
+                <option key={option.value} value={option.value}>
+                    {option.text}
                 </option>
             );
         });
@@ -73,15 +72,15 @@ var Dropdown = React.createClass({
         return (
             <div className='dropdown'>
                 <select
-                    className={ this.props.className || null }
-                    value={ this.props.selectedValue || this.props.emptyValue || this.emptyValue }
-                    disabled={ !this.props.isEnabled }
-                    onChange={ this.handleUserInput }
-                    onFocus={ this.props.onFocus }
-                    onBlur={ this.props.onBlur }
+                    className={this.props.className || null}
+                    value={this.props.selectedValue || this.props.emptyValue || this.emptyValue}
+                    disabled={!this.props.isEnabled}
+                    onChange={this.handleUserInput}
+                    onFocus={this.props.onFocus}
+                    onBlur={this.props.onBlur}
                     ref='selectInput'
-                    >
-                    { selectOptions }
+                >
+                    {selectOptions}
                 </select>
             </div>
         );

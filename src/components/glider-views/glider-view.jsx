@@ -1,26 +1,22 @@
 'use strict';
 
-var React = require('react');
-var Link = require('react-router').Link;
-
-var itemViewMixin = require('../mixins/item-view-mixin');
-var GliderModel = require('../../models/glider');
-var Util = require('../../utils/util');
-
-var BreadCrumbs = require('../common/bread-crumbs');
-var MobileTopMenu = require('../common/menu/mobile-top-menu');
-var RemarksRow = require('../common/section/remarks-row');
-var RowContent = require('../common/section/row-content');
-var Section = require('../common/section/section');
-var SectionRow = require('../common/section/section-row');
-var SectionTitle = require('../common/section/section-title');
-var View = require('../common/view');
-
+const React = require('react');
+const { shape, string } = React.PropTypes;
+const BreadCrumbs = require('../common/bread-crumbs');
+const GliderModel = require('../../models/glider');
+const itemViewMixin = require('../mixins/item-view-mixin');
+const Link = require('react-router').Link;
+const MobileTopMenu = require('../common/menu/mobile-top-menu');
+const RemarksRow = require('../common/section/remarks-row');
+const RowContent = require('../common/section/row-content');
+const Section = require('../common/section/section');
+const SectionRow = require('../common/section/section-row');
+const SectionTitle = require('../common/section/section-title');
+const Util = require('../../utils/util');
+const View = require('../common/view');
 
 
-var { shape, string } = React.PropTypes;
-
-var GliderView = React.createClass({
+const GliderView = React.createClass({
 
     propTypes: {
         params: shape({ // url args
@@ -35,9 +31,9 @@ var GliderView = React.createClass({
             <MobileTopMenu
                 leftButtonCaption='Back'
                 rightButtonCaption='Edit'
-                onLeftClick={ this.handleGoToListView }
-                onRightClick={ this.handleEditItem }
-                />
+                onLeftClick={this.handleGoToListView}
+                onRightClick={this.handleEditItem}
+            />
         );
     },
 
@@ -50,68 +46,67 @@ var GliderView = React.createClass({
             return this.renderLoader();
         }
 
-        var { trueFlightNum, flightNumThisYear } = this.state.item;
-        if (flightNumThisYear) {
-            trueFlightNum += `, incl. this year: ${flightNumThisYear}`;
+        let { trueFlightNum } = this.state.item;
+        if (this.state.item.flightNumThisYear) {
+            trueFlightNum += `, incl. this year: ${this.state.item.flightNumThisYear}`;
         }
 
         return (
-            <View onStoreModified={ this.handleStoreModified }>
-                { this.renderMobileTopMenu() }
-                { this.renderNavigationMenu() }
+            <View onStoreModified={this.handleStoreModified}>
+                {this.renderMobileTopMenu()}
+                {this.renderNavigationMenu()}
 
-                <Section onEditClick={ this.handleEditItem } >
+                <Section onEditClick={this.handleEditItem} >
                     <BreadCrumbs
-                        elements={ [
+                        elements={[
                             <Link to='/gliders'>Gliders</Link>,
                             this.state.item.name
-                        ] }
-                        />
+                        ]}
+                    />
 
                     <SectionTitle>
-                        { this.state.item.name }
+                        {this.state.item.name}
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
                             label='Total flights:'
-                            value={ trueFlightNum }
-                            />
+                            value={trueFlightNum}
+                        />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Total airtime:'
-                            value={ Util.formatTime(this.state.item.trueAirtime) }
-                            />
+                            value={Util.formatTime(this.state.item.trueAirtime)}
+                        />
                     </SectionRow>
 
-                    <SectionTitle isSubtitle={ true }>
+                    <SectionTitle isSubtitle={true}>
                         Usage before Koifly
                     </SectionTitle>
 
                     <SectionRow>
                         <RowContent
                             label='Flights:'
-                            value={ this.state.item.initialFlightNum }
-                            />
+                            value={this.state.item.initialFlightNum}
+                        />
                     </SectionRow>
 
                     <SectionRow>
                         <RowContent
                             label='Airtime:'
-                            value={ Util.formatTime(this.state.item.initialAirtime) }
-                            />
+                            value={Util.formatTime(this.state.item.initialAirtime)}
+                        />
                     </SectionRow>
 
-                    <RemarksRow value={ this.state.item.remarks } />
+                    <RemarksRow value={this.state.item.remarks} />
 
                 </Section>
             </View>
         );
     }
 });
-
 
 
 module.exports = GliderView;

@@ -1,13 +1,13 @@
 'use strict';
+/* eslint-disable no-console */
+const fs = require('fs');
+const path = require('path');
+const rimraf = require('rimraf');
+const chalk = require('chalk');
+const config = require('../config/variables');
 
-var fs = require('fs');
-var path = require('path');
-var rimraf = require('rimraf');
-var chalk = require('chalk');
-var config = require('../config/variables');
 
-
-var logPrefix = '[' + path.basename(__filename) + '] ';
+const logPrefix = '[' + path.basename(__filename) + '] ';
 
 
 /**
@@ -15,7 +15,7 @@ var logPrefix = '[' + path.basename(__filename) + '] ';
  *
  * @class FileWriter
  */
-var FileWriter = {
+const FileWriter = {
 
     /**
      * @param {string} filename
@@ -41,7 +41,7 @@ var FileWriter = {
         // @TODO this looks dangerous. Make sure that filename is legit (not higher than root, not .git, etc.)
         // @TODO make async
         try {
-            var filePath = path.join(config.paths.root, filename);
+            const filePath = path.join(config.paths.root, filename);
             rimraf.sync(filePath);
         } catch (err) {
             console.log(chalk.red(logPrefix + 'ERROR: Unable to delete ' + filename + ' - ' + err));

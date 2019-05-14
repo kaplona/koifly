@@ -62,7 +62,7 @@ const igcService = {
                 lat,
                 lng,
                 airtimeInSeconds, // time in seconds starting from the beginning of the flight
-                timeInSeconds, // time in seconds starting from the beginning of a day (in UTC)
+                timeInSeconds // time in seconds starting from the beginning of a day (in UTC)
             };
         });
 
@@ -80,7 +80,7 @@ const igcService = {
             minAltitude += incrementInPilotUnit;
             parsedFixedRecords.forEach(point => {
                 point.altInPilotUnit += incrementInPilotUnit;
-            })
+            });
         }
 
         return {
@@ -89,7 +89,7 @@ const igcService = {
             maxAltitude,
             minAltitude,
             airtime: airtimeInMinutes,
-            siteId: nearestSite.id ? nearestSite.id.toString() : null,
+            siteId: nearestSite.id ? nearestSite.id.toString() : null
         };
     },
 
@@ -272,7 +272,7 @@ const igcService = {
         let nearestSite = null;
         SiteModel
             .getList()
-            .filter(({coordinates}) => {
+            .filter(({ coordinates }) => {
                 if (!coordinates) {
                     return false;
                 }
@@ -293,7 +293,7 @@ const igcService = {
             });
 
         return nearestSite;
-    },
+    }
 };
 
 module.exports = igcService;

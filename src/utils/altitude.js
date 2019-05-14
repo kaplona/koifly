@@ -149,7 +149,7 @@ const Altitude = {
     getVelocityInGivenUnits: function(value, units) {
         const multiplier = this.velocityConverter[units];
         return Math.round(parseFloat(value) * multiplier);
-    },
+    }
 };
 
 

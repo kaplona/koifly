@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, string} = React.PropTypes;
+const { func, string } = React.PropTypes;
 const Button = require('../buttons/button');
 const InputContainer = require('./input-container');
 const Label = require('../section/label');
@@ -17,7 +17,7 @@ const FileInput = React.createClass({
         fileTypes: string.isRequired, // comma separated types, which input[type='file'] expects in "accepts" attr
         errorMessage: string,
         onSelect: func.isRequired,
-        onRemove: func.isRequired,
+        onRemove: func.isRequired
     },
 
     handleButtonClick: function() {
@@ -40,13 +40,13 @@ const FileInput = React.createClass({
                 Your browser doesn't support new html file uploading API.
                 Please, upgrade your browser to the latest version, or use Firefox, Chrome, Safari, or Opera browsers.
             `;
-            return <Notice type='error' text={ message } />;
+            return <Notice type='error' text={message} />;
         }
 
         return (
             <div className='file-loader-component'>
                 {!!this.props.errorMessage && (
-                    <ValidationError message={ this.props.errorMessage } />
+                    <ValidationError message={this.props.errorMessage} />
                 )}
 
                 {!!this.props.fileName && (

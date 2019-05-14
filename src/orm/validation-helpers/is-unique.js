@@ -45,8 +45,8 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
     return Model
         .scope(scope)
         .findOne(queryOptions)
-        .then(record => {
-            if (record) {
+        .then(existingRecord => {
+            if (existingRecord) {
                 const errorList = {
                     [fieldName]: errorMsg
                 };

@@ -1,22 +1,18 @@
 'use strict';
 
-var React = require('react');
-var browserHistory = require('react-router').browserHistory;
-
-var FlightModel = require('../../../models/flight');
-var GliderModel = require('../../../models/glider');
-var SiteModel = require('../../../models/site');
-var PilotModel = require('../../../models/pilot');
-
-var NavigationItem = require('./navigation-item');
+const React = require('react');
+const { bool, string } = React.PropTypes;
+const browserHistory = require('react-router').browserHistory;
+const FlightModel = require('../../../models/flight');
+const GliderModel = require('../../../models/glider');
+const NavigationItem = require('./navigation-item');
+const SiteModel = require('../../../models/site');
+const PilotModel = require('../../../models/pilot');
 
 require('./navigation-menu.less');
 
 
-
-var { bool, string } = React.PropTypes;
-
-var NavigationMenu = React.createClass({
+const NavigationMenu = React.createClass({
 
     propTypes: {
         currentView: string,
@@ -36,8 +32,8 @@ var NavigationMenu = React.createClass({
     },
 
     render: function() {
-        var itemsNumber = 5;
-        var className = 'navigation-menu';
+        const itemsNumber = 5;
+        let className = 'navigation-menu';
         if (this.props.isMobile) {
             className += ' x-mobile';
         }
@@ -50,41 +46,41 @@ var NavigationMenu = React.createClass({
         }
 
         return (
-            <div className={ className }>
+            <div className={className}>
                 <NavigationItem
                     iconFileName='log-book.png'
                     label='Flights'
-                    itemsNumber={ itemsNumber }
-                    isActive={ this.props.currentView === FlightModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('flights') }
+                    itemsNumber={itemsNumber}
+                    isActive={this.props.currentView === FlightModel.getModelKey()}
+                    onClick={() => this.handleLinkTo('flights')}
                 />
                 <NavigationItem
                     iconFileName='mountains.png'
                     label='Sites'
-                    itemsNumber={ itemsNumber }
-                    isActive={ this.props.currentView === SiteModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('sites') }
+                    itemsNumber={itemsNumber}
+                    isActive={this.props.currentView === SiteModel.getModelKey()}
+                    onClick={() => this.handleLinkTo('sites')}
                 />
                 <NavigationItem
                     iconFileName='glider.png'
                     label='Gliders'
-                    itemsNumber={ itemsNumber }
-                    isActive={ this.props.currentView === GliderModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('gliders') }
+                    itemsNumber={itemsNumber}
+                    isActive={this.props.currentView === GliderModel.getModelKey()}
+                    onClick={() => this.handleLinkTo('gliders')}
                 />
                 <NavigationItem
                     iconFileName='statistics.png'
                     label='Stats'
-                    itemsNumber={ itemsNumber }
-                    isActive={ this.props.currentView === 'stats' }
-                    onClick={ () => this.handleLinkTo('stats') }
+                    itemsNumber={itemsNumber}
+                    isActive={this.props.currentView === 'stats'}
+                    onClick={() => this.handleLinkTo('stats')}
                 />
                 <NavigationItem
                     iconFileName='person.png'
                     label='Pilot'
-                    itemsNumber={ itemsNumber }
-                    isActive={ this.props.currentView === PilotModel.getModelKey() }
-                    onClick={ () => this.handleLinkTo('pilot') }
+                    itemsNumber={itemsNumber}
+                    isActive={this.props.currentView === PilotModel.getModelKey()}
+                    onClick={() => this.handleLinkTo('pilot')}
                 />
             </div>
         );

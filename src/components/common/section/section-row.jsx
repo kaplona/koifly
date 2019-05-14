@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool} = React.PropTypes;
+const { bool } = React.PropTypes;
 
 require('./section-row.less');
 
@@ -11,14 +11,14 @@ const SectionRow = React.createClass({
     propTypes: {
         isDesktopOnly: bool,
         isLast: bool,
-        isMobileLast: bool,
+        isMobileLast: bool
     },
 
     getDefaultProps: function() {
         return {
             isDesktopOnly: false,
             isLast: false,
-            isMobileLast: false,
+            isMobileLast: false
         };
     },
 
@@ -35,8 +35,8 @@ const SectionRow = React.createClass({
         }
 
         return (
-            <div className={ className }>
-                { this.props.children }
+            <div className={className}>
+                {this.props.children}
             </div>
         );
     }

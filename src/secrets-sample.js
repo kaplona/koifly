@@ -1,7 +1,7 @@
 'use strict';
 
 
-var Secrets = {
+const Secrets = {
     // public data which is different on production and development
     domain: 'www.example.com',
     bareDomain: 'example.com',

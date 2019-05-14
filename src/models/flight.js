@@ -71,7 +71,7 @@ let FlightModel = {
      * error object - if data wasn't loaded due to error
      */
     getListOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
@@ -97,12 +97,12 @@ let FlightModel = {
      * or there is no flight with such id
      */
     getItemOutput: function(flightId) {
-        var flight = this.getStoreContent(flightId);
+        const flight = this.getStoreContent(flightId);
         if (!flight || flight.error) {
             return flight;
         }
 
-        var flightNumbers = this.getFlightNumbers(flight);
+        const flightNumbers = this.getFlightNumbers(flight);
         
         return {
             id: flight.id,
@@ -136,15 +136,15 @@ let FlightModel = {
             return this.getNewItemOutput();
         }
 
-        var flight = this.getStoreContent(flightId);
+        const flight = this.getStoreContent(flightId);
         if (!flight || flight.error) {
             return flight;
         }
 
         // If altitude or hours or minutes is 0 show empty string to user
         // So user won't need to erase 0 before entering other value
-        var altitude = flight.altitude ? Altitude.getAltitudeInPilotUnits(flight.altitude) : '';
-        var hoursMinutes = Util.getHoursMinutes(flight.airtime);
+        const altitude = flight.altitude ? Altitude.getAltitudeInPilotUnits(flight.altitude) : '';
+        const hoursMinutes = Util.getHoursMinutes(flight.airtime);
 
         return {
             id: flight.id,
@@ -156,7 +156,7 @@ let FlightModel = {
             hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
             minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : '',
             remarks: flight.remarks,
-            igc: flight.igc,
+            igc: flight.igc
         };
     },
     
@@ -168,12 +168,12 @@ let FlightModel = {
      * error object - if data wasn't loaded due to error
      */
     getNewItemOutput: function() {
-        var storeContent = this.getStoreContent();
+        const storeContent = this.getStoreContent();
         if (!storeContent || storeContent.error) {
             return storeContent;
         }
 
-        var lastFlight = this.getLastFlight();
+        let lastFlight = this.getLastFlight();
         if (lastFlight === null) {
             // Take default flight properties
             lastFlight = {
@@ -193,7 +193,7 @@ let FlightModel = {
             hours: '',
             minutes: '',
             remarks: '',
-            igc: null,
+            igc: null
         };
     },
     
@@ -210,7 +210,7 @@ let FlightModel = {
         newFlight = this.setDefaultValues(newFlight);
 
         // Create a flight only with fields which will be send to the server
-        var flight = {
+        const flight = {
             id: newFlight.id,
             date: newFlight.date,
             siteId: (newFlight.siteId === null) ? null : parseInt(newFlight.siteId),
@@ -220,9 +220,9 @@ let FlightModel = {
             igc: newFlight.igc
         };
 
-        var currentAltitude = (newFlight.id !== undefined) ? this.getStoreContent(newFlight.id).altitude : 0;
-        var nextAltitude = parseInt(newFlight.altitude);
-        var nextAltitudeUnit = newFlight.altitudeUnit;
+        const currentAltitude = (newFlight.id !== undefined) ? this.getStoreContent(newFlight.id).altitude : 0;
+        const nextAltitude = parseInt(newFlight.altitude);
+        const nextAltitudeUnit = newFlight.altitudeUnit;
         flight.altitude = Altitude.getAltitudeInMeters(nextAltitude, currentAltitude, nextAltitudeUnit);
 
         return flight;
@@ -235,7 +235,7 @@ let FlightModel = {
      * @returns {object|null} - last flight or null if no flights yet
      */
     getLastFlight: function() {
-        var lastFlight = null;
+        let lastFlight = null;
 
         objectValues(this.getStoreContent()).forEach(flight => {
             if (lastFlight === null ||
@@ -262,7 +262,7 @@ let FlightModel = {
      *  }} - flight number, flight number for that year, flight number for that day, number of flights that day
      */
     getFlightNumbers: function(targetFlight) {
-        var flightNumbers = {
+        const flightNumbers = {
             flightNum: 1,
             flightNumYear: 1,
             flightNumDay: 1,
@@ -307,7 +307,7 @@ let FlightModel = {
      * @returns {number} altitude above launch in pilot's altitude units
      */
     getAltitudeAboveLaunch: function(siteId, flightAltitude) {
-        var siteAltitude = siteId ? SiteModel.getLaunchAltitude(siteId) : 0;
+        const siteAltitude = siteId ? SiteModel.getLaunchAltitude(siteId) : 0;
         flightAltitude = Altitude.getAltitudeInPilotUnits(parseFloat(flightAltitude));
         return flightAltitude - siteAltitude;
     },
@@ -317,13 +317,13 @@ let FlightModel = {
      * @returns {number|null} - days passed since the last flight
      */
     getDaysSinceLastFlight: function() {
-        var lastFlight = this.getLastFlight();
+        const lastFlight = this.getLastFlight();
 
         if (lastFlight === null) {
             return null;
         }
         
-        var millisecondsSince = Date.now() - Date.parse(lastFlight.date);
+        const millisecondsSince = Date.now() - Date.parse(lastFlight.date);
         return Math.floor(millisecondsSince / (24 * 60 * 60 * 1000));
     },
     
@@ -334,8 +334,8 @@ let FlightModel = {
     
 
     getNumberOfFlightsThisYear: function() {
-        var date = new Date();
-        var year = date.getFullYear();
+        const date = new Date();
+        const year = date.getFullYear();
 
         return objectValues(this.getStoreContent())
             .reduce(
@@ -356,9 +356,9 @@ let FlightModel = {
      * e.g. total flights and flights for this year at particular site
      */
     getFlightStats: function(statFilter) {
-        var date = new Date();
-        var year = date.getFullYear();
-        var numberOfFlights = {
+        const date = new Date();
+        const year = date.getFullYear();
+        const numberOfFlights = {
             total: 0,
             thisYear: 0
         };
@@ -446,7 +446,7 @@ let FlightModel = {
                 },
                 0
             );
-    },
+    }
 };
 
 

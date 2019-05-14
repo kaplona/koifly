@@ -3,35 +3,33 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
-var Simulate = TestUtils.Simulate;
-
-var Chai = require('chai');
-var Sinon = require('sinon');
-var sinonChai = require('sinon-chai');
-var expect = Chai.expect;
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const Simulate = TestUtils.Simulate;
+const Chai = require('chai');
+const Sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+const expect = Chai.expect;
 Chai.use(sinonChai);
 
-var AppLink = require('../../src/components/common/app-link');
-var CoordinatesInput = require('../../src/components/common/inputs/coordinates-input');
-var Label = require('../../src/components/common/section/label');
-var ValidationError = require('../../src/components/common/section/validation-error');
-
+const AppLink = require('../../src/components/common/app-link');
+const CoordinatesInput = require('../../src/components/common/inputs/coordinates-input');
+const Label = require('../../src/components/common/section/label');
+const ValidationError = require('../../src/components/common/section/validation-error');
 
 
 describe('CoordinatesInput component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         className: 'x-text',
         errorClassName: 'x-error'
     };
 
-    var mocks = {
+    const mocks = {
         initialInputValue: 'test value',
         nextInputValue: 'next test value',
         labelText: 'Test label',
@@ -48,28 +46,28 @@ describe('CoordinatesInput component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <CoordinatesInput
-                    inputValue={ mocks.initialInputValue }
-                    labelText={ mocks.labelText }
-                    inputName={ mocks.inputName }
-                    onChange={ mocks.handleInputChange }
-                    onMapShow={ mocks.handleMapShow }
-                    onFocus={ mocks.handleInputFocus }
-                    onBlur={ mocks.handleInputBlur }
-                    />
+                    inputValue={mocks.initialInputValue}
+                    labelText={mocks.labelText}
+                    inputName={mocks.inputName}
+                    onChange={mocks.handleInputChange}
+                    onMapShow={mocks.handleMapShow}
+                    onFocus={mocks.handleInputFocus}
+                    onBlur={mocks.handleInputBlur}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders label with proper text', () => {
-            let label = TestUtils.findRenderedComponentWithType(component, Label);
+            const label = TestUtils.findRenderedComponentWithType(component, Label);
 
             expect(label).to.have.deep.property('props.children', mocks.labelText);
         });
 
         it('renders input with proper value and classes', () => {
-            let input = renderedDOMElement.querySelector('input');
-            let inputClassName = input.className;
+            const input = renderedDOMElement.querySelector('input');
+            const inputClassName = input.className;
 
             expect(input).to.have.property('value', mocks.initialInputValue);
             expect(inputClassName).to.contain(defaults.className);
@@ -77,19 +75,19 @@ describe('CoordinatesInput component', () => {
         });
 
         it('renders link to the map', () => {
-            let mapLink = TestUtils.findRenderedComponentWithType(component, AppLink);
+            const mapLink = TestUtils.findRenderedComponentWithType(component, AppLink);
 
             expect(mapLink).to.have.deep.property('props.onClick', mocks.handleMapShow);
         });
 
         it('doesn\'t show error message if wasn\'t provided', () => {
-            let errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
+            const errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
 
             expect(errorMessages).to.have.lengthOf(0);
         });
 
         it('triggers onChange function with proper parameters when changed', () => {
-            let input = component.refs.input;
+            const input = component.refs.input;
             input.value = mocks.nextInputValue;
             Simulate.change(input);
 
@@ -98,7 +96,7 @@ describe('CoordinatesInput component', () => {
         });
 
         it('calls onFocus and onBlur functions', () => {
-            let input = component.refs.input;
+            const input = component.refs.input;
             Simulate.focus(input);
             Simulate.blur(input);
 
@@ -112,27 +110,27 @@ describe('CoordinatesInput component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <CoordinatesInput
-                    inputValue={ mocks.initialInputValue }
-                    labelText={ mocks.labelText }
-                    inputName={ mocks.inputName }
-                    errorMessage={ mocks.errorMessage }
-                    onChange={ mocks.handleInputChange }
-                    onMapShow={ mocks.handleMapShow }
-                    />
+                    inputValue={mocks.initialInputValue}
+                    labelText={mocks.labelText}
+                    inputName={mocks.inputName}
+                    errorMessage={mocks.errorMessage}
+                    onChange={mocks.handleInputChange}
+                    onMapShow={mocks.handleMapShow}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders error message if provided', () => {
-            let errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
+            const errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
 
             expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
         });
 
         it('renders input with error className', () => {
-            let input = renderedDOMElement.querySelector('input');
-            let inputClassName = input.className;
+            const input = renderedDOMElement.querySelector('input');
+            const inputClassName = input.className;
 
             expect(inputClassName).to.contain(defaults.className);
             expect(inputClassName).to.contain(defaults.errorClassName);

@@ -1,27 +1,25 @@
 'use strict';
 
 require('../../src/test-dom')();
-var React = require('react');
-var ReactDOM = require('react-dom');
-var TestUtils = require('react-addons-test-utils');
+const React = require('react');
+const ReactDOM = require('react-dom');
+const TestUtils = require('react-addons-test-utils');
+const expect = require('chai').expect;
 
-var expect = require('chai').expect;
-
-var DaysSinceLastFlight = require('../../src/components/common/days-since-last-flight');
-
+const DaysSinceLastFlight = require('../../src/components/common/days-since-last-flight');
 
 
 describe('DaysSinceLastFlight component', () => {
 
-    var component;
-    var renderedDOMElement;
+    let component;
+    let renderedDOMElement;
 
-    var defaults = {
+    const defaults = {
         noFlightsYetText: 'No flights yet',
         greenClassName: 'x-green'
     };
 
-    var mocks = {
+    const mocks = {
         moreThatTwoWeeks: 32,
         lessThatTwoWeeks: 5
     };
@@ -37,7 +35,7 @@ describe('DaysSinceLastFlight component', () => {
         });
 
         it('renders default text if no days prop parsed', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(renderedDOMElement).to.have.property('textContent', defaults.noFlightsYetText);
             expect(className).to.not.contain(defaults.greenClassName);
@@ -49,15 +47,15 @@ describe('DaysSinceLastFlight component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <DaysSinceLastFlight
-                    days={ mocks.moreThatTwoWeeks }
-                    />
+                    days={mocks.moreThatTwoWeeks}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders text with parsed days', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(renderedDOMElement)
                 .to.have.property('textContent')
@@ -71,15 +69,15 @@ describe('DaysSinceLastFlight component', () => {
         before(() => {
             component = TestUtils.renderIntoDocument(
                 <DaysSinceLastFlight
-                    days={ mocks.lessThatTwoWeeks }
-                    />
+                    days={mocks.lessThatTwoWeeks}
+                />
             );
 
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
         it('renders component with proper class', () => {
-            let className = renderedDOMElement.className;
+            const className = renderedDOMElement.className;
 
             expect(className).to.contain(defaults.greenClassName);
         });

@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, func, number, shape} = React.PropTypes;
+const { arrayOf, func, number, shape } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const chartService = require('../../services/chart-service');
 const distanceService = require('../../services/distance-service');
@@ -16,10 +16,10 @@ const FlightSynchronizedCharts = React.createClass({
             altInPilotUnit: number.isRequired,
             lat: number.isRequired,
             lng: number.isRequired,
-            airtimeInSeconds: number.isRequired,
+            airtimeInSeconds: number.isRequired
         })),
         minAltitude: number,
-        onPointHover: func.isRequired,
+        onPointHover: func.isRequired
     },
 
     componentDidMount() {
@@ -29,7 +29,7 @@ const FlightSynchronizedCharts = React.createClass({
 
         // Adding a method to Highcharts Point prototype.
         // Highlight a point by showing tooltip, setting hover state and draw crosshair
-        Highcharts.Point.prototype.koiHighlight = function (event) {
+        Highcharts.Point.prototype.koiHighlight = function(event) {
             event = this.series.chart.pointer.normalize(event);
             this.onMouseOver(); // Show the hover marker
             this.series.chart.tooltip.refresh(this); // Show the tooltip
@@ -46,7 +46,7 @@ const FlightSynchronizedCharts = React.createClass({
         this.charts.forEach(chartInstance => {
             chartInstance.pointer.reset = function() {
                 return undefined;
-            }
+            };
         });
     },
 
@@ -116,7 +116,7 @@ const FlightSynchronizedCharts = React.createClass({
             this.createChartInstance(altChartConfig, minAirtime, maxAirtime),
             this.createChartInstance(liftChartConfig, minAirtime, maxAirtime),
             this.createChartInstance(launchDistChartConfig, minAirtime, maxAirtime),
-            this.createChartInstance(glideRatioChartConfig, minAirtime, maxAirtime),
+            this.createChartInstance(glideRatioChartConfig, minAirtime, maxAirtime)
         ];
     },
 
@@ -146,7 +146,7 @@ const FlightSynchronizedCharts = React.createClass({
                 },
                 series: {
                     turboThreshold: 0
-                },
+                }
             },
             title: {
                 text: config.title,
@@ -156,7 +156,7 @@ const FlightSynchronizedCharts = React.createClass({
                 y: 10
             },
             tooltip: {
-                positioner: function () {
+                positioner: function() {
                     return {
                         x: this.chart.chartWidth - this.label.width, // right aligned
                         y: 15 // align to title
@@ -169,7 +169,7 @@ const FlightSynchronizedCharts = React.createClass({
                 shadow: false,
                 style: {
                     fontSize: '18px'
-                },
+                }
             },
             xAxis: {
                 crosshair: true,
@@ -181,14 +181,14 @@ const FlightSynchronizedCharts = React.createClass({
                         if (maxAirtime < 5 * 60) {
                             const min = Math.floor(this.value / 60);
                             const sec = this.value % 60;
-                            return `${min}:${sec} min`
+                            return `${min}:${sec} min`;
                         }
 
                         const hour = Math.floor(this.value / 3600);
                         const isRoundHour = (this.value % 3600) === 0;
 
                         if (isRoundHour) {
-                            return `<b>${hour} h</b>`
+                            return `<b>${hour} h</b>`;
                         }
 
                         const min = Math.floor((this.value - hour * 3600) / 60);
@@ -197,7 +197,7 @@ const FlightSynchronizedCharts = React.createClass({
                 },
                 min: minAirtime,
                 max: maxAirtime,
-                tickInterval: this.getTickInterval(maxAirtime),
+                tickInterval: this.getTickInterval(maxAirtime)
             },
             yAxis: {
                 labels: config.yAxisLabels || {},
@@ -207,7 +207,7 @@ const FlightSynchronizedCharts = React.createClass({
             },
             legend: { enabled: false },
             credits: { enabled: false },
-            series: [config.series]
+            series: [ config.series ]
         });
     },
 

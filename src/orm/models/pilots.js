@@ -1,5 +1,5 @@
 'use strict';
-
+/* eslint-disable new-cap */
 const Sequelize = require('sequelize');
 
 const ErrorMessages = require('../../errors/error-messages');
@@ -42,7 +42,7 @@ const Pilot = sequelize.define(
                 this.setDataValue('email', value.toLowerCase());
             },
             validate: {
-                isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL },
+                isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL }
             }
         },
 
