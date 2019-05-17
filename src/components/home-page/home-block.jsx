@@ -6,14 +6,15 @@ if (process.env.BROWSER) {
     require('./home-block.less');
 }
 
-
-function HomeBlock(props) {
-    return (
-        <div className='home-block'>
-            {props.children}
-        </div>
-    );
-}
+const HomeBlock = React.createClass({
+    render() {
+        return (
+            <div className='home-block'>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 
 module.exports = HomeBlock;

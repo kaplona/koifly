@@ -5,13 +5,15 @@ const React = require('react');
 require('./description.less');
 
 
-function Description(props) {
-    return (
-        <div className='description'>
-            {props.children}
-        </div>
-    );
-}
+const Description = React.createClass({
+    render() {
+        return (
+            <div className='description'>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 
 module.exports = Description;

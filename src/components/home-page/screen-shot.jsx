@@ -8,21 +8,23 @@ if (process.env.BROWSER) {
 }
 
 
-function ScreenShort() {
-    const firstScreenShort = ' x-' + this.props.type + '-1';
-    const secondScreenShort = ' x-' + this.props.type + '-2';
+const ScreenShort = React.createClass({
+    propTypes: {
+        type: oneOf(['flights', 'sites', 'gliders']).isRequired
+    },
 
-    return (
-        <div className='screen-shots'>
-            <div className={'first screen-shot' + firstScreenShort} />
-            <div className={'second screen-shot' + secondScreenShort} />
-        </div>
-    );
-}
+    render() {
+        const firstScreenShort = ' x-' + this.props.type + '-1';
+        const secondScreenShort = ' x-' + this.props.type + '-2';
 
-ScreenShort.propTypes = {
-    type: oneOf(['flights', 'sites', 'gliders']).isRequired
-};
+        return (
+            <div className='screen-shots'>
+                <div className={'first screen-shot' + firstScreenShort}/>
+                <div className={'second screen-shot' + secondScreenShort}/>
+            </div>
+        );
+    }
+});
 
 
 module.exports = ScreenShort;

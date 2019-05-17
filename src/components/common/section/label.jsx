@@ -5,13 +5,15 @@ const React = require('react');
 require('./label.less');
 
 
-function Label(props) {
-    return (
-        <div className='label'>
-            {props.children}
-        </div>
-    );
-}
+const Label = React.createClass({
+    render() {
+        return (
+            <div className='label'>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 
 module.exports = Label;

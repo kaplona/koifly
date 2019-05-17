@@ -39,14 +39,14 @@ const Button = React.createClass({
 
     render: function() {
         let className = this.props.isMobile ? 'mobile-button' : 'button';
+        if (!this.props.isAllScreens && !this.props.isMobile) {
+            className += ' desktop-only';
+        }
         if (this.props.buttonStyle) {
             className += ` x-${this.props.buttonStyle}`;
         }
         if (this.props.fitContent) {
             className += ' x-content-width';
-        }
-        if (!this.props.isAllScreens) {
-            className += ' desktop-only';
         }
         if (this.props.isSmall) {
             className += ' x-small';

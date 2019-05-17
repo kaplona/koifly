@@ -5,13 +5,15 @@ const React = require('react');
 require('./value-container.less');
 
 
-function Value(props) {
-    return (
-        <div className='value-container'>
-            {props.children}
-        </div>
-    );
-}
+const Value = React.createClass({
+    render() {
+        return (
+            <div className='value-container'>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 
 module.exports = Value;

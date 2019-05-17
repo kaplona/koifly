@@ -5,13 +5,15 @@ const React = require('react');
 require('./compact-container.less');
 
 
-function CompactContainer(props) {
-    return (
-        <div className='compact-container'>
-            {props.children}
-        </div>
-    );
-}
+const CompactContainer = React.createClass({
+    render() {
+        return (
+            <div className='compact-container'>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 
 module.exports = CompactContainer;

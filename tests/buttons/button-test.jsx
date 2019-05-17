@@ -26,6 +26,7 @@ describe('Button component', () => {
     const defaults = {
         type: 'button',
         className: 'button',
+        desktopClassName: 'desktop-only',
         mobileClassName: 'mobile-button'
     };
 
@@ -64,17 +65,19 @@ describe('Button component', () => {
         it('renders an element with proper default classes', () => {
             const classList = renderedDOMElement.classList;
 
-            expect(classList).to.have.lengthOf(2);
+            expect(classList).to.have.lengthOf(3);
             expect(classList[0]).to.equal(defaults.className);
-            expect(classList[1]).to.equal(`x-${mocks.buttonStyle}`);
+            expect(classList[1]).to.equal(defaults.desktopClassName);
+            expect(classList[2]).to.equal(`x-${mocks.buttonStyle}`);
         });
 
         // For example purpose only I included the same tests using React TestUtils methods
         // it saves same space and test running time (which is not an issue for me... yet)
         it('renders an input element with proper default classes (React TestUtils)', () => {
             const button = TestUtils.findRenderedDOMComponentWithTag(component, 'input');
+            const expectedClassName = `${defaults.className} ${defaults.desktopClassName} x-${mocks.buttonStyle}`;
 
-            expect(button).to.have.property('className', `${defaults.className} x-${mocks.buttonStyle}`);
+            expect(button).to.have.property('className', expectedClassName);
         });
 
         // Note: we can’t just issue an event on element with real DOM
@@ -89,7 +92,7 @@ describe('Button component', () => {
     });
 
 
-    describe('Disabled button, button type and class name tasting (real DOM)', () => {
+    describe('Disabled button, button type and class name testing (real DOM)', () => {
         before(() => {
             handleClick = Sinon.spy();
 
@@ -147,9 +150,10 @@ describe('Button component', () => {
 
         it('renders an input element with proper classes', () => {
             const button = renderer.getRenderOutput();
+            const expectedClassName = `${defaults.className} ${defaults.desktopClassName} x-${mocks.buttonStyle}`;
 
             expect(button).to.have.property('type', 'input');
-            expect(button).to.have.deep.property('props.className', `${defaults.className} x-${mocks.buttonStyle}`);
+            expect(button).to.have.deep.property('props.className', expectedClassName);
         });
 
         it('trigger onClick handler once clicked', () => {

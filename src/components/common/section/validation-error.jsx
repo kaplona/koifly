@@ -6,17 +6,19 @@ const { string } = React.PropTypes;
 require('./validation-error.less');
 
 
-function ValidationError(props) {
-    return (
-        <div className='validation-error'>
-            {props.message}
-        </div>
-    );
-}
+const ValidationError = React.createClass({
+    propTypes: {
+        message: string.isRequired
+    },
 
-ValidationError.propTypes = {
-    message: string.isRequired
-};
+    render() {
+        return (
+            <div className='validation-error'>
+                {this.props.message}
+            </div>
+        );
+    }
+});
 
 
 module.exports = ValidationError;

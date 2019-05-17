@@ -28,11 +28,12 @@ describe('BottomMenu component', () => {
         const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
 
         expect(className).to.not.contain(defaults.mobileClassName);
-        expect(navigationItems).to.have.lengthOf(4);
+        expect(navigationItems).to.have.lengthOf(5);
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
     });
 
     it('renders mobile class if required', () => {
@@ -50,6 +51,7 @@ describe('BottomMenu component', () => {
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
     });
 
     it('highlights only sites navigation item', () => {
@@ -60,6 +62,7 @@ describe('BottomMenu component', () => {
         expect(navigationItems[1]).to.have.deep.property('props.isActive', true);
         expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
     });
 
     it('highlights only gliders navigation item', () => {
@@ -70,6 +73,18 @@ describe('BottomMenu component', () => {
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[2]).to.have.deep.property('props.isActive', true);
         expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    });
+
+    it('highlights only stats navigation item', () => {
+        component = TestUtils.renderIntoDocument(<NavigationMenu currentView='stats' />);
+        const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+
+        expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[3]).to.have.deep.property('props.isActive', true);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
     });
 
     it('highlights only pilot navigation item', () => {
@@ -79,6 +94,7 @@ describe('BottomMenu component', () => {
         expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
         expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-        expect(navigationItems[3]).to.have.deep.property('props.isActive', true);
+        expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
+        expect(navigationItems[4]).to.have.deep.property('props.isActive', true);
     });
 });

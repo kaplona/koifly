@@ -127,9 +127,13 @@ MapFacade.prototype.openInfowindow = function(siteId) {
     this.siteInfowindows[siteId].open(this.map, this.siteMarkers[siteId]);
     
     if (this.infowindowOnClickFunctions[siteId]) {
-        document.getElementById(`site-${siteId}`).addEventListener('click', () => {
-            this.infowindowOnClickFunctions[siteId]();
-        });
+        // Add event listener to site link when current call stack finishes execution
+        // and infowindow is rendered in the DOM.
+        setTimeout(() => {
+            document.getElementById(`site-${siteId}`).addEventListener('click', () => {
+                this.infowindowOnClickFunctions[siteId]();
+            });
+        }, 0);
     }
 };
 

@@ -47,7 +47,7 @@ const sendAuthTokenHandler = function(request, reply) {
                 return sendAuthTokenToPilot(pilot, emailMessage, path);
             }
 
-            throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'there is no pilot with this email');
+            throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
         })
         .then(() => {
             reply(JSON.stringify('success'));

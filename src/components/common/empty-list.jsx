@@ -5,20 +5,20 @@ const { func, string } = React.PropTypes;
 
 require('./empty-list.less');
 
-
-function EmptyList(props) {
-    return (
-        <div className='empty-list'>
-            <div>{'You don\'t have any ' + props.ofWhichItems + ' yet'}</div>
-            <div className='add-button' onClick={props.onAdding}>+</div>
-        </div>
-    );
-}
-
-EmptyList.propTypes = {
-    ofWhichItems: string.isRequired, // plural
-    onAdding: func.isRequired
-};
+const EmptyList = React.createClass({
+    propTypes: {
+        ofWhichItems: string.isRequired, // plural
+        onAdding: func.isRequired
+    },
+    render() {
+        return (
+            <div className='empty-list'>
+                <div>{'You don\'t have any ' + this.props.ofWhichItems + ' yet'}</div>
+                <div className='add-button' onClick={this.props.onAdding}>+</div>
+            </div>
+        );
+    }
+});
 
 
 module.exports = EmptyList;

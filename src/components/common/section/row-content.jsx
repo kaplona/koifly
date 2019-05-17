@@ -6,19 +6,21 @@ const Label = require('./label');
 const ValueContainer = require('./value-container');
 
 
-function RowContent(props) {
-    return (
-        <div>
-            <Label>{props.label}</Label>
-            <ValueContainer>{props.value}</ValueContainer>
-        </div>
-    );
-}
+const RowContent = React.createClass({
+    propTypes: {
+        label: string,
+        value: oneOfType([element, string, number])
+    },
 
-RowContent.propTypes = {
-    label: string,
-    value: oneOfType([element, string, number])
-};
+    render() {
+        return (
+            <div>
+                <Label>{this.props.label}</Label>
+                <ValueContainer>{this.props.value}</ValueContainer>
+            </div>
+        );
+    }
+});
 
 
 module.exports = RowContent;

@@ -23,6 +23,7 @@ describe('Notice component', () => {
 
     const defaults = {
         noticeClassName: 'notice',
+        paddedClassName: 'notice__padded-container',
         closeButtonClassName: 'close'
     };
 
@@ -45,8 +46,10 @@ describe('Notice component', () => {
         });
 
         it('renders notice with proper text and default class', () => {
-            expect(renderedDOMElement).to.have.property('className', defaults.noticeClassName);
-            expect(renderedDOMElement).to.have.property('textContent', mocks.noticeText);
+            const notice = renderedDOMElement.querySelector(`.${defaults.noticeClassName}`);
+
+            expect(notice).to.be.ok;
+            expect(notice).to.have.property('textContent', mocks.noticeText);
         });
 
         it('doesn\'t show buttons if onClick events weren\'t provided', () => {
@@ -66,6 +69,7 @@ describe('Notice component', () => {
                     text={mocks.noticeText}
                     type={mocks.noticeType}
                     buttonText={mocks.buttonText}
+                    isPadded={true}
                     onClick={mocks.handleClick}
                     onClose={mocks.handleClose}
                 />
@@ -74,10 +78,16 @@ describe('Notice component', () => {
             renderedDOMElement = ReactDOM.findDOMNode(component);
         });
 
-        it('renders notice with proper class', () => {
+        it('renders notice with padded container', () => {
             const className = renderedDOMElement.className;
 
-            expect(className).to.contain(`x-${mocks.noticeType}`);
+            expect(className).to.contain(defaults.paddedClassName);
+        });
+
+        it('renders notice with proper class', () => {
+            const notice = renderedDOMElement.querySelector(`.x-${mocks.noticeType}`);
+
+            expect(notice).to.be.ok;
         });
 
         it('renders buttons and triggers onClick functions', () => {

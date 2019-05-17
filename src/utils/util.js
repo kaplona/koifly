@@ -143,7 +143,7 @@ const Util = {
             result = `${hoursMinutes.hours} h`;
         }
 
-        if (hoursMinutes.minutes) {
+        if (hoursMinutes.minutes !== null) {
             result = result ? `${result} ${hoursMinutes.minutes} min` : `${hoursMinutes.minutes} min`;
         }
 

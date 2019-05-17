@@ -7,23 +7,24 @@ if (process.env.BROWSER) {
     require('./feature-column.less');
 }
 
+const FeatureColumn = React.createClass({
+    propTypes: {
+        float: oneOf(['left', 'right'])
+    },
 
-function FeatureColumn(props) {
-    let className = 'feature-column';
-    if (props.float) {
-        className += ' x-' + props.float + '-float';
+    render() {
+        let className = 'feature-column';
+        if (this.props.float) {
+            className += ' x-' + this.props.float + '-float';
+        }
+
+        return (
+            <div className={className}>
+                {this.props.children}
+            </div>
+        );
     }
-
-    return (
-        <div className={className}>
-            {props.children}
-        </div>
-    );
-}
-
-FeatureColumn.propTypes = {
-    float: oneOf(['left', 'right'])
-};
+});
 
 
 module.exports = FeatureColumn;

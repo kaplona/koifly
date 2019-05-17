@@ -4,13 +4,15 @@ const React = require('react');
 const Header = require('./common/menu/header');
 
 
-function Koifly(props) {
-    return (
-        <div className='content'>
-            <Header />
-            {props.children}
-        </div>
-    );
-}
+const Koifly = React.createClass({
+    render() {
+        return (
+            <div className='content'>
+                <Header/>
+                {this.props.children}
+            </div>
+        );
+    }
+});
 
 module.exports = Koifly;
