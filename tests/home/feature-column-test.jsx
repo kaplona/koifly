@@ -11,70 +11,70 @@ const FeatureColumn = require('../../src/components/home-page/feature-column');
 
 describe('FeatureColumn component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const defaults = {
-        leftFloatClass: 'x-left-float',
-        rightFloatClass: 'x-right-float'
-    };
+  const defaults = {
+    leftFloatClass: 'x-left-float',
+    rightFloatClass: 'x-right-float'
+  };
 
-    const mocks = {
-        childText: 'test child text'
-    };
+  const mocks = {
+    childText: 'test child text'
+  };
 
-    describe('Defaults testing', () => {
-        before(() => {
-            component = TestUtils.renderIntoDocument(
-                <FeatureColumn>{mocks.childText}</FeatureColumn>
-            );
+  describe('Defaults testing', () => {
+    before(() => {
+      component = TestUtils.renderIntoDocument(
+        <FeatureColumn>{mocks.childText}</FeatureColumn>
+      );
 
-            renderedDOMElement = ReactDOM.findDOMNode(component);
-        });
-
-        it('renders parsed children without float', () => {
-            const className = renderedDOMElement.className;
-
-            expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
-            expect(className)
-                .to.not.contain(defaults.leftFloatClass)
-                .and.not.contain(defaults.rightFloatClass);
-        });
+      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
-    describe('Left float testing', () => {
-        before(() => {
-            component = TestUtils.renderIntoDocument(
-                <FeatureColumn float='left' >{mocks.childText}</FeatureColumn>
-            );
+    it('renders parsed children without float', () => {
+      const className = renderedDOMElement.className;
 
-            renderedDOMElement = ReactDOM.findDOMNode(component);
-        });
+      expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
+      expect(className)
+        .to.not.contain(defaults.leftFloatClass)
+        .and.not.contain(defaults.rightFloatClass);
+    });
+  });
 
-        it('renders children with proper float', () => {
-            const className = renderedDOMElement.className;
+  describe('Left float testing', () => {
+    before(() => {
+      component = TestUtils.renderIntoDocument(
+        <FeatureColumn float='left'>{mocks.childText}</FeatureColumn>
+      );
 
-            expect(className)
-                .to.contain(defaults.leftFloatClass)
-                .and.not.contain(defaults.rightFloatClass);
-        });
+      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
-    describe('Right float testing', () => {
-        before(() => {
-            component = TestUtils.renderIntoDocument(
-                <FeatureColumn float='right' >{mocks.childText}</FeatureColumn>
-            );
+    it('renders children with proper float', () => {
+      const className = renderedDOMElement.className;
 
-            renderedDOMElement = ReactDOM.findDOMNode(component);
-        });
-
-        it('renders children with proper float', () => {
-            const className = renderedDOMElement.className;
-
-            expect(className)
-                .to.contain(defaults.rightFloatClass)
-                .and.not.contain(defaults.leftFloatClass);
-        });
+      expect(className)
+        .to.contain(defaults.leftFloatClass)
+        .and.not.contain(defaults.rightFloatClass);
     });
+  });
+
+  describe('Right float testing', () => {
+    before(() => {
+      component = TestUtils.renderIntoDocument(
+        <FeatureColumn float='right'>{mocks.childText}</FeatureColumn>
+      );
+
+      renderedDOMElement = ReactDOM.findDOMNode(component);
+    });
+
+    it('renders children with proper float', () => {
+      const className = renderedDOMElement.className;
+
+      expect(className)
+        .to.contain(defaults.rightFloatClass)
+        .and.not.contain(defaults.leftFloatClass);
+    });
+  });
 });

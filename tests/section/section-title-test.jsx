@@ -11,50 +11,50 @@ const SectionTitle = require('../../src/components/common/section/section-title'
 
 describe('SectionTitle component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const defaults = {
-        subtitleClass: 'x-subtitle'
-    };
+  const defaults = {
+    subtitleClass: 'x-subtitle'
+  };
 
-    const mocks = {
-        titleText: 'test children text'
-    };
+  const mocks = {
+    titleText: 'test children text'
+  };
 
-    describe('Defaults testing', () => {
-        before(() => {
-            component = TestUtils.renderIntoDocument(
-                <SectionTitle>{mocks.titleText}</SectionTitle>
-            );
+  describe('Defaults testing', () => {
+    before(() => {
+      component = TestUtils.renderIntoDocument(
+        <SectionTitle>{mocks.titleText}</SectionTitle>
+      );
 
-            renderedDOMElement = ReactDOM.findDOMNode(component);
-        });
-
-        it('renders parsed children', () => {
-            expect(renderedDOMElement).to.have.property('textContent', mocks.titleText);
-        });
-
-        it('renders component with proper default classes', () => {
-            const className = renderedDOMElement.className;
-
-            expect(className).to.not.contain(defaults.subtitleClass);
-        });
+      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
-    describe('Last row and desktop classes testing', () => {
-        before(() => {
-            component = TestUtils.renderIntoDocument(
-                <SectionTitle isSubtitle={true}>
-                    {mocks.titleText}
-                </SectionTitle>
-            );
-        });
-
-        it('renders component with proper classes', () => {
-            const className = ReactDOM.findDOMNode(component).className;
-
-            expect(className).to.contain(defaults.subtitleClass);
-        });
+    it('renders parsed children', () => {
+      expect(renderedDOMElement).to.have.property('textContent', mocks.titleText);
     });
+
+    it('renders component with proper default classes', () => {
+      const className = renderedDOMElement.className;
+
+      expect(className).to.not.contain(defaults.subtitleClass);
+    });
+  });
+
+  describe('Last row and desktop classes testing', () => {
+    before(() => {
+      component = TestUtils.renderIntoDocument(
+        <SectionTitle isSubtitle={true}>
+          {mocks.titleText}
+        </SectionTitle>
+      );
+    });
+
+    it('renders component with proper classes', () => {
+      const className = ReactDOM.findDOMNode(component).className;
+
+      expect(className).to.contain(defaults.subtitleClass);
+    });
+  });
 });

@@ -13,29 +13,29 @@ let getWebpackAssets;
 let assets;
 
 if (process.env.NODE_ENV === 'production') {
-    // Require the file only once for efficiency
-    // Note: like with any other require, you need to restart the server when that file changes
-    assets = require(assetsJsonPath);
+  // Require the file only once for efficiency
+  // Note: like with any other require, you need to restart the server when that file changes
+  assets = require(assetsJsonPath);
 
-    getWebpackAssets = () => {
-        return assets;
-    };
+  getWebpackAssets = () => {
+    return assets;
+  };
 
 } else {
-    const fs = require('fs');
-    const chalk = require('chalk');
+  const fs = require('fs');
+  const chalk = require('chalk');
 
-    getWebpackAssets = () => {
-        // On dev we read the file every time we need it. Not efficient, but easy to work with.
-        const fileContents = fs.readFileSync(assetsJsonPath).toString();
-        try {
-            return JSON.parse(fileContents);
+  getWebpackAssets = () => {
+    // On dev we read the file every time we need it. Not efficient, but easy to work with.
+    const fileContents = fs.readFileSync(assetsJsonPath).toString();
+    try {
+      return JSON.parse(fileContents);
 
-        } catch (err) {
-            console.log(chalk.red('ERROR: Could not parse ' + config.webpack.assetsFilename + ' - maybe webpack is still processing?'));
-            throw err;
-        }
-    };
+    } catch (err) {
+      console.log(chalk.red('ERROR: Could not parse ' + config.webpack.assetsFilename + ' - maybe webpack is still processing?'));
+      throw err;
+    }
+  };
 }
 
 module.exports = getWebpackAssets;

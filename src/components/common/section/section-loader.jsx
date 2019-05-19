@@ -7,11 +7,11 @@ require('./section-loader.less');
 
 
 function SectionLoader() {
-    return (
-        <div className='section-loader'>
-            <Loader />
-        </div>
-    );
+  return (
+    <div className='section-loader'>
+      <Loader/>
+    </div>
+  );
 }
 
 

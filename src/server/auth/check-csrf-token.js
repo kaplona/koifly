@@ -15,31 +15,31 @@ const KoiflyError = require('../../errors/error');
  * @param {object} request
  * @param {function} reply
  */
-const checkCsrfToken = function(request, reply) {
-    let requestCsrfToken;
-    const cookieCsrfToken = request.state.csrf;
+const checkCsrfToken = function (request, reply) {
+  let requestCsrfToken;
+  const cookieCsrfToken = request.state.csrf;
 
-    if (request.method === 'get') {
-        requestCsrfToken = JSON.parse(request.query.csrf);
-    }
+  if (request.method === 'get') {
+    requestCsrfToken = JSON.parse(request.query.csrf);
+  }
 
-    if (request.method === 'post') {
-        requestCsrfToken = request.payload.csrf;
-    }
+  if (request.method === 'post') {
+    requestCsrfToken = request.payload.csrf;
+  }
 
-    if (
-        !_.isString(cookieCsrfToken) ||
-        !_.isString(requestCsrfToken) ||
-        cookieCsrfToken !== requestCsrfToken
-    ) {
-        const csrfToken = generateToken(10);
-        reply({ error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN) })
-            .takeover() // doesn't invoke route handler and reply directly to the browser
-            .state('csrf', csrfToken);
-        return;
-    }
+  if (
+    !_.isString(cookieCsrfToken) ||
+    !_.isString(requestCsrfToken) ||
+    cookieCsrfToken !== requestCsrfToken
+  ) {
+    const csrfToken = generateToken(10);
+    reply({error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN)})
+      .takeover() // doesn't invoke route handler and reply directly to the browser
+      .state('csrf', csrfToken);
+    return;
+  }
 
-    reply();
+  reply();
 };
 
 

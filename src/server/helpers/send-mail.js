@@ -15,36 +15,36 @@ const MAILGUN_PASSWORD = require('../../secrets').mailgunPassword;
  * e.g. { url: '/some-path' } will result in all '%url' in template to be replaced with '/some-path'
  * @returns {Promise} - whether email was send or error occurred
  */
-const SendMail = function(emailAddress, message, templateData) {
-    return new Promise((resolve, reject) => {
-        // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
-        const smtpConfig = {
-            service: 'Mailgun',
-            auth: {
-                user: MAILGUN_LOGIN,
-                pass: MAILGUN_PASSWORD
-            }
-        };
-        const transporter = NodeMailer.createTransport(smtpConfig);
+const SendMail = function (emailAddress, message, templateData) {
+  return new Promise((resolve, reject) => {
+    // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
+    const smtpConfig = {
+      service: 'Mailgun',
+      auth: {
+        user: MAILGUN_LOGIN,
+        pass: MAILGUN_PASSWORD
+      }
+    };
+    const transporter = NodeMailer.createTransport(smtpConfig);
 
-        message = _.extend({}, message, { to: emailAddress });
+    message = _.extend({}, message, {to: emailAddress});
 
-        if (templateData) {
-            _.each(templateData, (value, key) => {
-                const rex = new RegExp('%' + key, 'g');
-                message.text = message.text.replace(rex, value);
-                message.html = message.html.replace(rex, value);
-            });
-        }
+    if (templateData) {
+      _.each(templateData, (value, key) => {
+        const rex = new RegExp('%' + key, 'g');
+        message.text = message.text.replace(rex, value);
+        message.html = message.html.replace(rex, value);
+      });
+    }
 
-        transporter.sendMail(message, error => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
-            }
-        });
+    transporter.sendMail(message, error => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
     });
+  });
 };
 
 

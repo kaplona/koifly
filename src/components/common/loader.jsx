@@ -6,7 +6,7 @@ require('./loader.less');
 
 
 function Loader() {
-    return <div className='loader' />;
+  return <div className='loader'/>;
 }
 
 module.exports = Loader;

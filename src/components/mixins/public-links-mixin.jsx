@@ -5,34 +5,34 @@ const browserHistory = require('react-router').browserHistory;
 
 const PublicLinksMixin = {
 
-    handleGoToFlightLog: function() {
-        browserHistory.push('/flights');
-    },
+  handleGoToFlightLog: function () {
+    browserHistory.push('/flights');
+  },
 
-    handleGoToHomePage: function() {
-        // need to request marketing page from the server
-        window.location.href = '/';
-    },
+  handleGoToHomePage: function () {
+    // need to request marketing page from the server
+    window.location.href = '/';
+  },
 
-    handleGoToLogin: function() {
-        browserHistory.push('/login');
-    },
+  handleGoToLogin: function () {
+    browserHistory.push('/login');
+  },
 
-    handleGoToOneTimeLogin: function() {
-        browserHistory.push('/one-time-login');
-    },
+  handleGoToOneTimeLogin: function () {
+    browserHistory.push('/one-time-login');
+  },
 
-    handleGoToPilotView: function() {
-        browserHistory.push('/pilot');
-    },
+  handleGoToPilotView: function () {
+    browserHistory.push('/pilot');
+  },
 
-    handleGoToResetPassword: function() {
-        browserHistory.push('/reset-password');
-    },
+  handleGoToResetPassword: function () {
+    browserHistory.push('/reset-password');
+  },
 
-    handleGoToSignup: function() {
-        browserHistory.push('/signup');
-    }
+  handleGoToSignup: function () {
+    browserHistory.push('/signup');
+  }
 };
 
 

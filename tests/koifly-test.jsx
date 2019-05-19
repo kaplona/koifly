@@ -14,29 +14,29 @@ const Header = require('../src/components/common/menu/header');
 
 describe('Koifly component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        childText: 'test child text',
-        childClassName: 'childClass'
-    };
+  const mocks = {
+    childText: 'test child text',
+    childClassName: 'childClass'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <Koifly>
-                <div className={mocks.childClassName} >{mocks.childText}</div>
-            </Koifly>
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <Koifly>
+        <div className={mocks.childClassName}>{mocks.childText}</div>
+      </Koifly>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders header component and parsed children', () => {
-        const header = TestUtils.findRenderedComponentWithType(component, Header);
-        const children = renderedDOMElement.querySelector(`.${mocks.childClassName}`);
+  it('renders header component and parsed children', () => {
+    const header = TestUtils.findRenderedComponentWithType(component, Header);
+    const children = renderedDOMElement.querySelector(`.${mocks.childClassName}`);
 
-        expect(header).to.be.ok;
-        expect(children).to.have.property('textContent', mocks.childText);
-    });
+    expect(header).to.be.ok;
+    expect(children).to.have.property('textContent', mocks.childText);
+  });
 });

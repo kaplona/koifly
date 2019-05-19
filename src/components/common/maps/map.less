@@ -1,7 +1,5 @@
-
 @import (reference) '../../constants';
 @import (reference) '../../general';
-
 
 .box-shadow() {
   box-shadow: 0 0 3px black;
@@ -41,14 +39,12 @@
   left: 0;
 }
 
-
 .static-wrapper {
   @media (max-width: (@medium-viewport - 1)) {
     .border-box();
     .wrapper();
   }
 }
-
 
 .interactive-wrapper {
   .border-box();
@@ -62,7 +58,6 @@
   }
 }
 
-
 @media (min-width: @medium-viewport) {
   .dimmer {
     content: '';
@@ -75,8 +70,6 @@
     z-index: @dimmer-z-index;
   }
 }
-
-
 
 // Search control stiles
 
@@ -128,7 +121,6 @@
   }
 }
 
-
 // infowindow styles
 
 .infowindow-button {
@@ -148,7 +140,6 @@
     box-shadow: none;
   }
 }
-
 
 .infowindow > div {
   min-width: 150px;

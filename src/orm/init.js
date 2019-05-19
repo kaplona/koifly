@@ -10,6 +10,6 @@ require('./models/pilots');
 
 
 sequelize
-    .sync()
-    .then(() => console.log(chalk.green('db sync succeeded')))
-    .catch(err => console.log(chalk.red('ERROR: db sync failed:'), err));
+  .sync()
+  .then(() => console.log(chalk.green('db sync succeeded')))
+  .catch(err => console.log(chalk.red('ERROR: db sync failed:'), err));

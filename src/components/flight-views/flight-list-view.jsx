@@ -15,97 +15,97 @@ const View = require('../common/view');
 
 const FlightListView = React.createClass({
 
-    mixins: [ listViewMixin(FlightModel.getModelKey()) ],
-    
-    renderMobileTopMenu: function() {
-        return (
-            <MobileTopMenu
-                header='Flights'
-                rightButtonCaption='Add'
-                onRightClick={this.handleAddItem}
-            />
-        );
-    },
+  mixins: [listViewMixin(FlightModel.getModelKey())],
 
-    renderError: function() {
-        return (
-            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
-                <MobileTopMenu header='Flights' />
-                {this.renderNavigationMenu()}
-                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />
-            </View>
-        );
-    },
-  
-    renderTable: function() {
-        const columns = [
-            {
-                key: 'formattedDate',
-                label: 'Date',
-                defaultSortingDirection: false,
-                sortingKey: 'date'
-            },
-            {
-                key: 'siteName',
-                label: 'Site',
-                defaultSortingDirection: true
-            },
-            {
-                key: 'formattedAltitude',
-                label: 'Altitude',
-                defaultSortingDirection: false,
-                sortingKey: 'altitude'
-            },
-            {
-                key: 'formattedAirtime',
-                label: 'Airtime',
-                defaultSortingDirection: false,
-                sortingKey: 'airtime'
-            }
-        ];
+  renderMobileTopMenu: function () {
+    return (
+      <MobileTopMenu
+        header='Flights'
+        rightButtonCaption='Add'
+        onRightClick={this.handleAddItem}
+      />
+    );
+  },
 
-        const rows = (this.state.items || []).map(flight => (
-            Object.assign({}, flight, {
-                formattedDate: Util.formatDate(flight.date),
-                formattedAltitude: Altitude.formatAltitudeShort(flight.altitude),
-                formattedAirtime: Util.formatTime(flight.airtime)
-            })
-        ));
+  renderError: function () {
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        <MobileTopMenu header='Flights'/>
+        {this.renderNavigationMenu()}
+        <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
+      </View>
+    );
+  },
 
-        return (
-            <Table
-                columns={columns}
-                rows={rows}
-                initialSortingField='date'
-                onRowClick={this.handleRowClick}
-            />
-        );
-    },
+  renderTable: function () {
+    const columns = [
+      {
+        key: 'formattedDate',
+        label: 'Date',
+        defaultSortingDirection: false,
+        sortingKey: 'date'
+      },
+      {
+        key: 'siteName',
+        label: 'Site',
+        defaultSortingDirection: true
+      },
+      {
+        key: 'formattedAltitude',
+        label: 'Altitude',
+        defaultSortingDirection: false,
+        sortingKey: 'altitude'
+      },
+      {
+        key: 'formattedAirtime',
+        label: 'Airtime',
+        defaultSortingDirection: false,
+        sortingKey: 'airtime'
+      }
+    ];
 
-    render: function() {
-        if (this.state.loadingError) {
-            return this.renderError();
-        }
-        
-        let content = this.renderEmptyList();
-        if (!content) {
-            content = this.renderTable();
-        }
+    const rows = (this.state.items || []).map(flight => (
+      Object.assign({}, flight, {
+        formattedDate: Util.formatDate(flight.date),
+        formattedAltitude: Altitude.formatAltitudeShort(flight.altitude),
+        formattedAirtime: Util.formatTime(flight.airtime)
+      })
+    ));
 
-        return (
-            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
-                {this.renderMobileTopMenu()}
-                {this.renderNavigationMenu()}
-                
-                <Section>
-                    <DesktopTopGrid leftElement={this.renderAddItemButton()} />
-                    {content}
-                    {this.renderLoader()}
-                </Section>
-                
-            </View>
-        );
+    return (
+      <Table
+        columns={columns}
+        rows={rows}
+        initialSortingField='date'
+        onRowClick={this.handleRowClick}
+      />
+    );
+  },
+
+  render: function () {
+    if (this.state.loadingError) {
+      return this.renderError();
     }
+
+    let content = this.renderEmptyList();
+    if (!content) {
+      content = this.renderTable();
+    }
+
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        {this.renderMobileTopMenu()}
+        {this.renderNavigationMenu()}
+
+        <Section>
+          <DesktopTopGrid leftElement={this.renderAddItemButton()}/>
+          {content}
+          {this.renderLoader()}
+        </Section>
+
+      </View>
+    );
+  }
 });
 
 

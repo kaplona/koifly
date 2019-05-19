@@ -6,13 +6,13 @@ require('./label.less');
 
 
 const Label = React.createClass({
-    render() {
-        return (
-            <div className='label'>
-                {this.props.children}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className='label'>
+        {this.props.children}
+      </div>
+    );
+  }
 });
 
 

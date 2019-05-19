@@ -11,23 +11,23 @@ const InputContainer = require('../../src/components/common/inputs/input-contain
 
 describe('InputContainer component', () => {
 
-    let component;
+  let component;
 
-    const mocks = {
-        inputText: 'test input text'
-    };
+  const mocks = {
+    inputText: 'test input text'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <InputContainer>
-                <input value={mocks.inputText} />
-            </InputContainer>
-        );
-    });
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <InputContainer>
+        <input value={mocks.inputText}/>
+      </InputContainer>
+    );
+  });
 
-    it('renders parsed children', () => {
-        const input = ReactDOM.findDOMNode(component).querySelector('input');
+  it('renders parsed children', () => {
+    const input = ReactDOM.findDOMNode(component).querySelector('input');
 
-        expect(input).to.have.property('value', mocks.inputText);
-    });
+    expect(input).to.have.property('value', mocks.inputText);
+  });
 });

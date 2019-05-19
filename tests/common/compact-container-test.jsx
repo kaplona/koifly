@@ -11,22 +11,22 @@ const CompactContainer = require('../../src/components/common/compact-container'
 
 describe('CompactContainer component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        childText: 'test child text'
-    };
+  const mocks = {
+    childText: 'test child text'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <CompactContainer>{mocks.childText}</CompactContainer>
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <CompactContainer>{mocks.childText}</CompactContainer>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders parsed props text', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
-    });
+  it('renders parsed props text', () => {
+    expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
+  });
 });

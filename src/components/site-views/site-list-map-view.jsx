@@ -16,71 +16,71 @@ const View = require('../common/view');
 
 const SiteListMapView = React.createClass({
 
-    mixins: [ listViewMixin(SiteModel.getModelKey()) ],
+  mixins: [listViewMixin(SiteModel.getModelKey())],
 
-    handleGoToListView: function() {
-        browserHistory.push('/sites/');
-    },
-    
-    renderMobileTopMenu: function() {
-        return (
-            <MobileTopMenu
-                header='Sites'
-                leftButtonCaption='List'
-                rightButtonCaption='Add'
-                onLeftClick={this.handleGoToListView}
-                onRightClick={this.handleAddItem}
-            />
-        );
-    },
+  handleGoToListView: function () {
+    browserHistory.push('/sites/');
+  },
 
-    renderError: function() {
-        return (
-            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
-                <MobileTopMenu header='Sites' />
-                {this.renderNavigationMenu()}
-                <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified} />;
-            </View>
-        );
-    },
+  renderMobileTopMenu: function () {
+    return (
+      <MobileTopMenu
+        header='Sites'
+        leftButtonCaption='List'
+        rightButtonCaption='Add'
+        onLeftClick={this.handleGoToListView}
+        onRightClick={this.handleAddItem}
+      />
+    );
+  },
 
-    renderSwitcher: function() {
-        return (
-            <Switcher
-                leftButtonCaption='List'
-                rightButtonCaption='Map'
-                onLeftClick={this.handleGoToListView}
-                initialPosition='right'
-            />
-        );
-    },
+  renderError: function () {
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        <MobileTopMenu header='Sites'/>
+        {this.renderNavigationMenu()}
+        <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>;
+      </View>
+    );
+  },
 
-    renderMap: function() {
-        const siteList = this.state.items;
-        return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader />;
-    },
+  renderSwitcher: function () {
+    return (
+      <Switcher
+        leftButtonCaption='List'
+        rightButtonCaption='Map'
+        onLeftClick={this.handleGoToListView}
+        initialPosition='right'
+      />
+    );
+  },
 
-    render: function() {
-        if (this.state.loadingError) {
-            return this.renderError();
-        }
+  renderMap: function () {
+    const siteList = this.state.items;
+    return siteList ? StaticMap.create({sites: siteList, isFullScreen: true}) : <Loader/>;
+  },
 
-        return (
-            <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
-                {this.renderMobileTopMenu()}
-                {this.renderNavigationMenu()}
-                
-                <Section isFullScreen={true}>
-                    <DesktopTopGrid
-                        leftElement={this.renderAddItemButton()}
-                        middleElement={this.renderSwitcher()}
-                    />
-
-                    {this.renderMap()}
-                </Section>
-            </View>
-        );
+  render: function () {
+    if (this.state.loadingError) {
+      return this.renderError();
     }
+
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        {this.renderMobileTopMenu()}
+        {this.renderNavigationMenu()}
+
+        <Section isFullScreen={true}>
+          <DesktopTopGrid
+            leftElement={this.renderAddItemButton()}
+            middleElement={this.renderSwitcher()}
+          />
+
+          {this.renderMap()}
+        </Section>
+      </View>
+    );
+  }
 });
 
 

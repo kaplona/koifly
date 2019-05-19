@@ -16,30 +16,30 @@ const Util = require('../../utils/util');
  * @returns {Promise} - Resolved Promise if id exists, rejected Promise if it doesn't or DB read error occurred.
  */
 function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
-    // If value is empty it should be checked by other validation rules.
-    if (Util.isEmptyString(recordId)) {
-        return Promise.resolve();
-    }
+  // If value is empty it should be checked by other validation rules.
+  if (Util.isEmptyString(recordId)) {
+    return Promise.resolve();
+  }
 
-    const queryOptions = {
-        where: {
-            id: recordId,
-            pilotId: pilotId
-        },
-        attributes: [ 'id' ]
-    };
-    if (transaction) {
-        queryOptions.transaction = transaction;
-    }
+  const queryOptions = {
+    where: {
+      id: recordId,
+      pilotId: pilotId
+    },
+    attributes: ['id']
+  };
+  if (transaction) {
+    queryOptions.transaction = transaction;
+  }
 
-    return Model
-        .scope(SCOPES.visible)
-        .findOne(queryOptions)
-        .then(record => {
-            if (!record) {
-                return Promise.reject(new KoiflyError(ErrorTypes.VALIDATION_ERROR, errorMsg));
-            }
-        });
+  return Model
+    .scope(SCOPES.visible)
+    .findOne(queryOptions)
+    .then(record => {
+      if (!record) {
+        return Promise.reject(new KoiflyError(ErrorTypes.VALIDATION_ERROR, errorMsg));
+      }
+    });
 }
 
 module.exports = isValidId;

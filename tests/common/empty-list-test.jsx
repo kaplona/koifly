@@ -18,42 +18,42 @@ const EmptyList = require('../../src/components/common/empty-list');
 
 describe('EmptyList component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const defaults = {
-        buttonClass: 'add-button'
-    };
+  const defaults = {
+    buttonClass: 'add-button'
+  };
 
-    const mocks = {
-        itemsName: 'test type',
-        handleAdding: Sinon.spy()
-    };
+  const mocks = {
+    itemsName: 'test type',
+    handleAdding: Sinon.spy()
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <EmptyList
-                ofWhichItems={mocks.itemsName}
-                onAdding={mocks.handleAdding}
-            />
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <EmptyList
+        ofWhichItems={mocks.itemsName}
+        onAdding={mocks.handleAdding}
+      />
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders proper text', () => {
-        const children = renderedDOMElement.children;
+  it('renders proper text', () => {
+    const children = renderedDOMElement.children;
 
-        expect(children[0])
-            .to.have.property('textContent')
-            .that.contain(mocks.itemsName);
-    });
+    expect(children[0])
+      .to.have.property('textContent')
+      .that.contain(mocks.itemsName);
+  });
 
-    it('triggers onAdding once button clicked', () => {
-        const button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
+  it('triggers onAdding once button clicked', () => {
+    const button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
 
-        Simulate.click(button);
+    Simulate.click(button);
 
-        expect(mocks.handleAdding).to.have.been.calledOnce;
-    });
+    expect(mocks.handleAdding).to.have.been.calledOnce;
+  });
 });

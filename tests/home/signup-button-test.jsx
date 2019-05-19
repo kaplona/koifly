@@ -11,23 +11,23 @@ const SignupButton = require('../../src/components/home-page/signup-button');
 
 describe('SignupButton component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        buttonCaption: 'test button text'
-    };
+  const mocks = {
+    buttonCaption: 'test button text'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <SignupButton caption={mocks.buttonCaption} />
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <SignupButton caption={mocks.buttonCaption}/>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders button with proper capture', () => {
-        expect(renderedDOMElement).to.be.instanceof(window.HTMLAnchorElement);
-        expect(renderedDOMElement).to.have.property('textContent', mocks.buttonCaption);
-    });
+  it('renders button with proper capture', () => {
+    expect(renderedDOMElement).to.be.instanceof(window.HTMLAnchorElement);
+    expect(renderedDOMElement).to.have.property('textContent', mocks.buttonCaption);
+  });
 });

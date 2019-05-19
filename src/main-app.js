@@ -51,46 +51,46 @@ require('./components/koifly.less');
 
 function mainApp() {
 
-    ReactDOM.render((
-        <Router
-            history={browserHistory}
-            render={applyRouterMiddleware(useScroll(() => [0, 0]))} // Scroll to the top on each transition
-        >
-            <Route path='/'>
-                <Route path='app' component={Koifly}>
-                    <IndexRoute component={FlightListView} />
-                    <Route path='/flights' component={FlightListView} />
-                    <Route path='/flight/0/edit' component={FlightEditView} />
-                    <Route path='/flight/:id/edit' component={FlightEditView} />
-                    <Route path='/flight/:id' component={FlightView} />
-                    <Route path='/sites/map' component={SiteListMapView} />
-                    <Route path='/sites' component={SiteListView} />
-                    <Route path='/site/0/edit' component={SiteEditView} />
-                    <Route path='/site/:id/edit' component={SiteEditView} />
-                    <Route path='/site/:id' component={SiteView} />
-                    <Route path='/gliders' component={GliderListView} />
-                    <Route path='/glider/0/edit' component={GliderEditView} />
-                    <Route path='/glider/:id/edit' component={GliderEditView} />
-                    <Route path='/glider/:id' component={GliderView} />
-                    <Route path='/stats' component={StatsView} />
-                    <Route path='/pilot/edit/change-password' component={PilotChangePassword} />
-                    <Route path='/pilot/edit/flights-upload' component={PilotFlightsUpload} />
-                    <Route path='/pilot/edit' component={PilotEditView} />
-                    <Route path='/pilot' component={PilotView} />
-                    <Route path='/signup' component={Signup} />
-                    <Route path='/login' component={Login} />
-                    <Route path='/one-time-login' component={OneTimeLogin} />
-                    <Route path='/reset-password/:pilotId/:authToken' component={ResetPassword} />
-                    <Route path='/reset-password' component={InitiateResetPassword} />
-                    <Route path='/email-verification/:pilotId/:authToken' component={EmailVerified} />
-                    <Route path='/invalid-verification-link' component={InvalidVerificationLink} />
-                    <Route path='/*' component={pageNotFound} />
-                </Route>
-            </Route>
-        </Router>
-        ),
-        document.getElementById('koifly')
-    );
+  ReactDOM.render((
+      <Router
+        history={browserHistory}
+        render={applyRouterMiddleware(useScroll(() => [0, 0]))} // Scroll to the top on each transition
+      >
+        <Route path='/'>
+          <Route path='app' component={Koifly}>
+            <IndexRoute component={FlightListView}/>
+            <Route path='/flights' component={FlightListView}/>
+            <Route path='/flight/0/edit' component={FlightEditView}/>
+            <Route path='/flight/:id/edit' component={FlightEditView}/>
+            <Route path='/flight/:id' component={FlightView}/>
+            <Route path='/sites/map' component={SiteListMapView}/>
+            <Route path='/sites' component={SiteListView}/>
+            <Route path='/site/0/edit' component={SiteEditView}/>
+            <Route path='/site/:id/edit' component={SiteEditView}/>
+            <Route path='/site/:id' component={SiteView}/>
+            <Route path='/gliders' component={GliderListView}/>
+            <Route path='/glider/0/edit' component={GliderEditView}/>
+            <Route path='/glider/:id/edit' component={GliderEditView}/>
+            <Route path='/glider/:id' component={GliderView}/>
+            <Route path='/stats' component={StatsView}/>
+            <Route path='/pilot/edit/change-password' component={PilotChangePassword}/>
+            <Route path='/pilot/edit/flights-upload' component={PilotFlightsUpload}/>
+            <Route path='/pilot/edit' component={PilotEditView}/>
+            <Route path='/pilot' component={PilotView}/>
+            <Route path='/signup' component={Signup}/>
+            <Route path='/login' component={Login}/>
+            <Route path='/one-time-login' component={OneTimeLogin}/>
+            <Route path='/reset-password/:pilotId/:authToken' component={ResetPassword}/>
+            <Route path='/reset-password' component={InitiateResetPassword}/>
+            <Route path='/email-verification/:pilotId/:authToken' component={EmailVerified}/>
+            <Route path='/invalid-verification-link' component={InvalidVerificationLink}/>
+            <Route path='/*' component={pageNotFound}/>
+          </Route>
+        </Route>
+      </Router>
+    ),
+    document.getElementById('koifly')
+  );
 }
 
 

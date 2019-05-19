@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const { shape, string } = React.PropTypes;
+const {shape, string} = React.PropTypes;
 const Button = require('../common/buttons/button');
 const CompactContainer = require('../common/compact-container');
 const dataService = require('../../services/data-service');
@@ -21,166 +21,166 @@ const Util = require('../../utils/util');
 
 const ResetPassword = React.createClass({
 
-    propTypes: {
-        params: shape({ // url args
-            pilotId: string.isRequired,
-            authToken: string.isRequired
-        })
-    },
+  propTypes: {
+    params: shape({ // url args
+      pilotId: string.isRequired,
+      authToken: string.isRequired
+    })
+  },
 
-    mixins: [ PublicViewMixin ],
+  mixins: [PublicViewMixin],
 
-    getInitialState: function() {
-        return {
-            password: '',
-            passwordConfirm: '',
-            error: null,
-            isSending: false,
-            successNotice: false
-        };
-    },
+  getInitialState: function () {
+    return {
+      password: '',
+      passwordConfirm: '',
+      error: null,
+      isSending: false,
+      successNotice: false
+    };
+  },
 
-    handleSubmit: function(event) {
-        if (event) {
-            event.preventDefault();
-        }
-
-        const validationError = this.getValidationError();
-        if (validationError) {
-            this.updateError(validationError);
-            return;
-        }
-        
-        // If no errors
-        this.setState({
-            isSending: true,
-            error: null
-        });
-
-        const password = this.state.password;
-        const pilotId = this.props.params.pilotId;
-        const authToken = this.props.params.authToken;
-        dataService
-            .resetPassword(password, pilotId, authToken)
-            .then(() => this.setState({ successNotice: true }))
-            .catch(error => this.updateError(error));
-    },
-
-    getValidationError: function() {
-        if (Util.isEmptyString(this.state.password)) {
-            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
-        }
-
-        if (this.state.password !== this.state.passwordConfirm) {
-            return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
-        }
-
-        return null;
-    },
-
-    renderMobileTopMenu: function() {
-        return (
-            <MobileTopMenu
-                header='Koifly'
-                rightButtonCaption='Log in'
-                onRightClick={this.handleGoToLogin}
-                isPositionFixed={!this.state.isInputInFocus}
-            />
-        );
-    },
-    
-    renderDesktopButtons: function() {
-        return <DesktopBottomGrid leftElements={[ this.renderSaveButton() ]} />;
-    },
-
-    renderSaveButton: function() {
-        return (
-            <Button
-                caption={this.state.isSending ? 'Saving...' : 'Save'}
-                type='submit'
-                buttonStyle='primary'
-                onClick={this.handleSubmit}
-                isEnabled={!this.state.isSending}
-            />
-        );
-    },
-    
-    renderMobileButtons: function() {
-        return (
-            <MobileButton
-                caption={this.state.isSending ? 'Saving ...' : 'Save'}
-                type='submit'
-                buttonStyle='primary'
-                onClick={this.handleSubmit}
-                isEnabled={!this.state.isSending}
-            />
-        );
-    },
-
-    renderSuccessNotice: function() {
-        return (
-            <div>
-                {this.renderMobileTopMenu()}
-                {this.renderNavigationMenu()}
-                <Notice
-                    text='Your password was successfully reset'
-                    type='success'
-                    onClick={this.handleGoToFlightLog}
-                    buttonText='Go to App'
-                />
-            </div>
-        );
-    },
-
-    render: function() {
-        if (this.state.successNotice) {
-            return this.renderSuccessNotice();
-        }
-
-        return (
-            <div>
-                {this.renderMobileTopMenu()}
-                {this.renderError()}
-
-                <CompactContainer>
-                    <form>
-                        <Section>
-    
-                            <SectionTitle>Reset Password</SectionTitle>
-    
-                            <SectionRow>
-                                <PasswordInput
-                                    inputValue={this.state.password}
-                                    labelText='New Password:'
-                                    inputName='password'
-                                    onChange={this.handleInputChange}
-                                    onFocus={this.handleInputFocus}
-                                    onBlur={this.handleInputBlur}
-                                />
-                            </SectionRow>
-    
-                            <SectionRow isLast={true}>
-                                <PasswordInput
-                                    inputValue={this.state.passwordConfirm}
-                                    labelText='Confirm password:'
-                                    inputName='passwordConfirm'
-                                    onChange={this.handleInputChange}
-                                    onFocus={this.handleInputFocus}
-                                    onBlur={this.handleInputBlur}
-                                />
-                            </SectionRow>
-    
-                            {this.renderDesktopButtons()}
-                        </Section>
-    
-                        {this.renderMobileButtons()}
-                    </form>
-                </CompactContainer>
-
-                {this.renderNavigationMenu()}
-            </div>
-        );
+  handleSubmit: function (event) {
+    if (event) {
+      event.preventDefault();
     }
+
+    const validationError = this.getValidationError();
+    if (validationError) {
+      this.updateError(validationError);
+      return;
+    }
+
+    // If no errors
+    this.setState({
+      isSending: true,
+      error: null
+    });
+
+    const password = this.state.password;
+    const pilotId = this.props.params.pilotId;
+    const authToken = this.props.params.authToken;
+    dataService
+      .resetPassword(password, pilotId, authToken)
+      .then(() => this.setState({successNotice: true}))
+      .catch(error => this.updateError(error));
+  },
+
+  getValidationError: function () {
+    if (Util.isEmptyString(this.state.password)) {
+      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
+    }
+
+    if (this.state.password !== this.state.passwordConfirm) {
+      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
+    }
+
+    return null;
+  },
+
+  renderMobileTopMenu: function () {
+    return (
+      <MobileTopMenu
+        header='Koifly'
+        rightButtonCaption='Log in'
+        onRightClick={this.handleGoToLogin}
+        isPositionFixed={!this.state.isInputInFocus}
+      />
+    );
+  },
+
+  renderDesktopButtons: function () {
+    return <DesktopBottomGrid leftElements={[this.renderSaveButton()]}/>;
+  },
+
+  renderSaveButton: function () {
+    return (
+      <Button
+        caption={this.state.isSending ? 'Saving...' : 'Save'}
+        type='submit'
+        buttonStyle='primary'
+        onClick={this.handleSubmit}
+        isEnabled={!this.state.isSending}
+      />
+    );
+  },
+
+  renderMobileButtons: function () {
+    return (
+      <MobileButton
+        caption={this.state.isSending ? 'Saving ...' : 'Save'}
+        type='submit'
+        buttonStyle='primary'
+        onClick={this.handleSubmit}
+        isEnabled={!this.state.isSending}
+      />
+    );
+  },
+
+  renderSuccessNotice: function () {
+    return (
+      <div>
+        {this.renderMobileTopMenu()}
+        {this.renderNavigationMenu()}
+        <Notice
+          text='Your password was successfully reset'
+          type='success'
+          onClick={this.handleGoToFlightLog}
+          buttonText='Go to App'
+        />
+      </div>
+    );
+  },
+
+  render: function () {
+    if (this.state.successNotice) {
+      return this.renderSuccessNotice();
+    }
+
+    return (
+      <div>
+        {this.renderMobileTopMenu()}
+        {this.renderError()}
+
+        <CompactContainer>
+          <form>
+            <Section>
+
+              <SectionTitle>Reset Password</SectionTitle>
+
+              <SectionRow>
+                <PasswordInput
+                  inputValue={this.state.password}
+                  labelText='New Password:'
+                  inputName='password'
+                  onChange={this.handleInputChange}
+                  onFocus={this.handleInputFocus}
+                  onBlur={this.handleInputBlur}
+                />
+              </SectionRow>
+
+              <SectionRow isLast={true}>
+                <PasswordInput
+                  inputValue={this.state.passwordConfirm}
+                  labelText='Confirm password:'
+                  inputName='passwordConfirm'
+                  onChange={this.handleInputChange}
+                  onFocus={this.handleInputFocus}
+                  onBlur={this.handleInputBlur}
+                />
+              </SectionRow>
+
+              {this.renderDesktopButtons()}
+            </Section>
+
+            {this.renderMobileButtons()}
+          </form>
+        </CompactContainer>
+
+        {this.renderNavigationMenu()}
+      </div>
+    );
+  }
 });
 
 

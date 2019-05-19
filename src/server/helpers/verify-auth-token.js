@@ -15,33 +15,33 @@ const Pilot = require('../../orm/models/pilots');
  * @param {string} authToken
  * @returns {Promise.<pilot>} - sequelize instance of pilot record
  */
-const verifyAuthToken = function(pilotId, authToken) {
-    let pilot; // we need it to have reference to current pilot
+const verifyAuthToken = function (pilotId, authToken) {
+  let pilot; // we need it to have reference to current pilot
 
-    return Pilot
-        .findById(pilotId)
-        .then(pilotRecord => {
-            pilot = pilotRecord;
-            if (!pilot || pilot.id.toString() !== pilotId || pilot.tokenExpirationTime < Date.now()) {
-                throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
-            }
+  return Pilot
+    .findById(pilotId)
+    .then(pilotRecord => {
+      pilot = pilotRecord;
+      if (!pilot || pilot.id.toString() !== pilotId || pilot.tokenExpirationTime < Date.now()) {
+        throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
+      }
 
-            // Compare auth token with the token hash stored in DB
-            return BcryptPromise.compare(authToken, pilot.token);
-        })
-        .catch(() => {
-            throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
-        })
-        .then(() => {
-            // Everything is OK
-            // Mark pilot as activated
-            // Clear token info
-            return pilot.update({
-                token: null,
-                tokenExpirationTime: null,
-                isActivated: true
-            });
-        });
+      // Compare auth token with the token hash stored in DB
+      return BcryptPromise.compare(authToken, pilot.token);
+    })
+    .catch(() => {
+      throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
+    })
+    .then(() => {
+      // Everything is OK
+      // Mark pilot as activated
+      // Clear token info
+      return pilot.update({
+        token: null,
+        tokenExpirationTime: null,
+        isActivated: true
+      });
+    });
 };
 
 

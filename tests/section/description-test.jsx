@@ -11,22 +11,22 @@ const Description = require('../../src/components/common/section/description');
 
 describe('Description component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        childText: 'test child text'
-    };
+  const mocks = {
+    childText: 'test child text'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <Description>{mocks.childText}</Description>
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <Description>{mocks.childText}</Description>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders parsed children', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
-    });
+  it('renders parsed children', () => {
+    expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
+  });
 });

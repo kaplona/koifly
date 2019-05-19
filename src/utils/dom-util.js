@@ -3,9 +3,9 @@
 
 const DomUtil = {
 
-    scrollToTheTop: function() {
-        window.scrollTo(0, 0);
-    }
+  scrollToTheTop: function () {
+    window.scrollTo(0, 0);
+  }
 };
 
 

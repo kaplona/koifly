@@ -18,31 +18,31 @@ const AppLink = require('../../src/components/common/app-link');
 
 describe('AppLink component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        childText: 'test child type',
-        handleClick: Sinon.spy()
-    };
+  const mocks = {
+    childText: 'test child type',
+    handleClick: Sinon.spy()
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <AppLink onClick={mocks.handleClick}>
-                {mocks.childText}
-            </AppLink>
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <AppLink onClick={mocks.handleClick}>
+        {mocks.childText}
+      </AppLink>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders proper text', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
-    });
+  it('renders proper text', () => {
+    expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
+  });
 
-    it('calls parsed function once clicked', () => {
-        Simulate.click(renderedDOMElement);
+  it('calls parsed function once clicked', () => {
+    Simulate.click(renderedDOMElement);
 
-        expect(mocks.handleClick).to.have.been.calledOnce;
-    });
+    expect(mocks.handleClick).to.have.been.calledOnce;
+  });
 });

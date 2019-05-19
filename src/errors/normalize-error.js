@@ -42,23 +42,23 @@ const KoiflyError = require('./error');
  * @return {KoiflyError}
  */
 function normalizeError(error, defaultErrorType = ErrorTypes.DB_READ_ERROR, defaultMessage = null) {
-    if (error instanceof KoiflyError) {
-        return error;
-    }
+  if (error instanceof KoiflyError) {
+    return error;
+  }
 
-    if (error && error.output && error.output.payload.error === 'Unauthorized') {
-        return new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
-    }
+  if (error && error.output && error.output.payload.error === 'Unauthorized') {
+    return new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
+  }
 
-    if (error && error.name === 'SequelizeValidationError') {
-        const validationErrors = {};
-        for (let i = 0; i < error.errors.length; i++) {
-            validationErrors[error.errors[i].path] = error.errors[i].message;
-        }
-        return new KoiflyError(ErrorTypes.VALIDATION_ERROR, error.message, validationErrors);
+  if (error && error.name === 'SequelizeValidationError') {
+    const validationErrors = {};
+    for (let i = 0; i < error.errors.length; i++) {
+      validationErrors[error.errors[i].path] = error.errors[i].message;
     }
+    return new KoiflyError(ErrorTypes.VALIDATION_ERROR, error.message, validationErrors);
+  }
 
-    return new KoiflyError(defaultErrorType, defaultMessage);
+  return new KoiflyError(defaultErrorType, defaultMessage);
 }
 
 

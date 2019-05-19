@@ -8,9 +8,9 @@ const Util = require('../../utils/util');
  * @param {string} value
  */
 function isDate(value) {
-    if (typeof value !== 'string' || !Util.isRightDateFormat(value)) {
-        throw new Error(ErrorMessages.DATE_FORMAT);
-    }
+  if (typeof value !== 'string' || !Util.isRightDateFormat(value)) {
+    throw new Error(ErrorMessages.DATE_FORMAT);
+  }
 }
 
 module.exports = isDate;

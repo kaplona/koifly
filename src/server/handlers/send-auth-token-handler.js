@@ -17,44 +17,44 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * @param {object} request
  * @param {function} reply
  */
-const sendAuthTokenHandler = function(request, reply) {
-    const payload = request.payload;
+const sendAuthTokenHandler = function (request, reply) {
+  const payload = request.payload;
 
-    // Checks payload for required fields
-    if (!_.isString(payload.email)) {
-        reply({ error: new KoiflyError(ErrorTypes.BAD_REQUEST) });
-        return;
-    }
+  // Checks payload for required fields
+  if (!_.isString(payload.email)) {
+    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
+    return;
+  }
 
-    let emailMessage;
-    let path;
+  let emailMessage;
+  let path;
 
-    if (request.path === '/api/one-time-login') {
-        emailMessage = EmailMessageTemplates.ONE_TIME_LOGIN;
-        path = '/email-verification';
-    }
+  if (request.path === '/api/one-time-login') {
+    emailMessage = EmailMessageTemplates.ONE_TIME_LOGIN;
+    path = '/email-verification';
+  }
 
-    if (request.path === '/api/initiate-reset-password') {
-        emailMessage = EmailMessageTemplates.PASSWORD_RESET;
-        path = '/reset-password';
-    }
+  if (request.path === '/api/initiate-reset-password') {
+    emailMessage = EmailMessageTemplates.PASSWORD_RESET;
+    path = '/reset-password';
+  }
 
-    // email is stored in lower case in DB, so as to perform case insensitivity
-    Pilot
-        .findOne({ where: { email: payload.email.toLowerCase() } })
-        .then(pilot => {
-            if (pilot && pilot.email === payload.email.toLowerCase()) {
-                return sendAuthTokenToPilot(pilot, emailMessage, path);
-            }
+  // email is stored in lower case in DB, so as to perform case insensitivity
+  Pilot
+    .findOne({where: {email: payload.email.toLowerCase()}})
+    .then(pilot => {
+      if (pilot && pilot.email === payload.email.toLowerCase()) {
+        return sendAuthTokenToPilot(pilot, emailMessage, path);
+      }
 
-            throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
-        })
-        .then(() => {
-            reply(JSON.stringify('success'));
-        })
-        .catch(error => {
-            reply({ error: normalizeError(error) });
-        });
+      throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
+    })
+    .then(() => {
+      reply(JSON.stringify('success'));
+    })
+    .catch(error => {
+      reply({error: normalizeError(error)});
+    });
 };
 
 

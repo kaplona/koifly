@@ -2,8 +2,8 @@
 
 
 const GeneralConstants = {
-    
-    EMPTY_FIELD: '—'
+
+  EMPTY_FIELD: '—'
 };
 
 

@@ -6,13 +6,13 @@ require('./description.less');
 
 
 const Description = React.createClass({
-    render() {
-        return (
-            <div className='description'>
-                {this.props.children}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className='description'>
+        {this.props.children}
+      </div>
+    );
+  }
 });
 
 

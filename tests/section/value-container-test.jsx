@@ -11,22 +11,22 @@ const ValueContainer = require('../../src/components/common/section/value-contai
 
 describe('ValueContainer component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        childText: 'test child text'
-    };
+  const mocks = {
+    childText: 'test child text'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <ValueContainer>{mocks.childText}</ValueContainer>
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <ValueContainer>{mocks.childText}</ValueContainer>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders parsed props text', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
-    });
+  it('renders parsed props text', () => {
+    expect(renderedDOMElement).to.have.property('textContent', mocks.childText);
+  });
 });

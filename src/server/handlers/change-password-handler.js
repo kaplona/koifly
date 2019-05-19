@@ -20,61 +20,61 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {function} reply
  */
-const changePasswordHandler = function(request, reply) {
-    let pilot; // we need it to have reference to current pilot
-    const payload = request.payload;
+const changePasswordHandler = function (request, reply) {
+  let pilot; // we need it to have reference to current pilot
+  const payload = request.payload;
 
-    // Checks payload for required fields
-    if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {
-        reply({ error: new KoiflyError(ErrorTypes.BAD_REQUEST) });
-        return;
-    }
-    
-    // Check that user are trying to change his/her own data
-    if (payload.pilotId !== request.auth.credentials.userId) {
-        reply({ error: new KoiflyError(ErrorTypes.USER_MISMATCH) });
-        return;
-    }
+  // Checks payload for required fields
+  if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {
+    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
+    return;
+  }
 
-    Pilot
-        .findById(request.auth.credentials.userId)
-        .catch(() => {
-            throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
-        })
-        .then(pilotRecord => {
-            pilot = pilotRecord;
-            // User can't change password if he didn't verify his email address
-            if (!pilot.isActivated) {
-                throw new KoiflyError(ErrorTypes.NEED_EMAIL_VERIFICATION);
-            }
-            // Compare password provided by user with the one we have in DB
-            return BcryptPromise.compare(payload.currentPassword, pilot.password);
-        })
-        .catch(error => {
-            // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
-            throw normalizeError(error, ErrorTypes.VALIDATION_ERROR, 'You entered wrong password');
-        })
-        .then(() => {
-            // Generate hash from new password
-            return BcryptPromise.hash(payload.nextPassword);
-        })
-        .then(hash => {
-            // Change password hash in DB
-            return pilot.update({ password: hash });
-        })
-        .then(() => {
-            // Send email notification to user
-            // so he has opportunity to reset password
-            // if it wasn't he who change the pass at the first place
-            sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password');
-            return setAuthCookie(request, pilot.id, pilot.password);
-        })
-        .then(() => {
-            reply(JSON.stringify('success'));
-        })
-        .catch(error => {
-            reply({ error: normalizeError(error) });
-        });
+  // Check that user are trying to change his/her own data
+  if (payload.pilotId !== request.auth.credentials.userId) {
+    reply({error: new KoiflyError(ErrorTypes.USER_MISMATCH)});
+    return;
+  }
+
+  Pilot
+    .findById(request.auth.credentials.userId)
+    .catch(() => {
+      throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+    })
+    .then(pilotRecord => {
+      pilot = pilotRecord;
+      // User can't change password if he didn't verify his email address
+      if (!pilot.isActivated) {
+        throw new KoiflyError(ErrorTypes.NEED_EMAIL_VERIFICATION);
+      }
+      // Compare password provided by user with the one we have in DB
+      return BcryptPromise.compare(payload.currentPassword, pilot.password);
+    })
+    .catch(error => {
+      // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
+      throw normalizeError(error, ErrorTypes.VALIDATION_ERROR, 'You entered wrong password');
+    })
+    .then(() => {
+      // Generate hash from new password
+      return BcryptPromise.hash(payload.nextPassword);
+    })
+    .then(hash => {
+      // Change password hash in DB
+      return pilot.update({password: hash});
+    })
+    .then(() => {
+      // Send email notification to user
+      // so he has opportunity to reset password
+      // if it wasn't he who change the pass at the first place
+      sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password');
+      return setAuthCookie(request, pilot.id, pilot.password);
+    })
+    .then(() => {
+      reply(JSON.stringify('success'));
+    })
+    .catch(error => {
+      reply({error: normalizeError(error)});
+    });
 };
 
 

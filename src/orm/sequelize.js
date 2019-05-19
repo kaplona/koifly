@@ -4,8 +4,8 @@ const Sequelize = require('sequelize');
 
 let Secrets = require('../secrets').dbApp;
 if (process.env.MYSQL_ADMIN) {
-    console.log('---- init db -----');
-    Secrets = require('../secrets').dbAdmin;
+  console.log('---- init db -----');
+  Secrets = require('../secrets').dbAdmin;
 }
 
 const DATABASE = Secrets.database;
@@ -15,8 +15,8 @@ const HOST = Secrets.mysqlHost;
 
 
 const sequelize = new Sequelize(DATABASE, USER, PASSWORD, {
-    host: HOST,
-    dialect: 'mysql'
+  host: HOST,
+  dialect: 'mysql'
 });
 
 

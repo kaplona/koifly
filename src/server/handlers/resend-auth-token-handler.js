@@ -13,18 +13,18 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * @param {object} request
  * @param {function} reply
  */
-const resendAuthTokenHandler = function(request, reply) {
-    Pilot
-        .findById(request.auth.credentials.userId)
-        .then(pilot => {
-            return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
-        })
-        .then(() => {
-            reply(JSON.stringify('success'));
-        })
-        .catch(error => {
-            reply({ error: normalizeError(error) });
-        });
+const resendAuthTokenHandler = function (request, reply) {
+  Pilot
+    .findById(request.auth.credentials.userId)
+    .then(pilot => {
+      return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
+    })
+    .then(() => {
+      reply(JSON.stringify('success'));
+    })
+    .catch(error => {
+      reply({error: normalizeError(error)});
+    });
 };
 
 

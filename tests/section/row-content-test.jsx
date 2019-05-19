@@ -12,28 +12,28 @@ const ValueContainer = require('../../src/components/common/section/value-contai
 
 describe('RowContent component', () => {
 
-    let component;
+  let component;
 
-    const mocks = {
-        labelText: 'test label text',
-        valueText: 'test value text'
-    };
+  const mocks = {
+    labelText: 'test label text',
+    valueText: 'test value text'
+  };
 
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <RowContent
-                label={mocks.labelText}
-                value={mocks.valueText}
-            />
-        );
-    });
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <RowContent
+        label={mocks.labelText}
+        value={mocks.valueText}
+      />
+    );
+  });
 
-    it('renders passed props text in proper places', () => {
-        const label = TestUtils.findRenderedComponentWithType(component, Label);
-        const valueContainer = TestUtils.findRenderedComponentWithType(component, ValueContainer);
+  it('renders passed props text in proper places', () => {
+    const label = TestUtils.findRenderedComponentWithType(component, Label);
+    const valueContainer = TestUtils.findRenderedComponentWithType(component, ValueContainer);
 
-        expect(label).to.have.deep.property('props.children', mocks.labelText);
-        expect(valueContainer).to.have.deep.property('props.children', mocks.valueText);
-    });
+    expect(label).to.have.deep.property('props.children', mocks.labelText);
+    expect(valueContainer).to.have.deep.property('props.children', mocks.valueText);
+  });
 });

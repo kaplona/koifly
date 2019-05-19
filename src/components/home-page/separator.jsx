@@ -3,12 +3,12 @@
 const React = require('react');
 
 if (process.env.BROWSER) {
-    require('./separator.less');
+  require('./separator.less');
 }
 
 
 function Separator() {
-    return <div className='separator' />;
+  return <div className='separator'/>;
 }
 
 

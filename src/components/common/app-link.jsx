@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const { func, string } = React.PropTypes;
+const {func, string} = React.PropTypes;
 const browserHistory = require('react-router').browserHistory;
 
 require('./app-link.less');
@@ -16,38 +16,38 @@ require('./app-link.less');
  */
 const AppLink = React.createClass({
 
-    propTypes: {
-        href: string,
-        onClick: func // will be ignored if "href" prop is passed.
-    },
+  propTypes: {
+    href: string,
+    onClick: func // will be ignored if "href" prop is passed.
+  },
 
-    handleClick: function(e) {
-        if (e && (e.ctrlKey || e.metaKey) && this.props.href) {
-            // Allow default link behaviour when user opens it with Command or Ctrl key pressed.
-            return;
-        }
-
-        if (e) {
-            e.preventDefault();
-        }
-
-        if (this.props.href) {
-            browserHistory.push(this.props.href);
-            return;
-        }
-
-        if (this.props.onClick) {
-            this.props.onClick();
-        }
-    },
-
-    render: function() {
-        return (
-            <a href={this.props.href} className='app-link' onClick={this.handleClick}>
-                {this.props.children}
-            </a>
-        );
+  handleClick: function (e) {
+    if (e && (e.ctrlKey || e.metaKey) && this.props.href) {
+      // Allow default link behaviour when user opens it with Command or Ctrl key pressed.
+      return;
     }
+
+    if (e) {
+      e.preventDefault();
+    }
+
+    if (this.props.href) {
+      browserHistory.push(this.props.href);
+      return;
+    }
+
+    if (this.props.onClick) {
+      this.props.onClick();
+    }
+  },
+
+  render: function () {
+    return (
+      <a href={this.props.href} className='app-link' onClick={this.handleClick}>
+        {this.props.children}
+      </a>
+    );
+  }
 });
 
 

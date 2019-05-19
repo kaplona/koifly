@@ -43,76 +43,76 @@ const SCOPES = require('../../constants/orm-constants').SCOPES;
  * @param {Function} request
  * @param {Function} reply
  */
-function  importFlightsHandler(request, reply) {
-    const pilotId = request.auth.credentials.userId;
+function importFlightsHandler(request, reply) {
+  const pilotId = request.auth.credentials.userId;
 
-    // Parse base64 encoded csv file content into utf8 string
-    const encodedCsvString = request.payload.encodedContent.replace('data:text/csv;base64,', '');
-    const csvString = new Buffer(encodedCsvString, 'base64').toString('utf8');
+  // Parse base64 encoded csv file content into utf8 string
+  const encodedCsvString = request.payload.encodedContent.replace('data:text/csv;base64,', '');
+  const csvString = new Buffer(encodedCsvString, 'base64').toString('utf8');
 
-    // When import succeeds we reply with numbers of added records to the DB.
-    const counts = {
-        flightsNum: 0,
-        sitesNum: 0,
-        glidersNum: 0
-    };
+  // When import succeeds we reply with numbers of added records to the DB.
+  const counts = {
+    flightsNum: 0,
+    sitesNum: 0,
+    glidersNum: 0
+  };
 
-    // We will iterate over all csv rows and saves encountered validation errors in this list. We will save records to
-    // the DB only if this list is empty. Otherwise we respond with this list in order for client to learn which csv rows
-    // they need to correct.
-    const validationErrors = [];
+  // We will iterate over all csv rows and saves encountered validation errors in this list. We will save records to
+  // the DB only if this list is empty. Otherwise we respond with this list in order for client to learn which csv rows
+  // they need to correct.
+  const validationErrors = [];
 
-    Promise
-        .all([
-            convertCsvToJson(csvString),
-            getPilotUnit(pilotId),
-            getRecordsNameHashMap(Site, pilotId),
-            getRecordsNameHashMap(Glider, pilotId)
-        ])
-        .then(result => {
-            const rows = result[0];
-            const altitudeUnit = result[1];
-            // Name to existing sequelize record hash map. In import data all sites and gliders are referenced by name,
-            // so this hash map will be user to check whether new flight's glider/site existed previously in the DB.
-            const sitesHashMap = result[2];
-            const glidersHashMap = result[3];
+  Promise
+    .all([
+      convertCsvToJson(csvString),
+      getPilotUnit(pilotId),
+      getRecordsNameHashMap(Site, pilotId),
+      getRecordsNameHashMap(Glider, pilotId)
+    ])
+    .then(result => {
+      const rows = result[0];
+      const altitudeUnit = result[1];
+      // Name to existing sequelize record hash map. In import data all sites and gliders are referenced by name,
+      // so this hash map will be user to check whether new flight's glider/site existed previously in the DB.
+      const sitesHashMap = result[2];
+      const glidersHashMap = result[3];
 
-            // For each csv file row save new flight, glider, and site (if they didn't exist) in one transaction.
-            return sequelize.transaction(transactionId => {
-                // We need to save each row data sequentially in order to correctly add new sites and gliders to the DB.
-                let lastPromise = Promise.resolve();
-                rows.forEach((row, index) => {
-                    lastPromise = lastPromise.then(() => {
-                        return saveRow(row, index, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId, altitudeUnit);
-                    });
-                });
-
-                // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
-                return lastPromise.then(() => {
-                    if (validationErrors.length) {
-                        throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
-                    }
-                    return Promise.resolve();
-                });
-            });
-        })
-        .then(() => {
-            reply(JSON.stringify(counts));
-        })
-        .catch(error => {
-            const normalisedError = normalizeError(error);
-
-            // If we encountered validation error, reply with list of validation errors.
-            if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
-                reply({ error: validationErrors });
-            // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
-            } else if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
-                reply({ error: normalisedError.errors });
-            // Otherwise reply with generic Koifly error.
-            } else {
-                reply({ error: normalisedError });
-            }
+      // For each csv file row save new flight, glider, and site (if they didn't exist) in one transaction.
+      return sequelize.transaction(transactionId => {
+        // We need to save each row data sequentially in order to correctly add new sites and gliders to the DB.
+        let lastPromise = Promise.resolve();
+        rows.forEach((row, index) => {
+          lastPromise = lastPromise.then(() => {
+            return saveRow(row, index, pilotId, glidersHashMap, sitesHashMap, validationErrors, counts, transactionId, altitudeUnit);
+          });
         });
+
+        // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
+        return lastPromise.then(() => {
+          if (validationErrors.length) {
+            throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
+          }
+          return Promise.resolve();
+        });
+      });
+    })
+    .then(() => {
+      reply(JSON.stringify(counts));
+    })
+    .catch(error => {
+      const normalisedError = normalizeError(error);
+
+      // If we encountered validation error, reply with list of validation errors.
+      if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
+        reply({error: validationErrors});
+        // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
+      } else if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
+        reply({error: normalisedError.errors});
+        // Otherwise reply with generic Koifly error.
+      } else {
+        reply({error: normalisedError});
+      }
+    });
 }
 
 /**
@@ -122,40 +122,40 @@ function  importFlightsHandler(request, reply) {
  * @return {Promise.<Array.<ImportFlightRow>|KoiflyError>}
  */
 function convertCsvToJson(csvString) {
-    const csvConverter = new Converter({
-        // If `checkColumn` is true, converter doesn't ignore empty lines. Uncomment when this issue is resolved:
-        // @see https://github.com/Keyang/node-csvtojson/issues/231
-        // checkColumn: true,
-        checkType: false,
-        delimiter: [',', ';'],
-        flatKeys: true,
-        ignoreEmpty: true
-    });
+  const csvConverter = new Converter({
+    // If `checkColumn` is true, converter doesn't ignore empty lines. Uncomment when this issue is resolved:
+    // @see https://github.com/Keyang/node-csvtojson/issues/231
+    // checkColumn: true,
+    checkType: false,
+    delimiter: [',', ';'],
+    flatKeys: true,
+    ignoreEmpty: true
+  });
 
-    return new Promise((resolve, reject) => {
-        csvConverter.fromString(csvString, (err, res) => {
-            if (res && !err) {
-                resolve(res);
-                return;
-            }
+  return new Promise((resolve, reject) => {
+    csvConverter.fromString(csvString, (err, res) => {
+      if (res && !err) {
+        resolve(res);
+        return;
+      }
 
-            // If scv file parsing failed – reject Promise with special KoiflyError. If we know line and type of
-            // an error – pass it to KoiflyError constructor.
-            const errors = [];
-            const csvToJsonErrorMessages = {
-                column_mismatched: 'A file line has more (or less) columns than file header.', // eslint-disable-line camelcase
-                unclosed_quote: 'There is an unclosed quote in a line.' // eslint-disable-line camelcase
-            };
-            if (err.err && (err.line || err.line === 0)) {
-                errors.push({
-                    row: err.line + 1,
-                    error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err])
-                });
-            }
-
-            reject(new KoiflyError(ErrorTypes.FILE_IMPORT_ERROR, null, errors));
+      // If scv file parsing failed – reject Promise with special KoiflyError. If we know line and type of
+      // an error – pass it to KoiflyError constructor.
+      const errors = [];
+      const csvToJsonErrorMessages = {
+        column_mismatched: 'A file line has more (or less) columns than file header.', // eslint-disable-line camelcase
+        unclosed_quote: 'There is an unclosed quote in a line.' // eslint-disable-line camelcase
+      };
+      if (err.err && (err.line || err.line === 0)) {
+        errors.push({
+          row: err.line + 1,
+          error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err])
         });
+      }
+
+      reject(new KoiflyError(ErrorTypes.FILE_IMPORT_ERROR, null, errors));
     });
+  });
 }
 
 /**
@@ -164,7 +164,7 @@ function convertCsvToJson(csvString) {
  * @return {Promise<string>}
  */
 function getPilotUnit(pilotId) {
-    return Pilot.findById(pilotId).then(pilot => pilot.altitudeUnit);
+  return Pilot.findById(pilotId).then(pilot => pilot.altitudeUnit);
 }
 
 /**
@@ -176,22 +176,22 @@ function getPilotUnit(pilotId) {
  * @return {Promise.<Object>}
  */
 function getRecordsNameHashMap(Model, pilotId, options = {}) {
-    const hashMap = {};
+  const hashMap = {};
 
-    const queryOptions = Object.assign({}, options, {
-        where: { pilotId: pilotId }
+  const queryOptions = Object.assign({}, options, {
+    where: {pilotId: pilotId}
+  });
+
+  return Model
+    .scope(SCOPES.visible)
+    .findAll(queryOptions)
+    .then(records => {
+      records.forEach(record => {
+        const key = convertNameToKey(record.name);
+        hashMap[key] = record;
+      });
+      return hashMap;
     });
-
-    return Model
-        .scope(SCOPES.visible)
-        .findAll(queryOptions)
-        .then(records => {
-            records.forEach(record => {
-                const key = convertNameToKey(record.name);
-                hashMap[key] = record;
-            });
-            return hashMap;
-        });
 }
 
 /**
@@ -201,7 +201,7 @@ function getRecordsNameHashMap(Model, pilotId, options = {}) {
  * @return {string}
  */
 function convertNameToKey(name) {
-    return name.toLowerCase().replace(/\s/g, '_');
+  return name.toLowerCase().replace(/\s/g, '_');
 }
 
 /**
@@ -218,46 +218,46 @@ function convertNameToKey(name) {
  * @return {Promise<void>}
  */
 function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validationErrors, successCounts, transactionId, altitudeUnit) {
-    const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit);
-    const newSite = composeSite(row, pilotId, altitudeUnit);
-    const newGlider = composeGlider(row, pilotId);
+  const newFlight = composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit);
+  const newSite = composeSite(row, pilotId, altitudeUnit);
+  const newGlider = composeGlider(row, pilotId);
 
-    return saveGlider(newGlider, glidersHashMap, transactionId)
-        .catch(error => saveValidationError(error, rowIndex, validationErrors))
-        .then(glider => {
-            if (!glider) {
-                return;
-            }
+  return saveGlider(newGlider, glidersHashMap, transactionId)
+    .catch(error => saveValidationError(error, rowIndex, validationErrors))
+    .then(glider => {
+      if (!glider) {
+        return;
+      }
 
-            newFlight.gliderId = glider.id;
-            successCounts.glidersNum++;
+      newFlight.gliderId = glider.id;
+      successCounts.glidersNum++;
 
 
-            // Add newly created glider to gliders name hash map, so if we encounter a row with the same
-            // glider name we won't save it twice.
-            const gliderNameKey = convertNameToKey(glider.name);
-            glidersHashMap[gliderNameKey] = glider;
-        })
-        .then(() => saveSite(newSite, sitesHashMap, transactionId))
-        .catch(error => saveValidationError(error, rowIndex, validationErrors))
-        .then(site => {
-            if (!site) {
-                return;
-            }
+      // Add newly created glider to gliders name hash map, so if we encounter a row with the same
+      // glider name we won't save it twice.
+      const gliderNameKey = convertNameToKey(glider.name);
+      glidersHashMap[gliderNameKey] = glider;
+    })
+    .then(() => saveSite(newSite, sitesHashMap, transactionId))
+    .catch(error => saveValidationError(error, rowIndex, validationErrors))
+    .then(site => {
+      if (!site) {
+        return;
+      }
 
-            newFlight.siteId = site.id;
-            successCounts.sitesNum++;
+      newFlight.siteId = site.id;
+      successCounts.sitesNum++;
 
-            // Add newly created site to sites name hash map, so if we encounter a row with the same
-            // site name we won't save it twice.
-            const siteNameKey = convertNameToKey(site.name);
-            sitesHashMap[siteNameKey] = site;
-        })
-        .then(() => saveFlight(newFlight, transactionId))
-        .catch(error => saveValidationError(error, rowIndex, validationErrors))
-        .then(() => {
-            successCounts.flightsNum++;
-        });
+      // Add newly created site to sites name hash map, so if we encounter a row with the same
+      // site name we won't save it twice.
+      const siteNameKey = convertNameToKey(site.name);
+      sitesHashMap[siteNameKey] = site;
+    })
+    .then(() => saveFlight(newFlight, transactionId))
+    .catch(error => saveValidationError(error, rowIndex, validationErrors))
+    .then(() => {
+      successCounts.flightsNum++;
+    });
 }
 
 /**
@@ -271,23 +271,23 @@ function saveRow(row, rowIndex, pilotId, glidersHashMap, sitesHashMap, validatio
  * @return {Object}
  */
 function composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit) {
-    const gliderKey = row.glider ? convertNameToKey(row.glider) : null;
-    const glider = gliderKey ? glidersHashMap[gliderKey] : null;
-    const gliderId = glider ? glider.id : null;
+  const gliderKey = row.glider ? convertNameToKey(row.glider) : null;
+  const glider = gliderKey ? glidersHashMap[gliderKey] : null;
+  const gliderId = glider ? glider.id : null;
 
-    const siteKey = row.site ? convertNameToKey(row.site) : null;
-    const site = siteKey ? sitesHashMap[siteKey] : null;
-    const siteId = site ? site.id : null;
+  const siteKey = row.site ? convertNameToKey(row.site) : null;
+  const site = siteKey ? sitesHashMap[siteKey] : null;
+  const siteId = site ? site.id : null;
 
-    return {
-        date: row.date,
-        airtime: row.airtime,
-        altitude: Altitude.convertAltitudeToMeters(row.altitude || 0, altitudeUnit),
-        remarks: row.remarks,
-        pilotId: pilotId,
-        gliderId: gliderId,
-        siteId: siteId
-    };
+  return {
+    date: row.date,
+    airtime: row.airtime,
+    altitude: Altitude.convertAltitudeToMeters(row.altitude || 0, altitudeUnit),
+    remarks: row.remarks,
+    pilotId: pilotId,
+    gliderId: gliderId,
+    siteId: siteId
+  };
 }
 
 /**
@@ -298,15 +298,15 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit)
  * @return {Object}
  */
 function composeSite(row, pilotId, altitudeUnit) {
-    const coordinates = (row.latitude && row.longitude) ? { lat: row.latitude, lng: row.longitude } : null;
+  const coordinates = (row.latitude && row.longitude) ? {lat: row.latitude, lng: row.longitude} : null;
 
-    return {
-        name: row.site,
-        launchAltitude: Altitude.convertAltitudeToMeters(row.launchAltitude || 0, altitudeUnit),
-        location: row.location,
-        coordinates: coordinates,
-        pilotId: pilotId
-    };
+  return {
+    name: row.site,
+    launchAltitude: Altitude.convertAltitudeToMeters(row.launchAltitude || 0, altitudeUnit),
+    location: row.location,
+    coordinates: coordinates,
+    pilotId: pilotId
+  };
 }
 
 /**
@@ -316,22 +316,22 @@ function composeSite(row, pilotId, altitudeUnit) {
  * @return {Object}
  */
 function composeGlider(row, pilotId) {
-    return {
-        name: row.glider,
-        pilotId: pilotId
-    };
+  return {
+    name: row.glider,
+    pilotId: pilotId
+  };
 }
 
 function saveFlight(newFlight, transaction) {
-    return Flight.create(newFlight, { transaction: transaction });
+  return Flight.create(newFlight, {transaction: transaction});
 }
 
 function saveGlider(newGlider, glidersHashMap, transaction) {
-    return saveRecord(Glider, newGlider, glidersHashMap, transaction);
+  return saveRecord(Glider, newGlider, glidersHashMap, transaction);
 }
 
 function saveSite(newSite, sitesHashMap, transaction) {
-    return saveRecord(Site, newSite, sitesHashMap, transaction);
+  return saveRecord(Site, newSite, sitesHashMap, transaction);
 }
 
 /**
@@ -343,12 +343,12 @@ function saveSite(newSite, sitesHashMap, transaction) {
  * @return {Promise.<Object|null>} – Promise resolved with new orm instance or null, if such record already exists.
  */
 function saveRecord(Model, newRecord, namesHashMap, transaction) {
-    const nameKey = newRecord.name && convertNameToKey(newRecord.name);
-    if (!nameKey || namesHashMap[nameKey]) {
-        return Promise.resolve(null);
-    }
+  const nameKey = newRecord.name && convertNameToKey(newRecord.name);
+  if (!nameKey || namesHashMap[nameKey]) {
+    return Promise.resolve(null);
+  }
 
-    return Model.create(newRecord, { transaction: transaction });
+  return Model.create(newRecord, {transaction: transaction});
 }
 
 /**
@@ -359,16 +359,16 @@ function saveRecord(Model, newRecord, namesHashMap, transaction) {
  * @param {Array.<{row: number, error: KoiflyError}>} validationErrors – Reference to list with validation errors.
  */
 function saveValidationError(error, rowIndex, validationErrors) {
-    const normalisedError = normalizeError(error);
-    if (normalisedError.type !== ErrorTypes.VALIDATION_ERROR) {
-        throw new KoiflyError(ErrorTypes.DB_WRITE_ERROR);
-    }
+  const normalisedError = normalizeError(error);
+  if (normalisedError.type !== ErrorTypes.VALIDATION_ERROR) {
+    throw new KoiflyError(ErrorTypes.DB_WRITE_ERROR);
+  }
 
-    // TODO merge all messages for one row into one record
-    validationErrors.push({
-        row: rowIndex + 1, // since indexes start with `0`
-        error: normalisedError
-    });
+  // TODO merge all messages for one row into one record
+  validationErrors.push({
+    row: rowIndex + 1, // since indexes start with `0`
+    error: normalisedError
+  });
 }
 
 

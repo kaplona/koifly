@@ -7,16 +7,16 @@ const Notice = require('../common/notice/notice');
 
 
 function noPage() {
-    return (
-        <div>
-            <MobileTopMenu header='Koifly' />
-            <NavigationMenu isMobile={true} />
-            <Notice
-                text='Oops! Page not found'
-                type='error'
-            />
-        </div>
-    );
+  return (
+    <div>
+      <MobileTopMenu header='Koifly'/>
+      <NavigationMenu isMobile={true}/>
+      <Notice
+        text='Oops! Page not found'
+        type='error'
+      />
+    </div>
+  );
 }
 
 

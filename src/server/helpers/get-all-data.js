@@ -20,20 +20,20 @@ const Glider = require('../../orm/models/gliders');
  * don't use it for pilot records
  */
 function getRecordsValues(sequelizeRecordInstances) {
-    return _.map(sequelizeRecordInstances, record => {
-        // If instance was deleted
-        // user doesn't need its content
-        if (!record.see) {
-            return {
-                id: record.id,
-                see: false,
-                updatedAt: record.updatedAt
-            };
-        }
-        // {plain = true} will only return the values of sequelize record instance
-        // (omits sequelize methods and additional stuff)
-        return record.get({ plain: true });
-    });
+  return _.map(sequelizeRecordInstances, record => {
+    // If instance was deleted
+    // user doesn't need its content
+    if (!record.see) {
+      return {
+        id: record.id,
+        see: false,
+        updatedAt: record.updatedAt
+      };
+    }
+    // {plain = true} will only return the values of sequelize record instance
+    // (omits sequelize methods and additional stuff)
+    return record.get({plain: true});
+  });
 }
 
 
@@ -43,53 +43,53 @@ function getRecordsValues(sequelizeRecordInstances) {
  * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
-const getAllData = function(pilot, dateFrom) {
+const getAllData = function (pilot, dateFrom) {
 
-    const result = {};
+  const result = {};
 
-    // If no dateFrom => it's first request from the user, so retrieve all data
-    const scope = dateFrom ? SCOPES.all : SCOPES.visible;
+  // If no dateFrom => it's first request from the user, so retrieve all data
+  const scope = dateFrom ? SCOPES.all : SCOPES.visible;
 
-    // We are sending all the data to the browser along with the latest date at which DB records were modified
-    // So front-end can compare it with the latest date it has in its store
-    // And update data if needed
-    let maxLastModified = pilot.updatedAt;
+  // We are sending all the data to the browser along with the latest date at which DB records were modified
+  // So front-end can compare it with the latest date it has in its store
+  // And update data if needed
+  let maxLastModified = pilot.updatedAt;
 
-    const whereQuery = { pilotId: pilot.id };
-    if (dateFrom) {
-        whereQuery.updatedAt = { $gt: dateFrom };
-        maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;
-    }
+  const whereQuery = {pilotId: pilot.id};
+  if (dateFrom) {
+    whereQuery.updatedAt = {$gt: dateFrom};
+    maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;
+  }
 
-    // Promise.all resolves only if every promises in the given list resolves
-    return Promise
-        .all([
-            // parallel asynchronous requests
-            Flight.scope(scope).findAll({ where: whereQuery }),
-            Site.scope(scope).findAll({ where: whereQuery }),
-            Glider.scope(scope).findAll({ where: whereQuery })
-        ])
-        .then(recordsSet => {
-            // Values appear in the same order as we requested for them
-            result.flights = getRecordsValues(recordsSet[0]);
-            result.sites = getRecordsValues(recordsSet[1]);
-            result.gliders = getRecordsValues(recordsSet[2]);
+  // Promise.all resolves only if every promises in the given list resolves
+  return Promise
+    .all([
+      // parallel asynchronous requests
+      Flight.scope(scope).findAll({where: whereQuery}),
+      Site.scope(scope).findAll({where: whereQuery}),
+      Glider.scope(scope).findAll({where: whereQuery})
+    ])
+    .then(recordsSet => {
+      // Values appear in the same order as we requested for them
+      result.flights = getRecordsValues(recordsSet[0]);
+      result.sites = getRecordsValues(recordsSet[1]);
+      result.gliders = getRecordsValues(recordsSet[2]);
 
-            // Find the latest updating date of all records
-            _.each(result, records => {
-                _.each(records, record => {
-                    maxLastModified = (record.updatedAt > maxLastModified) ? record.updatedAt : maxLastModified;
-                });
-            });
-
-            result.lastModified = maxLastModified;
-            result.pilot = getPilotValuesForFrontend(pilot);
-
-            return result;
-        })
-        .catch(() => {
-            throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+      // Find the latest updating date of all records
+      _.each(result, records => {
+        _.each(records, record => {
+          maxLastModified = (record.updatedAt > maxLastModified) ? record.updatedAt : maxLastModified;
         });
+      });
+
+      result.lastModified = maxLastModified;
+      result.pilot = getPilotValuesForFrontend(pilot);
+
+      return result;
+    })
+    .catch(() => {
+      throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+    });
 };
 
 

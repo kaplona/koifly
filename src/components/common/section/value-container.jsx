@@ -6,13 +6,13 @@ require('./value-container.less');
 
 
 const Value = React.createClass({
-    render() {
-        return (
-            <div className='value-container'>
-                {this.props.children}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className='value-container'>
+        {this.props.children}
+      </div>
+    );
+  }
 });
 
 

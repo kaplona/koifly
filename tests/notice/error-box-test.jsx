@@ -11,78 +11,79 @@ const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('ErrorBox component', () => {
-    
-    let component;
 
-    const defaults = {
-        noticeType: 'error',
-        buttonText: 'Try Again',
-        buttonTryingText: 'Trying ...'
-    };
+  let component;
 
-    const mocks = {
-        error: { type: 'testError', message: 'test error' },
-        handleTryAgain: () => {}
-    };
+  const defaults = {
+    noticeType: 'error',
+    buttonText: 'Try Again',
+    buttonTryingText: 'Trying ...'
+  };
 
-
-    describe('Defaults testing', () => {
-
-        it('renders notice with proper default props', () => {
-            component = TestUtils.renderIntoDocument(
-                <ErrorBox
-                    error={mocks.error}
-                    onTryAgain={mocks.handleTryAgain}
-                />
-            );
-
-            const notice = TestUtils.findRenderedComponentWithType(component, Notice);
-
-            expect(notice).to.have.deep.property('props.text', mocks.error.message);
-            expect(notice).to.have.deep.property('props.type', defaults.noticeType);
-            expect(notice).to.have.deep.property('props.buttonText', defaults.buttonText);
-            expect(notice).to.have.deep.property('props.onClick', mocks.handleTryAgain);
-        });
-
-        it('renders notice with proper button text', () => {
-            component = TestUtils.renderIntoDocument(
-                <ErrorBox
-                    error={mocks.error}
-                    isTrying={true}
-                    onTryAgain={mocks.handleTryAgain}
-                />
-            );
-
-            const notice = TestUtils.findRenderedComponentWithType(component, Notice);
-
-            expect(notice).to.have.deep.property('props.buttonText', defaults.buttonTryingText);
-        });
-
-        it('doesn\'t pass onClick function for some designated errors', () => {
-            let error = { type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
-            component = TestUtils.renderIntoDocument(
-                <ErrorBox
-                    error={error}
-                    onTryAgain={mocks.handleTryAgain}
-                />
-            );
-
-            let notice = TestUtils.findRenderedComponentWithType(component, Notice);
-
-            expect(notice).to.have.deep.property('props.onClick', null);
+  const mocks = {
+    error: {type: 'testError', message: 'test error'},
+    handleTryAgain: () => {
+    }
+  };
 
 
-            error = { type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
-            component = TestUtils.renderIntoDocument(
-                <ErrorBox
-                    error={error}
-                    onTryAgain={mocks.handleTryAgain}
-                />
-            );
+  describe('Defaults testing', () => {
 
-            notice = TestUtils.findRenderedComponentWithType(component, Notice);
+    it('renders notice with proper default props', () => {
+      component = TestUtils.renderIntoDocument(
+        <ErrorBox
+          error={mocks.error}
+          onTryAgain={mocks.handleTryAgain}
+        />
+      );
 
-            expect(notice).to.have.deep.property('props.onClick', null);
-        });
+      const notice = TestUtils.findRenderedComponentWithType(component, Notice);
+
+      expect(notice).to.have.deep.property('props.text', mocks.error.message);
+      expect(notice).to.have.deep.property('props.type', defaults.noticeType);
+      expect(notice).to.have.deep.property('props.buttonText', defaults.buttonText);
+      expect(notice).to.have.deep.property('props.onClick', mocks.handleTryAgain);
     });
+
+    it('renders notice with proper button text', () => {
+      component = TestUtils.renderIntoDocument(
+        <ErrorBox
+          error={mocks.error}
+          isTrying={true}
+          onTryAgain={mocks.handleTryAgain}
+        />
+      );
+
+      const notice = TestUtils.findRenderedComponentWithType(component, Notice);
+
+      expect(notice).to.have.deep.property('props.buttonText', defaults.buttonTryingText);
+    });
+
+    it('doesn\'t pass onClick function for some designated errors', () => {
+      let error = {type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box'};
+      component = TestUtils.renderIntoDocument(
+        <ErrorBox
+          error={error}
+          onTryAgain={mocks.handleTryAgain}
+        />
+      );
+
+      let notice = TestUtils.findRenderedComponentWithType(component, Notice);
+
+      expect(notice).to.have.deep.property('props.onClick', null);
+
+
+      error = {type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box'};
+      component = TestUtils.renderIntoDocument(
+        <ErrorBox
+          error={error}
+          onTryAgain={mocks.handleTryAgain}
+        />
+      );
+
+      notice = TestUtils.findRenderedComponentWithType(component, Notice);
+
+      expect(notice).to.have.deep.property('props.onClick', null);
+    });
+  });
 });

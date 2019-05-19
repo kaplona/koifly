@@ -21,41 +21,41 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {function} reply
  */
-const signupHandler = function(request, reply) {
-    let pilot; // we need it to have reference to current pilot
-    const payload = request.payload;
+const signupHandler = function (request, reply) {
+  let pilot; // we need it to have reference to current pilot
+  const payload = request.payload;
 
-    // Checks payload for required fields
-    if (!_.isString(payload.email) || !_.isString(payload.password)) {
-        reply({ error: new KoiflyError(ErrorTypes.BAD_REQUEST) });
-        return;
-    }
+  // Checks payload for required fields
+  if (!_.isString(payload.email) || !_.isString(payload.password)) {
+    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
+    return;
+  }
 
-    BcryptPromise
-        .hash(payload.password)
-        .then(hash => {
-            const newPilot = {
-                email: payload.email,
-                password: hash,
-                isSubscribed: payload.isSubscribed,
-                isActivated: false
-            };
-            return Pilot.create(newPilot);
-        })
-        .then(pilotRecord => {
-            pilot = pilotRecord;
-            // Set cookie with new credentials
-            return setAuthCookie(request, pilot.id, pilot.password);
-        })
-        .then(() => {
-            // Send user email with auth verification token
-            sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
-            // Reply with pilot info since it's the only user's data yet
-            reply(getPilotValuesForFrontend(pilot));
-        })
-        .catch(error => {
-            reply({ error: normalizeError(error) });
-        });
+  BcryptPromise
+    .hash(payload.password)
+    .then(hash => {
+      const newPilot = {
+        email: payload.email,
+        password: hash,
+        isSubscribed: payload.isSubscribed,
+        isActivated: false
+      };
+      return Pilot.create(newPilot);
+    })
+    .then(pilotRecord => {
+      pilot = pilotRecord;
+      // Set cookie with new credentials
+      return setAuthCookie(request, pilot.id, pilot.password);
+    })
+    .then(() => {
+      // Send user email with auth verification token
+      sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
+      // Reply with pilot info since it's the only user's data yet
+      reply(getPilotValuesForFrontend(pilot));
+    })
+    .catch(error => {
+      reply({error: normalizeError(error)});
+    });
 };
 
 

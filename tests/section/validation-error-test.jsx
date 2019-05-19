@@ -11,22 +11,22 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 describe('ValidationError component', () => {
 
-    let component;
-    let renderedDOMElement;
+  let component;
+  let renderedDOMElement;
 
-    const mocks = {
-        errorMessage: 'test error message'
-    };
+  const mocks = {
+    errorMessage: 'test error message'
+  };
 
-    before(() => {
-        component = TestUtils.renderIntoDocument(
-            <ValidationError message={mocks.errorMessage} />
-        );
+  before(() => {
+    component = TestUtils.renderIntoDocument(
+      <ValidationError message={mocks.errorMessage}/>
+    );
 
-        renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
+    renderedDOMElement = ReactDOM.findDOMNode(component);
+  });
 
-    it('renders parsed props text', () => {
-        expect(renderedDOMElement).to.have.property('textContent', mocks.errorMessage);
-    });
+  it('renders parsed props text', () => {
+    expect(renderedDOMElement).to.have.property('textContent', mocks.errorMessage);
+  });
 });
