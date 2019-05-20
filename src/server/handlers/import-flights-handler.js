@@ -40,10 +40,9 @@ const SCOPES = require('../../constants/orm-constants').SCOPES;
  * @property {number} row – Index of a row where error occurred.
  * @property {KoiflyError} error
  *
- * @param {Function} request
- * @param {Function} reply
+ * @param {Object} request
  */
-function importFlightsHandler(request, reply) {
+function importFlightsHandler(request) {
   const pilotId = request.auth.credentials.userId;
 
   // Parse base64 encoded csv file content into utf8 string
@@ -62,7 +61,7 @@ function importFlightsHandler(request, reply) {
   // they need to correct.
   const validationErrors = [];
 
-  Promise
+  return Promise
     .all([
       convertCsvToJson(csvString),
       getPilotUnit(pilotId),
@@ -97,20 +96,20 @@ function importFlightsHandler(request, reply) {
       });
     })
     .then(() => {
-      reply(JSON.stringify(counts));
+      return JSON.stringify(counts);
     })
     .catch(error => {
       const normalisedError = normalizeError(error);
 
       // If we encountered validation error, reply with list of validation errors.
       if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
-        reply({error: validationErrors});
+        return { error: validationErrors };
         // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
       } else if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
-        reply({error: normalisedError.errors});
+        return { error: normalisedError.errors };
         // Otherwise reply with generic Koifly error.
       } else {
-        reply({error: normalisedError});
+        return { error: normalisedError };
       }
     });
 }

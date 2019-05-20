@@ -11,18 +11,16 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
 /**
  * @param {object} request
  * @param {object} session
- * @param {function} callback - accepts (Error|null error, bool isSuccess)
  */
-const checkAuthCookie = function (request, session, callback) {
+const checkAuthCookie = function (request, session) {
 
   if (!session.userId || session.expiryDate < Date.now()) {
-    callback(new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR), false);
-    return;
+    return { valid: false };
   }
 
   let pilot; // we need it to have reference to current pilot
 
-  Pilot.findById(session.userId)
+  return Pilot.findById(session.userId)
     .then(pilotRecord => {
       pilot = pilotRecord;
 
@@ -38,10 +36,10 @@ const checkAuthCookie = function (request, session, callback) {
       return setAuthCookie(request, pilot.id, pilot.password);
     })
     .then(() => {
-      callback(null, true); // All OK!
+      return { valid: true }; // All OK!
     })
-    .catch(error => {
-      callback(normalizeError(error), false);
+    .catch(() => {
+      return { valid: false };
     });
 };
 

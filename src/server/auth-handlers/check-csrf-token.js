@@ -12,8 +12,8 @@ const KoiflyError = require('../../errors/error');
  * if no match - sets new csrf token (in case the old one was expired)
  * and replies with 'invalid csrf token' error
  * if ok - pass control to route handler or next prerequisite
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
+ * @param {Object} reply – Response toolkit.
  */
 const checkCsrfToken = function (request, reply) {
   let requestCsrfToken;
@@ -33,13 +33,13 @@ const checkCsrfToken = function (request, reply) {
     cookieCsrfToken !== requestCsrfToken
   ) {
     const csrfToken = generateToken(10);
-    reply({error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN)})
-      .takeover() // doesn't invoke route handler and reply directly to the browser
-      .state('csrf', csrfToken);
-    return;
+    const response = reply.response({error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN)});
+    response.state('csrf', csrfToken);
+
+    return response;
   }
 
-  reply();
+  return reply.continue;
 };
 
 

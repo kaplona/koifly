@@ -56,7 +56,7 @@ const App = React.createClass({
         <meta property='og:image' content={`${config.server.rootUrl}/static/icons/koifly-icon.png`}/>
       </head>
       <body>
-      <div id='koifly'/>
+        <div id='koifly'/>
       </body>
       </html>
     );

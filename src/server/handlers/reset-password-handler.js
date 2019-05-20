@@ -15,10 +15,9 @@ const verifyAuthToken = require('../helpers/verify-auth-token');
  * save new password hash in DB
  * sets cookie with new credentials
  * replies with all user's data or error it the latest occurred
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const resetPasswordHandler = function (request, reply) {
+const resetPasswordHandler = function (request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
@@ -27,18 +26,17 @@ const resetPasswordHandler = function (request, reply) {
     !_.isString(payload.authToken) ||
     !_.isString(payload.password)
   ) {
-    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
   }
 
-  verifyAuthToken(payload.pilotId, payload.authToken)
+  return verifyAuthToken(payload.pilotId, payload.authToken)
     .then(pilotRecord => {
       pilot = pilotRecord;
       // Convert raw user password into hash
       return BcryptPromise.hash(payload.password);
     })
     .then(hash => {
-      return pilot.update({password: hash});
+      return pilot.update({ password: hash });
     })
     .then(() => {
       return setAuthCookie(request, pilot.id, pilot.password);
@@ -48,11 +46,8 @@ const resetPasswordHandler = function (request, reply) {
       // Reply with all user's data
       return getAllData(pilot, null);
     })
-    .then(dbData => {
-      reply(dbData);
-    })
     .catch(error => {
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 

@@ -14,16 +14,14 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * finds a pilot with this email address,
  * sends him a link with auth token for one-time-login, reset password or other
  * reply to client with 'success' or error if the latest occurred
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const sendAuthTokenHandler = function (request, reply) {
+const sendAuthTokenHandler = function (request) {
   const payload = request.payload;
 
   // Checks payload for required fields
   if (!_.isString(payload.email)) {
-    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
   }
 
   let emailMessage;
@@ -40,8 +38,8 @@ const sendAuthTokenHandler = function (request, reply) {
   }
 
   // email is stored in lower case in DB, so as to perform case insensitivity
-  Pilot
-    .findOne({where: {email: payload.email.toLowerCase()}})
+  return Pilot
+    .findOne({ where: { email: payload.email.toLowerCase() } })
     .then(pilot => {
       if (pilot && pilot.email === payload.email.toLowerCase()) {
         return sendAuthTokenToPilot(pilot, emailMessage, path);
@@ -50,10 +48,10 @@ const sendAuthTokenHandler = function (request, reply) {
       throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
     })
     .then(() => {
-      reply(JSON.stringify('success'));
+      return JSON.stringify('success');
     })
     .catch(error => {
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 

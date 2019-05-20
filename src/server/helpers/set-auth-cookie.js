@@ -22,7 +22,7 @@ const setAuthCookie = function (request, userId, passwordHash) {
         expiryDate: expiryDate,
         hash: hash
       };
-      request.auth.session.set(cookie);
+      request.cookieAuth.set(cookie);
     });
 };
 

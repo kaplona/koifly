@@ -42,7 +42,7 @@ const About = React.createClass({
         <script dangerouslySetInnerHTML={{__html: TRACKING_CODE_SNIPPET}}/>
       </head>
       <body>
-      <Home isLoggedIn={this.props.isLoggedIn}/>
+        <Home isLoggedIn={this.props.isLoggedIn}/>
       </body>
       </html>
     );

@@ -17,12 +17,10 @@ const Site = require('../../orm/models/sites');
 /**
  * Saves data in case of POST request
  * Replies with all user's data or error if the latest occurred
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const queryHandler = function (request, reply) {
-
-  Pilot
+const queryHandler = function (request) {
+  return Pilot
     .findById(request.auth.credentials.userId)
     .then(pilot => {
       if (request.method === 'get') {
@@ -59,15 +57,12 @@ const queryHandler = function (request, reply) {
           });
       }
     })
-    .then(result => {
-      reply(result);
-    })
     .catch(error => {
       if (process.env.NODE_ENV === 'development') {
         console.log('Error => ', error); // eslint-disable-line no-console
       }
 
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 

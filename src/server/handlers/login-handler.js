@@ -14,22 +14,20 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * Searches for a pilot DB record with given email,
  * compares hash of given password with the one in DB
  * if success set cookie and reply to client with all pilot's data
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const loginHandler = function (request, reply) {
+const loginHandler = function (request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
   // Checks payload for required fields
   if (!_.isString(payload.email) || !_.isString(payload.password)) {
-    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
   }
 
   // email is stored in lower case in DB, so as to perform case insensitivity
-  Pilot
-    .findOne({where: {email: payload.email.toLowerCase()}})
+  return Pilot
+    .findOne({ where: { email: payload.email.toLowerCase() } })
     .catch(() => {
       throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
     })
@@ -55,11 +53,8 @@ const loginHandler = function (request, reply) {
       // this saves amount of data sending between server and client
       return getAllData(pilot, payload.lastModified);
     })
-    .then(dbData => {
-      reply(dbData);
-    })
     .catch(error => {
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 

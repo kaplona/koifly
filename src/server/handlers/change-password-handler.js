@@ -17,26 +17,23 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * saves hash of new password, auth token info and sends email with notification that password has been changed
  * set cookie with new credentials
  * replies success or error if the latest occurred
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const changePasswordHandler = function (request, reply) {
+const changePasswordHandler = function (request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
   // Checks payload for required fields
   if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {
-    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
   }
 
   // Check that user are trying to change his/her own data
   if (payload.pilotId !== request.auth.credentials.userId) {
-    reply({error: new KoiflyError(ErrorTypes.USER_MISMATCH)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.USER_MISMATCH) };
   }
 
-  Pilot
+  return Pilot
     .findById(request.auth.credentials.userId)
     .catch(() => {
       throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
@@ -70,10 +67,10 @@ const changePasswordHandler = function (request, reply) {
       return setAuthCookie(request, pilot.id, pilot.password);
     })
     .then(() => {
-      reply(JSON.stringify('success'));
+      return JSON.stringify('success');
     })
     .catch(error => {
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 

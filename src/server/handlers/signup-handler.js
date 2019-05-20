@@ -18,20 +18,18 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * generates random token, saves it in DB,
  * send email with verification link to new user's email,
  * replies with only pilot info since new user doesn't have any other data yet
- * @param {object} request
- * @param {function} reply
+ * @param {Object} request
  */
-const signupHandler = function (request, reply) {
+const signupHandler = function (request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
   // Checks payload for required fields
   if (!_.isString(payload.email) || !_.isString(payload.password)) {
-    reply({error: new KoiflyError(ErrorTypes.BAD_REQUEST)});
-    return;
+    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
   }
 
-  BcryptPromise
+  return BcryptPromise
     .hash(payload.password)
     .then(hash => {
       const newPilot = {
@@ -51,10 +49,10 @@ const signupHandler = function (request, reply) {
       // Send user email with auth verification token
       sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
       // Reply with pilot info since it's the only user's data yet
-      reply(getPilotValuesForFrontend(pilot));
+      return getPilotValuesForFrontend(pilot);
     })
     .catch(error => {
-      reply({error: normalizeError(error)});
+      return { error: normalizeError(error) };
     });
 };
 
