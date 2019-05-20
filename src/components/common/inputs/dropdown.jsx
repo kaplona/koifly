@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, oneOfType, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
 const _ = require('lodash');
 
 require('./dropdown.less');
@@ -26,14 +26,14 @@ const Dropdown = React.createClass({
     onBlur: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isEnabled: true,
       noSort: false
     };
   },
 
-  handleUserInput: function () {
+  handleUserInput: function() {
     let value = this.refs.selectInput.value;
     if (value === this.emptyValue) {
       value = null;
@@ -43,7 +43,7 @@ const Dropdown = React.createClass({
 
   emptyValue: '__EMPTY__',
 
-  render: function () {
+  render: function() {
     // Sort options in ascending order if needed
     let sortedOptions = this.props.options;
     if (!this.props.noSort) {

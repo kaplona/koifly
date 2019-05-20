@@ -19,7 +19,7 @@ const Site = require('../../orm/models/sites');
  * Replies with all user's data or error if the latest occurred
  * @param {Object} request
  */
-const queryHandler = function (request) {
+const queryHandler = function(request) {
   return Pilot
     .findById(request.auth.credentials.userId)
     .then(pilot => {
@@ -120,7 +120,7 @@ function saveFlight(data, pilotId) {
   }
 
   return Flight
-    .findOne({where: {id: data.id, pilotId: pilotId}})
+    .findOne({ where: { id: data.id, pilotId: pilotId } })
     .then(flight => {
       if (!flight || flight.id.toString() !== data.id.toString()) {
         throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
@@ -164,19 +164,19 @@ function saveSite(data, pilotId) {
   // in order to delete glider with all its references in flight records
   return sequelize.transaction(t => {
     return Site
-      .findOne({where: {id: data.id, pilotId: pilotId}, transaction: t})
+      .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
       .then(site => {
         if (!site || site.id.toString() !== data.id.toString()) {
           throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
         }
 
-        return site.update(data, {transaction: t});
+        return site.update(data, { transaction: t });
       })
       .then(site => {
         if (!site.see) {
           return Flight.update(
-            {siteId: null},
-            {where: {siteId: site.id}, transaction: t}
+            { siteId: null },
+            { where: { siteId: site.id }, transaction: t }
           );
         }
       });
@@ -216,19 +216,19 @@ function saveGlider(data, pilotId) {
   // in order to delete glider with all its references in flight records
   return sequelize.transaction(t => {
     return Glider
-      .findOne({where: {id: data.id, pilotId: pilotId}, transaction: t})
+      .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
       .then(glider => {
         if (!glider || glider.id.toString() !== data.id.toString()) {
           throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
         }
 
-        return glider.update(data, {transaction: t});
+        return glider.update(data, { transaction: t });
       })
       .then(glider => {
         if (!glider.see) {
           return Flight.update(
-            {gliderId: null},
-            {where: {gliderId: glider.id}, transaction: t}
+            { gliderId: null },
+            { where: { gliderId: glider.id }, transaction: t }
           );
         }
       });

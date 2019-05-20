@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, string} = React.PropTypes;
+const { func, string } = React.PropTypes;
 const Label = require('../section/label');
 const ValidationError = require('../section/validation-error');
 
@@ -20,23 +20,23 @@ const RemarksInput = React.createClass({
     onBlur: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       inputName: 'remarks'
     };
   },
 
-  handleUserInput: function () {
+  handleUserInput: function() {
     this.props.onChange(this.props.inputName, this.refs.textarea.value);
   },
 
-  renderErrorMessage: function () {
+  renderErrorMessage: function() {
     if (this.props.errorMessage) {
       return <ValidationError message={this.props.errorMessage}/>;
     }
   },
 
-  render: function () {
+  render: function() {
     return (
       <div>
         {this.renderErrorMessage()}

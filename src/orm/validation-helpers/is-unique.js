@@ -30,10 +30,10 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
   const scope = scopeAll ? SCOPES.all : SCOPES.visible;
   const queryOptions = {
     where: {
-      id: {$ne: record.id},
+      id: { $ne: record.id },
       [fieldName]: fieldValue
     },
-    attributes: ['id']
+    attributes: [ 'id' ]
   };
   if (transaction) {
     queryOptions.transaction = transaction;

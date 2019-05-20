@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const BreadCrumbs = require('../common/bread-crumbs');
 const GliderModel = require('../../models/glider');
 const itemViewMixin = require('../mixins/item-view-mixin');
@@ -24,9 +24,9 @@ const GliderView = React.createClass({
     })
   },
 
-  mixins: [itemViewMixin(GliderModel.getModelKey())],
+  mixins: [ itemViewMixin(GliderModel.getModelKey()) ],
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Back'
@@ -37,7 +37,7 @@ const GliderView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -46,7 +46,7 @@ const GliderView = React.createClass({
       return this.renderLoader();
     }
 
-    let {trueFlightNum} = this.state.item;
+    let { trueFlightNum } = this.state.item;
     if (this.state.item.flightNumThisYear) {
       trueFlightNum += `, incl. this year: ${this.state.item.flightNumThisYear}`;
     }

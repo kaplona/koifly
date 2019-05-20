@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, string} = React.PropTypes;
+const { bool, func, string } = React.PropTypes;
 const dataService = require('../../../services/data-service');
 const Notice = require('./notice');
 const PilotModel = require('../../../models/pilot');
@@ -16,7 +16,7 @@ const EmailVerificationNotice = React.createClass({
     onClose: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       text: [
         'We sent you an email with a verification link.',
@@ -27,21 +27,21 @@ const EmailVerificationNotice = React.createClass({
     };
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       isSending: false,
       isEmailSent: false
     };
   },
 
-  handleEmailVerification: function () {
-    this.setState({isSending: true});
+  handleEmailVerification: function() {
+    this.setState({ isSending: true });
     dataService.sendVerificationEmail().then(() => {
-      this.setState({isEmailSent: true});
+      this.setState({ isEmailSent: true });
     });
   },
 
-  render: function () {
+  render: function() {
     let noticeText = this.props.text;
     let type = this.props.type;
     let onClick = this.handleEmailVerification;

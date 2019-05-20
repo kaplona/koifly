@@ -24,6 +24,6 @@ const nodemonConfig = {
 };
 
 
-module.exports = function () {
+module.exports = function() {
   FileWriter.write('nodemon.json', JSON.stringify(nodemonConfig, null, 2));
 };

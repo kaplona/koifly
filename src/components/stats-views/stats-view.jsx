@@ -29,9 +29,9 @@ require('./stats-view.less');
 
 const StatsView = React.createClass({
 
-  mixins: [PublicLinksMixin],
+  mixins: [ PublicLinksMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       flightStats: null,
       isLoading: true,
@@ -43,11 +43,11 @@ const StatsView = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     pubSub.on(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
   },
 
-  componentWillUnmount: function () {
+  componentWillUnmount: function() {
     pubSub.removeListener(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
   },
 
@@ -82,27 +82,27 @@ const StatsView = React.createClass({
 
   handleSiteSelect(siteId) {
     const selectedSiteId = (this.state.selectedSiteId === siteId) ? null : siteId;
-    statsViewStore.updateState({selectedSiteId, selectedFlightIds: []});
+    statsViewStore.updateState({ selectedSiteId, selectedFlightIds: [] });
   },
 
   handleTimeRangeSelect(timeRange) {
     if (!this.state.selectedYear) {
-      statsViewStore.updateState({selectedYear: timeRange, selectedFlightIds: []});
+      statsViewStore.updateState({ selectedYear: timeRange, selectedFlightIds: [] });
     } else if (!this.state.selectedMonth) {
-      statsViewStore.updateState({selectedMonth: timeRange, selectedFlightIds: []});
+      statsViewStore.updateState({ selectedMonth: timeRange, selectedFlightIds: [] });
     }
   },
 
   handleYearSelect(year) {
     if (year) {
-      statsViewStore.updateState({selectedYear: year, selectedFlightIds: []});
+      statsViewStore.updateState({ selectedYear: year, selectedFlightIds: [] });
     } else {
-      statsViewStore.updateState({selectedYear: null, selectedMonth: null, selectedFlightIds: []});
+      statsViewStore.updateState({ selectedYear: null, selectedMonth: null, selectedFlightIds: [] });
     }
   },
 
   handleMonthSelect(monthShort) {
-    statsViewStore.updateState({selectedMonth: monthShort, selectedFlightIds: []});
+    statsViewStore.updateState({ selectedMonth: monthShort, selectedFlightIds: [] });
   },
 
   handleUnzoom() {
@@ -114,16 +114,16 @@ const StatsView = React.createClass({
   },
 
   handleBubbleClick(flightIds) {
-    statsViewStore.updateState({selectedFlightIds: flightIds});
+    statsViewStore.updateState({ selectedFlightIds: flightIds });
   },
 
   getChartData() {
     const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
-    const flightNumberBySitePie = [{data: []}];
-    const airtimeBySitePie = [{data: []}];
+    const flightNumberBySitePie = [ { data: [] } ];
+    const airtimeBySitePie = [ { data: [] } ];
     const flightNumberHistogram = [];
     const airtimeHistogram = [];
-    const maxAltitudeBubble = [{data: []}];
+    const maxAltitudeBubble = [ { data: [] } ];
     let timeRangeCategories;
 
     if (this.state.flightStats) {
@@ -224,10 +224,10 @@ const StatsView = React.createClass({
           });
         }
 
-        flightNumberBySitePie[0].data.push(Object.assign({}, piePoint, {y: flightNum}));
-        airtimeBySitePie[0].data.push(Object.assign({}, piePoint, {y: airtime}));
-        flightNumberHistogram.push(Object.assign({}, histogramPoint, {data: flightNumHistogramData}));
-        airtimeHistogram.push(Object.assign({}, histogramPoint, {data: airtimeHistogramData}));
+        flightNumberBySitePie[0].data.push(Object.assign({}, piePoint, { y: flightNum }));
+        airtimeBySitePie[0].data.push(Object.assign({}, piePoint, { y: airtime }));
+        flightNumberHistogram.push(Object.assign({}, histogramPoint, { data: flightNumHistogramData }));
+        airtimeHistogram.push(Object.assign({}, histogramPoint, { data: airtimeHistogramData }));
       });
     }
 
@@ -288,8 +288,8 @@ const StatsView = React.createClass({
     } = this.getChartData();
 
     const siteOptions = SiteModel.getSiteValueTextList();
-    const yearOptions = this.state.flightStats.years.map(year => ({value: year, text: year}));
-    const monthOptions = Util.shortMonthNames.map(month => ({value: month, text: month}));
+    const yearOptions = this.state.flightStats.years.map(year => ({ value: year, text: year }));
+    const monthOptions = Util.shortMonthNames.map(month => ({ value: month, text: month }));
     const bubbleFlights = this.state.selectedFlightIds
       .map(flightId => FlightModel.getItemOutput(flightId))
       .filter(flight => !!flight && !flight.error);

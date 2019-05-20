@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, element, func, oneOfType, string} = React.PropTypes;
+const { bool, element, func, oneOfType, string } = React.PropTypes;
 const Label = require('../section/label');
 const InputContainer = require('./input-container');
 const ValidationError = require('../section/validation-error');
@@ -21,24 +21,24 @@ const TextInput = React.createClass({
     onBlur: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isNumber: false,
       isEmail: false
     };
   },
 
-  handleUserInput: function () {
+  handleUserInput: function() {
     this.props.onChange(this.props.inputName, this.refs.input.value);
   },
 
-  renderErrorMessage: function () {
+  renderErrorMessage: function() {
     if (this.props.errorMessage) {
       return <ValidationError message={this.props.errorMessage}/>;
     }
   },
 
-  render: function () {
+  render: function() {
     let className = this.props.isNumber ? 'x-number' : 'x-text';
     if (this.props.errorMessage) {
       className += ' x-error';

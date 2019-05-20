@@ -82,7 +82,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getListOutput: function () {
+  getListOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -108,7 +108,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getItemOutput: function (siteId) {
+  getItemOutput: function(siteId) {
     const site = this.getStoreContent(siteId);
     if (!site || site.error) {
       return site;
@@ -139,7 +139,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getEditOutput: function (siteId) {
+  getEditOutput: function(siteId) {
     if (siteId === undefined) {
       return this.getNewItemOutput();
     }
@@ -171,7 +171,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getNewItemOutput: function () {
+  getNewItemOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -195,7 +195,7 @@ let SiteModel = {
    * @param {object} newSite
    * @returns {object} - site ready to send to the server
    */
-  getDataForServer: function (newSite) {
+  getDataForServer: function(newSite) {
     // Set default values to empty fields
     newSite = this.setDefaultValues(newSite);
 
@@ -221,7 +221,7 @@ let SiteModel = {
    * @param {number} siteId - assumption: site id exists
    * @returns {string|null} - site's name or null if no site with given id
    */
-  getSiteName: function (siteId) {
+  getSiteName: function(siteId) {
     const getStoreContent = this.getStoreContent(siteId);
     return !getStoreContent.error ? getStoreContent.name : null;
   },
@@ -231,7 +231,7 @@ let SiteModel = {
    * @param {number|null} siteId - assumption: site id exists
    * @returns {{lat: number, lng: number}|null} - coordinates object or null if siteId or coordinates are not specified
    */
-  getLatLng: function (siteId) {
+  getLatLng: function(siteId) {
     return siteId ? this.getStoreContent(siteId).coordinates : null;
   },
 
@@ -240,7 +240,7 @@ let SiteModel = {
    * @param {number} siteId - assumption: site id exists
    * @returns {number} - site launch altitude in pilot units
    */
-  getLaunchAltitude: function (siteId) {
+  getLaunchAltitude: function(siteId) {
     return Altitude.getAltitudeInPilotUnits(this.getStoreContent(siteId).launchAltitude);
   },
 
@@ -248,7 +248,7 @@ let SiteModel = {
   /**
    * @returns {number|null} - id of last created site or null if no sites yet
    */
-  getLastAddedId: function () {
+  getLastAddedId: function() {
     const storeContent = this.getStoreContent();
     if (_.isEmpty(storeContent)) {
       return null;
@@ -262,7 +262,7 @@ let SiteModel = {
    * This presentation is required for dropdown options
    * @returns {Array} - array of objects where value is site id, text is site name
    */
-  getSiteValueTextList: function () {
+  getSiteValueTextList: function() {
     return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
   }
 };

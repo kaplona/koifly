@@ -26,9 +26,9 @@ describe('DropdownInput component', () => {
     selectedValue: 'test value',
     labelText: 'test text',
     options: [
-      {value: '1', text: 'a'},
-      {value: '2', text: 'b'},
-      {value: '3', text: 'c'}
+      { value: '1', text: 'a' },
+      { value: '2', text: 'b' },
+      { value: '3', text: 'c' }
     ],
     emptyValue: 'empty value',
     errorMessage: 'test error message',

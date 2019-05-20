@@ -15,9 +15,9 @@ const View = require('../common/view');
 
 const FlightListView = React.createClass({
 
-  mixins: [listViewMixin(FlightModel.getModelKey())],
+  mixins: [ listViewMixin(FlightModel.getModelKey()) ],
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Flights'
@@ -27,7 +27,7 @@ const FlightListView = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Flights'/>
@@ -37,7 +37,7 @@ const FlightListView = React.createClass({
     );
   },
 
-  renderTable: function () {
+  renderTable: function() {
     const columns = [
       {
         key: 'formattedDate',
@@ -82,7 +82,7 @@ const FlightListView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }

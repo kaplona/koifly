@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, func, number, shape} = React.PropTypes;
+const { arrayOf, func, number, shape } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const chartService = require('../../services/chart-service');
 const distanceService = require('../../services/distance-service');
@@ -29,7 +29,7 @@ const FlightSynchronizedCharts = React.createClass({
 
     // Adding a method to Highcharts Point prototype.
     // Highlight a point by showing tooltip, setting hover state and draw crosshair
-    Highcharts.Point.prototype.koiHighlight = function (event) {
+    Highcharts.Point.prototype.koiHighlight = function(event) {
       event = this.series.chart.pointer.normalize(event);
       this.onMouseOver(); // Show the hover marker
       this.series.chart.tooltip.refresh(this); // Show the tooltip
@@ -44,7 +44,7 @@ const FlightSynchronizedCharts = React.createClass({
 
     // Override the reset function, we don't need to hide the tooltips and crosshairs.
     this.charts.forEach(chartInstance => {
-      chartInstance.pointer.reset = function () {
+      chartInstance.pointer.reset = function() {
         return undefined;
       };
     });
@@ -73,7 +73,7 @@ const FlightSynchronizedCharts = React.createClass({
     const altChartConfig = {
       renderTo: 'altitude-chart',
       title: 'Altitude',
-      tooltipPointFormatter: function () {
+      tooltipPointFormatter: function() {
         return `<span>${this.y} ${pilotAltUnit}</span>`;
       },
       minYAxis: this.props.minAltitude,
@@ -83,7 +83,7 @@ const FlightSynchronizedCharts = React.createClass({
     const liftChartConfig = {
       renderTo: 'lift-chart',
       title: 'Lift',
-      tooltipPointFormatter: function () {
+      tooltipPointFormatter: function() {
         return `<span>${this.y} ${pilotAltVelocityUnit}</span>`;
       },
       series: chartService.getLiftSeries(this.props.flightPoints, pilotAltVelocityUnit)
@@ -92,7 +92,7 @@ const FlightSynchronizedCharts = React.createClass({
     const launchDistChartConfig = {
       renderTo: 'launch-distance-chart',
       title: 'Distance from launch',
-      tooltipPointFormatter: function () {
+      tooltipPointFormatter: function() {
         return `<span>${this.y} ${pilotDistanceUnit}</span>`;
       },
       series: chartService.getDistanceFromLaunchSeries(this.props.flightPoints, pilotDistanceUnit)
@@ -101,11 +101,11 @@ const FlightSynchronizedCharts = React.createClass({
     const glideRatioChartConfig = {
       renderTo: 'glide-ratio-chart',
       title: 'Glide ratio to landing spot',
-      tooltipPointFormatter: function () {
+      tooltipPointFormatter: function() {
         return this.y ? `<span>1 / ${Math.round(this.y)}</span>` : '0';
       },
       yAxisLabels: {
-        formatter: function () {
+        formatter: function() {
           return this.value ? `1/${Math.round(this.value)}` : '0';
         }
       },
@@ -132,16 +132,16 @@ const FlightSynchronizedCharts = React.createClass({
       plotOptions: {
         area: {
           lineWidth: 1,
-          marker: {enabled: false},
+          marker: { enabled: false },
           states: {
-            hover: {lineWidth: 1}
+            hover: { lineWidth: 1 }
           }
         },
         line: {
           lineWidth: 2,
-          marker: {enabled: false},
+          marker: { enabled: false },
           states: {
-            hover: {lineWidth: 2}
+            hover: { lineWidth: 2 }
           }
         },
         series: {
@@ -156,7 +156,7 @@ const FlightSynchronizedCharts = React.createClass({
         y: 10
       },
       tooltip: {
-        positioner: function () {
+        positioner: function() {
           return {
             x: this.chart.chartWidth - this.label.width, // right aligned
             y: 15 // align to title
@@ -174,7 +174,7 @@ const FlightSynchronizedCharts = React.createClass({
       xAxis: {
         crosshair: true,
         labels: {
-          formatter: function () {
+          formatter: function() {
             if (this.value === 0) {
               return '0';
             }
@@ -203,11 +203,11 @@ const FlightSynchronizedCharts = React.createClass({
         labels: config.yAxisLabels || {},
         min: config.minYAxis,
         startOnTick: false,
-        title: {text: null}
+        title: { text: null }
       },
-      legend: {enabled: false},
-      credits: {enabled: false},
-      series: [config.series]
+      legend: { enabled: false },
+      credits: { enabled: false },
+      series: [ config.series ]
     });
   },
 

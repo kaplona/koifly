@@ -5,32 +5,32 @@ const browserHistory = require('react-router').browserHistory;
 
 const PublicLinksMixin = {
 
-  handleGoToFlightLog: function () {
+  handleGoToFlightLog: function() {
     browserHistory.push('/flights');
   },
 
-  handleGoToHomePage: function () {
+  handleGoToHomePage: function() {
     // need to request marketing page from the server
     window.location.href = '/';
   },
 
-  handleGoToLogin: function () {
+  handleGoToLogin: function() {
     browserHistory.push('/login');
   },
 
-  handleGoToOneTimeLogin: function () {
+  handleGoToOneTimeLogin: function() {
     browserHistory.push('/one-time-login');
   },
 
-  handleGoToPilotView: function () {
+  handleGoToPilotView: function() {
     browserHistory.push('/pilot');
   },
 
-  handleGoToResetPassword: function () {
+  handleGoToResetPassword: function() {
     browserHistory.push('/reset-password');
   },
 
-  handleGoToSignup: function () {
+  handleGoToSignup: function() {
     browserHistory.push('/signup');
   }
 };

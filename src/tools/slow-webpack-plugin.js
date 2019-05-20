@@ -14,7 +14,7 @@ function SlowWebpackPlugin(options) {
 }
 
 
-SlowWebpackPlugin.prototype.apply = function (compiler) {
+SlowWebpackPlugin.prototype.apply = function(compiler) {
   const delay = this.options.delay;
 
   compiler.plugin('done', () => {

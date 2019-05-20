@@ -19,7 +19,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * replies success or error if the latest occurred
  * @param {Object} request
  */
-const changePasswordHandler = function (request) {
+const changePasswordHandler = function(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
@@ -57,7 +57,7 @@ const changePasswordHandler = function (request) {
     })
     .then(hash => {
       // Change password hash in DB
-      return pilot.update({password: hash});
+      return pilot.update({ password: hash });
     })
     .then(() => {
       // Send email notification to user

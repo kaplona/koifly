@@ -14,7 +14,7 @@ require('./main-sandbox.less');
 
 function mainSandbox() {
   ReactDOM.render(
-    React.createElement(NavigationMenu, {isSiteView: true}),
+    React.createElement(NavigationMenu, { isSiteView: true }),
     document.getElementById('container')
   );
 }

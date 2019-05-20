@@ -15,9 +15,9 @@ const View = require('../common/view');
 
 const GliderListView = React.createClass({
 
-  mixins: [listViewMixin(GliderModel.getModelKey())],
+  mixins: [ listViewMixin(GliderModel.getModelKey()) ],
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Gliders'
@@ -27,7 +27,7 @@ const GliderListView = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Gliders'/>
@@ -37,7 +37,7 @@ const GliderListView = React.createClass({
     );
   },
 
-  renderTable: function () {
+  renderTable: function() {
     const columnsConfig = [
       {
         key: 'name',
@@ -80,7 +80,7 @@ const GliderListView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }

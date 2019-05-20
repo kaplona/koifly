@@ -9,9 +9,9 @@ const PublicLinksMixin = require('../mixins/public-links-mixin');
 
 const InvalidVerificationLink = React.createClass({
 
-  mixins: [PublicLinksMixin],
+  mixins: [ PublicLinksMixin ],
 
-  render: function () {
+  render: function() {
     return (
       <div>
         <MobileTopMenu

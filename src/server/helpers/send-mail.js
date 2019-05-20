@@ -15,7 +15,7 @@ const MAILGUN_PASSWORD = require('../../secrets').mailgunPassword;
  * e.g. { url: '/some-path' } will result in all '%url' in template to be replaced with '/some-path'
  * @returns {Promise} - whether email was send or error occurred
  */
-const SendMail = function (emailAddress, message, templateData) {
+const SendMail = function(emailAddress, message, templateData) {
   return new Promise((resolve, reject) => {
     // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
     const smtpConfig = {
@@ -27,7 +27,7 @@ const SendMail = function (emailAddress, message, templateData) {
     };
     const transporter = NodeMailer.createTransport(smtpConfig);
 
-    message = _.extend({}, message, {to: emailAddress});
+    message = _.extend({}, message, { to: emailAddress });
 
     if (templateData) {
       _.each(templateData, (value, key) => {

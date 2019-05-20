@@ -26,7 +26,7 @@ function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
       id: recordId,
       pilotId: pilotId
     },
-    attributes: ['id']
+    attributes: [ 'id' ]
   };
   if (transaction) {
     queryOptions.transaction = transaction;

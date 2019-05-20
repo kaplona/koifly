@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, element, func, oneOfType, string} = React.PropTypes;
+const { bool, element, func, oneOfType, string } = React.PropTypes;
 const DomUtil = require('../../../utils/dom-util');
 
 require('./notice.less');
@@ -18,35 +18,35 @@ const Notice = React.createClass({
     onClose: func // if not provided close-button won't be rendered
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isButtonEnabled: true
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     DomUtil.scrollToTheTop();
   },
 
-  componentDidUpdate: function () {
+  componentDidUpdate: function() {
     DomUtil.scrollToTheTop();
   },
 
-  handleClick: function (event) {
+  handleClick: function(event) {
     if (event) {
       event.preventDefault();
     }
     this.props.onClick();
   },
 
-  handleClose: function (event) {
+  handleClose: function(event) {
     if (event) {
       event.preventDefault();
     }
     this.props.onClose();
   },
 
-  renderButton: function () {
+  renderButton: function() {
     if (this.props.onClick) {
       return (
         <input
@@ -59,7 +59,7 @@ const Notice = React.createClass({
     }
   },
 
-  renderCloseButton: function () {
+  renderCloseButton: function() {
     if (this.props.onClose) {
       return (
         <div
@@ -74,7 +74,7 @@ const Notice = React.createClass({
     }
   },
 
-  render: function () {
+  render: function() {
     let className = 'notice';
     if (this.props.type) {
       className += ' x-' + this.props.type;

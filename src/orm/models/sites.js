@@ -48,9 +48,9 @@ const Site = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isFloat: {msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')},
+        isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
         }
       }
@@ -61,13 +61,13 @@ const Site = sequelize.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: {msg: ErrorMessages.COORDINATES},
+        isFloat: { msg: ErrorMessages.COORDINATES },
         min: {
-          args: [-90],
+          args: [ -90 ],
           msg: ErrorMessages.COORDINATES
         },
         max: {
-          args: [90],
+          args: [ 90 ],
           msg: ErrorMessages.COORDINATES
         }
       }
@@ -78,13 +78,13 @@ const Site = sequelize.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: {msg: ErrorMessages.COORDINATES},
+        isFloat: { msg: ErrorMessages.COORDINATES },
         min: {
-          args: [-180],
+          args: [ -180 ],
           msg: ErrorMessages.COORDINATES
         },
         max: {
-          args: [180],
+          args: [ 180 ],
           msg: ErrorMessages.COORDINATES
         }
       }
@@ -106,7 +106,7 @@ const Site = sequelize.define(
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      validate: {isIn: [[0, 1, true, false]]}
+      validate: { isIn: [ [0, 1, true, false] ] }
     },
 
     pilotId: {
@@ -128,25 +128,25 @@ const Site = sequelize.define(
     },
 
     hooks: {
-      beforeValidate: function (instance, options) {
+      beforeValidate: function(instance, options) {
         const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site');
         return isUnique(Site, instance, 'name', errorMsg, options.transaction);
       }
     },
 
     getterMethods: {
-      coordinates: function () {
+      coordinates: function() {
         if (this.lat === null && this.lng === null) {
           return null;
         }
-        return {lat: this.lat, lng: this.lng};
+        return { lat: this.lat, lng: this.lng };
       }
     },
 
     setterMethods: {
-      coordinates: function (coordinatesObj) {
+      coordinates: function(coordinatesObj) {
         if (coordinatesObj === null) {
-          coordinatesObj = {lat: null, lng: null};
+          coordinatesObj = { lat: null, lng: null };
         }
         this.setDataValue('lat', coordinatesObj.lat);
         this.setDataValue('lng', coordinatesObj.lng);
@@ -154,7 +154,7 @@ const Site = sequelize.define(
     },
 
     validate: {
-      coordinates: function () {
+      coordinates: function() {
         if ((this.lat === null) !== (this.lng === null)) {
           throw new Error(ErrorMessages.EITHER_BOTH_COORDS_OR_NON);
         }
@@ -164,11 +164,11 @@ const Site = sequelize.define(
     indexes: [
       {
         name: 'sitePilotId',
-        fields: ['pilotId']
+        fields: [ 'pilotId' ]
       },
       {
         name: 'siteUpdatedAt',
-        fields: ['updatedAt']
+        fields: [ 'updatedAt' ]
       }
     ]
   }

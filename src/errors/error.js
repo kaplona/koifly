@@ -36,7 +36,7 @@ function getDefaultMessage(errorType) {
   }
 }
 
-const KoiflyError = function (type, message, errorList) {
+const KoiflyError = function(type, message, errorList) {
   this.type = type;
   this.message = message ? message : getDefaultMessage(type);
   if (errorList) {

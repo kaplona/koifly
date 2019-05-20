@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, object} = React.PropTypes;
+const { func, object } = React.PropTypes;
 const EmailVerificationNotice = require('./notice/email-verification-notice');
 const ErrorTypes = require('../../errors/error-types');
 const Login = require('../public-views/login');
@@ -18,38 +18,38 @@ const View = React.createClass({
     error: object
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       isEmailVerificationNotice: false
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     this.handleStoreModified();
   },
 
-  componentWillUnmount: function () {
+  componentWillUnmount: function() {
     PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
   },
 
-  handleStoreModified: function () {
+  handleStoreModified: function() {
     this.props.onStoreModified();
-    this.setState({isEmailVerificationNotice: PilotModel.getEmailVerificationNoticeStatus()});
+    this.setState({ isEmailVerificationNotice: PilotModel.getEmailVerificationNoticeStatus() });
   },
 
-  handleCloseNotice: function () {
+  handleCloseNotice: function() {
     PilotModel.hideEmailVerificationNotice();
-    this.setState({isEmailVerificationNotice: false});
+    this.setState({ isEmailVerificationNotice: false });
   },
 
-  renderNotice: function () {
+  renderNotice: function() {
     if (this.state.isEmailVerificationNotice) {
       return <EmailVerificationNotice isPadded={true} onClose={this.handleCloseNotice}/>;
     }
   },
 
-  render: function () {
+  render: function() {
     if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_ERROR) {
       return <Login isStayOnThisPage={true}/>;
     }

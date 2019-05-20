@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const Button = require('../common/buttons/button');
 const CompactContainer = require('../common/compact-container');
 const dataService = require('../../services/data-service');
@@ -28,9 +28,9 @@ const ResetPassword = React.createClass({
     })
   },
 
-  mixins: [PublicViewMixin],
+  mixins: [ PublicViewMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       password: '',
       passwordConfirm: '',
@@ -40,7 +40,7 @@ const ResetPassword = React.createClass({
     };
   },
 
-  handleSubmit: function (event) {
+  handleSubmit: function(event) {
     if (event) {
       event.preventDefault();
     }
@@ -62,11 +62,11 @@ const ResetPassword = React.createClass({
     const authToken = this.props.params.authToken;
     dataService
       .resetPassword(password, pilotId, authToken)
-      .then(() => this.setState({successNotice: true}))
+      .then(() => this.setState({ successNotice: true }))
       .catch(error => this.updateError(error));
   },
 
-  getValidationError: function () {
+  getValidationError: function() {
     if (Util.isEmptyString(this.state.password)) {
       return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
     }
@@ -78,7 +78,7 @@ const ResetPassword = React.createClass({
     return null;
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Koifly'
@@ -89,11 +89,11 @@ const ResetPassword = React.createClass({
     );
   },
 
-  renderDesktopButtons: function () {
-    return <DesktopBottomGrid leftElements={[this.renderSaveButton()]}/>;
+  renderDesktopButtons: function() {
+    return <DesktopBottomGrid leftElements={[ this.renderSaveButton() ]}/>;
   },
 
-  renderSaveButton: function () {
+  renderSaveButton: function() {
     return (
       <Button
         caption={this.state.isSending ? 'Saving...' : 'Save'}
@@ -105,7 +105,7 @@ const ResetPassword = React.createClass({
     );
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <MobileButton
         caption={this.state.isSending ? 'Saving ...' : 'Save'}
@@ -117,7 +117,7 @@ const ResetPassword = React.createClass({
     );
   },
 
-  renderSuccessNotice: function () {
+  renderSuccessNotice: function() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -132,7 +132,7 @@ const ResetPassword = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.successNotice) {
       return this.renderSuccessNotice();
     }

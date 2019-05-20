@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, number, shape, string} = React.PropTypes;
+const { arrayOf, bool, number, shape, string } = React.PropTypes;
 const _ = require('lodash');
 const browserHistory = require('react-router').browserHistory;
 
@@ -30,7 +30,7 @@ const StaticMap = React.createClass({
     mapFacadePromise: PROP_TYPES.promise.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       center: CENTER.region, // @TODO current location or last added site
       zoomLevel: ZOOM_LEVEL.region,
@@ -39,21 +39,21 @@ const StaticMap = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.createMap(mapFacade);
     });
   },
 
-  shouldComponentUpdate: function () {
+  shouldComponentUpdate: function() {
     return false;
   },
 
-  handleGoToSiteView: function (siteId) {
+  handleGoToSiteView: function(siteId) {
     browserHistory.push(`/site/${encodeURIComponent(siteId)}`);
   },
 
-  createMap: function (mapFacade) {
+  createMap: function(mapFacade) {
     let markerId;
     let markerPosition;
     let infowindowContent;
@@ -79,7 +79,7 @@ const StaticMap = React.createClass({
     }
   },
 
-  composeInfowindowMessage: function (site) {
+  composeInfowindowMessage: function(site) {
     return '<div class="infowindow">' +
       '<div class="infowindow-title" id="site-' + _.escape(site.id) + '">' +
       _.escape(site.name) +
@@ -92,7 +92,7 @@ const StaticMap = React.createClass({
       '</div>';
   },
 
-  render: function () {
+  render: function() {
     const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
     return (
@@ -104,7 +104,7 @@ const StaticMap = React.createClass({
 });
 
 
-StaticMap.create = function (props) { // eslint-disable-line react/no-multi-comp
+StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
   const mapFacadePromise = require('../../../utils/map-facade').createPromise();
 

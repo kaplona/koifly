@@ -17,7 +17,7 @@ const verifyAuthToken = require('../helpers/verify-auth-token');
  * replies with all user's data or error it the latest occurred
  * @param {Object} request
  */
-const resetPasswordHandler = function (request) {
+const resetPasswordHandler = function(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 

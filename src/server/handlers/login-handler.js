@@ -16,7 +16,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * if success set cookie and reply to client with all pilot's data
  * @param {Object} request
  */
-const loginHandler = function (request) {
+const loginHandler = function(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 

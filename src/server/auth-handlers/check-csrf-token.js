@@ -15,7 +15,7 @@ const KoiflyError = require('../../errors/error');
  * @param {Object} request
  * @param {Object} reply – Response toolkit.
  */
-const checkCsrfToken = function (request, reply) {
+const checkCsrfToken = function(request, reply) {
   let requestCsrfToken;
   const cookieCsrfToken = request.state.csrf;
 
@@ -33,7 +33,7 @@ const checkCsrfToken = function (request, reply) {
     cookieCsrfToken !== requestCsrfToken
   ) {
     const csrfToken = generateToken(10);
-    const response = reply.response({error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN)});
+    const response = reply.response({ error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN) });
     response.state('csrf', csrfToken);
 
     return response;

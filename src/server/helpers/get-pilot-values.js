@@ -5,7 +5,7 @@
  * @param {object} pilot - sequelize pilot record instance
  * @returns {object} - pilot information for frontend
  */
-const getPilotValuesForFrontend = function (pilot) {
+const getPilotValuesForFrontend = function(pilot) {
   return {
     id: pilot.get('id'),
     email: pilot.get('email'),

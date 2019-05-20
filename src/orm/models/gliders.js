@@ -36,9 +36,9 @@ const Glider = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: {msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')},
+        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
@@ -49,9 +49,9 @@ const Glider = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: {msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')},
+        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
@@ -73,7 +73,7 @@ const Glider = sequelize.define(
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      validate: {isIn: [[0, 1, true, false]]}
+      validate: { isIn: [ [0, 1, true, false] ] }
     },
 
     pilotId: {
@@ -95,7 +95,7 @@ const Glider = sequelize.define(
     },
 
     hooks: {
-      beforeValidate: function (instance, options) {
+      beforeValidate: function(instance, options) {
         const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider');
         return isUnique(Glider, instance, 'name', errorMsg, options.transaction);
       }
@@ -104,11 +104,11 @@ const Glider = sequelize.define(
     indexes: [
       {
         name: 'gliderPilotId',
-        fields: ['pilotId']
+        fields: [ 'pilotId' ]
       },
       {
         name: 'gliderUpdatedAt',
-        fields: ['updatedAt']
+        fields: [ 'updatedAt' ]
       }
     ]
   }

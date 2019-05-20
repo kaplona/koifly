@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {oneOf} = React.PropTypes;
+const { oneOf } = React.PropTypes;
 
 if (process.env.BROWSER) {
   require('./screen-shot.less');

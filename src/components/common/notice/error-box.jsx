@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, shape, string} = React.PropTypes;
+const { bool, func, shape, string } = React.PropTypes;
 const ErrorTypes = require('../../../errors/error-types');
 const Notice = require('./notice');
 
@@ -17,13 +17,13 @@ const ErrorBox = React.createClass({
     onTryAgain: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isTrying: false
     };
   },
 
-  render: function () {
+  render: function() {
     let onClick = this.props.onTryAgain;
     if (this.props.error.type === ErrorTypes.RECORD_NOT_FOUND ||
       this.props.error.type === ErrorTypes.VALIDATION_ERROR

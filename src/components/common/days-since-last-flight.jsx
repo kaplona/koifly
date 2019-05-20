@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {number} = React.PropTypes;
+const { number } = React.PropTypes;
 
 require('./days-since.less');
 

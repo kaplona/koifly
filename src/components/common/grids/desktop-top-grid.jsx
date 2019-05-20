@@ -13,7 +13,7 @@ const DesktopTopGrid = React.createClass({
     rightElement: React.PropTypes.element
   },
 
-  render: function () {
+  render: function() {
     return (
       <div className='top-grid'>
         <div className='left-element'>

@@ -37,11 +37,11 @@ const Pilot = sequelize.define(
     email: {
       type: Sequelize.STRING,
       allowNull: false,
-      set: function (value) {
+      set: function(value) {
         this.setDataValue('email', value.toLowerCase());
       },
       validate: {
-        isEmail: {msg: ErrorMessages.NOT_VALID_EMAIL}
+        isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL }
       }
     },
 
@@ -55,9 +55,9 @@ const Pilot = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: {msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')},
+        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
@@ -68,9 +68,9 @@ const Pilot = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: {msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')},
+        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
@@ -80,7 +80,7 @@ const Pilot = sequelize.define(
       type: Sequelize.ENUM('meters', 'feet'), // eslint-disable-line new-cap
       allowNull: false,
       defaultValue: 'meters',
-      validate: {isIn: [['meters', 'feet']]}
+      validate: { isIn: [ ['meters', 'feet'] ] }
     },
 
     token: {
@@ -119,7 +119,7 @@ const Pilot = sequelize.define(
     timestamps: true, // automatically adds fields updatedAt and createdAt
 
     hooks: {
-      beforeValidate: function (instance, options) {
+      beforeValidate: function(instance, options) {
         const errorMsg = ErrorMessages.EXISTENT_EMAIL;
         return isUnique(Pilot, instance, 'email', errorMsg, options.transaction, true);
       }
@@ -128,7 +128,7 @@ const Pilot = sequelize.define(
     indexes: [
       {
         name: 'pilotEmail',
-        fields: ['email'],
+        fields: [ 'email' ],
         type: 'UNIQUE'
       }
     ]

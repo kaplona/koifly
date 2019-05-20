@@ -43,9 +43,9 @@ const Flight = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isFloat: {msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')},
+        isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
         }
       }
@@ -56,9 +56,9 @@ const Flight = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: {msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')},
+        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
         min: {
-          args: [0],
+          args: [ 0 ],
           msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
         }
       }
@@ -92,7 +92,7 @@ const Flight = sequelize.define(
       type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: true,
-      validate: {isIn: [[0, 1, true, false]]}
+      validate: { isIn: [ [0, 1, true, false] ] }
     },
 
     pilotId: {
@@ -115,7 +115,7 @@ const Flight = sequelize.define(
 
     hooks: {
       // Checks that site and glider ids exist.
-      beforeValidate: function (instance, options) {
+      beforeValidate: function(instance, options) {
         const gliderErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Glider');
         const siteErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Site');
 
@@ -129,19 +129,19 @@ const Flight = sequelize.define(
     indexes: [
       {
         name: 'flightPilotId',
-        fields: ['pilotId']
+        fields: [ 'pilotId' ]
       },
       {
         name: 'flightSiteId',
-        fields: ['siteId']
+        fields: [ 'siteId' ]
       },
       {
         name: 'flightGliderId',
-        fields: ['gliderId']
+        fields: [ 'gliderId' ]
       },
       {
         name: 'flightUpdatedAt',
-        fields: ['updatedAt']
+        fields: [ 'updatedAt' ]
       }
     ]
   }

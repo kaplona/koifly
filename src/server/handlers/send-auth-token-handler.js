@@ -16,7 +16,7 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * reply to client with 'success' or error if the latest occurred
  * @param {Object} request
  */
-const sendAuthTokenHandler = function (request) {
+const sendAuthTokenHandler = function(request) {
   const payload = request.payload;
 
   // Checks payload for required fields

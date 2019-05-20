@@ -32,7 +32,7 @@ function getRecordsValues(sequelizeRecordInstances) {
     }
     // {plain = true} will only return the values of sequelize record instance
     // (omits sequelize methods and additional stuff)
-    return record.get({plain: true});
+    return record.get({ plain: true });
   });
 }
 
@@ -43,7 +43,7 @@ function getRecordsValues(sequelizeRecordInstances) {
  * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
-const getAllData = function (pilot, dateFrom) {
+const getAllData = function(pilot, dateFrom) {
 
   const result = {};
 
@@ -55,9 +55,9 @@ const getAllData = function (pilot, dateFrom) {
   // And update data if needed
   let maxLastModified = pilot.updatedAt;
 
-  const whereQuery = {pilotId: pilot.id};
+  const whereQuery = { pilotId: pilot.id };
   if (dateFrom) {
-    whereQuery.updatedAt = {$gt: dateFrom};
+    whereQuery.updatedAt = { $gt: dateFrom };
     maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;
   }
 
@@ -65,9 +65,9 @@ const getAllData = function (pilot, dateFrom) {
   return Promise
     .all([
       // parallel asynchronous requests
-      Flight.scope(scope).findAll({where: whereQuery}),
-      Site.scope(scope).findAll({where: whereQuery}),
-      Glider.scope(scope).findAll({where: whereQuery})
+      Flight.scope(scope).findAll({ where: whereQuery }),
+      Site.scope(scope).findAll({ where: whereQuery }),
+      Glider.scope(scope).findAll({ where: whereQuery })
     ])
     .then(recordsSet => {
       // Values appear in the same order as we requested for them

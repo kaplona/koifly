@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func} = React.PropTypes;
+const { bool, func } = React.PropTypes;
 const Button = require('../buttons/button');
 
 require('./section.less');
@@ -14,13 +14,13 @@ const Section = React.createClass({
     onEditClick: func
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isFullScreen: false
     };
   },
 
-  renderEditButton: function () {
+  renderEditButton: function() {
     if (this.props.onEditClick) {
       return (
         <div className='edit-button'>
@@ -30,7 +30,7 @@ const Section = React.createClass({
     }
   },
 
-  render: function () {
+  render: function() {
     let className = 'section';
     if (this.props.isFullScreen) {
       className += ' x-full-screen';

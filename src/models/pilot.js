@@ -61,7 +61,7 @@ let PilotModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getPilotOutput: function () {
+  getPilotOutput: function() {
     const pilot = this.getStoreContent();
     if (!pilot || pilot.error) {
       return pilot;
@@ -97,7 +97,7 @@ let PilotModel = {
    * null - if no data at front end
    * error object - if data wasn't loaded due to error
    */
-  getEditOutput: function () {
+  getEditOutput: function() {
     const pilot = this.getStoreContent();
     if (!pilot || pilot.error) {
       return pilot;
@@ -126,7 +126,7 @@ let PilotModel = {
    * @param {object} newPilotInfo
    * @returns {object} - pilot info ready to send to the server
    */
-  getDataForServer: function (newPilotInfo) {
+  getDataForServer: function(newPilotInfo) {
     newPilotInfo = this.setDefaultValues(newPilotInfo);
 
     // Return only fields which will be send to the server
@@ -145,12 +145,12 @@ let PilotModel = {
    * @param {string} nextPassword
    * @returns {Promise} - whether saving was successful or not
    */
-  changePassword: function (currentPassword, nextPassword) {
+  changePassword: function(currentPassword, nextPassword) {
     return dataService.changePassword(currentPassword, nextPassword);
   },
 
 
-  importFlights: function (dataUri) {
+  importFlights: function(dataUri) {
     return dataService.importFlights(dataUri);
   },
 
@@ -158,12 +158,12 @@ let PilotModel = {
   /**
    * @returns {Promise} - whether logout was successful or not
    */
-  logout: function () {
+  logout: function() {
     return dataService.logout();
   },
 
 
-  isLoggedIn: function () {
+  isLoggedIn: function() {
     const pilot = this.getStoreContent();
     return (
       pilot !== null &&
@@ -175,7 +175,7 @@ let PilotModel = {
   /**
    * @returns {string|null} - email address or null if no pilot information in front end yet
    */
-  getEmailAddress: function () {
+  getEmailAddress: function() {
     const pilot = this.getStoreContent();
     if (!pilot || pilot.error) {
       return null;
@@ -189,7 +189,7 @@ let PilotModel = {
    * true - if no information about pilot yet,
    * so he won't get email verification notice until we know for sure that email is not verified
    */
-  getUserActivationStatus: function () {
+  getUserActivationStatus: function() {
     const pilot = this.getStoreContent();
     if (!pilot) {
       return true;
@@ -206,12 +206,12 @@ let PilotModel = {
    * true - if pilot didn't confirmed his email or no pilot info at front-end yet
    * false - if pilot confirmed his email or doesn't want to see notification about this
    */
-  getEmailVerificationNoticeStatus: function () {
+  getEmailVerificationNoticeStatus: function() {
     return !this.getUserActivationStatus() && !this.isEmailVerificationNotice;
   },
 
 
-  hideEmailVerificationNotice: function () {
+  hideEmailVerificationNotice: function() {
     this.isEmailVerificationNotice = true;
   }
 };

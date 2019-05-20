@@ -16,7 +16,7 @@ const MobileButton = React.createClass({
     isEnabled: React.PropTypes.bool
   },
 
-  render: function () {
+  render: function() {
     return <Button {...this.props} isMobile={true}/>;
   }
 });

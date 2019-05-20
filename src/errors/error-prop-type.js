@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {array, object, oneOfType, string} = React.PropTypes;
+const { array, object, oneOfType, string } = React.PropTypes;
 
 const koiflyErrorPropType = {
   type: string,

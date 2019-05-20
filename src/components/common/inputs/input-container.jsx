@@ -6,7 +6,7 @@ require('./input-container.less');
 
 
 const ValueInput = React.createClass({
-  render: function () {
+  render: function() {
     return (
       <div className='input-container'>
         <div className='arrow'>{'»'}</div>

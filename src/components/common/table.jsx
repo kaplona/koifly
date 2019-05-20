@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
 const _ = require('lodash');
 const Util = require('../../utils/util');
 
@@ -24,7 +24,7 @@ const Table = React.createClass({
     onRowClick: func
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     const sortingField = this.props.initialSortingField;
     const sortingDirection = this.getDefaultSortingDirection(sortingField);
 
@@ -34,7 +34,7 @@ const Table = React.createClass({
     };
   },
 
-  handleSorting: function (newSortingField) {
+  handleSorting: function(newSortingField) {
     if (this.state.sortingField === newSortingField) {
       this.setState(previousState => {
         return {
@@ -51,13 +51,13 @@ const Table = React.createClass({
     });
   },
 
-  handleRowClick: function (flightId) {
+  handleRowClick: function(flightId) {
     if (this.props.onRowClick) {
       this.props.onRowClick(flightId);
     }
   },
 
-  getDefaultSortingDirection: function (fieldName) {
+  getDefaultSortingDirection: function(fieldName) {
     let sortingDirection = true;
     for (let i = 0; i < this.props.columns.length; i++) {
       const column = this.props.columns[i];
@@ -73,7 +73,7 @@ const Table = React.createClass({
     return sortingDirection;
   },
 
-  render: function () {
+  render: function() {
 
     const headerNodes = _.map(this.props.columns, column => {
       let arrow = '\u25bc';
@@ -102,8 +102,8 @@ const Table = React.createClass({
     const sortedRows = _.sortByOrder(
       this.props.rows,
       // make string uppercase so as to avoid ABCabc type of sorting
-      [row => Util.upperCaseString(row[this.state.sortingField])],
-      [sortingOrder]
+      [ row => Util.upperCaseString(row[this.state.sortingField]) ],
+      [ sortingOrder ]
     );
 
     const rowNodes = _.map(sortedRows, row => {

@@ -21,34 +21,34 @@ const View = require('../common/view');
 
 const PilotView = React.createClass({
 
-  mixins: [PublicLinksMixin],
+  mixins: [ PublicLinksMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       pilot: null, // no data received
       loadingError: null
     };
   },
 
-  handleEditPilotInfo: function () {
+  handleEditPilotInfo: function() {
     browserHistory.push('/pilot/edit');
   },
 
-  handleChangePassword: function () {
+  handleChangePassword: function() {
     browserHistory.push('/pilot/edit/change-password');
   },
 
-  handleLogout: function () {
+  handleLogout: function() {
     PilotModel
       .logout()
       .then(() => this.handleGoToLogin)
       .catch(() => window.alert('Server error. Could not log out.'));
   },
 
-  handleStoreModified: function () {
+  handleStoreModified: function() {
     const pilot = PilotModel.getPilotOutput();
     if (pilot && pilot.error) {
-      this.setState({loadingError: pilot.error});
+      this.setState({ loadingError: pilot.error });
     } else {
       this.setState({
         pilot: pilot,
@@ -57,7 +57,7 @@ const PilotView = React.createClass({
     }
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Pilot'
@@ -67,11 +67,11 @@ const PilotView = React.createClass({
     );
   },
 
-  renderNavigationMenu: function () {
+  renderNavigationMenu: function() {
     return <NavigationMenu currentView={PilotModel.getModelKey()}/>;
   },
 
-  renderSimpleLayout: function (children) {
+  renderSimpleLayout: function(children) {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Pilot'/>
@@ -81,17 +81,17 @@ const PilotView = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     return this.renderSimpleLayout(
       <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
     );
   },
 
-  renderLoader: function () {
+  renderLoader: function() {
     return this.renderSimpleLayout(<SectionLoader/>);
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <div>
         <MobileButton
@@ -108,7 +108,7 @@ const PilotView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -117,7 +117,7 @@ const PilotView = React.createClass({
       return this.renderLoader();
     }
 
-    let {flightNumTotal} = this.state.pilot;
+    let { flightNumTotal } = this.state.pilot;
     if (this.state.pilot.flightNumThisYear) {
       flightNumTotal += `, incl. this year: ${this.state.pilot.flightNumThisYear}`;
     }

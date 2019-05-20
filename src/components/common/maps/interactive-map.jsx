@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, number, string} = React.PropTypes;
+const { func, number, string } = React.PropTypes;
 const _ = require('lodash');
 const Altitude = require('../../../utils/altitude');
 
@@ -30,7 +30,7 @@ const InteractiveMap = React.createClass({
     mapFacadePromise: PROP_TYPES.promise.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       markerId: 0,
       center: CENTER.region, // @TODO current location or last added site
@@ -42,17 +42,17 @@ const InteractiveMap = React.createClass({
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.createMap(mapFacade);
     });
   },
 
-  shouldComponentUpdate: function () {
+  shouldComponentUpdate: function() {
     return false;
   },
 
-  createMap: function (mapFacade) {
+  createMap: function(mapFacade) {
     mapFacade.createMap(this.refs.map, this.props.center, this.props.zoomLevel);
     mapFacade.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);
     mapFacade.createInfowindow(this.props.markerId, '');
@@ -68,7 +68,7 @@ const InteractiveMap = React.createClass({
     }
   },
 
-  changeInfowindowContent: function (positionInfo, mapFacade) {
+  changeInfowindowContent: function(positionInfo, mapFacade) {
     // Format infowindow content
     const location = positionInfo.address;
     const coordinates = positionInfo.coordinates;
@@ -91,7 +91,7 @@ const InteractiveMap = React.createClass({
     });
   },
 
-  composeInfowindowMessage: function (location, altitude, coordinates) {
+  composeInfowindowMessage: function(location, altitude, coordinates) {
     // Mark checkbox as checked if related form field is empty
     // Checked values will then be transferred to the fields
     const checkboxParameters = {
@@ -130,7 +130,7 @@ const InteractiveMap = React.createClass({
       '</div>';
   },
 
-  applyGoogleData: function (location, elevation, coordinates) {
+  applyGoogleData: function(location, elevation, coordinates) {
     // If transferring address
     if (document.getElementById('location_checkbox').checked) {
       this.props.onDataApply('location', location);
@@ -147,7 +147,7 @@ const InteractiveMap = React.createClass({
     this.props.onMapClose();
   },
 
-  render: function () {
+  render: function() {
     return (
       <div className='interactive-wrapper'>
         <div className='map-container x-full-screen' ref='map'/>
@@ -158,7 +158,7 @@ const InteractiveMap = React.createClass({
 });
 
 
-InteractiveMap.create = function (props) { // eslint-disable-line react/no-multi-comp
+InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
   const mapFacadePromise = require('../../../utils/map-facade').createPromise();
 

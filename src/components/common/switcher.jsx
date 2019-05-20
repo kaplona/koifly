@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, oneOf, string} = React.PropTypes;
+const { func, oneOf, string } = React.PropTypes;
 
 require('./switcher.less');
 
@@ -16,22 +16,22 @@ const Switcher = React.createClass({
     initialPosition: oneOf(['left', 'right']).isRequired
   },
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       isLeftPosition: (this.props.initialPosition === 'left')
     };
   },
 
-  handleClick: function () {
+  handleClick: function() {
     if (this.state.isLeftPosition) {
       this.props.onRightClick();
     } else {
       this.props.onLeftClick();
     }
-    this.setState({isLeftPosition: !this.state.isLeftPosition});
+    this.setState({ isLeftPosition: !this.state.isLeftPosition });
   },
 
-  render: function () {
+  render: function() {
     return (
       <div className='switcher' onClick={this.handleClick}>
         <div className={this.state.isLeftPosition ? 'active' : null}>

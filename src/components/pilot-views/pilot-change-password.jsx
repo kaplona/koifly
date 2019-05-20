@@ -25,9 +25,9 @@ const View = require('../common/view');
 
 const PilotChangePassword = React.createClass({
 
-  mixins: [PublicLinksMixin],
+  mixins: [ PublicLinksMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       password: '',
       newPassword: '',
@@ -41,14 +41,14 @@ const PilotChangePassword = React.createClass({
     };
   },
 
-  componentWillMount: function () {
+  componentWillMount: function() {
     PilotModel.hideEmailVerificationNotice();
   },
 
-  handleStoreModified: function () {
+  handleStoreModified: function() {
     const activationStatus = PilotModel.getUserActivationStatus();
     if (activationStatus && activationStatus.error) {
-      this.setState({loadingError: activationStatus.error});
+      this.setState({ loadingError: activationStatus.error });
       return;
     }
     this.setState({
@@ -57,19 +57,19 @@ const PilotChangePassword = React.createClass({
     });
   },
 
-  handleInputChange: function (inputName, inputValue) {
-    this.setState({[inputName]: inputValue});
+  handleInputChange: function(inputName, inputValue) {
+    this.setState({ [inputName]: inputValue });
   },
 
-  handleInputFocus: function () {
-    this.setState({isInputInFocus: true});
+  handleInputFocus: function() {
+    this.setState({ isInputInFocus: true });
   },
 
-  handleInputBlur: function () {
-    this.setState({isInputInFocus: false});
+  handleInputBlur: function() {
+    this.setState({ isInputInFocus: false });
   },
 
-  handleSubmit: function (event) {
+  handleSubmit: function(event) {
     if (event) {
       event.preventDefault();
     }
@@ -97,14 +97,14 @@ const PilotChangePassword = React.createClass({
       .catch(error => this.updateError(error));
   },
 
-  updateError: function (error) {
+  updateError: function(error) {
     this.setState({
       error: error,
       isSaving: false
     });
   },
 
-  getValidationError: function () {
+  getValidationError: function() {
     if (Util.isEmptyString(this.state.password) || Util.isEmptyString(this.state.newPassword)) {
       return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
     }
@@ -116,11 +116,11 @@ const PilotChangePassword = React.createClass({
     return null;
   },
 
-  isSaveButtonsEnabled: function () {
+  isSaveButtonsEnabled: function() {
     return this.state.isUserActivated && !this.state.isSaving;
   },
 
-  renderEmailVerificationNotice: function () {
+  renderEmailVerificationNotice: function() {
     if (!this.state.isUserActivated) {
       const noticeText = [
         'You need to verify your email before changing your password.',
@@ -131,7 +131,7 @@ const PilotChangePassword = React.createClass({
     }
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Back'
@@ -143,7 +143,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderNavigationMenu: function () {
+  renderNavigationMenu: function() {
     return (
       <NavigationMenu
         currentView={PilotModel.getModelKey()}
@@ -152,13 +152,13 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     if (this.state.error) {
       return <ErrorBox isPadded={true} error={this.state.error}/>;
     }
   },
 
-  renderDesktopButtons: function () {
+  renderDesktopButtons: function() {
     return (
       <DesktopBottomGrid
         leftElements={[
@@ -169,7 +169,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderSaveButton: function () {
+  renderSaveButton: function() {
     return (
       <Button
         caption={this.state.isSaving ? 'Saving...' : 'Save'}
@@ -181,7 +181,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderCancelButton: function () {
+  renderCancelButton: function() {
     return (
       <Button
         caption='Cancel'
@@ -192,7 +192,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <div>
         <MobileButton
@@ -211,7 +211,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  renderSuccessNotice: function () {
+  renderSuccessNotice: function() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -221,7 +221,7 @@ const PilotChangePassword = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.successNotice) {
       return this.renderSuccessNotice();
     }

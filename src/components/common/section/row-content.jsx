@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {element, number, oneOfType, string} = React.PropTypes;
+const { element, number, oneOfType, string } = React.PropTypes;
 const Label = require('./label');
 const ValueContainer = require('./value-container');
 

@@ -21,7 +21,7 @@ describe('ErrorBox component', () => {
   };
 
   const mocks = {
-    error: {type: 'testError', message: 'test error'},
+    error: { type: 'testError', message: 'test error' },
     handleTryAgain: () => {
     }
   };
@@ -60,7 +60,7 @@ describe('ErrorBox component', () => {
     });
 
     it('doesn\'t pass onClick function for some designated errors', () => {
-      let error = {type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box'};
+      let error = { type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
       component = TestUtils.renderIntoDocument(
         <ErrorBox
           error={error}
@@ -73,7 +73,7 @@ describe('ErrorBox component', () => {
       expect(notice).to.have.deep.property('props.onClick', null);
 
 
-      error = {type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box'};
+      error = { type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
       component = TestUtils.renderIntoDocument(
         <ErrorBox
           error={error}

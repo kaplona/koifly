@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, string} = React.PropTypes;
+const { bool, func, string } = React.PropTypes;
 
 require('./mobile-top-menu.less');
 
@@ -17,13 +17,13 @@ const MobileTopMenu = React.createClass({
     isPositionFixed: bool
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isPositionFixed: true
     };
   },
 
-  render: function () {
+  render: function() {
     let className = 'mobile-top-menu';
     // Virtual keyboard breaks fixed position of the menu
     // thus we leave position: static if any input is focused

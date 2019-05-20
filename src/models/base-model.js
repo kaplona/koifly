@@ -9,7 +9,7 @@ const Util = require('../utils/util');
 
 const BaseModel = {
 
-  getModelKey: function () {
+  getModelKey: function() {
     return this.keys.single;
   },
 
@@ -21,11 +21,11 @@ const BaseModel = {
    * null - if store is empty
    * error - if loading error occurred or there is no item with requested id
    */
-  getStoreContent: function (itemId) {
+  getStoreContent: function(itemId) {
     // There is loading error
     const loadingError = dataService.getLoadingError();
     if (loadingError) {
-      return {error: loadingError};
+      return { error: loadingError };
     }
 
     // No data has been received yet
@@ -37,7 +37,7 @@ const BaseModel = {
 
     // No item with requested id
     if (itemId && !storeContent[itemId]) {
-      return {error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND)};
+      return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
     }
 
     if (itemId) {
@@ -48,7 +48,7 @@ const BaseModel = {
   },
 
 
-  getValidationConfig: function () {
+  getValidationConfig: function() {
     return this.formValidationConfig;
   },
 
@@ -57,7 +57,7 @@ const BaseModel = {
    * @param {object} newItem
    * @returns {Promise} - if saving was successful or not
    */
-  saveItem: function (newItem) {
+  saveItem: function(newItem) {
     newItem = this.getDataForServer(newItem);
     return dataService.saveData(newItem, this.getModelKey());
   },
@@ -67,8 +67,8 @@ const BaseModel = {
    * @param {number} itemId
    * @returns {Promise} - if deleting was successful or not
    */
-  deleteItem: function (itemId) {
-    return dataService.saveData({id: itemId, see: false}, this.getModelKey());
+  deleteItem: function(itemId) {
+    return dataService.saveData({ id: itemId, see: false }, this.getModelKey());
   },
 
 
@@ -77,7 +77,7 @@ const BaseModel = {
    * @param {object} newItem
    * @returns {object} - with replaced empty fields
    */
-  setDefaultValues: function (newItem) {
+  setDefaultValues: function(newItem) {
     const fieldsToReplace = {};
     _.each(this.getValidationConfig(), (config, fieldName) => {
       // If there is default value for empty field - set it

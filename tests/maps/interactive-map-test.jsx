@@ -29,9 +29,9 @@ describe('InteractiveMap component', () => {
 
   const mocks = {
     markerId: 42,
-    mapCenter: {lat: 56.78, lng: 34.567},
+    mapCenter: { lat: 56.78, lng: 34.567 },
     mapZoomLevel: 4,
-    markerPosition: {lat: 56.78, lng: 34.567},
+    markerPosition: { lat: 56.78, lng: 34.567 },
     siteLocation: 'test location',
     siteLaunchAltitude: 1234,
     altitudeUnit: 'feet',

@@ -17,13 +17,13 @@ const View = require('../common/view');
 
 const SiteListView = React.createClass({
 
-  mixins: [listViewMixin(SiteModel.getModelKey())],
+  mixins: [ listViewMixin(SiteModel.getModelKey()) ],
 
-  handleGoToMapView: function () {
+  handleGoToMapView: function() {
     browserHistory.push('/sites/map');
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Sites'
@@ -35,7 +35,7 @@ const SiteListView = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Sites'/>
@@ -45,7 +45,7 @@ const SiteListView = React.createClass({
     );
   },
 
-  renderSwitcher: function () {
+  renderSwitcher: function() {
     return (
       <Switcher
         leftButtonCaption='List'
@@ -56,7 +56,7 @@ const SiteListView = React.createClass({
     );
   },
 
-  renderTable: function () {
+  renderTable: function() {
     const columnsConfig = [
       {
         key: 'name',
@@ -99,7 +99,7 @@ const SiteListView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }

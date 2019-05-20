@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, oneOfType, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
 const Label = require('../section/label');
 const InputContainer = require('./input-container');
 const Dropdown = require('./dropdown');
@@ -27,13 +27,13 @@ const DropdownInput = React.createClass({
     onBlur: func
   },
 
-  renderErrorMessage: function () {
+  renderErrorMessage: function() {
     if (this.props.errorMessage) {
       return <ValidationError message={this.props.errorMessage}/>;
     }
   },
 
-  render: function () {
+  render: function() {
     return (
       <div>
         {this.renderErrorMessage()}

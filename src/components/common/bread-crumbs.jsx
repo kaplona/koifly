@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, element, number, oneOfType, string} = React.PropTypes;
+const { arrayOf, element, number, oneOfType, string } = React.PropTypes;
 const _ = require('lodash');
 
 require('./bread-crumbs.less');

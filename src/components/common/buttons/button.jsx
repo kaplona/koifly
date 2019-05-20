@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, oneOf, string} = React.PropTypes;
+const { bool, func, oneOf, string } = React.PropTypes;
 
 require('./button.less');
 
@@ -20,7 +20,7 @@ const Button = React.createClass({
     onClick: func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       fitContent: false,
       isAllScreens: false,
@@ -31,13 +31,13 @@ const Button = React.createClass({
     };
   },
 
-  handleClick: function (event) {
+  handleClick: function(event) {
     if (this.props.onClick && this.props.isEnabled) {
       this.props.onClick(event);
     }
   },
 
-  render: function () {
+  render: function() {
     let className = this.props.isMobile ? 'mobile-button' : 'button';
     if (!this.props.isAllScreens && !this.props.isMobile) {
       className += ' desktop-only';

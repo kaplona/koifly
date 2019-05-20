@@ -3,9 +3,9 @@
 const getWebpackAssets = require('../../tools/get-webpack-assets');
 const React = require('react');
 
-const Sandbox = React.createClass({
 
-  render: function () {
+const Sandbox = React.createClass({
+  render: function() {
     return (
       <html>
       <head>
@@ -13,6 +13,7 @@ const Sandbox = React.createClass({
         <title>Sandbox</title>
         <script src={getWebpackAssets().sandbox.js}></script>
       </head>
+
       <body>
         <p>
           This is server/views/sandbox.jsx, a sandbox view. Use it to develop components in a
@@ -25,5 +26,6 @@ const Sandbox = React.createClass({
     );
   }
 });
+
 
 module.exports = Sandbox;

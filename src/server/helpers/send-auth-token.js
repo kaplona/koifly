@@ -16,7 +16,7 @@ const sendMail = require('./send-mail');
  * @param {string} path - link that will be included in email
  * @returns {Promise} - whether email was sent successfully
  */
-const sendAuthTokenToPilot = function (pilot, EmailMessageTemplate, path) {
+const sendAuthTokenToPilot = function(pilot, EmailMessageTemplate, path) {
   const authToken = generateToken();
   // Create hash out of token to store in DB since it's a password equivalent
   return BcryptPromise

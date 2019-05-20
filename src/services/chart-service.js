@@ -93,7 +93,7 @@ const chartService = {
    */
   getDistanceFromLaunchSeries(flightPoints, unit) {
     const firstPoint = flightPoints[0];
-    const launchCoords = {lat: firstPoint.lat, lng: firstPoint.lng};
+    const launchCoords = { lat: firstPoint.lat, lng: firstPoint.lng };
 
     const distancePoints = flightPoints.map(point => {
       const distance = distanceService.getDistance(launchCoords.lat, launchCoords.lng, point.lat, point.lng);
@@ -119,7 +119,7 @@ const chartService = {
    */
   getGlideRatioSeries(flightPoints) {
     const lastPoint = flightPoints[flightPoints.length - 1];
-    const landingCoords = {lat: lastPoint.lat, lng: lastPoint.lng};
+    const landingCoords = { lat: lastPoint.lat, lng: lastPoint.lng };
     const landingAlt = lastPoint.altitude;
 
     const glideRatioPoints = flightPoints.map(point => {
@@ -162,11 +162,11 @@ const chartService = {
 
     const bucketHeight = 200; // meters
     function addToMaxAltBuckets(maxAltBuckets, flightBucket, flightId) {
-      const existingBucket = maxAltBuckets.find(({from}) => (from === flightBucket.from));
+      const existingBucket = maxAltBuckets.find(({ from }) => (from === flightBucket.from));
       if (existingBucket) {
         existingBucket.flightIds.push(flightId);
       } else {
-        maxAltBuckets.push(Object.assign({}, flightBucket, {flightIds: [flightId]}));
+        maxAltBuckets.push(Object.assign({}, flightBucket, { flightIds: [ flightId ] }));
         maxAltBuckets.sort((a, b) => (a.from - b.from));
       }
     }

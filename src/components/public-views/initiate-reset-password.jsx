@@ -22,9 +22,9 @@ const Util = require('../../utils/util');
 
 const InitiateResetPassword = React.createClass({
 
-  mixins: [PublicViewMixin],
+  mixins: [ PublicViewMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       email: PilotModel.getEmailAddress() || '',
       error: null,
@@ -33,7 +33,7 @@ const InitiateResetPassword = React.createClass({
     };
   },
 
-  handleSubmit: function (event) {
+  handleSubmit: function(event) {
     if (event) {
       event.preventDefault();
     }
@@ -62,7 +62,7 @@ const InitiateResetPassword = React.createClass({
       });
   },
 
-  handleCancelEdit: function () {
+  handleCancelEdit: function() {
     if (PilotModel.isLoggedIn()) {
       this.handleGoToPilotView();
     } else {
@@ -70,7 +70,7 @@ const InitiateResetPassword = React.createClass({
     }
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Koifly'
@@ -83,14 +83,14 @@ const InitiateResetPassword = React.createClass({
     );
   },
 
-  renderNotice: function () {
+  renderNotice: function() {
     if (this.state.lastSentEmailAddress) {
       const noticeText = 'Email with reset password link was successfully sent to ' + this.state.lastSentEmailAddress;
       return <Notice isPadded={true} text={noticeText}/>;
     }
   },
 
-  renderDesktopButtons: function () {
+  renderDesktopButtons: function() {
     return (
       <DesktopBottomGrid
         leftElements={[
@@ -101,7 +101,7 @@ const InitiateResetPassword = React.createClass({
     );
   },
 
-  renderSendButton: function () {
+  renderSendButton: function() {
     return (
       <Button
         caption={this.state.isSending ? 'Sending...' : 'Send'}
@@ -113,7 +113,7 @@ const InitiateResetPassword = React.createClass({
     );
   },
 
-  renderCancelButton: function () {
+  renderCancelButton: function() {
     return (
       <Button
         caption='Cancel'
@@ -124,7 +124,7 @@ const InitiateResetPassword = React.createClass({
     );
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <MobileButton
         caption={this.state.isSending ? 'Sending...' : 'Send'}
@@ -136,7 +136,7 @@ const InitiateResetPassword = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     return (
       <div>
         {this.renderMobileTopMenu()}

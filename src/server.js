@@ -32,7 +32,7 @@ const signupHandler = require('./server/handlers/signup-handler');
 const verifyAuthToken = require('./server/helpers/verify-auth-token');
 
 
-const start = async () => {
+async function start() {
 
   // all connections
   const serverOptions = {
@@ -82,7 +82,7 @@ const start = async () => {
       path: '/',
       clearInvalid: true,
       isSecure: false, // cookie allows to be transmitted over insecure connection
-      isHttpOnly: true, // auth cookie is unavailable to js
+      isHttpOnly: true // auth cookie is unavailable to js
     },
     redirectTo: false,
     keepAlive: true, // reset expiry date every time
@@ -360,10 +360,10 @@ const start = async () => {
 
   await server.start();
   console.log('Hapi server is running on %s', server.info.uri);
-};
+}
 
 
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', err => {
   console.error(err);
 
   const failureExitCode = 1;

@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, number, oneOfType, string} = React.PropTypes;
+const { func, number, oneOfType, string } = React.PropTypes;
 const Label = require('../section/label');
 const InputContainer = require('./input-container');
 const ValidationError = require('../section/validation-error');
@@ -21,17 +21,17 @@ const TimeInput = React.createClass({
     onBlur: func
   },
 
-  handleUserInput: function (inputName) {
+  handleUserInput: function(inputName) {
     this.props.onChange(inputName, this.refs[inputName].value);
   },
 
-  renderErrorMessage: function () {
+  renderErrorMessage: function() {
     if (this.props.errorMessage) {
       return <ValidationError message={this.props.errorMessage}/>;
     }
   },
 
-  render: function () {
+  render: function() {
     let inputClassName = 'col-of-four input x-number';
     if (this.props.errorMessage) {
       inputClassName += ' x-error';

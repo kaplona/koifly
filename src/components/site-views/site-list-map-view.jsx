@@ -16,13 +16,13 @@ const View = require('../common/view');
 
 const SiteListMapView = React.createClass({
 
-  mixins: [listViewMixin(SiteModel.getModelKey())],
+  mixins: [ listViewMixin(SiteModel.getModelKey()) ],
 
-  handleGoToListView: function () {
+  handleGoToListView: function() {
     browserHistory.push('/sites/');
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Sites'
@@ -34,7 +34,7 @@ const SiteListMapView = React.createClass({
     );
   },
 
-  renderError: function () {
+  renderError: function() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Sites'/>
@@ -44,7 +44,7 @@ const SiteListMapView = React.createClass({
     );
   },
 
-  renderSwitcher: function () {
+  renderSwitcher: function() {
     return (
       <Switcher
         leftButtonCaption='List'
@@ -55,12 +55,12 @@ const SiteListMapView = React.createClass({
     );
   },
 
-  renderMap: function () {
+  renderMap: function() {
     const siteList = this.state.items;
-    return siteList ? StaticMap.create({sites: siteList, isFullScreen: true}) : <Loader/>;
+    return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader/>;
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }

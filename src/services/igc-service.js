@@ -44,12 +44,12 @@ const igcService = {
     let maxAltitude;
     let minAltitude;
     const parsedFixedRecords = fixedRecords.map((record, index) => {
-      const {airtimeInSeconds, timeInSeconds} = this.getAirtimeFromBRecord(record, flightStartTime);
+      const { airtimeInSeconds, timeInSeconds } = this.getAirtimeFromBRecord(record, flightStartTime);
       if (index === 0) {
         flightStartTime = timeInSeconds;
       }
 
-      const {lat, lng} = this.getDecimalCoordsFromBRecord(record);
+      const { lat, lng } = this.getDecimalCoordsFromBRecord(record);
       const altitude = this.getAltitudeFromBRecord(record);
       const altInPilotUnit = Altitude.getAltitudeInPilotUnits(altitude);
 
@@ -186,7 +186,7 @@ const igcService = {
         };
         // If no GAL mnemonic, check that B record follow recommended format and 31-35 bytes are reserved for GAL.
       } else if (Number(fixedExtensionRecord.substr(3, 2)) > 35) {
-        gpsAltitudeIndexes = {start: 31, end: 35};
+        gpsAltitudeIndexes = { start: 31, end: 35 };
       }
     }
 
@@ -214,7 +214,7 @@ const igcService = {
     }
     const airtimeInSeconds = (flightStartTime !== null) ? (timeInSeconds - flightStartTime) : 0;
 
-    return {airtimeInSeconds, timeInSeconds};
+    return { airtimeInSeconds, timeInSeconds };
   },
 
   /**
@@ -272,7 +272,7 @@ const igcService = {
     let nearestSite = null;
     SiteModel
       .getList()
-      .filter(({coordinates}) => {
+      .filter(({ coordinates }) => {
         if (!coordinates) {
           return false;
         }

@@ -3,7 +3,6 @@
 const BcryptPromise = require('../../utils/bcrypt-promise');
 const ErrorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
-const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
 const setAuthCookie = require('../helpers/set-auth-cookie');
 
@@ -12,7 +11,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {object} request
  * @param {object} session
  */
-const checkAuthCookie = function (request, session) {
+const checkAuthCookie = function(request, session) {
 
   if (!session.userId || session.expiryDate < Date.now()) {
     return { valid: false };

@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, number, shape} = React.PropTypes;
+const { func, number, shape } = React.PropTypes;
 
 const PropTypes = {
 

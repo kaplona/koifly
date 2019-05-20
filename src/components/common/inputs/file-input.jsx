@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, string} = React.PropTypes;
+const { func, string } = React.PropTypes;
 const Button = require('../buttons/button');
 const InputContainer = require('./input-container');
 const Label = require('../section/label');
@@ -20,13 +20,13 @@ const FileInput = React.createClass({
     onRemove: func.isRequired
   },
 
-  handleButtonClick: function () {
+  handleButtonClick: function() {
     if (this.refs.hiddenFileInput) {
       this.refs.hiddenFileInput.click();
     }
   },
 
-  handleFileSelect: function (event) {
+  handleFileSelect: function(event) {
     const file = event.target.files[0];
     if (!file) {
       return;
@@ -34,7 +34,7 @@ const FileInput = React.createClass({
     this.props.onSelect(file);
   },
 
-  render: function () {
+  render: function() {
     if (!window.FileReader || !window.File || !window.FileList || !window.Blob) {
       const message = `
                 Your browser doesn't support new html file uploading API.

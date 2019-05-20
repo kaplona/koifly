@@ -15,7 +15,7 @@ const Pilot = require('../../orm/models/pilots');
  * @param {string} authToken
  * @returns {Promise.<pilot>} - sequelize instance of pilot record
  */
-const verifyAuthToken = function (pilotId, authToken) {
+const verifyAuthToken = function(pilotId, authToken) {
   let pilot; // we need it to have reference to current pilot
 
   return Pilot

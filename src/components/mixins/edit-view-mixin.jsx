@@ -16,14 +16,14 @@ const Validation = require('../../utils/validation');
 const View = require('../common/view');
 
 
-const editViewMixin = function (modelKey) {
+const editViewMixin = function(modelKey) {
 
   const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
   const Model = VIEW_ASSETS.model;
 
   return {
 
-    getInitialState: function () {
+    getInitialState: function() {
       return {
         item: null, // no data received
         loadingError: null,
@@ -39,7 +39,7 @@ const editViewMixin = function (modelKey) {
      * requests for presentational data form the Model
      * and updates component's state
      */
-    handleStoreModified: function () {
+    handleStoreModified: function() {
       // If waiting for server response
       // ignore any other data updates
       if (this.isProcessing()) {
@@ -51,7 +51,7 @@ const editViewMixin = function (modelKey) {
 
       // Check for errors
       if (item && item.error) {
-        this.setState({loadingError: item.error});
+        this.setState({ loadingError: item.error });
         return;
       }
 
@@ -66,22 +66,22 @@ const editViewMixin = function (modelKey) {
      * @param {string} inputName - key for this.state.item
      * @param {string} inputValue
      */
-    handleInputChange: function (inputName, inputValue) {
-      const newItem = _.extend({}, this.state.item, {[inputName]: inputValue});
-      this.setState({item: newItem}, () => {
+    handleInputChange: function(inputName, inputValue) {
+      const newItem = _.extend({}, this.state.item, { [inputName]: inputValue });
+      this.setState({ item: newItem }, () => {
         this.updateValidationErrors(this.getValidationErrors(true));
       });
     },
 
-    handleInputFocus: function () {
-      this.setState({isInputInFocus: true});
+    handleInputFocus: function() {
+      this.setState({ isInputInFocus: true });
     },
 
-    handleInputBlur: function () {
-      this.setState({isInputInFocus: false});
+    handleInputBlur: function() {
+      this.setState({ isInputInFocus: false });
     },
 
-    handleCancelEdit: function () {
+    handleCancelEdit: function() {
       let path;
       if (this.props.params.id) {
         path = `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}`;
@@ -92,7 +92,7 @@ const editViewMixin = function (modelKey) {
       browserHistory.push(path);
     },
 
-    handleSubmit: function (event) {
+    handleSubmit: function(event) {
       if (event) {
         event.preventDefault();
       }
@@ -105,18 +105,18 @@ const editViewMixin = function (modelKey) {
       }
 
       // If no errors
-      this.setState({isSaving: true});
+      this.setState({ isSaving: true });
       Model
         .saveItem(this.state.item)
         .then(() => this.handleCancelEdit())
         .catch(error => this.updateProcessingError(error));
     },
 
-    handleDeleteItem: function () {
+    handleDeleteItem: function() {
       const alertMessage = VIEW_ASSETS.deleteAlertMessage;
 
       if (window.confirm(alertMessage)) {
-        this.setState({isDeleting: true});
+        this.setState({ isDeleting: true });
         Model
           .deleteItem(this.props.params.id)
           .then(() => browserHistory.push(`/${encodeURIComponent(Model.keys.plural)}`))
@@ -124,7 +124,7 @@ const editViewMixin = function (modelKey) {
       }
     },
 
-    getValidationErrors: function (isSoft) {
+    getValidationErrors: function(isSoft) {
       return Validation.getValidationErrors(
         Model.getValidationConfig(),
         this.state.item,
@@ -140,7 +140,7 @@ const editViewMixin = function (modelKey) {
      *   @param {string} error.message
      *   @param {string} [error.errors]
      */
-    updateProcessingError: function (error) {
+    updateProcessingError: function(error) {
       if (error.type === ErrorTypes.VALIDATION_ERROR) {
         this.updateValidationErrors(error.errors);
         error = null;
@@ -157,11 +157,11 @@ const editViewMixin = function (modelKey) {
      * If validation errors changed, updates validation errors state
      * @param {object} validationErrors - object where key is a form field name, value is error message
      */
-    updateValidationErrors: function (validationErrors) {
+    updateValidationErrors: function(validationErrors) {
       validationErrors = _.extend({}, this.formFields, validationErrors);
 
       if (!_.isEqual(validationErrors, this.state.validationErrors)) {
-        this.setState({validationErrors: validationErrors});
+        this.setState({ validationErrors: validationErrors });
       }
     },
 
@@ -169,12 +169,12 @@ const editViewMixin = function (modelKey) {
      * Whether view is processing saving or deleting operation
      * @returns {boolean} - true if processing, false - if not
      */
-    isProcessing: function () {
+    isProcessing: function() {
       // the last false is for pilot-edit-view since it doesn't have state.isDeleting, user can't delete pilot
       return this.state.isSaving || this.state.isDeleting || false;
     },
 
-    renderNavigationMenu: function () {
+    renderNavigationMenu: function() {
       return (
         <NavigationMenu
           currentView={Model.getModelKey()}
@@ -183,7 +183,7 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderSimpleLayout: function (children) {
+    renderSimpleLayout: function(children) {
       return (
         <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
           <MobileTopMenu
@@ -196,25 +196,25 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderLoader: function () {
+    renderLoader: function() {
       return this.renderSimpleLayout(
         <SectionLoader/>
       );
     },
 
-    renderLoadingError: function () {
+    renderLoadingError: function() {
       return this.renderSimpleLayout(
         <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
       );
     },
 
-    renderProcessingError: function () {
+    renderProcessingError: function() {
       if (this.state.processingError) {
         return <ErrorBox error={this.state.processingError}/>;
       }
     },
 
-    renderMobileButtons: function () {
+    renderMobileButtons: function() {
       return (
         <div>
           <MobileButton
@@ -229,7 +229,7 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderMobileDeleteButton: function () {
+    renderMobileDeleteButton: function() {
       if (this.props.params.id) {
         return (
           <MobileButton
@@ -242,7 +242,7 @@ const editViewMixin = function (modelKey) {
       }
     },
 
-    renderDesktopButtons: function () {
+    renderDesktopButtons: function() {
       return (
         <DesktopBottomGrid
           leftElements={[
@@ -254,7 +254,7 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderSaveButton: function () {
+    renderSaveButton: function() {
       return (
         <Button
           caption={this.state.isSaving ? 'Saving...' : 'Save'}
@@ -266,7 +266,7 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderCancelButton: function () {
+    renderCancelButton: function() {
       return (
         <Button
           caption='Cancel'
@@ -277,7 +277,7 @@ const editViewMixin = function (modelKey) {
       );
     },
 
-    renderDeleteButton: function () {
+    renderDeleteButton: function() {
       if (this.props.params.id) {
         return (
           <Button

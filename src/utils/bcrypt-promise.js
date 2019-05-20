@@ -7,7 +7,7 @@ const Promise = require('es6-promise').Promise;
 
 const BcryptPromise = {
 
-  hash: function (password) {
+  hash: function(password) {
     return new Promise((resolve, reject) => {
       Bcrypt.hash(password, BCRYPT_ROUNDS, (err, hash) => {
         if (hash && !err) {
@@ -19,7 +19,7 @@ const BcryptPromise = {
     });
   },
 
-  compare: function (newPassword, hash) {
+  compare: function(newPassword, hash) {
     return new Promise((resolve, reject) => {
       Bcrypt.compare(newPassword, hash, (err, res) => {
         if (res && !err) {

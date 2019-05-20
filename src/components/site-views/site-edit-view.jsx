@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const _ = require('lodash');
 const AltitudeInput = require('../common/inputs/altitude-input');
 const CoordinatesInput = require('../common/inputs/coordinates-input');
@@ -28,23 +28,23 @@ const SiteEditView = React.createClass({
     })
   },
 
-  mixins: [editViewMixin(SiteModel.getModelKey())],
+  mixins: [ editViewMixin(SiteModel.getModelKey()) ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       validationErrors: _.clone(SiteEditView.formFields)
     };
   },
 
-  handleMapShow: function () {
-    this.setState({isMapShown: true});
+  handleMapShow: function() {
+    this.setState({ isMapShown: true });
   },
 
-  handleMapHide: function () {
-    this.setState({isMapShown: false});
+  handleMapHide: function() {
+    this.setState({ isMapShown: false });
   },
 
-  getMarkerPosition: function () {
+  getMarkerPosition: function() {
     if (!Util.isEmptyString(this.state.item.coordinates)) {
       // Hard validation in order to check coordinates format
       const validationErrors = this.getValidationErrors();
@@ -56,7 +56,7 @@ const SiteEditView = React.createClass({
     return null;
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption={this.state.isMapShown ? 'Back' : 'Cancel'}
@@ -68,7 +68,7 @@ const SiteEditView = React.createClass({
     );
   },
 
-  renderMap: function () {
+  renderMap: function() {
     if (!this.state.isMapShown) {
       return null;
     }
@@ -90,7 +90,7 @@ const SiteEditView = React.createClass({
     });
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }

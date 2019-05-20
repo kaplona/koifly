@@ -80,16 +80,16 @@ if (process.env.NODE_ENV === 'development') {
           loader: BABEL,
           include: config.paths.source,
           query: {
-            plugins: [[
+            plugins: [ [
               'react-transform',
               {
-                'transforms': [{
+                'transforms': [ {
                   'transform': 'react-transform-hmr',
-                  'imports': ['react'],
-                  'locals': ['module']
-                }]
+                  'imports': [ 'react' ],
+                  'locals': [ 'module' ]
+                } ]
               }
-            ]]
+            ] ]
           }
         }
       ]

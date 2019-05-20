@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, func, number, string} = React.PropTypes;
+const { bool, func, number, string } = React.PropTypes;
 
 require('./navigation-item.less');
 
@@ -16,13 +16,13 @@ const NavigationItem = React.createClass({
     onClick: func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isActive: false
     };
   },
 
-  render: function () {
+  render: function() {
     let className = 'navigation-item-' + this.props.itemsNumber;
     if (this.props.isActive) {
       className += ' x-active';

@@ -36,8 +36,8 @@ describe('View component.', () => {
   const mocks = {
     childText: 'test child text',
     childClassName: 'testChild',
-    authError: {type: ErrorTypes.AUTHENTICATION_ERROR},
-    notAuthError: {type: 'notAuthError'},
+    authError: { type: ErrorTypes.AUTHENTICATION_ERROR },
+    notAuthError: { type: 'notAuthError' },
     handleStoreModified: Sinon.spy(),
     handleHideNotice: null
   };

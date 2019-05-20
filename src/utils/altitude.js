@@ -29,14 +29,14 @@ const Altitude = {
    * Gets name of current user's altitude units
    * @returns {string} name of current user's altitude units
    */
-  getUserAltitudeUnit: function () {
+  getUserAltitudeUnit: function() {
     return dataService.store.pilot.altitudeUnit;
   },
 
   /**
    * @returns {string} - short version of altitude units
    */
-  getUserAltitudeUnitShort: function () {
+  getUserAltitudeUnitShort: function() {
     return this.altitudeUnitsShort[this.getUserAltitudeUnit()];
   },
 
@@ -44,7 +44,7 @@ const Altitude = {
    * Based on user's altitude unit, gets user's altitude velocity unit, e.g. "m/s' for "meters".
    * @return {string} – name of the altitude velocity unit
    */
-  getUserVelocityUnit: function () {
+  getUserVelocityUnit: function() {
     const altUnit = this.getUserAltitudeUnit();
     return this.velocityUnits[altUnit];
   },
@@ -53,7 +53,7 @@ const Altitude = {
    * @param {number} altitude
    * @returns {string} - altitude followed by user's altitude units or '–'
    */
-  formatAltitude: function (altitude) {
+  formatAltitude: function(altitude) {
     const formattedAltitude = (altitude > 0) ? `${altitude} ${this.getUserAltitudeUnit()}` : null;
     return Util.formatText(formattedAltitude);
   },
@@ -62,7 +62,7 @@ const Altitude = {
    * @param {number} altitude
    * @returns {string} - altitude followed by short version of user's altitude units or '–'
    */
-  formatAltitudeShort: function (altitude) {
+  formatAltitudeShort: function(altitude) {
     const formattedAltitude = altitude ? `${altitude} ${this.getUserAltitudeUnitShort()}` : null;
     return Util.formatText(formattedAltitude);
   },
@@ -72,7 +72,7 @@ const Altitude = {
    * @param {number|string} altitude in meters
    * @returns {number} altitude in pilot's altitude units
    */
-  getAltitudeInPilotUnits: function (altitude) {
+  getAltitudeInPilotUnits: function(altitude) {
     const increment = this.meterConverter[this.getUserAltitudeUnit()];
     return Math.round(parseFloat(altitude) * increment);
   },
@@ -83,7 +83,7 @@ const Altitude = {
    * @param {string} units to convert into
    * @returns {number} altitude in given units
    */
-  getAltitudeInGivenUnits: function (altitude, units) {
+  getAltitudeInGivenUnits: function(altitude, units) {
     const multiplier = this.meterConverter[units];
     return Math.round(parseFloat(altitude) * multiplier);
   },
@@ -99,7 +99,7 @@ const Altitude = {
    * @param {string} units – user settings units
    * @returns {number} altitude in meters
    */
-  getAltitudeInMeters: function (nextValue, previousValue, units) {
+  getAltitudeInMeters: function(nextValue, previousValue, units) {
     const previousParsedVal = this.getAltitudeInPilotUnits(previousValue);
     if (nextValue !== previousParsedVal || units !== this.getUserAltitudeUnit()) {
       return this.convertAltitudeToMeters(nextValue, units);
@@ -113,7 +113,7 @@ const Altitude = {
    * @param {string} units – Measurement unit of provided altitude, e.g. meters, feet.
    * @return {number} – Altitude in meters.
    */
-  convertAltitudeToMeters: function (altitude, units) {
+  convertAltitudeToMeters: function(altitude, units) {
     return altitude / this.meterConverter[units];
   },
 
@@ -121,7 +121,7 @@ const Altitude = {
    * Gets all available for using altitude units
    * @returns {Array} list of altitude units
    */
-  getAltitudeUnitsList: function () {
+  getAltitudeUnitsList: function() {
     return Object.keys(this.meterConverter);
   },
 
@@ -131,7 +131,7 @@ const Altitude = {
    * for using in dropdown component
    * @returns {Array} list of altitude units objects
    */
-  getAltitudeUnitsValueTextList: function () {
+  getAltitudeUnitsValueTextList: function() {
     return this.getAltitudeUnitsList().map(unitName => {
       return {
         value: unitName,
@@ -146,7 +146,7 @@ const Altitude = {
    * @param {string} units – Units to convert into
    * @returns {number} – Altitude velocity in given units
    */
-  getVelocityInGivenUnits: function (value, units) {
+  getVelocityInGivenUnits: function(value, units) {
     const multiplier = this.velocityConverter[units];
     return Math.round(parseFloat(value) * multiplier);
   }

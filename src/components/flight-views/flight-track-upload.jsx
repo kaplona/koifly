@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, string} = React.PropTypes;
+const { func, string } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const ErrorBox = require('../common/notice/error-box');
 const ErrorTypes = require('../../errors/error-types');
@@ -70,10 +70,10 @@ const FightTrackUpload = React.createClass({
       }
 
       this.props.onLoad(parsedFile, igc);
-      this.setState({parsedIgc: parsedFile});
+      this.setState({ parsedIgc: parsedFile });
     };
     reader.onerror = error => {
-      this.setState({fileReadError: error});
+      this.setState({ fileReadError: error });
     };
 
     reader.readAsText(file);
@@ -104,7 +104,7 @@ const FightTrackUpload = React.createClass({
   },
 
   renderMap() {
-    const trackCoords = this.state.parsedIgc.flightPoints.map(({lat, lng}) => ({lat, lng}));
+    const trackCoords = this.state.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
 
     return TrackMap.create({
       trackCoords: trackCoords

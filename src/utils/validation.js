@@ -13,7 +13,7 @@ const Validation = {
    * @param {boolean} isSoft - if false - the validation is final, check for required empty fields is performed
    * @returns {object|null} - object with validation error messages { fieldName: msg } or null if no errors found
    */
-  getValidationErrors: function (validationConfig, formData, isSoft) {
+  getValidationErrors: function(validationConfig, formData, isSoft) {
     const validationErrors = {};
 
     // For each field of given form
@@ -51,7 +51,7 @@ const Validation = {
      * @param {string} fieldName
      * @returns {string|null} - error message or null if validation passed
      */
-    date: function (formData, fieldName) {
+    date: function(formData, fieldName) {
 
       if (!Util.isRightDateFormat(formData[fieldName])) {
         return ErrorMessages.DATE_FORMAT;
@@ -70,7 +70,7 @@ const Validation = {
      * @param {object} rules - validation rules to check user input against
      * @returns {string|null} - error message or null if validation passed
      */
-    number: function (formData, fieldName, rules) {
+    number: function(formData, fieldName, rules) {
 
       // If value is not a number
       if (!Util.isNumber(formData[fieldName])) {
@@ -109,7 +109,7 @@ const Validation = {
      * @param {object} rules - validation rules to check user input against
      * @returns {string|null} - error message or null if validation passed
      */
-    text: function (formData, fieldName, rules) {
+    text: function(formData, fieldName, rules) {
       if (formData[fieldName].length > rules.maxLength) {
         const errorMessage = ErrorMessages.MAX_LENGTH;
         return errorMessage.replace('%field', rules.field).replace('%max', rules.maxLength);
@@ -132,7 +132,7 @@ const Validation = {
      *
      * @returns {string|null} - error message or null if validation passed
      */
-    coordinates: function (formData, fieldName, rules, isSoft) {
+    coordinates: function(formData, fieldName, rules, isSoft) {
       // Don't check the format for soft validation
       // so don't interrupt user from typing long coordinates input
       if (isSoft) {

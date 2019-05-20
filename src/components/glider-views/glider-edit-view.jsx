@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const _ = require('lodash');
 const editViewMixin = require('../mixins/edit-view-mixin');
 const GliderModel = require('../../models/glider');
@@ -23,15 +23,15 @@ const GliderEditView = React.createClass({
     })
   },
 
-  mixins: [editViewMixin(GliderModel.getModelKey())],
+  mixins: [ editViewMixin(GliderModel.getModelKey()) ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       validationErrors: _.clone(GliderEditView.formFields)
     };
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Cancel'
@@ -43,7 +43,7 @@ const GliderEditView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }

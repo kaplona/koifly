@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, shape, string } = React.PropTypes;
 const Highcharts = require('highcharts');
 const Util = require('../../../utils/util');
 
@@ -23,7 +23,7 @@ const PieChart = React.createClass({
     onClick: func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       id: 'pieChart',
       isAirtime: false,
@@ -44,33 +44,33 @@ const PieChart = React.createClass({
         type: 'pie',
         margin: [0, 0, 0, 0]
       },
-      title: {text: null},
+      title: { text: null },
       plotOptions: {
         pie: {
           cursor: 'pointer',
-          dataLabels: {enabled: false},
+          dataLabels: { enabled: false },
           events: {
-            click: function (event) {
+            click: function(event) {
               onClick(event.point.siteId);
             }
           }
         }
       },
       tooltip: {
-        pointFormatter: function () {
+        pointFormatter: function() {
           const value = isAirtime ? Util.formatTime(this.y) : this.y;
           return `<b>${value}</b>`;
         }
       },
-      legend: {enabled: false},
-      credits: {enabled: false},
+      legend: { enabled: false },
+      credits: { enabled: false },
       series: this.props.chartData
     });
   },
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.chartData !== this.props.chartData) {
-      this.chart.update({series: nextProps.chartData}, true, false);
+      this.chart.update({ series: nextProps.chartData }, true, false);
     }
   },
 

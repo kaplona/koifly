@@ -12,33 +12,33 @@ require('./header.less');
 
 const Header = React.createClass({
 
-  mixins: [PublicLinksMixin],
+  mixins: [ PublicLinksMixin ],
 
-  getInitialState: function () {
-    return {isLoggedIn: false};
+  getInitialState: function() {
+    return { isLoggedIn: false };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     this.handleStoreModified();
   },
 
-  componentWillUnmount: function () {
+  componentWillUnmount: function() {
     PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
   },
 
-  handleStoreModified: function () {
-    this.setState({isLoggedIn: PilotModel.isLoggedIn()});
+  handleStoreModified: function() {
+    this.setState({ isLoggedIn: PilotModel.isLoggedIn() });
   },
 
-  handleLogOut: function () {
+  handleLogOut: function() {
     PilotModel
       .logout()
       .then(() => this.handleGoToLogin)
       .catch(() => window.alert('Server error. Could not log out.'));
   },
 
-  render: function () {
+  render: function() {
     const loginText = this.state.isLoggedIn ? 'Log Out' : 'Log In';
     const loginHandler = this.state.isLoggedIn ? this.handleLogOut : this.handleGoToLogin;
 

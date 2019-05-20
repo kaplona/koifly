@@ -21,9 +21,9 @@ const Util = require('../../utils/util');
 
 const OneTimeLogin = React.createClass({
 
-  mixins: [PublicViewMixin],
+  mixins: [ PublicViewMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       email: '',
       error: null,
@@ -32,7 +32,7 @@ const OneTimeLogin = React.createClass({
     };
   },
 
-  handleSubmit: function (event) {
+  handleSubmit: function(event) {
     if (event) {
       event.preventDefault();
     }
@@ -61,7 +61,7 @@ const OneTimeLogin = React.createClass({
       });
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Koifly'
@@ -74,14 +74,14 @@ const OneTimeLogin = React.createClass({
     );
   },
 
-  renderNotice: function () {
+  renderNotice: function() {
     if (this.state.lastSentEmailAddress) {
       const noticeText = 'One-time-login link was successfully sent to ' + this.state.lastSentEmailAddress;
       return <Notice isPadded={true} text={noticeText}/>;
     }
   },
 
-  renderDesktopButtons: function () {
+  renderDesktopButtons: function() {
     return (
       <DesktopBottomGrid
         leftElements={[
@@ -92,7 +92,7 @@ const OneTimeLogin = React.createClass({
     );
   },
 
-  renderSendButton: function () {
+  renderSendButton: function() {
     return (
       <Button
         caption={this.state.isSending ? 'Sending...' : 'Send'}
@@ -104,7 +104,7 @@ const OneTimeLogin = React.createClass({
     );
   },
 
-  renderCancelButton: function () {
+  renderCancelButton: function() {
     return (
       <Button
         caption='Back'
@@ -115,7 +115,7 @@ const OneTimeLogin = React.createClass({
     );
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <div>
         <MobileButton
@@ -134,7 +134,7 @@ const OneTimeLogin = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     return (
       <div>
         {this.renderMobileTopMenu()}

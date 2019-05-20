@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {string} = React.PropTypes;
+const { string } = React.PropTypes;
 const _ = require('lodash');
 const Label = require('./label');
 

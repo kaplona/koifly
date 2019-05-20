@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, element, func, number, oneOfType, string} = React.PropTypes;
+const { bool, element, func, number, oneOfType, string } = React.PropTypes;
 const Altitude = require('../../../utils/altitude');
 const Label = require('../section/label');
 const InputContainer = require('./input-container');
@@ -27,13 +27,13 @@ const AltitudeInput = React.createClass({
     isSledRide: bool
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       inputName: 'altitude'
     };
   },
 
-  handleUserInput: function (inputName, inputValue) {
+  handleUserInput: function(inputName, inputValue) {
     // When function is triggered from embedded component
     // both parameters are provided
     // otherwise retrieve input value from the DOM
@@ -44,17 +44,17 @@ const AltitudeInput = React.createClass({
     this.props.onChange(inputName, inputValue);
   },
 
-  handleCheckboxChange: function () {
+  handleCheckboxChange: function() {
     this.props.onSledRide(!this.props.isSledRide);
   },
 
-  renderErrorMessage: function () {
+  renderErrorMessage: function() {
     if (this.props.errorMessage) {
       return <ValidationError message={this.props.errorMessage}/>;
     }
   },
 
-  renderSledRideCheckbox: function () {
+  renderSledRideCheckbox: function() {
     if (this.props.onSledRide) {
       return (
         <div className='after-comment'>
@@ -70,7 +70,7 @@ const AltitudeInput = React.createClass({
     }
   },
 
-  render: function () {
+  render: function() {
     const altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
     return (

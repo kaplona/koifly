@@ -54,7 +54,7 @@ const distanceService = {
    * @param {string} units – Units to convert into
    * @returns {number} – Altitude velocity in given units
    */
-  getDistanceInGivenUnits: function (distance, units) {
+  getDistanceInGivenUnits: function(distance, units) {
     const multiplier = this.unitConverter[units];
     return Math.round(parseFloat(distance) * multiplier);
   }

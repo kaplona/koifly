@@ -17,7 +17,7 @@ const googleMapsApi = require('google-maps-api')(GOOGLE_MAPS_API_KEY);
 const mapsApiPromise = googleMapsApi();
 
 
-const MapFacade = function (mapsApi) {
+const MapFacade = function(mapsApi) {
 
   this.mapsApi = mapsApi;
   this.map = null;
@@ -54,7 +54,7 @@ const MapFacade = function (mapsApi) {
 };
 
 
-MapFacade.prototype.createMap = function (htmlContainer, centerCoordinates, zoomLevel) {
+MapFacade.prototype.createMap = function(htmlContainer, centerCoordinates, zoomLevel) {
   this.map = new this.mapsApi.Map(htmlContainer, this.mapOptions);
 
   if (centerCoordinates) {
@@ -67,7 +67,7 @@ MapFacade.prototype.createMap = function (htmlContainer, centerCoordinates, zoom
 };
 
 
-MapFacade.prototype.createMarker = function (siteId, position, draggable = false, changeInfowindowContent) {
+MapFacade.prototype.createMarker = function(siteId, position, draggable = false, changeInfowindowContent) {
   this.siteMarkers[siteId] = new this.mapsApi.Marker({
     position: position,
     map: this.map,
@@ -79,7 +79,7 @@ MapFacade.prototype.createMarker = function (siteId, position, draggable = false
   }
 };
 
-MapFacade.prototype.addMarkerMoveEventListener = function (siteId, changeInfowindowContent) {
+MapFacade.prototype.addMarkerMoveEventListener = function(siteId, changeInfowindowContent) {
   this.geocoder = new this.mapsApi.Geocoder();
   this.elevator = new this.mapsApi.ElevationService();
 
@@ -94,7 +94,7 @@ MapFacade.prototype.addMarkerMoveEventListener = function (siteId, changeInfowin
   });
 };
 
-MapFacade.prototype.moveMarker = function (latLng, siteId, changeInfowindowContent) {
+MapFacade.prototype.moveMarker = function(latLng, siteId, changeInfowindowContent) {
   this.siteInfowindows[siteId].close();
   this.siteMarkers[siteId].setPosition(latLng);
   this.map.panTo(latLng);
@@ -108,7 +108,7 @@ MapFacade.prototype.moveMarker = function (latLng, siteId, changeInfowindowConte
 };
 
 
-MapFacade.prototype.createInfowindow = function (siteId, content, onClickFunc) {
+MapFacade.prototype.createInfowindow = function(siteId, content, onClickFunc) {
   this.siteInfowindows[siteId] = new this.mapsApi.InfoWindow({
     content: content,
     maxWidth: INFOWINDOW_WIDTH
@@ -119,11 +119,11 @@ MapFacade.prototype.createInfowindow = function (siteId, content, onClickFunc) {
   }
 };
 
-MapFacade.prototype.setInfowindowContent = function (siteId, content) {
+MapFacade.prototype.setInfowindowContent = function(siteId, content) {
   this.siteInfowindows[siteId].setContent(content);
 };
 
-MapFacade.prototype.openInfowindow = function (siteId) {
+MapFacade.prototype.openInfowindow = function(siteId) {
   this.siteInfowindows[siteId].open(this.map, this.siteMarkers[siteId]);
 
   if (this.infowindowOnClickFunctions[siteId]) {
@@ -137,17 +137,17 @@ MapFacade.prototype.openInfowindow = function (siteId) {
   }
 };
 
-MapFacade.prototype.closeInfowindow = function (siteId) {
+MapFacade.prototype.closeInfowindow = function(siteId) {
   this.siteInfowindows[siteId].close();
 };
 
-MapFacade.prototype.closeAllInfowindows = function () {
+MapFacade.prototype.closeAllInfowindows = function() {
   _.each(this.siteInfowindows, (infowindow, infowindowId) => {
     this.closeInfowindow(infowindowId);
   });
 };
 
-MapFacade.prototype.bindMarkerAndInfowindow = function (siteId) {
+MapFacade.prototype.bindMarkerAndInfowindow = function(siteId) {
   // Add marker onclick event
   this.mapsApi.event.addListener(this.siteMarkers[siteId], 'click', () => {
     this.closeAllInfowindows();
@@ -156,7 +156,7 @@ MapFacade.prototype.bindMarkerAndInfowindow = function (siteId) {
 };
 
 
-MapFacade.prototype.createFlightTrack = function (flightPoints) {
+MapFacade.prototype.createFlightTrack = function(flightPoints) {
   this.flightTrack = new this.mapsApi.Polyline({
     path: flightPoints,
     geodesic: true,
@@ -169,7 +169,7 @@ MapFacade.prototype.createFlightTrack = function (flightPoints) {
   this.zoomToFlightTrack();
 };
 
-MapFacade.prototype.updateFlightTrack = function (flightPoints) {
+MapFacade.prototype.updateFlightTrack = function(flightPoints) {
   if (!this.flightTrack) {
     this.createFlightTrack(flightPoints);
   }
@@ -178,7 +178,7 @@ MapFacade.prototype.updateFlightTrack = function (flightPoints) {
   this.zoomToFlightTrack();
 };
 
-MapFacade.prototype.zoomToFlightTrack = function () {
+MapFacade.prototype.zoomToFlightTrack = function() {
   if (!this.flightTrack || !this.flightTrack.getPath) {
     return;
   }
@@ -189,7 +189,7 @@ MapFacade.prototype.zoomToFlightTrack = function () {
   this.map.fitBounds(bounds);
 };
 
-MapFacade.prototype.moveTrackMarker = function (coords) {
+MapFacade.prototype.moveTrackMarker = function(coords) {
   if (!this.trackMarker) {
     this.trackMarker = new this.mapsApi.Marker({
       position: coords,
@@ -201,7 +201,7 @@ MapFacade.prototype.moveTrackMarker = function (coords) {
 };
 
 
-MapFacade.prototype.addSearchBarControl = function (siteId) {
+MapFacade.prototype.addSearchBarControl = function(siteId) {
   // Create control element
   const searchControl = document.createElement('div');
   this.createSearchControl(searchControl, siteId);
@@ -209,7 +209,7 @@ MapFacade.prototype.addSearchBarControl = function (siteId) {
   this.map.controls[this.mapsApi.ControlPosition.TOP_CENTER].push(searchControl);
 };
 
-MapFacade.prototype.createSearchControl = function (containerDiv, siteId) {
+MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
   // Set CSS for the search control container
   containerDiv.className = 'search-control';
 
@@ -242,10 +242,10 @@ MapFacade.prototype.createSearchControl = function (containerDiv, siteId) {
   });
 };
 
-MapFacade.prototype.searchAddress = function (siteId) {
+MapFacade.prototype.searchAddress = function(siteId) {
   const address = document.getElementById('search-bar').value;
 
-  this.geocoder.geocode({'address': address}, (results, status) => {
+  this.geocoder.geocode({ 'address': address }, (results, status) => {
     if (status == this.mapsApi.GeocoderStatus.OK) { // eslint-disable-line eqeqeq
       const position = results[0].geometry.location;
       this.moveMarker(position, siteId);
@@ -256,7 +256,7 @@ MapFacade.prototype.searchAddress = function (siteId) {
 };
 
 
-MapFacade.prototype.getPositionInfoPromise = function (latLng) {
+MapFacade.prototype.getPositionInfoPromise = function(latLng) {
   return Promise
     .all([
       this.getAddressPromise(latLng),
@@ -272,7 +272,7 @@ MapFacade.prototype.getPositionInfoPromise = function (latLng) {
 };
 
 
-MapFacade.prototype.getAddressPromise = function (latLng) {
+MapFacade.prototype.getAddressPromise = function(latLng) {
   // Create a LocationAddressRequest object
   const positionalRequest = {
     'location': latLng
@@ -293,10 +293,10 @@ MapFacade.prototype.getAddressPromise = function (latLng) {
   });
 };
 
-MapFacade.prototype.getElevationPromise = function (latLng) {
+MapFacade.prototype.getElevationPromise = function(latLng) {
   // Create a LocationElevationRequest object using the array's one value
   const positionalRequest = {
-    'locations': [latLng]
+    'locations': [ latLng ]
   };
 
   return new Promise(resolve => {
@@ -315,7 +315,7 @@ MapFacade.prototype.getElevationPromise = function (latLng) {
 };
 
 
-MapFacade.prototype.getCoordinatesString = function (latLng) {
+MapFacade.prototype.getCoordinatesString = function(latLng) {
   let lat;
   let lng;
 
@@ -356,7 +356,7 @@ MapFacade.prototype.getCoordinatesString = function (latLng) {
 //         "types" : [ "locality", "political" ]
 //     }
 // ]
-MapFacade.prototype.formatGeocoderAddress = function (geocoderResult) {
+MapFacade.prototype.formatGeocoderAddress = function(geocoderResult) {
   const addressList = [];
   const addressElements = [
     { // e.g. region
@@ -387,7 +387,7 @@ MapFacade.prototype.formatGeocoderAddress = function (geocoderResult) {
 };
 
 
-MapFacade.createPromise = function () {
+MapFacade.createPromise = function() {
   return mapsApiPromise.then(mapsApi => {
     return new MapFacade(mapsApi);
   });

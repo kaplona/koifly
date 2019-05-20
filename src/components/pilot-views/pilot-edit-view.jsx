@@ -19,19 +19,19 @@ const View = require('../common/view');
 
 const PilotEditView = React.createClass({
 
-  mixins: [editViewMixin(PilotModel.getModelKey())],
+  mixins: [ editViewMixin(PilotModel.getModelKey()) ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       validationErrors: _.clone(PilotEditView.formFields)
     };
   },
 
-  handleGoToFlightsUpload: function () {
+  handleGoToFlightsUpload: function() {
     browserHistory.push('/pilot/edit/flights-upload');
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Cancel'
@@ -43,7 +43,7 @@ const PilotEditView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }

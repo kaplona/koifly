@@ -1,7 +1,7 @@
 'use strict';
 
 
-module.exports = function (markup) {
+module.exports = function(markup) {
   if (typeof document !== 'undefined') {
     return;
   }

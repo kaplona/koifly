@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool, string} = React.PropTypes;
+const { bool, string } = React.PropTypes;
 const browserHistory = require('react-router').browserHistory;
 const FlightModel = require('../../../models/flight');
 const GliderModel = require('../../../models/glider');
@@ -20,18 +20,18 @@ const NavigationMenu = React.createClass({
     isPositionFixed: bool.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isMobile: false,
       isPositionFixed: true
     };
   },
 
-  handleLinkTo: function (page) {
+  handleLinkTo: function(page) {
     browserHistory.push(`/${encodeURIComponent(page)}`);
   },
 
-  render: function () {
+  render: function() {
     const itemsNumber = 5;
     let className = 'navigation-menu';
     if (this.props.isMobile) {

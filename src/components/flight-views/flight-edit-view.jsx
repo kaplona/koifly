@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const _ = require('lodash');
 const Altitude = require('../../utils/altitude');
 const AltitudeInput = require('../common/inputs/altitude-input');
@@ -30,18 +30,18 @@ const FlightEditView = React.createClass({
     })
   },
 
-  mixins: [editViewMixin(FlightModel.getModelKey())],
+  mixins: [ editViewMixin(FlightModel.getModelKey()) ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       validationErrors: _.clone(FlightEditView.formFields),
       isSledRide: false
     };
   },
 
-  handleSledRide: function (isSledRide) {
+  handleSledRide: function(isSledRide) {
     if (!isSledRide) {
-      this.setState({isSledRide: false});
+      this.setState({ isSledRide: false });
       return;
     }
 
@@ -52,7 +52,7 @@ const FlightEditView = React.createClass({
       altitudeUnit = Altitude.getUserAltitudeUnit();
     }
 
-    const item = _.extend({}, this.state.item, {altitude: altitude, altitudeUnit: altitudeUnit});
+    const item = _.extend({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
 
     this.setState({
       item: item,
@@ -60,14 +60,14 @@ const FlightEditView = React.createClass({
     });
   },
 
-  handleFlightTrackData: function (flightTrackData, igc) {
+  handleFlightTrackData: function(flightTrackData, igc) {
     if (!flightTrackData || !igc) {
-      const newItem = _.extend({}, this.state.item, {igc: null});
-      this.setState({item: newItem});
+      const newItem = _.extend({}, this.state.item, { igc: null });
+      this.setState({ item: newItem });
       return;
     }
 
-    const {altitude, date, hours, minutes, siteId} = this.state.item;
+    const { altitude, date, hours, minutes, siteId } = this.state.item;
     const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
 
     const newItem = _.extend({}, this.state.item, {
@@ -79,12 +79,12 @@ const FlightEditView = React.createClass({
       igc
     });
 
-    this.setState({item: newItem}, () => {
+    this.setState({ item: newItem }, () => {
       this.updateValidationErrors(this.getValidationErrors(true));
     });
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Cancel'
@@ -96,7 +96,7 @@ const FlightEditView = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }

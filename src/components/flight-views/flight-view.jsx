@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const BreadCrumbs = require('../common/bread-crumbs');
 const FightMapAndCharts = require('./flight-map-and-charts');
@@ -25,7 +25,7 @@ const FlightView = React.createClass({
     }).isRequired
   },
 
-  mixins: [itemViewMixin(FlightModel.getModelKey())],
+  mixins: [ itemViewMixin(FlightModel.getModelKey()) ],
 
   renderMobileTopMenu() {
     return (
@@ -47,7 +47,7 @@ const FlightView = React.createClass({
       return this.renderLoader();
     }
 
-    const {date, flightNumDay, numOfFlightsThatDay} = this.state.item;
+    const { date, flightNumDay, numOfFlightsThatDay } = this.state.item;
     const flightName = `${date} (${flightNumDay}/${numOfFlightsThatDay})`;
 
     return (

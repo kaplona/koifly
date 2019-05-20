@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, func, number, oneOfType, shape, string} = React.PropTypes;
+const { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
 const Highcharts = require('highcharts');
 
 require('highcharts/highcharts-more')(Highcharts);
@@ -28,7 +28,7 @@ const BubbleChart = React.createClass({
     onClick: func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       id: 'bubbleChart'
     };
@@ -46,18 +46,18 @@ const BubbleChart = React.createClass({
         renderTo: this.props.id,
         type: 'bubble'
       },
-      title: {text: null},
+      title: { text: null },
       xAxis: {
         categories: this.props.categories
       },
       yAxis: {
-        title: {text: null},
+        title: { text: null },
         min: 0
       },
       plotOptions: {
         series: {
           events: {
-            click: function (event) {
+            click: function(event) {
               onClick(event.point.flightIds);
             }
           }
@@ -70,7 +70,7 @@ const BubbleChart = React.createClass({
         }
       },
       tooltip: {
-        formatter: function () {
+        formatter: function() {
           const point = this.point;
           return `
                         <b>${point.x}</b>
@@ -81,8 +81,8 @@ const BubbleChart = React.createClass({
                     `;
         }
       },
-      legend: {enabled: false},
-      credits: {enabled: false},
+      legend: { enabled: false },
+      credits: { enabled: false },
       series: this.props.chartData
     });
   },
@@ -103,7 +103,7 @@ const BubbleChart = React.createClass({
   },
 
   render() {
-    const style = {width: '100%', height: '200px'};
+    const style = { width: '100%', height: '200px' };
 
     return (
       <div id={this.props.id} style={style}/>

@@ -12,7 +12,7 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * reply to client with 'success' or error if the latest occurred
  * @param {Object} request
  */
-const resendAuthTokenHandler = function (request) {
+const resendAuthTokenHandler = function(request) {
   return Pilot
     .findById(request.auth.credentials.userId)
     .then(pilot => {

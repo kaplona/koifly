@@ -3,7 +3,7 @@
 
 const DomUtil = {
 
-  scrollToTheTop: function () {
+  scrollToTheTop: function() {
     window.scrollTo(0, 0);
   }
 };

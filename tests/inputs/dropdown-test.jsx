@@ -38,9 +38,9 @@ describe('Dropdown component', () => {
   };
 
   const mockOptions = [
-    {value: mocks.nextSelectedValue, text: 'a - first'},
-    {value: 'another value', text: 'b - second'},
-    {value: mocks.selectedValue, text: 'c - third'}
+    { value: mocks.nextSelectedValue, text: 'a - first' },
+    { value: 'another value', text: 'b - second' },
+    { value: mocks.selectedValue, text: 'c - third' }
   ];
 
 

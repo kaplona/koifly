@@ -3,7 +3,7 @@
 
 const then = (callback, timeout) => {
   setTimeout(callback, timeout ? timeout : 10);
-  return {then: then};
+  return { then: then };
 };
 
 

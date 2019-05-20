@@ -11,7 +11,7 @@ const Util = {
    * @param {string} monthIndex - represents month number
    * @returns {string} - short month name
    */
-  getMonthName: function (monthIndex) {
+  getMonthName: function(monthIndex) {
     const monthNames = {
       '01': 'Jan',
       '02': 'Feb',
@@ -33,7 +33,7 @@ const Util = {
   /**
    * @returns {string} - today date in yyyy-mm-dd format
    */
-  today: function () {
+  today: function() {
     const date = new Date();
     return this.dateToString(date);
   },
@@ -64,7 +64,7 @@ const Util = {
    * @param {string} date
    * @returns {boolean} - whether the parsed date in yyyy-mm-dd format
    */
-  isRightDateFormat: function (date) {
+  isRightDateFormat: function(date) {
     const dateElements = date.split('-');
 
     return (
@@ -83,7 +83,7 @@ const Util = {
    * @param {string} date - in yyyy-mm-dd format
    * @returns {string|null} - date in 'Jan 23, 2016' format
    */
-  formatDate: function (date) {
+  formatDate: function(date) {
     if (!this.isRightDateFormat(date)) {
       return null;
     }
@@ -97,7 +97,7 @@ const Util = {
    * @param {string} date
    * @returns {number} - four digit year
    */
-  getDateYear: function (date) {
+  getDateYear: function(date) {
     return Number(date.substring(0, 4));
   },
 
@@ -106,7 +106,7 @@ const Util = {
    * @param {string} date
    * @returns {number} - month index from 1 to 12.
    */
-  getDateMonth: function (date) {
+  getDateMonth: function(date) {
     return Number(date.substring(5, 7));
   },
 
@@ -115,7 +115,7 @@ const Util = {
    * @param {string} date
    * @return {number}
    */
-  getDateDayOfMonth: function (date) {
+  getDateDayOfMonth: function(date) {
     return Number(date.substring(8, 10));
   },
 
@@ -126,7 +126,7 @@ const Util = {
    * @param {number} month - Month index from 1 to 12.
    * @return {number}
    */
-  getDaysInMonth: function (year, month) {
+  getDaysInMonth: function(year, month) {
     return new Date(year, month, 0).getDate();
   },
 
@@ -135,7 +135,7 @@ const Util = {
    * @param {number} timeInMinutes
    * @returns {string} - time in '3 h 45 min' format
    */
-  formatTime: function (timeInMinutes) {
+  formatTime: function(timeInMinutes) {
     const hoursMinutes = this.getHoursMinutes(timeInMinutes);
     let result = null;
 
@@ -155,7 +155,7 @@ const Util = {
    * @param {number} timeInMinutes
    * @returns {string} - time in '3:45' format
    */
-  formatTimeShort: function (timeInMinutes) {
+  formatTimeShort: function(timeInMinutes) {
     const hoursMinutes = this.getHoursMinutes(timeInMinutes);
 
     const hours = hoursMinutes.hours ? `${hoursMinutes.hours}` : '0';
@@ -178,9 +178,9 @@ const Util = {
    * `minutes` is null when timeInMinutes is round amount of hours
    * both are null when timeInMinutes is 0
    */
-  getHoursMinutes: function (timeInMinutes) {
+  getHoursMinutes: function(timeInMinutes) {
     if (timeInMinutes === null || timeInMinutes === undefined) {
-      return {hours: null, minutes: null};
+      return { hours: null, minutes: null };
     }
     return {
       hours: Math.floor(timeInMinutes / 60),
@@ -193,7 +193,7 @@ const Util = {
    * @param {string|null} text
    * @returns {string} - either passed text or default empty field text
    */
-  formatText: function (text) {
+  formatText: function(text) {
     return text ? text : EMPTY_FIELD;
   },
 
@@ -202,7 +202,7 @@ const Util = {
    * @param {number} number
    * @returns {string} - number with ordinal suffix like '1st' , '32nd' , '53rd' , '14th'
    */
-  addOrdinalSuffix: function (number) {
+  addOrdinalSuffix: function(number) {
     const lastDigit = number % 10;
     const twoLastDigits = number % 100;
     if (lastDigit === 1 && twoLastDigits !== 11) {
@@ -222,7 +222,7 @@ const Util = {
    * @param {string|number} val
    * @returns {boolean} - whether value is a number (or a string representing a number)
    */
-  isNumber: function (val) {
+  isNumber: function(val) {
     return !isNaN(val * 1) && val.toString().toLowerCase().indexOf('e') === -1;
   },
 
@@ -231,7 +231,7 @@ const Util = {
    * @param {string|number} val
    * @returns {boolean} - whether value is an integer (or a string representing an integer)
    */
-  isInteger: function (val) {
+  isInteger: function(val) {
     return (val * 1 % 1) === 0;
   },
 
@@ -242,7 +242,7 @@ const Util = {
    * @param {number} max
    * @returns {boolean} - whether value is a number within min and max limits (or a string representing a number)
    */
-  isNumberWithin: function (val, min, max) {
+  isNumberWithin: function(val, min, max) {
     const number = val * 1;
     if (min !== undefined && number < min) {
       return false;
@@ -259,7 +259,7 @@ const Util = {
    * @param {null|string} [string]
    * @returns {boolean} - whether string is empty
    */
-  isEmptyString: function (string) {
+  isEmptyString: function(string) {
     return string === undefined || string === null || (typeof string === 'string' && string.trim() === '');
   },
 
@@ -268,7 +268,7 @@ const Util = {
    * @param {string} key
    * @returns {Function} - iteratee for reduce to get list of unique values of certain field
    */
-  uniqueValues: function (key) {
+  uniqueValues: function(key) {
     return (uniqueValues, nextItem) => {
       if (nextItem[key] && uniqueValues.indexOf(nextItem[key]) === -1) {
         uniqueValues.push(nextItem[key]);
@@ -283,7 +283,7 @@ const Util = {
    * @param {string} textKey
    * @returns {Function} - iteratee for map to get value-text pairs
    */
-  valueTextPairs: function (valueKey, textKey) {
+  valueTextPairs: function(valueKey, textKey) {
     return item => {
       return {
         value: item[valueKey].toString(),
@@ -297,7 +297,7 @@ const Util = {
    * @param {*} value
    * @returns {string|*} uppercase string or input value
    */
-  upperCaseString: function (value) {
+  upperCaseString: function(value) {
     return (typeof value === 'string') ? value.toUpperCase() : value;
   },
 
@@ -306,7 +306,7 @@ const Util = {
    * @param {object|null} coordinates - object with latitude and longitude ({ lat: number, lng: number })
    * @returns {string} - string representation of coordinates
    */
-  coordinatesToString: function (coordinates) {
+  coordinatesToString: function(coordinates) {
     return coordinates ? `${coordinates.lat} ${coordinates.lng}` : '';
   },
 
@@ -315,7 +315,7 @@ const Util = {
    * @param {string} string - string presentation of coordinates
    * @returns {{lat: number, lng: number}|null} - coordinates or null if not valid coordinates string
    */
-  stringToCoordinates: function (string) {
+  stringToCoordinates: function(string) {
     // Replace all degree characters by space
     // Split user input by reg:
     // any number of space | any number of ',' | space or ',' | any number of ',' | any number of space
@@ -328,7 +328,7 @@ const Util = {
       Util.isNumberWithin(latLng[0], -90, 90) &&
       Util.isNumberWithin(latLng[1], -180, 180)
     ) {
-      return {lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1])};
+      return { lat: parseFloat(latLng[0]), lng: parseFloat(latLng[1]) };
     }
 
     return null;

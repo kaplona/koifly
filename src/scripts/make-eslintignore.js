@@ -15,6 +15,6 @@ const eslintIgnore = [
 ];
 
 
-module.exports = function () {
+module.exports = function() {
   FileWriter.write('.eslintignore', eslintIgnore.join('\n'));
 };

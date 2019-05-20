@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {shape, string} = React.PropTypes;
+const { shape, string } = React.PropTypes;
 const Altitude = require('../../utils/altitude');
 const BreadCrumbs = require('../common/bread-crumbs');
 const itemViewMixin = require('../mixins/item-view-mixin');
@@ -27,9 +27,9 @@ const SiteView = React.createClass({
     })
   },
 
-  mixins: [itemViewMixin(SiteModel.getModelKey())],
+  mixins: [ itemViewMixin(SiteModel.getModelKey()) ],
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         leftButtonCaption='Back'
@@ -40,17 +40,17 @@ const SiteView = React.createClass({
     );
   },
 
-  renderMap: function () {
+  renderMap: function() {
     if (this.state.item.coordinates) {
       return StaticMap.create({
         center: SiteModel.getLatLng(this.state.item.id),
         zoomLevel: ZOOM_LEVEL.site,
-        sites: [this.state.item]
+        sites: [ this.state.item ]
       });
     }
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -59,7 +59,7 @@ const SiteView = React.createClass({
       return this.renderLoader();
     }
 
-    let {flightNum} = this.state.item;
+    let { flightNum } = this.state.item;
     if (this.state.item.flightNumThisYear) {
       flightNum += `, incl. this year: ${this.state.item.flightNumThisYear}`;
     }

@@ -8,14 +8,14 @@ const NavigationMenu = require('../common/menu/navigation-menu');
 const SectionLoader = require('../common/section/section-loader');
 
 
-const listViewMixin = function (modelKey) {
+const listViewMixin = function(modelKey) {
 
   const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
   const Model = VIEW_ASSETS.model;
 
   return {
 
-    getInitialState: function () {
+    getInitialState: function() {
       return {
         items: null, // no data received
         loadingError: null
@@ -27,11 +27,11 @@ const listViewMixin = function (modelKey) {
      * requests for presentational data form the Model
      * and updates component's state
      */
-    handleStoreModified: function () {
+    handleStoreModified: function() {
       const storeContent = Model.getListOutput();
 
       if (storeContent && storeContent.error) {
-        this.setState({loadingError: storeContent.error});
+        this.setState({ loadingError: storeContent.error });
       } else {
         this.setState({
           items: storeContent,
@@ -43,23 +43,23 @@ const listViewMixin = function (modelKey) {
     /**
      * @param {number} id - id of the item which page to open
      */
-    handleRowClick: function (id) {
+    handleRowClick: function(id) {
       browserHistory.push(`/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(id)}`);
     },
 
-    handleAddItem: function () {
+    handleAddItem: function() {
       browserHistory.push(`/${encodeURIComponent(Model.keys.single)}/0/edit`);
     },
 
-    renderNavigationMenu: function () {
+    renderNavigationMenu: function() {
       return <NavigationMenu currentView={Model.getModelKey()}/>;
     },
 
-    renderLoader: function () {
+    renderLoader: function() {
       return (this.state.items === null) ? <SectionLoader/> : null;
     },
 
-    renderEmptyList: function () {
+    renderEmptyList: function() {
       if (this.state.items &&
         this.state.items.length === 0
       ) {
@@ -67,7 +67,7 @@ const listViewMixin = function (modelKey) {
       }
     },
 
-    renderAddItemButton: function () {
+    renderAddItemButton: function() {
       return <Button caption={VIEW_ASSETS.addButtonCaption} onClick={this.handleAddItem}/>;
     }
   };

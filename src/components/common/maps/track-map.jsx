@@ -10,7 +10,7 @@ const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
 require('./map.less');
 
 
-const {arrayOf, bool} = React.PropTypes;
+const { arrayOf, bool } = React.PropTypes;
 
 const TrackMap = React.createClass({
 
@@ -21,13 +21,13 @@ const TrackMap = React.createClass({
     mapFacadePromise: PROP_TYPES.promise.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isFullScreen: false
     };
   },
 
-  componentDidMount: function () {
+  componentDidMount: function() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.mapFacade = mapFacade;
       this.createMap();
@@ -47,11 +47,11 @@ const TrackMap = React.createClass({
     }
   },
 
-  shouldComponentUpdate: function () {
+  shouldComponentUpdate: function() {
     return false;
   },
 
-  createMap: function () {
+  createMap: function() {
     const mapContainer = this.refs.map;
     const center = this.props.trackCoords[0] || CENTER.region;
     this.mapFacade.createMap(mapContainer, center, ZOOM_LEVEL.track);
@@ -64,7 +64,7 @@ const TrackMap = React.createClass({
     }
   },
 
-  render: function () {
+  render: function() {
     const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
     return (
@@ -76,7 +76,7 @@ const TrackMap = React.createClass({
 });
 
 
-TrackMap.create = function (props) { // eslint-disable-line react/no-multi-comp
+TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
   const mapFacadePromise = require('../../../utils/map-facade').createPromise();
 

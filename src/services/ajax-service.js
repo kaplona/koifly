@@ -27,7 +27,7 @@ const AjaxService = {
    *
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  send: function (options, isRetry) {
+  send: function(options, isRetry) {
 
     let url = options.url;
     const data = options.data;
@@ -36,7 +36,7 @@ const AjaxService = {
     if (options.method === 'get') {
       // Make valid query string from params object
       // Add csrf token to prevent csrf attack to the server
-      url = url + '?' + this.buildQuery(_.extend({}, options.queryParams, {csrf: csrfCookie}));
+      url = url + '?' + this.buildQuery(_.extend({}, options.queryParams, { csrf: csrfCookie }));
     }
 
     if (options.method === 'post') {
@@ -108,8 +108,8 @@ const AjaxService = {
    * @param {Object} [queryParams]
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  get: function (url, queryParams) {
-    return this.send({url: url, method: 'get', queryParams: queryParams});
+  get: function(url, queryParams) {
+    return this.send({ url: url, method: 'get', queryParams: queryParams });
   },
 
 
@@ -118,8 +118,8 @@ const AjaxService = {
    * @param {Object} [data]
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  post: function (url, data = {}) {
-    return this.send({url: url, method: 'post', data: data});
+  post: function(url, data = {}) {
+    return this.send({ url: url, method: 'post', data: data });
   },
 
 
@@ -128,7 +128,7 @@ const AjaxService = {
    * @param {object} queryParams
    * @returns {string} - valid url query
    */
-  buildQuery: function (queryParams) {
+  buildQuery: function(queryParams) {
     return Object
       .keys(queryParams)
       .map(key => {
@@ -145,7 +145,7 @@ const AjaxService = {
    * @private
    * @returns {string|null} - csrf token or null if there is no such
    */
-  getCsrfCookie: function () {
+  getCsrfCookie: function() {
     // Prepend '; ' to cookie string
     // so as to have '; name=value; name=value;'
     // in this case we are sure that 'csrf' is a full cookie name

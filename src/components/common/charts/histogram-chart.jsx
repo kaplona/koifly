@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {arrayOf, bool, func, number, oneOfType, shape, string} = React.PropTypes;
+const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
 const Highcharts = require('highcharts');
 const Util = require('../../../utils/util');
 
@@ -21,7 +21,7 @@ const HistogramChart = React.createClass({
     onClick: func.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       canSelect: true,
       id: 'histogramChart',
@@ -41,21 +41,21 @@ const HistogramChart = React.createClass({
         renderTo: this.props.id,
         type: 'column'
       },
-      title: {text: null},
+      title: { text: null },
       xAxis: {
         categories: this.props.categories
       },
       yAxis: {
         min: 0,
-        title: {text: null},
+        title: { text: null },
         labels: {
-          formatter: function () {
+          formatter: function() {
             return isAirtime ? Math.round(this.value / 60) : this.value;
           }
         },
         stackLabels: {
           enabled: true,
-          formatter: function () {
+          formatter: function() {
             return isAirtime ? Util.formatTimeShort(this.total) : this.total;
           },
           style: {
@@ -66,7 +66,7 @@ const HistogramChart = React.createClass({
       },
       tooltip: {
         headerFormat: '<b>{point.x}</b><br/>',
-        pointFormatter: function () {
+        pointFormatter: function() {
           const value = isAirtime ? Util.formatTime(this.y) : this.y;
           const totalValue = isAirtime ? Util.formatTime(this.stackTotal) : this.stackTotal;
           return `
@@ -79,17 +79,17 @@ const HistogramChart = React.createClass({
       plotOptions: {
         column: {
           stacking: 'normal',
-          dataLabels: {enabled: false},
+          dataLabels: { enabled: false },
           cursor: this.props.canSelect ? 'pointer' : 'default',
           events: {
-            click: function (event) {
+            click: function(event) {
               onClick(event.point.category);
             }
           }
         }
       },
-      legend: {enabled: false},
-      credits: {enabled: false},
+      legend: { enabled: false },
+      credits: { enabled: false },
       series: this.props.chartData
     });
   },
@@ -115,7 +115,7 @@ const HistogramChart = React.createClass({
   },
 
   render() {
-    const style = {width: '100%', height: '200px'};
+    const style = { width: '100%', height: '200px' };
 
     return (
       <div id={this.props.id} style={style}/>

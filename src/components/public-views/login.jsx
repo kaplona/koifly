@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {bool} = React.PropTypes;
+const { bool } = React.PropTypes;
 const AppLink = require('../common/app-link');
 const Button = require('../common/buttons/button');
 const CompactContainer = require('../common/compact-container');
@@ -26,15 +26,15 @@ const Login = React.createClass({
     isStayOnThisPage: bool.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       isStayOnThisPage: false
     };
   },
 
-  mixins: [PublicViewMixin],
+  mixins: [ PublicViewMixin ],
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       email: '',
       password: '',
@@ -43,7 +43,7 @@ const Login = React.createClass({
     };
   },
 
-  handleSubmit: function (event) {
+  handleSubmit: function(event) {
     if (event) {
       event.preventDefault();
     }
@@ -75,13 +75,13 @@ const Login = React.createClass({
       });
   },
 
-  handleLogin: function () {
+  handleLogin: function() {
     if (!this.props.isStayOnThisPage) {
       this.handleGoToFlightLog();
     }
   },
 
-  getValidationError: function () {
+  getValidationError: function() {
     if (Util.isEmptyString(this.state.email) || Util.isEmptyString(this.state.password)) {
       return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
     }
@@ -89,7 +89,7 @@ const Login = React.createClass({
     return null;
   },
 
-  renderMobileTopMenu: function () {
+  renderMobileTopMenu: function() {
     return (
       <MobileTopMenu
         header='Koifly'
@@ -102,11 +102,11 @@ const Login = React.createClass({
     );
   },
 
-  renderDesktopButtons: function () {
-    return <DesktopBottomGrid leftElements={[this.renderSendButton()]}/>;
+  renderDesktopButtons: function() {
+    return <DesktopBottomGrid leftElements={[ this.renderSendButton() ]}/>;
   },
 
-  renderSendButton: function () {
+  renderSendButton: function() {
     return (
       <Button
         caption={this.state.isSending ? 'Sending...' : 'Log in'}
@@ -118,7 +118,7 @@ const Login = React.createClass({
     );
   },
 
-  renderMobileButtons: function () {
+  renderMobileButtons: function() {
     return (
       <div>
         <MobileButton
@@ -150,7 +150,7 @@ const Login = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     return (
       <div>
         {this.renderMobileTopMenu()}

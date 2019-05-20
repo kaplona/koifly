@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {string} = React.PropTypes;
+const { string } = React.PropTypes;
 
 require('./validation-error.less');
 

@@ -20,7 +20,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * replies with only pilot info since new user doesn't have any other data yet
  * @param {Object} request
  */
-const signupHandler = function (request) {
+const signupHandler = function(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 

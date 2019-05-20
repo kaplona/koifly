@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {string} = React.PropTypes;
+const { string } = React.PropTypes;
 
 if (process.env.BROWSER) {
   require('./signup-button.less');
@@ -14,13 +14,13 @@ const SignupButton = React.createClass({
     caption: string.isRequired
   },
 
-  getDefaultProps: function () {
+  getDefaultProps: function() {
     return {
       caption: 'Sign up'
     };
   },
 
-  render: function () {
+  render: function() {
     return (
       <a href='/signup' className='signup-button'>
         {this.props.caption}

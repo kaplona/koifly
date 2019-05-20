@@ -26,7 +26,7 @@ describe('StaticMap component', () => {
   };
 
   const mocks = {
-    mapCenter: {lat: 56.78, lng: 34.567},
+    mapCenter: { lat: 56.78, lng: 34.567 },
     mapZoomLevel: 4,
 
     sites: [
@@ -37,7 +37,7 @@ describe('StaticMap component', () => {
         launchAltitude: 1234,
         altitudeUnit: 'meters',
         coordinates: 'first coordinates',
-        latLng: {lat: 10.32423, lng: -123.4534}
+        latLng: { lat: 10.32423, lng: -123.4534 }
       },
       {
         id: 96,
@@ -46,7 +46,7 @@ describe('StaticMap component', () => {
         launchAltitude: 4100,
         altitudeUnit: 'meters',
         coordinates: 'second coordinates',
-        latLng: {lat: 56.093234, lng: 42.93425}
+        latLng: { lat: 56.093234, lng: 42.93425 }
       },
       {
         id: 32,
@@ -55,7 +55,7 @@ describe('StaticMap component', () => {
         launchAltitude: 2300,
         altitudeUnit: 'meters',
         coordinates: 'third coordinates',
-        latLng: {lat: -43.34526, lng: 23.218973}
+        latLng: { lat: -43.34526, lng: 23.218973 }
       }
     ],
 

@@ -8,21 +8,21 @@ const TRACKING_CODE_SNIPPET = require('../../constants/tracking-code-snippet');
 
 
 const App = React.createClass({
-
-  render: function () {
-
+  render: function() {
     return (
       <html>
       <head>
         <meta charSet='utf-8'/>
         <meta name='author' content='Anastasia Kaplina'/>
         <meta name='keywords' content='Koifly,flight log,hang gliding,paragliding'/>
-        <meta name='description'
-              content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly'/>
+        <meta name='description' content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly'/>
         <meta name='viewport' content='width=device-width,initial-scale=1,user-scalable=no'/>
+
         <title>Koifly — Flight logging app for freeflight pilots</title>
+
         <script src={getWebpackAssets().app.js}></script>
-        <script dangerouslySetInnerHTML={{__html: TRACKING_CODE_SNIPPET}}/>
+        <script dangerouslySetInnerHTML={{ __html: TRACKING_CODE_SNIPPET }}/>
+
         <link rel='stylesheet' type='text/css' href={getWebpackAssets().app.css}/>
 
         <link rel='icon' type='image/png' sizes='32x32' href='/static/icons/koifly-icon-32x32-round.png'/>
@@ -51,10 +51,10 @@ const App = React.createClass({
         <meta property='og:url' content={`${config.server.rootUrl}/flights`}/>
         <meta property='og:type' content='website'/>
         <meta property='og:title' content='Koifly'/>
-        <meta property='og:description'
-              content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly'/>
+        <meta property='og:description' content='Keep track of your flights, save your flying spots, make your gliders inventory with Koifly app. Mobile friendly'/>
         <meta property='og:image' content={`${config.server.rootUrl}/static/icons/koifly-icon.png`}/>
       </head>
+
       <body>
         <div id='koifly'/>
       </body>

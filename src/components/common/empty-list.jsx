@@ -1,7 +1,7 @@
 'use strict';
 
 const React = require('react');
-const {func, string} = React.PropTypes;
+const { func, string } = React.PropTypes;
 
 require('./empty-list.less');
 

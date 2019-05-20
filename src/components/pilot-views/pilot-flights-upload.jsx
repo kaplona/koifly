@@ -24,7 +24,7 @@ require('./pilot-flight-upload.less');
 
 const PilotFlightsUpload = React.createClass({
 
-  getInitialState: function () {
+  getInitialState: function() {
     return {
       dataUri: null,
       email: null,
@@ -38,11 +38,11 @@ const PilotFlightsUpload = React.createClass({
     };
   },
 
-  handleStoreModified: function () {
+  handleStoreModified: function() {
     const pilot = PilotModel.getEditOutput();
 
     if (pilot && pilot.error) {
-      this.setState({loadingError: pilot.error});
+      this.setState({ loadingError: pilot.error });
       return;
     }
 
@@ -55,11 +55,11 @@ const PilotFlightsUpload = React.createClass({
     }
   },
 
-  handleGoToPilotEdit: function () {
+  handleGoToPilotEdit: function() {
     browserHistory.push('/pilot/edit');
   },
 
-  handleFile: function (file) {
+  handleFile: function(file) {
     this.setState({
       dataUri: null,
       fileName: file.name,
@@ -70,7 +70,7 @@ const PilotFlightsUpload = React.createClass({
 
     const validationError = this.validateFile(file);
     if (validationError) {
-      this.setState({validationError: validationError});
+      this.setState({ validationError: validationError });
       return;
     }
 
@@ -81,7 +81,7 @@ const PilotFlightsUpload = React.createClass({
       });
     };
     reader.onerror = error => {
-      this.setState({fileReadError: error});
+      this.setState({ fileReadError: error });
     };
 
     reader.readAsDataURL(file);
@@ -97,8 +97,8 @@ const PilotFlightsUpload = React.createClass({
     });
   },
 
-  handleImportFile: function () {
-    this.setState({isImporting: true});
+  handleImportFile: function() {
+    this.setState({ isImporting: true });
 
     PilotModel
       .importFlights(this.state.dataUri)
@@ -128,11 +128,11 @@ const PilotFlightsUpload = React.createClass({
     return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
   },
 
-  renderNavigationMenu: function () {
+  renderNavigationMenu: function() {
     return <NavigationMenu currentView={PilotModel.getModelKey()}/>;
   },
 
-  renderSimpleLayout: function (children) {
+  renderSimpleLayout: function(children) {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         {this.renderNavigationMenu()}
@@ -141,16 +141,16 @@ const PilotFlightsUpload = React.createClass({
     );
   },
 
-  renderLoader: function () {
+  renderLoader: function() {
     return this.renderSimpleLayout(<SectionLoader/>);
   },
 
-  renderLoadingError: function () {
+  renderLoadingError: function() {
     const errorBox = <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>;
     return this.renderSimpleLayout(errorBox);
   },
 
-  renderSuccessMessage: function () {
+  renderSuccessMessage: function() {
     return (
       <div className='pilot-flight-upload__notice'>
         <Notice
@@ -170,7 +170,7 @@ const PilotFlightsUpload = React.createClass({
     );
   },
 
-  render: function () {
+  render: function() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }

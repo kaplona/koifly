@@ -67,7 +67,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getListOutput: function () {
+  getListOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -94,7 +94,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getItemOutput: function (gliderId) {
+  getItemOutput: function(gliderId) {
     const glider = this.getStoreContent(gliderId);
     if (!glider || glider.error) {
       return glider;
@@ -127,7 +127,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getEditOutput: function (gliderId) {
+  getEditOutput: function(gliderId) {
     if (gliderId === undefined) {
       return this.getNewItemOutput();
     }
@@ -159,7 +159,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getNewItemOutput: function () {
+  getNewItemOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -182,7 +182,7 @@ let GliderModel = {
    * @param {object} newGlider
    * @returns {object} - glider ready to send to the server
    */
-  getDataForServer: function (newGlider) {
+  getDataForServer: function(newGlider) {
     // Set default values to empty fields
     newGlider = this.setDefaultValues(newGlider);
 
@@ -201,7 +201,7 @@ let GliderModel = {
    * @param {number} gliderId - assumption: glider id exists
    * @returns {string|null} - glider's name or null if no glider with given id
    */
-  getGliderName: function (gliderId) {
+  getGliderName: function(gliderId) {
     const getStoreContent = this.getStoreContent(gliderId);
     return !getStoreContent.error ? getStoreContent.name : null;
   },
@@ -210,7 +210,7 @@ let GliderModel = {
   /**
    * @returns {number|null} - id of last created glider or null if no gliders yet
    */
-  getLastAddedId: function () {
+  getLastAddedId: function() {
     const storeContent = this.getStoreContent();
     if (_.isEmpty(storeContent)) {
       return null;
@@ -224,7 +224,7 @@ let GliderModel = {
    * This presentation is required for dropdown options
    * @returns {Array} - array of objects where value is glider id, text is glider name
    */
-  getGliderValueTextList: function () {
+  getGliderValueTextList: function() {
     return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
   }
 };

@@ -104,13 +104,13 @@ function importFlightsHandler(request) {
       // If we encountered validation error, reply with list of validation errors.
       if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
         return { error: validationErrors };
-        // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
-      } else if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
-        return { error: normalisedError.errors };
-        // Otherwise reply with generic Koifly error.
-      } else {
-        return { error: normalisedError };
       }
+      // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
+      if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
+        return { error: normalisedError.errors };
+      }
+      // Otherwise reply with generic Koifly error.
+      return { error: normalisedError };
     });
 }
 
@@ -178,7 +178,7 @@ function getRecordsNameHashMap(Model, pilotId, options = {}) {
   const hashMap = {};
 
   const queryOptions = Object.assign({}, options, {
-    where: {pilotId: pilotId}
+    where: { pilotId: pilotId }
   });
 
   return Model
@@ -297,7 +297,7 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit)
  * @return {Object}
  */
 function composeSite(row, pilotId, altitudeUnit) {
-  const coordinates = (row.latitude && row.longitude) ? {lat: row.latitude, lng: row.longitude} : null;
+  const coordinates = (row.latitude && row.longitude) ? { lat: row.latitude, lng: row.longitude } : null;
 
   return {
     name: row.site,
@@ -322,7 +322,7 @@ function composeGlider(row, pilotId) {
 }
 
 function saveFlight(newFlight, transaction) {
-  return Flight.create(newFlight, {transaction: transaction});
+  return Flight.create(newFlight, { transaction: transaction });
 }
 
 function saveGlider(newGlider, glidersHashMap, transaction) {
@@ -347,7 +347,7 @@ function saveRecord(Model, newRecord, namesHashMap, transaction) {
     return Promise.resolve(null);
   }
 
-  return Model.create(newRecord, {transaction: transaction});
+  return Model.create(newRecord, { transaction: transaction });
 }
 
 /**

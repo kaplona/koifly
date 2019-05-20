@@ -9,14 +9,14 @@ const SectionLoader = require('../common/section/section-loader');
 const View = require('../common/view');
 
 
-const itemViewMixin = function (modelKey) {
+const itemViewMixin = function(modelKey) {
 
   const VIEW_ASSETS = require('../../constants/view-assets')[modelKey];
   const Model = VIEW_ASSETS.model;
 
   return {
 
-    getInitialState: function () {
+    getInitialState: function() {
       return {
         item: null, // no data received
         loadingError: null
@@ -28,11 +28,11 @@ const itemViewMixin = function (modelKey) {
      * requests for presentational data form the Model
      * and updates component's state
      */
-    handleStoreModified: function () {
+    handleStoreModified: function() {
       const storeContent = Model.getItemOutput(this.props.params.id);
 
       if (storeContent && storeContent.error) {
-        this.setState({loadingError: storeContent.error});
+        this.setState({ loadingError: storeContent.error });
       } else {
         this.setState({
           item: storeContent,
@@ -41,21 +41,21 @@ const itemViewMixin = function (modelKey) {
       }
     },
 
-    handleGoToListView: function () {
+    handleGoToListView: function() {
       browserHistory.push(`/${encodeURIComponent(Model.keys.plural)}`);
     },
 
-    handleEditItem: function () {
+    handleEditItem: function() {
       browserHistory.push(
         `/${encodeURIComponent(Model.keys.single)}/${encodeURIComponent(this.props.params.id)}/edit`
       );
     },
 
-    renderNavigationMenu: function () {
+    renderNavigationMenu: function() {
       return <NavigationMenu currentView={Model.getModelKey()}/>;
     },
 
-    renderSimpleLayout: function (children) {
+    renderSimpleLayout: function(children) {
       return (
         <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
           <MobileTopMenu
@@ -68,11 +68,11 @@ const itemViewMixin = function (modelKey) {
       );
     },
 
-    renderLoader: function () {
+    renderLoader: function() {
       return this.renderSimpleLayout(<SectionLoader/>);
     },
 
-    renderError: function () {
+    renderError: function() {
       return this.renderSimpleLayout(
         <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
       );

@@ -70,7 +70,7 @@ let FlightModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getListOutput: function () {
+  getListOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -96,7 +96,7 @@ let FlightModel = {
    * error object - if data wasn't loaded due to error
    * or there is no flight with such id
    */
-  getItemOutput: function (flightId) {
+  getItemOutput: function(flightId) {
     const flight = this.getStoreContent(flightId);
     if (!flight || flight.error) {
       return flight;
@@ -131,7 +131,7 @@ let FlightModel = {
    * error object - if data wasn't loaded due to error
    * or there is no flight with such id
    */
-  getEditOutput: function (flightId) {
+  getEditOutput: function(flightId) {
     if (!flightId) {
       return this.getNewItemOutput();
     }
@@ -167,7 +167,7 @@ let FlightModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getNewItemOutput: function () {
+  getNewItemOutput: function() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -205,7 +205,7 @@ let FlightModel = {
    * @param {object} newFlight
    * @returns {object} - flight ready to send to the server
    */
-  getDataForServer: function (newFlight) {
+  getDataForServer: function(newFlight) {
     // Set default values to empty fields
     newFlight = this.setDefaultValues(newFlight);
 
@@ -234,7 +234,7 @@ let FlightModel = {
    * if several flights were on the same date the latest will be the one which was created the last
    * @returns {object|null} - last flight or null if no flights yet
    */
-  getLastFlight: function () {
+  getLastFlight: function() {
     let lastFlight = null;
 
     objectValues(this.getStoreContent()).forEach(flight => {
@@ -261,7 +261,7 @@ let FlightModel = {
    *      numOfFlightsThatDay: number
    *  }} - flight number, flight number for that year, flight number for that day, number of flights that day
    */
-  getFlightNumbers: function (targetFlight) {
+  getFlightNumbers: function(targetFlight) {
     const flightNumbers = {
       flightNum: 1,
       flightNumYear: 1,
@@ -306,7 +306,7 @@ let FlightModel = {
    * @param {number} flightAltitude in meters
    * @returns {number} altitude above launch in pilot's altitude units
    */
-  getAltitudeAboveLaunch: function (siteId, flightAltitude) {
+  getAltitudeAboveLaunch: function(siteId, flightAltitude) {
     const siteAltitude = siteId ? SiteModel.getLaunchAltitude(siteId) : 0;
     flightAltitude = Altitude.getAltitudeInPilotUnits(parseFloat(flightAltitude));
     return flightAltitude - siteAltitude;
@@ -316,7 +316,7 @@ let FlightModel = {
   /**
    * @returns {number|null} - days passed since the last flight
    */
-  getDaysSinceLastFlight: function () {
+  getDaysSinceLastFlight: function() {
     const lastFlight = this.getLastFlight();
 
     if (lastFlight === null) {
@@ -328,12 +328,12 @@ let FlightModel = {
   },
 
 
-  getNumberOfFlights: function () {
+  getNumberOfFlights: function() {
     return Object.keys(this.getStoreContent()).length;
   },
 
 
-  getNumberOfFlightsThisYear: function () {
+  getNumberOfFlightsThisYear: function() {
     const date = new Date();
     const year = date.getFullYear();
 
@@ -355,7 +355,7 @@ let FlightModel = {
    * @returns {{total: number, thisYear: number}} - flight statistics for given filter
    * e.g. total flights and flights for this year at particular site
    */
-  getFlightStats: function (statFilter) {
+  getFlightStats: function(statFilter) {
     const date = new Date();
     const year = date.getFullYear();
     const numberOfFlights = {
@@ -382,7 +382,7 @@ let FlightModel = {
    * @returns {object} - number of flights for given glider recorded in App
    * keys: total, thisYear
    */
-  getNumberOfFlightsOnGlider: function (gliderId) {
+  getNumberOfFlightsOnGlider: function(gliderId) {
     return this.getFlightStats(flight => flight.gliderId === gliderId);
   },
 
@@ -392,7 +392,7 @@ let FlightModel = {
    * @returns {object} - number of flights at given site
    * keys: total, thisYear
    */
-  getNumberOfFlightsAtSite: function (siteId) {
+  getNumberOfFlightsAtSite: function(siteId) {
     return this.getFlightStats(flight => flight.siteId === siteId);
   },
 
@@ -400,7 +400,7 @@ let FlightModel = {
   /**
    * @returns {number} - number of sites which pilot flew at and has flight record in App
    */
-  getNumberOfVisitedSites: function () {
+  getNumberOfVisitedSites: function() {
     return objectValues(this.getStoreContent())
       .reduce(
         Util.uniqueValues('siteId'),
@@ -413,7 +413,7 @@ let FlightModel = {
   /**
    * @returns {number} - number of gliders which pilot used and has flight record in App
    */
-  getNumberOfUsedGliders: function () {
+  getNumberOfUsedGliders: function() {
     return objectValues(this.getStoreContent())
       .reduce(
         Util.uniqueValues('gliderId'),
@@ -426,7 +426,7 @@ let FlightModel = {
   /**
    * @returns {number} - airtime of all flights recorded in App
    */
-  getTotalAirtime: function () {
+  getTotalAirtime: function() {
     return _.sum(this.getStoreContent(), 'airtime');
   },
 
@@ -435,7 +435,7 @@ let FlightModel = {
    * @param {number} gliderId
    * @returns {number} - airtime for given glider recorded in App
    */
-  getGliderAirtime: function (gliderId) {
+  getGliderAirtime: function(gliderId) {
     return objectValues(this.getStoreContent())
       .reduce(
         (totalAirtime, flight) => {
