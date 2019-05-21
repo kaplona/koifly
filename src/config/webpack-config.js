@@ -11,8 +11,6 @@ const config = require('./variables');
 const APP_ENTRY = path.join(config.paths.source, 'main-app');
 const HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
 const WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=' + config.webpack.devServerUrl + '/__webpack_hmr';
-const JS_JSX = /\.(js|jsx)$/;
-const BABEL = 'babel'; // Transpile ES6/JSX into ES5
 
 
 let webpackConfig = {
@@ -36,6 +34,11 @@ let webpackConfig = {
         test: /\.less$/,
         loader: ExtractTextPlugin.extract('style', 'css!less'), // Loaders are processed last-to-first
         include: config.paths.source
+      },
+      {
+        test: /\.(js|jsx)$/,
+        loader: 'babel',
+        include: config.paths.source,
       }
     ]
   },
@@ -69,28 +72,9 @@ if (process.env.NODE_ENV === 'development') {
     module: {
       preLoaders: [
         {
-          test: JS_JSX,
+          test: /\.(js|jsx)$/,
           loader: 'eslint-loader', // Lint all JS files before compiling the bundles (see .eslintrc for rules)
           include: config.paths.source
-        }
-      ],
-      loaders: [
-        {
-          test: JS_JSX,
-          loader: BABEL,
-          include: config.paths.source,
-          query: {
-            plugins: [ [
-              'react-transform',
-              {
-                'transforms': [ {
-                  'transform': 'react-transform-hmr',
-                  'imports': [ 'react' ],
-                  'locals': [ 'module' ]
-                } ]
-              }
-            ] ]
-          }
         }
       ]
     },
@@ -109,15 +93,6 @@ if (process.env.NODE_ENV === 'development') {
   /** @lends webpackConfig */
   webpackConfig = webpackMerge(webpackConfig, {
     devtool: 'source-map', // generate full source maps
-    module: {
-      loaders: [
-        {
-          test: JS_JSX,
-          loader: BABEL,
-          include: config.paths.source
-        }
-      ]
-    },
     plugins: [
       new webpack.optimize.UglifyJsPlugin({
         compressor: {

@@ -4,7 +4,7 @@
 // Perform babel transforms defined in .babelrc (ES6, JSX, etc.) on server-side code
 // Note: the options in .babelrc are also used for client-side code
 // because we use a babel-loader in webpack config
-require('babel-register');
+require('@babel/register');
 
 const config = require('./config/variables');
 const fs = require('fs');

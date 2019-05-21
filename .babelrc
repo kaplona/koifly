@@ -1,4 +1,28 @@
 {
-    // This Babel config file affects both frontend and server transpilation
-    "presets": ["es2015", "react", "stage-1"]
+  "presets": [
+    "@babel/preset-react",
+    [
+      "@babel/env",
+      {
+        "targets": {
+          "chrome": "29",
+          "edge": "12",
+          "ie": "9",
+          "firefox": "28",
+          "node": true,
+          "opera": "58",
+          "safari": "9"
+        },
+        "useBuiltIns": "usage"
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "@babel/plugin-transform-classes",
+      {
+        "loose": true
+      }
+    ]
+  ]
 }
