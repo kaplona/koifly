@@ -1,11 +1,12 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
 
 require('./label.less');
 
 
-const Label = React.createClass({
+// defined as class for testing purposes
+export default class Label extends React.Component {
   render() {
     return (
       <div className='label'>
@@ -13,7 +14,4 @@ const Label = React.createClass({
       </div>
     );
   }
-});
-
-
-module.exports = Label;
+}

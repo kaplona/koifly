@@ -2,11 +2,9 @@
 
 const Bcrypt = require('bcrypt');
 const BCRYPT_ROUNDS = require('../secrets').bcryptRounds;
-const Promise = require('es6-promise').Promise;
 
 
 const BcryptPromise = {
-
   hash: function(password) {
     return new Promise((resolve, reject) => {
       Bcrypt.hash(password, BCRYPT_ROUNDS, (err, hash) => {

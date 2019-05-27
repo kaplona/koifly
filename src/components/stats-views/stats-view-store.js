@@ -1,6 +1,6 @@
 'use strict';
 
-const pubSub = require('../../utils/pubsub');
+import pubSub from '../../utils/pubsub';
 
 class StatsViewStore {
   constructor() {

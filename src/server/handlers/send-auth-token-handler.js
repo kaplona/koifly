@@ -1,9 +1,9 @@
 'use strict';
 
 const _ = require('lodash');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
-const EmailMessageTemplates = require('../../constants/email-message-templates');
+const emailMessageTemplates = require('../../constants/email-message-templates');
 const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
 const sendAuthTokenToPilot = require('../helpers/send-auth-token');
@@ -21,19 +21,19 @@ const sendAuthTokenHandler = function(request) {
 
   // Checks payload for required fields
   if (!_.isString(payload.email)) {
-    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   let emailMessage;
   let path;
 
   if (request.path === '/api/one-time-login') {
-    emailMessage = EmailMessageTemplates.ONE_TIME_LOGIN;
+    emailMessage = emailMessageTemplates.ONE_TIME_LOGIN;
     path = '/email-verification';
   }
 
   if (request.path === '/api/initiate-reset-password') {
-    emailMessage = EmailMessageTemplates.PASSWORD_RESET;
+    emailMessage = emailMessageTemplates.PASSWORD_RESET;
     path = '/reset-password';
   }
 
@@ -45,7 +45,7 @@ const sendAuthTokenHandler = function(request) {
         return sendAuthTokenToPilot(pilot, emailMessage, path);
       }
 
-      throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
+      throw new KoiflyError(errorTypes.RECORD_NOT_FOUND, 'There is no pilot with this email');
     })
     .then(() => {
       return JSON.stringify('success');

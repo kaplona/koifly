@@ -1,16 +1,13 @@
 'use strict';
 
-const React = require('react');
-const { number } = React.PropTypes;
+import React from 'react';
+import { number } from 'prop-types';
 
-require('./days-since.less');
+require('./days-since-last-flight.less');
 
 
-const DaysSinceLastFlight = React.createClass({
-  propTypes: {
-    days: number
-  },
-
+// defined as class for testing purposes
+export default class DaysSinceLastFlight extends React.Component {
   render() {
     let daysSinceLastFlight = 'No flights yet';
     if (this.props.days) {
@@ -32,7 +29,9 @@ const DaysSinceLastFlight = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = DaysSinceLastFlight;
+DaysSinceLastFlight.propTypes = {
+  days: number
+};

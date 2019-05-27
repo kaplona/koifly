@@ -1,38 +1,23 @@
 'use strict';
 
-const React = require('react');
-const { element, func, oneOfType, string } = React.PropTypes;
-const Label = require('../section/label');
-const InputContainer = require('./input-container');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { element, func, oneOfType, string } from 'prop-types';
+import Label from '../section/label';
+import InputContainer from './input-container';
+import ValidationError from '../section/validation-error';
 
 
-const DateInput = React.createClass({
+export default class DateInput extends React.Component {
+  constructor() {
+    super();
+    this.handleUserInput = this.handleUserInput.bind(this);
+  }
 
-  propTypes: {
-    inputValue: string.isRequired,
-    labelText: oneOfType([
-      string,
-      element
-    ]),
-    inputName: string.isRequired,
-    errorMessage: string,
-    onChange: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
+  handleUserInput(e) {
+    this.props.onChange(this.props.inputName, e.target.value);
+  }
 
-  handleUserInput: function() {
-    this.props.onChange(this.props.inputName, this.refs.input.value);
-  },
-
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  render: function() {
+  render() {
     let className = 'x-date';
     if (this.props.errorMessage) {
       className += ' x-error';
@@ -40,7 +25,9 @@ const DateInput = React.createClass({
 
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -54,13 +41,23 @@ const DateInput = React.createClass({
             onChange={this.handleUserInput}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref='input'
           />
         </InputContainer>
       </div>
     );
   }
-});
+}
 
 
-module.exports = DateInput;
+DateInput.propTypes = {
+  inputValue: string.isRequired,
+  labelText: oneOfType([
+    string,
+    element
+  ]),
+  inputName: string.isRequired,
+  errorMessage: string,
+  onChange: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

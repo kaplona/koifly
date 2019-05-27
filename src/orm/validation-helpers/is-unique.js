@@ -1,9 +1,9 @@
 'use strict';
 
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
-const ErrorMessages = require('../../errors/error-messages');
-const SCOPES = require('../../constants/orm-constants').SCOPES;
+const errorMessages = require('../../errors/error-messages');
+const ormConstants = require('../../constants/orm-constants');
 const Util = require('../../utils/util');
 
 /**
@@ -23,11 +23,11 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
 
   // Unique value can't be empty.
   if (Util.isEmptyString(fieldValue)) {
-    const error = new KoiflyError(ErrorTypes.VALIDATION_ERROR, ErrorMessages.NOT_EMPTY.replace('%field', fieldName));
+    const error = new KoiflyError(errorTypes.VALIDATION_ERROR, errorMessages.NOT_EMPTY.replace('%field', fieldName));
     return Promise.reject(error);
   }
 
-  const scope = scopeAll ? SCOPES.all : SCOPES.visible;
+  const scope = scopeAll ? ormConstants.SCOPES.all : ormConstants.SCOPES.visible;
   const queryOptions = {
     where: {
       id: { $ne: record.id },
@@ -50,7 +50,7 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
         const errorList = {
           [fieldName]: errorMsg
         };
-        return Promise.reject(new KoiflyError(ErrorTypes.VALIDATION_ERROR, errorMsg, errorList));
+        return Promise.reject(new KoiflyError(errorTypes.VALIDATION_ERROR, errorMsg, errorList));
       }
     });
 }

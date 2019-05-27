@@ -1,65 +1,43 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, bool, number, shape, string } = React.PropTypes;
-const _ = require('lodash');
-const browserHistory = require('react-router').browserHistory;
-
-const CENTER = require('../../../constants/map-constants').CENTER;
-const PROP_TYPES = require('../../../constants/prop-types');
-const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
+import React from'react';
+import { arrayOf, bool, number, shape, string } from 'prop-types';
+import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import _ from'lodash';
+import mapConstants from '../../../constants/map-constants';
+import navigationService from '../../../services/navigation-service';
 
 require('./map.less');
 
 
-const StaticMap = React.createClass({
+export default class StaticMap extends React.Component {
+  constructor() {
+    super();
+    this.mapEl = null;
+    this.setMapRef = this.setMapRef.bind(this);
+  }
 
-  propTypes: {
-    center: PROP_TYPES.coordinates.isRequired,
-    zoomLevel: number.isRequired,
-    sites: arrayOf(shape({
-      id: number.isRequired,
-      name: string.isRequired,
-      location: string,
-      launchAltitude: number,
-      altitudeUnit: string,
-      coordinates: string,
-      latLng: PROP_TYPES.coordinates
-    })).isRequired,
-    isFullScreen: bool.isRequired,
-    mapFacadePromise: PROP_TYPES.promise.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      center: CENTER.region, // @TODO current location or last added site
-      zoomLevel: ZOOM_LEVEL.region,
-      sites: [],
-      isFullScreen: false
-    };
-  },
-
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.createMap(mapFacade);
     });
-  },
+  }
 
-  shouldComponentUpdate: function() {
+  shouldComponentUpdate() {
     return false;
-  },
+  }
 
-  handleGoToSiteView: function(siteId) {
-    browserHistory.push(`/site/${encodeURIComponent(siteId)}`);
-  },
+  setMapRef(el) {
+    this.mapEl = el;
+  }
 
-  createMap: function(mapFacade) {
+  createMap(mapFacade) {
     let markerId;
     let markerPosition;
     let infowindowContent;
     let infowindowOnClickFunc;
 
-    mapFacade.createMap(this.refs.map, this.props.center, this.props.zoomLevel);
+    mapFacade.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
 
     for (let i = 0; i < this.props.sites.length; i++) {
       if (this.props.sites[i].latLng) {
@@ -70,39 +48,64 @@ const StaticMap = React.createClass({
 
         infowindowContent = this.composeInfowindowMessage(this.props.sites[i]);
         infowindowOnClickFunc = (siteId => {
-          return () => this.handleGoToSiteView(siteId);
+          return () => navigationService.goToSiteView(siteId);
         })(markerId);
 
         mapFacade.createInfowindow(markerId, infowindowContent, infowindowOnClickFunc);
         mapFacade.bindMarkerAndInfowindow(markerId);
       }
     }
-  },
+  }
 
-  composeInfowindowMessage: function(site) {
-    return '<div class="infowindow">' +
-      '<div class="infowindow-title" id="site-' + _.escape(site.id) + '">' +
-      _.escape(site.name) +
-      '</div>' +
-      '<div>' + _.escape(site.location) + '</div>' +
-      '<div>' +
-      _.escape(site.launchAltitude + ' ' + site.altitudeUnit) +
-      '</div>' +
-      '<div>' + _.escape(site.coordinates) + '</div>' +
-      '</div>';
-  },
+  composeInfowindowMessage(site) {
+    return `
+      <div class="infowindow">
+        <div class="infowindow-title" id="site-${_.escape(site.id)}">
+          ${_.escape(site.name)}
+        </div>
+        <div>${_.escape(site.location)}</div>
+        <div>
+          ${_.escape(site.launchAltitude + ' ' + site.altitudeUnit)}
+        </div>
+        <div>${_.escape(site.coordinates)}</div>
+      </div>
+    `;
+  }
 
-  render: function() {
+  render() {
     const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
     return (
       <div className={this.props.isFullScreen ? 'static-wrapper' : null}>
-        <div className={className} ref='map'/>
+        <div className={className} ref={this.setMapRef}/>
       </div>
     );
   }
-});
+}
 
+
+StaticMap.defaultProps = {
+  center: mapConstants.CENTER.region,
+  zoomLevel: mapConstants.ZOOM_LEVEL.region,
+  sites: [],
+  isFullScreen: false
+};
+
+StaticMap.propTypes = {
+  center: coordinatesPropType.isRequired,
+  zoomLevel: number.isRequired,
+  sites: arrayOf(shape({
+    id: number.isRequired,
+    name: string.isRequired,
+    location: string,
+    launchAltitude: number,
+    altitudeUnit: string,
+    coordinates: string,
+    latLng: coordinatesPropType
+  })).isRequired,
+  isFullScreen: bool.isRequired,
+  mapFacadePromise: promisePropType.isRequired
+};
 
 StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
@@ -115,6 +118,3 @@ StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     />
   );
 };
-
-
-module.exports = StaticMap;

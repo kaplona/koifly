@@ -1,10 +1,11 @@
 'use strict';
 
-const React = require('react');
-const Header = require('./common/menu/header');
+import React from 'react';
+import Header from './common/menu/header';
 
 
-const Koifly = React.createClass({
+// defined as class for testing purposes
+export default class Koifly extends React.Component {
   render() {
     return (
       <div className='content'>
@@ -13,6 +14,4 @@ const Koifly = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = Koifly;
+}

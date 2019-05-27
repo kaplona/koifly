@@ -1,14 +1,14 @@
 'use strict';
 
-let Secrets = require('../secrets').dbApp;
+let dbSecrets = require('../secrets').dbApp;
 if (process.env.MYSQL_ADMIN) {
-  Secrets = require('../secrets').dbAdmin;
+  dbSecrets = require('../secrets').dbAdmin;
 }
 
-const DATABASE = Secrets.database;
-const USER = Secrets.mysqlUser;
-const PASSWORD = Secrets.mysqlPassword;
-const HOST = Secrets.mysqlHost;
+const DATABASE = dbSecrets.database;
+const USER = dbSecrets.mysqlUser;
+const PASSWORD = dbSecrets.mysqlPassword;
+const HOST = dbSecrets.mysqlHost;
 
 module.exports = {
   development: {

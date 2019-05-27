@@ -1,7 +1,6 @@
 'use strict';
 
 const _ = require('lodash');
-const Promise = require('es6-promise').Promise;
 const NodeMailer = require('nodemailer');
 
 const MAILGUN_LOGIN = require('../../secrets').mailgunLogin;

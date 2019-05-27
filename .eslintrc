@@ -190,13 +190,9 @@
           "mixins"
         ],
         "lifecycle": [
-          "getInitialState",
           "constructor",
-          "componentWillMount",
           "componentDidMount",
-          "componentWillReceiveProps",
           "shouldComponentUpdate",
-          "componentWillUpdate",
           "componentDidUpdate",
           "componentWillUnmount"
         ],

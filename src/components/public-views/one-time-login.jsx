@@ -1,44 +1,60 @@
 'use strict';
 
-const React = require('react');
-const Button = require('../common/buttons/button');
-const CompactContainer = require('../common/compact-container');
-const dataService = require('../../services/data-service');
-const Description = require('../common/section/description');
-const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-const ErrorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const MobileButton = require('../common/buttons/mobile-button');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const Notice = require('../common/notice/notice');
-const PublicViewMixin = require('../mixins/public-view-mixin');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const TextInput = require('../common/inputs/text-input');
-const Util = require('../../utils/util');
+import React from 'react';
+import Button from '../common/buttons/button';
+import CompactContainer from '../common/compact-container';
+import dataService from '../../services/data-service';
+import Description from '../common/section/description';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
+import Section from '../common/section/section';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import TextInput from '../common/inputs/text-input';
+import Util from '../../utils/util';
 
 
-const OneTimeLogin = React.createClass({
-
-  mixins: [ PublicViewMixin ],
-
-  getInitialState: function() {
-    return {
+export default class OneTimeLogin extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       email: '',
       error: null,
       isSending: false,
       lastSentEmailAddress: null
     };
-  },
 
-  handleSubmit: function(event) {
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(inputName, inputValue) {
+    this.setState({ [inputName]: inputValue });
+  }
+
+  handleInputFocus() {
+    this.setState({ isInputInFocus: true });
+  }
+
+  handleInputBlur() {
+    this.setState({ isInputInFocus: false });
+  }
+
+  handleSubmit(event) {
     if (event) {
       event.preventDefault();
     }
 
     if (Util.isEmptyString(this.state.email)) {
-      this.updateError(new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Enter your email address'));
+      this.updateError(new KoiflyError(errorTypes.VALIDATION_ERROR, 'Enter your email address'));
       return;
     }
 
@@ -59,29 +75,42 @@ const OneTimeLogin = React.createClass({
       .catch(error => {
         this.updateError(error);
       });
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  updateError(error) {
+    this.setState({
+      error: error,
+      isSending: false
+    });
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Koifly'
         leftButtonCaption='Back'
         rightButtonCaption='Sign Up'
-        onLeftClick={this.handleGoToLogin}
-        onRightClick={this.handleGoToSignup}
+        onLeftClick={navigationService.goToLogin}
+        onRightClick={navigationService.goToSignup}
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  renderNotice: function() {
+  renderNotice() {
     if (this.state.lastSentEmailAddress) {
       const noticeText = 'One-time-login link was successfully sent to ' + this.state.lastSentEmailAddress;
       return <Notice isPadded={true} text={noticeText}/>;
     }
-  },
+  }
 
-  renderDesktopButtons: function() {
+  renderError() {
+    if (this.state.error) {
+      return <Notice isPadded={true} type='error' text={this.state.error.message}/>;
+    }
+  }
+
+  renderDesktopButtons() {
     return (
       <DesktopBottomGrid
         leftElements={[
@@ -90,9 +119,9 @@ const OneTimeLogin = React.createClass({
         ]}
       />
     );
-  },
+  }
 
-  renderSendButton: function() {
+  renderSendButton() {
     return (
       <Button
         caption={this.state.isSending ? 'Sending...' : 'Send'}
@@ -102,20 +131,20 @@ const OneTimeLogin = React.createClass({
         isEnabled={!this.state.isSending}
       />
     );
-  },
+  }
 
-  renderCancelButton: function() {
+  renderCancelButton() {
     return (
       <Button
         caption='Back'
         buttonStyle='secondary'
-        onClick={this.handleGoToLogin}
+        onClick={navigationService.goToLogin}
         isEnabled={!this.state.isSending}
       />
     );
-  },
+  }
 
-  renderMobileButtons: function() {
+  renderMobileButtons() {
     return (
       <div>
         <MobileButton
@@ -128,13 +157,22 @@ const OneTimeLogin = React.createClass({
 
         <MobileButton
           caption='Log in with Password'
-          onClick={this.handleGoToLogin}
+          onClick={navigationService.goToLogin}
         />
       </div>
     );
-  },
+  }
 
-  render: function() {
+  renderNavigationMenu() {
+    return (
+      <NavigationMenu
+        isMobile={true}
+        isPositionFixed={!this.state.isInputInFocus}
+      />
+    );
+  }
+
+  render() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -176,7 +214,4 @@ const OneTimeLogin = React.createClass({
       </div>
     );
   }
-});
-
-
-module.exports = OneTimeLogin;
+}

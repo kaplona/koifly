@@ -1,42 +1,21 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
-const Label = require('../section/label');
-const InputContainer = require('./input-container');
-const Dropdown = require('./dropdown');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { arrayOf, bool, func, number, oneOfType, shape, string } from 'propTypes';
+import Label from '../section/label';
+import InputContainer from './input-container';
+import Dropdown from './dropdown';
+import ValidationError from '../section/validation-error';
 
 
-const DropdownInput = React.createClass({
-
-  propTypes: {
-    selectedValue: oneOfType([string, number]),
-    options: arrayOf(shape({
-      value: oneOfType([string, number]),
-      text: oneOfType([string, number])
-    })).isRequired,
-    labelText: string,
-    inputName: string,
-    emptyText: oneOfType([string, number]),
-    emptyValue: oneOfType([string, number]),
-    noSort: bool,
-    errorMessage: string,
-    onChangeFunc: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
-
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class DropdownInput extends React.Component {
+  render() {
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -59,7 +38,22 @@ const DropdownInput = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = DropdownInput;
+DropdownInput.propTypes = {
+  selectedValue: oneOfType([string, number]),
+  options: arrayOf(shape({
+    value: oneOfType([string, number]),
+    text: oneOfType([string, number])
+  })).isRequired,
+  labelText: string,
+  inputName: string,
+  emptyText: oneOfType([string, number]),
+  emptyValue: oneOfType([string, number]),
+  noSort: bool,
+  errorMessage: string,
+  onChangeFunc: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

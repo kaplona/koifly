@@ -1,10 +1,9 @@
 'use strict';
 
 
-const GeneralConstants = {
-
+const generalConstants = {
   EMPTY_FIELD: '—'
 };
 
 
-module.exports = GeneralConstants;
+export default generalConstants;

@@ -1,12 +1,12 @@
 'use strict';
 
-const React = require('react');
-const { bool } = React.PropTypes;
-const FeatureColumn = require('./feature-column.jsx');
-const HomeBlock = require('./home-block.jsx');
-const ScreenShort = require('./screen-shot.jsx');
-const Separator = require('./separator.jsx');
-const SignupButton = require('./signup-button.jsx');
+import React from 'react';
+import { bool } from 'prop-types';
+import FeatureColumn from './feature-column.jsx';
+import HomeBlock from './home-block.jsx';
+import ScreenShort from './screen-shot.jsx';
+import Separator from './separator.jsx';
+import SignupButton from './signup-button.jsx';
 
 
 if (process.env.BROWSER) {
@@ -14,19 +14,8 @@ if (process.env.BROWSER) {
 }
 
 
-const Home = React.createClass({
-
-  propTypes: {
-    isLoggedIn: bool.isRequired
-  },
-
-  renderSignupHeaderLink: function() {
-    if (!this.props.isLoggedIn) {
-      return <a href='/signup' className='app-enter right-float'>Sign up</a>;
-    }
-  },
-
-  render: function() {
+export default class Home extends React.Component {
+  render() {
     return (
       <div className='home'>
         <div className='home-pic'>
@@ -40,7 +29,9 @@ const Home = React.createClass({
             >
               {this.props.isLoggedIn ? 'Go to App' : 'Log in'}
             </a>
-            {this.renderSignupHeaderLink()}
+            {!this.props.isLoggedIn && (
+              <a href='/signup' className='app-enter right-float'>Sign up</a>
+            )}
           </div>
           <div className='home-pic-text'>
             <div>Flight logging app for freeflight pilots</div>
@@ -245,7 +236,9 @@ const Home = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = Home;
+Home.propTypes = {
+  isLoggedIn: bool.isRequired
+};

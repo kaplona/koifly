@@ -2,8 +2,8 @@
 
 const _ = require('lodash');
 const BcryptPromise = require('../../utils/bcrypt-promise');
-const EmailMessageTemplates = require('../../constants/email-message-templates');
-const ErrorTypes = require('../../errors/error-types');
+const emailMessageTemplates = require('../../constants/email-message-templates');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
@@ -25,31 +25,31 @@ const changePasswordHandler = function(request) {
 
   // Checks payload for required fields
   if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {
-    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   // Check that user are trying to change his/her own data
   if (payload.pilotId !== request.auth.credentials.userId) {
-    return { error: new KoiflyError(ErrorTypes.USER_MISMATCH) };
+    return { error: new KoiflyError(errorTypes.USER_MISMATCH) };
   }
 
   return Pilot
     .findById(request.auth.credentials.userId)
     .catch(() => {
-      throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+      throw new KoiflyError(errorTypes.DB_READ_ERROR);
     })
     .then(pilotRecord => {
       pilot = pilotRecord;
       // User can't change password if he didn't verify his email address
       if (!pilot.isActivated) {
-        throw new KoiflyError(ErrorTypes.NEED_EMAIL_VERIFICATION);
+        throw new KoiflyError(errorTypes.NEED_EMAIL_VERIFICATION);
       }
       // Compare password provided by user with the one we have in DB
       return BcryptPromise.compare(payload.currentPassword, pilot.password);
     })
     .catch(error => {
       // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
-      throw normalizeError(error, ErrorTypes.VALIDATION_ERROR, 'You entered wrong password');
+      throw normalizeError(error, errorTypes.VALIDATION_ERROR, 'You entered wrong password');
     })
     .then(() => {
       // Generate hash from new password
@@ -63,7 +63,7 @@ const changePasswordHandler = function(request) {
       // Send email notification to user
       // so he has opportunity to reset password
       // if it wasn't he who change the pass at the first place
-      sendAuthTokenToPilot(pilot, EmailMessageTemplates.PASSWORD_CHANGE, '/reset-password');
+      sendAuthTokenToPilot(pilot, emailMessageTemplates.PASSWORD_CHANGE, '/reset-password');
       return setAuthCookie(request, pilot.id, pilot.password);
     })
     .then(() => {

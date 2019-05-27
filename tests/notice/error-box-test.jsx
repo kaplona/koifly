@@ -4,7 +4,7 @@ require('../../src/test-dom')();
 const React = require('react');
 const TestUtils = require('react-addons-test-utils');
 const expect = require('chai').expect;
-const ErrorTypes = require('../../src/errors/error-types');
+const errorTypes = require('../../src/errors/error-types');
 const ErrorBox = require('../../src/components/common/notice/error-box');
 
 const Notice = require('../../src/components/common/notice/notice');
@@ -60,7 +60,7 @@ describe('ErrorBox component', () => {
     });
 
     it('doesn\'t pass onClick function for some designated errors', () => {
-      let error = { type: ErrorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
+      let error = { type: errorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
       component = TestUtils.renderIntoDocument(
         <ErrorBox
           error={error}
@@ -73,7 +73,7 @@ describe('ErrorBox component', () => {
       expect(notice).to.have.deep.property('props.onClick', null);
 
 
-      error = { type: ErrorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
+      error = { type: errorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
       component = TestUtils.renderIntoDocument(
         <ErrorBox
           error={error}

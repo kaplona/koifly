@@ -1,7 +1,7 @@
 'use strict';
 
-const ErrorTypes = require('./error-types');
-const KoiflyError = require('./error');
+import errorTypes from './error-types';
+import KoiflyError from './error';
 
 /**
  * Will convert given error into Koifly error.
@@ -41,13 +41,13 @@ const KoiflyError = require('./error');
  * @param {string} defaultMessage – Default error message.
  * @return {KoiflyError}
  */
-function normalizeError(error, defaultErrorType = ErrorTypes.DB_READ_ERROR, defaultMessage = null) {
+export default function normalizeError(error, defaultErrorType = errorTypes.DB_READ_ERROR, defaultMessage = null) {
   if (error instanceof KoiflyError) {
     return error;
   }
 
   if (error && error.output && error.output.payload.error === 'Unauthorized') {
-    return new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
+    return new KoiflyError(errorTypes.AUTHENTICATION_ERROR);
   }
 
   if (error && error.name === 'SequelizeValidationError') {
@@ -55,11 +55,8 @@ function normalizeError(error, defaultErrorType = ErrorTypes.DB_READ_ERROR, defa
     for (let i = 0; i < error.errors.length; i++) {
       validationErrors[error.errors[i].path] = error.errors[i].message;
     }
-    return new KoiflyError(ErrorTypes.VALIDATION_ERROR, error.message, validationErrors);
+    return new KoiflyError(errorTypes.VALIDATION_ERROR, error.message, validationErrors);
   }
 
   return new KoiflyError(defaultErrorType, defaultMessage);
 }
-
-
-module.exports = normalizeError;

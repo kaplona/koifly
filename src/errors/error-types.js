@@ -1,7 +1,7 @@
 'use strict';
 
 
-const ErrorTypes = {
+const errorTypes = {
   AJAX_NETWORK_ERROR: 'ajaxNetworkError',
   AUTHENTICATION_ERROR: 'authenticationError',
   BAD_REQUEST: 'badRequest',
@@ -18,4 +18,4 @@ const ErrorTypes = {
 };
 
 
-module.exports = ErrorTypes;
+export default errorTypes;

@@ -1,49 +1,28 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, bool, func, number, oneOfType, shape, string } = React.PropTypes;
-const _ = require('lodash');
+import React from 'react';
+import { arrayOf, bool, func, number, oneOfType, shape, string } from 'prop-types';
+import _ from 'lodash';
 
 require('./dropdown.less');
 
 
-const Dropdown = React.createClass({
+export default class Dropdown extends React.Component {
+  constructor() {
+    super();
+    this.emptyValue = '__EMPTY__';
+    this.handleUserInput = this.handleUserInput.bind(this);
+  }
 
-  propTypes: {
-    selectedValue: oneOfType([string, number]),
-    options: arrayOf(shape({
-      value: oneOfType([string, number]),
-      text: oneOfType([string, number])
-    })).isRequired,
-    inputName: oneOfType([string, number]),
-    emptyText: oneOfType([string, number]),
-    emptyValue: oneOfType([string, number]),
-    className: string,
-    isEnabled: bool.isRequired,
-    noSort: bool,
-    onChangeFunc: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
-
-  getDefaultProps: function() {
-    return {
-      isEnabled: true,
-      noSort: false
-    };
-  },
-
-  handleUserInput: function() {
-    let value = this.refs.selectInput.value;
+  handleUserInput(e) {
+    let value = e.target.value;
     if (value === this.emptyValue) {
       value = null;
     }
     this.props.onChangeFunc(this.props.inputName, value);
-  },
+  }
 
-  emptyValue: '__EMPTY__',
-
-  render: function() {
+  render() {
     // Sort options in ascending order if needed
     let sortedOptions = this.props.options;
     if (!this.props.noSort) {
@@ -60,15 +39,6 @@ const Dropdown = React.createClass({
       });
     }
 
-    // Make an array of React elements
-    const selectOptions = _.map(sortedOptions, option => {
-      return (
-        <option key={option.value} value={option.value}>
-          {option.text}
-        </option>
-      );
-    });
-
     return (
       <div className='dropdown'>
         <select
@@ -78,14 +48,37 @@ const Dropdown = React.createClass({
           onChange={this.handleUserInput}
           onFocus={this.props.onFocus}
           onBlur={this.props.onBlur}
-          ref='selectInput'
         >
-          {selectOptions}
+          {sortedOptions.map(option => (
+            <option key={option.value} value={option.value}>
+              {option.text}
+            </option>
+          ))}
         </select>
       </div>
     );
   }
-});
+}
 
 
-module.exports = Dropdown;
+Dropdown.defaultProps = {
+  isEnabled: true,
+  noSort: false
+};
+
+Dropdown.propTypes = {
+  selectedValue: oneOfType([string, number]),
+  options: arrayOf(shape({
+    value: oneOfType([string, number]),
+    text: oneOfType([string, number])
+  })).isRequired,
+  inputName: oneOfType([string, number]),
+  emptyText: oneOfType([string, number]),
+  emptyValue: oneOfType([string, number]),
+  className: string,
+  isEnabled: bool.isRequired,
+  noSort: bool,
+  onChangeFunc: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

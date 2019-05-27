@@ -1,13 +1,12 @@
 'use strict';
 
-const _ = require('lodash');
-const BaseModel = require('./base-model');
-const objectValues = require('object.values');
-const Util = require('../utils/util');
+import _ from 'lodash';
+import BaseModel from './base-model';
+import objectValues from 'object.values';
+import Util from '../utils/util';
 
 
 let GliderModel = {
-
   keys: {
     single: 'glider',
     plural: 'gliders'
@@ -60,14 +59,13 @@ let GliderModel = {
     }
   },
 
-
   /**
    * Prepare data to show to user
    * @returns {array|null|object} - array of gliders
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getListOutput: function() {
+  getListOutput() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -86,7 +84,6 @@ let GliderModel = {
     });
   },
 
-
   /**
    * Prepare data to show to user
    * @param {string} gliderId
@@ -94,7 +91,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getItemOutput: function(gliderId) {
+  getItemOutput(gliderId) {
     const glider = this.getStoreContent(gliderId);
     if (!glider || glider.error) {
       return glider;
@@ -119,7 +116,6 @@ let GliderModel = {
     };
   },
 
-
   /**
    * Prepare data to show to user
    * @param {number} gliderId
@@ -127,7 +123,7 @@ let GliderModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getEditOutput: function(gliderId) {
+  getEditOutput(gliderId) {
     if (gliderId === undefined) {
       return this.getNewItemOutput();
     }
@@ -152,14 +148,13 @@ let GliderModel = {
     };
   },
 
-
   /**
    * Prepare data to show to user
    * @returns {object|null} - glider
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getNewItemOutput: function() {
+  getNewItemOutput() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -174,7 +169,6 @@ let GliderModel = {
     };
   },
 
-
   /**
    * Fills empty fields with their defaults
    * takes only fields that should be send to the server
@@ -182,7 +176,7 @@ let GliderModel = {
    * @param {object} newGlider
    * @returns {object} - glider ready to send to the server
    */
-  getDataForServer: function(newGlider) {
+  getDataForServer(newGlider) {
     // Set default values to empty fields
     newGlider = this.setDefaultValues(newGlider);
 
@@ -196,21 +190,19 @@ let GliderModel = {
     };
   },
 
-
   /**
    * @param {number} gliderId - assumption: glider id exists
    * @returns {string|null} - glider's name or null if no glider with given id
    */
-  getGliderName: function(gliderId) {
+  getGliderName(gliderId) {
     const getStoreContent = this.getStoreContent(gliderId);
     return !getStoreContent.error ? getStoreContent.name : null;
   },
 
-
   /**
    * @returns {number|null} - id of last created glider or null if no gliders yet
    */
-  getLastAddedId: function() {
+  getLastAddedId() {
     const storeContent = this.getStoreContent();
     if (_.isEmpty(storeContent)) {
       return null;
@@ -219,18 +211,15 @@ let GliderModel = {
     return _.max(storeContent, glider => Date.parse(glider.createdAt)).id;
   },
 
-
   /**
    * This presentation is required for dropdown options
    * @returns {Array} - array of objects where value is glider id, text is glider name
    */
-  getGliderValueTextList: function() {
+  getGliderValueTextList() {
     return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
   }
 };
 
 
-GliderModel = _.extend({}, BaseModel, GliderModel);
-
-
-module.exports = GliderModel;
+GliderModel = Object.assign({}, BaseModel, GliderModel);
+export default GliderModel;

@@ -1,7 +1,7 @@
 'use strict';
 
 const BcryptPromise = require('../../utils/bcrypt-promise');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const Pilot = require('../../orm/models/pilots');
 const setAuthCookie = require('../helpers/set-auth-cookie');
@@ -24,7 +24,7 @@ const checkAuthCookie = function(request, session) {
       pilot = pilotRecord;
 
       if (!pilot || pilot.id !== session.userId) {
-        throw new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR);
+        throw new KoiflyError(errorTypes.AUTHENTICATION_ERROR);
       }
 
       const secret = session.expiryDate.toString() + pilot.password;

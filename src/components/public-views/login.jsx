@@ -1,49 +1,57 @@
 'use strict';
 
-const React = require('react');
-const { bool } = React.PropTypes;
-const AppLink = require('../common/app-link');
-const Button = require('../common/buttons/button');
-const CompactContainer = require('../common/compact-container');
-const dataService = require('../../services/data-service');
-const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-const ErrorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const MobileButton = require('../common/buttons/mobile-button');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const PasswordInput = require('../common/inputs/password-input');
-const PublicViewMixin = require('../mixins/public-view-mixin');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const TextInput = require('../common/inputs/text-input');
-const Util = require('../../utils/util');
+import React from 'react';
+import { bool } from 'prop-types';
+import AppLink from '../common/app-link';
+import Button from '../common/buttons/button';
+import CompactContainer from '../common/compact-container';
+import dataService from '../../services/data-service';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
+import PasswordInput from '../common/inputs/password-input';
+import Section from '../common/section/section';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import TextInput from '../common/inputs/text-input';
+import Util from '../../utils/util';
 
 
-const Login = React.createClass({
-
-  propTypes: {
-    isStayOnThisPage: bool.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      isStayOnThisPage: false
-    };
-  },
-
-  mixins: [ PublicViewMixin ],
-
-  getInitialState: function() {
-    return {
+export default class Login extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       email: '',
       password: '',
       error: null,
+      isInputInFocus: false,
       isSending: false
     };
-  },
 
-  handleSubmit: function(event) {
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(inputName, inputValue) {
+    this.setState({ [inputName]: inputValue });
+  }
+
+  handleInputFocus() {
+    this.setState({ isInputInFocus: true });
+  }
+
+  handleInputBlur() {
+    this.setState({ isInputInFocus: false });
+  }
+
+  handleSubmit(event) {
     if (event) {
       event.preventDefault();
     }
@@ -68,45 +76,58 @@ const Login = React.createClass({
     dataService
       .loginPilot(pilotCredentials)
       .then(() => {
-        this.handleLogin();
+        this.login();
       })
       .catch(error => {
         this.updateError(error);
       });
-  },
+  }
 
-  handleLogin: function() {
+  login() {
     if (!this.props.isStayOnThisPage) {
-      this.handleGoToFlightLog();
+      navigationService.goToFlightLog();
     }
-  },
+  }
 
-  getValidationError: function() {
+  getValidationError() {
     if (Util.isEmptyString(this.state.email) || Util.isEmptyString(this.state.password)) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'All fields are required');
     }
 
     return null;
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  updateError(error) {
+    this.setState({
+      error: error,
+      isSending: false
+    });
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Koifly'
         leftButtonCaption='About'
         rightButtonCaption='Sign Up'
-        onLeftClick={this.handleGoToHomePage}
-        onRightClick={this.handleGoToSignup}
+        onLeftClick={navigationService.goToHomePage}
+        onRightClick={navigationService.goToSignup}
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  renderDesktopButtons: function() {
+  renderError() {
+    if (this.state.error) {
+      return <Notice isPadded={true} type='error' text={this.state.error.message}/>;
+    }
+  }
+
+  renderDesktopButtons() {
     return <DesktopBottomGrid leftElements={[ this.renderSendButton() ]}/>;
-  },
+  }
 
-  renderSendButton: function() {
+  renderSendButton() {
     return (
       <Button
         caption={this.state.isSending ? 'Sending...' : 'Log in'}
@@ -116,9 +137,9 @@ const Login = React.createClass({
         isEnabled={!this.state.isSending}
       />
     );
-  },
+  }
 
-  renderMobileButtons: function() {
+  renderMobileButtons() {
     return (
       <div>
         <MobileButton
@@ -131,26 +152,35 @@ const Login = React.createClass({
 
         <MobileButton
           caption='Forgot Password?'
-          onClick={this.handleGoToResetPassword}
+          onClick={navigationService.goToResetPassword}
           isEnabled={!this.state.isSending}
         />
 
         <MobileButton
           caption='Log In Without Password'
-          onClick={this.handleGoToOneTimeLogin}
+          onClick={navigationService.goToOneTimeLogin}
           isEnabled={!this.state.isSending}
         />
 
         <MobileButton
           caption='Don&#39;t Have Account?'
-          onClick={this.handleGoToSignup}
+          onClick={navigationService.goToSignup}
           isEnabled={!this.state.isSending}
         />
       </div>
     );
-  },
+  }
 
-  render: function() {
+  renderNavigationMenu() {
+    return (
+      <NavigationMenu
+        isMobile={true}
+        isPositionFixed={!this.state.isInputInFocus}
+      />
+    );
+  }
+
+  render() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -187,15 +217,15 @@ const Login = React.createClass({
               {this.renderDesktopButtons()}
 
               <SectionRow isDesktopOnly={true}>
-                <AppLink onClick={this.handleGoToResetPassword}>Forgot Password?</AppLink>
+                <AppLink onClick={navigationService.goToResetPassword}>Forgot Password?</AppLink>
               </SectionRow>
 
               <SectionRow isDesktopOnly={true}>
-                <AppLink onClick={this.handleGoToOneTimeLogin}>Log in without Password</AppLink>
+                <AppLink onClick={navigationService.goToOneTimeLogin}>Log in without Password</AppLink>
               </SectionRow>
 
               <SectionRow isDesktopOnly={true} isLast={true}>
-                <AppLink onClick={this.handleGoToSignup}>Sign up Now!</AppLink>
+                <AppLink onClick={navigationService.goToSignup}>Sign up Now!</AppLink>
               </SectionRow>
             </Section>
 
@@ -207,7 +237,13 @@ const Login = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = Login;
+Login.defaultProps = {
+  isStayOnThisPage: false
+};
+
+Login.propTypes = {
+  isStayOnThisPage: bool.isRequired
+};

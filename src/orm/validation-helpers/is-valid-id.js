@@ -1,8 +1,8 @@
 'use strict';
 
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
-const SCOPES = require('../../constants/orm-constants').SCOPES;
+const ormConstants = require('../../constants/orm-constants');
 const Util = require('../../utils/util');
 
 /**
@@ -33,11 +33,11 @@ function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
   }
 
   return Model
-    .scope(SCOPES.visible)
+    .scope(ormConstants.SCOPES.visible)
     .findOne(queryOptions)
     .then(record => {
       if (!record) {
-        return Promise.reject(new KoiflyError(ErrorTypes.VALIDATION_ERROR, errorMsg));
+        return Promise.reject(new KoiflyError(errorTypes.VALIDATION_ERROR, errorMsg));
       }
     });
 }

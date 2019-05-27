@@ -1,18 +1,17 @@
 'use strict';
 /* eslint-disable new-cap */
 const Sequelize = require('sequelize');
-
-const SCOPES = require('../../constants/orm-constants').SCOPES;
-const ErrorMessages = require('../../errors/error-messages');
+const db = require('../sequelize-db');
+const errorMessages = require('../../errors/error-messages');
 const isDate = require('../validation-helpers/is-date');
 const isValidId = require('../validation-helpers/is-valid-id');
-const sequelize = require('../sequelize');
+const ormConstants = require('../../constants/orm-constants');
 
 const Site = require('./sites');
 const Glider = require('./gliders');
 
 
-const Flight = sequelize.define(
+const Flight = db.define(
   'flight',
 
   // attributes
@@ -43,10 +42,10 @@ const Flight = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
+        isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
+          msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
         }
       }
     },
@@ -56,10 +55,10 @@ const Flight = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
+        isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
+          msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
         }
       }
     },
@@ -77,7 +76,7 @@ const Flight = sequelize.define(
       validate: {
         len: {
           args: [0, 10000],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
         }
       }
     },
@@ -106,7 +105,7 @@ const Flight = sequelize.define(
     timestamps: true, // automatically adds fields updatedAt and createdAt
 
     scopes: {
-      [SCOPES.visible]: {
+      [ormConstants.SCOPES.visible]: {
         where: {
           see: true
         }
@@ -116,8 +115,8 @@ const Flight = sequelize.define(
     hooks: {
       // Checks that site and glider ids exist.
       beforeValidate: function(instance, options) {
-        const gliderErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Glider');
-        const siteErrorMsg = ErrorMessages.NOT_EXIST.replace('%field', 'Site');
+        const gliderErrorMsg = errorMessages.NOT_EXIST.replace('%field', 'Glider');
+        const siteErrorMsg = errorMessages.NOT_EXIST.replace('%field', 'Site');
 
         return Promise.all([
           isValidId(Glider, instance.gliderId, instance.pilotId, gliderErrorMsg, options.transaction),

@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const generateToken = require('../helpers/generate-token');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 
 
@@ -33,7 +33,7 @@ const checkCsrfToken = function(request, reply) {
     cookieCsrfToken !== requestCsrfToken
   ) {
     const csrfToken = generateToken(10);
-    const response = reply.response({ error: new KoiflyError(ErrorTypes.INVALID_CSRF_TOKEN) });
+    const response = reply.response({ error: new KoiflyError(errorTypes.INVALID_CSRF_TOKEN) });
     response.state('csrf', csrfToken);
 
     return response;

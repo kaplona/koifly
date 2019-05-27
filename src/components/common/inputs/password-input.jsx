@@ -1,35 +1,23 @@
 'use strict';
 
-const React = require('react');
-const { element, func, oneOfType, string } = React.PropTypes;
-const InputContainer = require('./input-container');
-const Label = require('../section/label');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { element, func, oneOfType, string } from 'prop-types';
+import InputContainer from'./input-container';
+import Label from'../section/label';
+import ValidationError from'../section/validation-error';
 
 
-const PasswordInput = React.createClass({
+export default class PasswordInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleUserInput = this.handleUserInput.bind(this);
+  }
 
-  propTypes: {
-    inputValue: string.isRequired,
-    labelText: oneOfType([string, element]),
-    inputName: string.isRequired,
-    errorMessage: string,
-    onChange: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
+  handleUserInput(e) {
+    this.props.onChange(this.props.inputName, e.target.value);
+  }
 
-  handleUserInput: function() {
-    this.props.onChange(this.props.inputName, this.refs.input.value);
-  },
-
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  render: function() {
+  render() {
     let className = 'x-text';
     if (this.props.errorMessage) {
       className += ' x-error';
@@ -37,7 +25,9 @@ const PasswordInput = React.createClass({
 
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -51,13 +41,20 @@ const PasswordInput = React.createClass({
             onChange={this.handleUserInput}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref='input'
           />
         </InputContainer>
       </div>
     );
   }
-});
+}
 
 
-module.exports = PasswordInput;
+PasswordInput.propTypes = {
+  inputValue: string.isRequired,
+  labelText: oneOfType([string, element]),
+  inputName: string.isRequired,
+  errorMessage: string,
+  onChange: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

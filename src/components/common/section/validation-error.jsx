@@ -1,16 +1,13 @@
 'use strict';
 
-const React = require('react');
-const { string } = React.PropTypes;
+import React from 'react';
+import { string } from 'prop-types';
 
 require('./validation-error.less');
 
 
-const ValidationError = React.createClass({
-  propTypes: {
-    message: string.isRequired
-  },
-
+// defined as class for testing purposes
+export default class ValidationError extends React.Component {
   render() {
     return (
       <div className='validation-error'>
@@ -18,7 +15,9 @@ const ValidationError = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = ValidationError;
+ValidationError.propTypes = {
+  message: string.isRequired
+};

@@ -60,4 +60,4 @@ const distanceService = {
   }
 };
 
-module.exports = distanceService;
+export default distanceService;

@@ -1,28 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { bool, func, number, string } = React.PropTypes;
+import React from 'react';
+import { bool, func, number, string } from 'prop-types';
 
 require('./navigation-item.less');
 
 
-const NavigationItem = React.createClass({
-
-  propTypes: {
-    iconFileName: string.isRequired,
-    label: string.isRequired,
-    itemsNumber: number.isRequired,
-    isActive: bool,
-    onClick: func.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      isActive: false
-    };
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class NavigationItem extends React.Component {
+  render() {
     let className = 'navigation-item-' + this.props.itemsNumber;
     if (this.props.isActive) {
       className += ' x-active';
@@ -34,8 +20,7 @@ const NavigationItem = React.createClass({
       <div
         className={className}
         onClick={this.props.onClick}
-        onTouchStart={() => {
-        }} // required for iOS webkit browser to trigger :active pseudo state
+        onTouchStart={() => {}} // required for iOS webkit browser to trigger :active pseudo state
       >
         <div className='icon'>
           <img src={imgSrc} width='26px'/>
@@ -44,7 +29,17 @@ const NavigationItem = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = NavigationItem;
+NavigationItem.defaultProps = {
+  isActive: false
+};
+
+NavigationItem.propTypes = {
+  iconFileName: string.isRequired,
+  label: string.isRequired,
+  itemsNumber: number.isRequired,
+  isActive: bool,
+  onClick: func.isRequired
+};

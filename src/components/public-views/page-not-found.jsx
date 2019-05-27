@@ -1,23 +1,17 @@
 'use strict';
 
-const React = require('react');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const Notice = require('../common/notice/notice');
+import React from 'react';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import Notice from '../common/notice/notice';
 
 
-function noPage() {
+export default function PageNotFound() {
   return (
     <div>
       <MobileTopMenu header='Koifly'/>
       <NavigationMenu isMobile={true}/>
-      <Notice
-        text='Oops! Page not found'
-        type='error'
-      />
+      <Notice text='Oops! Page not found' type='error'/>
     </div>
   );
 }
-
-
-module.exports = noPage;

@@ -1,26 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { bool } = React.PropTypes;
+import React from 'react';
+import { bool } from 'prop-types';
 
 require('./section-title.less');
 
 
-const SectionTitle = React.createClass({
-
-  propTypes: {
-    isDesktopOnly: bool,
-    isSubtitle: bool
-  },
-
-  getDefaultProps: function() {
-    return {
-      isDesktopOnly: false,
-      isSubtitle: false
-    };
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class SectionTitle extends React.Component {
+  render() {
     let className = 'section-title';
     if (this.props.isSubtitle) {
       className += ' x-subtitle';
@@ -35,7 +23,15 @@ const SectionTitle = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = SectionTitle;
+SectionTitle.defaultProps = {
+  isDesktopOnly: false,
+  isSubtitle: false
+};
+
+SectionTitle.propTypes = {
+  isDesktopOnly: bool,
+  isSubtitle: bool
+};

@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const BcryptPromise = require('../../utils/bcrypt-promise');
 const getAllData = require('../helpers/get-all-data');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
@@ -22,18 +22,18 @@ const loginHandler = function(request) {
 
   // Checks payload for required fields
   if (!_.isString(payload.email) || !_.isString(payload.password)) {
-    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   // email is stored in lower case in DB, so as to perform case insensitivity
   return Pilot
     .findOne({ where: { email: payload.email.toLowerCase() } })
     .catch(() => {
-      throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+      throw new KoiflyError(errorTypes.DB_READ_ERROR);
     })
     .then(pilotRecord => {
       if (!pilotRecord || pilotRecord.email !== payload.email.toLowerCase()) {
-        throw new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR, 'There is no user with this email');
+        throw new KoiflyError(errorTypes.AUTHENTICATION_ERROR, 'There is no user with this email');
       }
       pilot = pilotRecord;
       // Compare password provided by user with the one we have in DB
@@ -41,7 +41,7 @@ const loginHandler = function(request) {
     })
     .catch(error => {
       // If it's any other error but KoiflyError will replace it with KoiflyError with given type and message
-      throw normalizeError(error, ErrorTypes.AUTHENTICATION_ERROR, 'You entered wrong password');
+      throw normalizeError(error, errorTypes.AUTHENTICATION_ERROR, 'You entered wrong password');
     })
     .then(() => {
       return setAuthCookie(request, pilot.id, pilot.password);

@@ -1,44 +1,48 @@
 'use strict';
 
-const React = require('react');
-const { func, string } = React.PropTypes;
-const Altitude = require('../../utils/altitude');
-const ErrorBox = require('../common/notice/error-box');
-const ErrorTypes = require('../../errors/error-types');
-const FileInput = require('../common/inputs/file-input');
-const igcService = require('../../services/igc-service');
-const KoiflyError = require('../../errors/error');
-const SiteModel = require('../../models/site');
-const TrackMap = require('../common/maps/track-map');
-const Util = require('../../utils/util');
+import React from 'react';
+import { func, string } from 'prop-types';
+import Altitude from '../../utils/altitude';
+import ErrorBox from '../common/notice/error-box';
+import errorTypes from '../../errors/error-types';
+import FileInput from '../common/inputs/file-input';
+import igcService from '../../services/igc-service';
+import KoiflyError from '../../errors/error';
+import SiteModel from '../../models/site';
+import TrackMap from '../common/maps/track-map';
+import Util from '../../utils/util';
 
 require('./flight-track-upload.less');
 
 
-const FightTrackUpload = React.createClass({
-  propTypes: {
-    igc: string,
-    onLoad: func.isRequired
-  },
+export default class FightTrackUpload extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fileName: this.props.igc ? 'previously loaded IGC file' : null,
+      fileReadError: null,
+      parsedIgc: null,
+      validationError: null
+    };
 
-  getInitialState() {
-    let validationError = null;
-    let parsedFile = null;
-    if (this.props.igc) {
-      parsedFile = igcService.parseIgc(this.props.igc);
+    this.handleFile = this.handleFile.bind(this);
+    this.handleRemoveFile = this.handleRemoveFile.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.igc) {
+      return;
     }
+    let validationError = null;
+    let parsedFile = igcService.parseIgc(this.props.igc);
+
     if (parsedFile instanceof Error) {
       parsedFile = null;
       validationError = parsedFile;
     }
 
-    return {
-      fileName: this.props.igc ? 'previously loaded IGC file' : null,
-      fileReadError: null,
-      parsedIgc: parsedFile,
-      validationError: validationError
-    };
-  },
+    this.setState({ parsedFile, validationError });
+  }
 
   handleFile(file) {
     this.setState({
@@ -77,7 +81,7 @@ const FightTrackUpload = React.createClass({
     };
 
     reader.readAsText(file);
-  },
+  }
 
   handleRemoveFile() {
     this.setState({
@@ -87,7 +91,7 @@ const FightTrackUpload = React.createClass({
       validationError: null
     });
     this.props.onLoad();
-  },
+  }
 
   validateFile(file) {
     const lowerCaseName = file.name.toLowerCase();
@@ -100,8 +104,8 @@ const FightTrackUpload = React.createClass({
       errors.push('File must be less than 1MB');
     }
 
-    return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
-  },
+    return errors.length ? new KoiflyError(errorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
+  }
 
   renderMap() {
     const trackCoords = this.state.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
@@ -109,7 +113,7 @@ const FightTrackUpload = React.createClass({
     return TrackMap.create({
       trackCoords: trackCoords
     });
-  },
+  }
 
   render() {
     return (
@@ -141,7 +145,10 @@ const FightTrackUpload = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = FightTrackUpload;
+FightTrackUpload.propTypes = {
+  igc: string,
+  onLoad: func.isRequired
+};

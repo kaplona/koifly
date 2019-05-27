@@ -1,34 +1,32 @@
 'use strict';
 
-const React = require('react');
-const AppLink = require('../common/app-link');
-const Button = require('../common/buttons/button');
-const CompactContainer = require('../common/compact-container');
-const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-const EmailVerificationNotice = require('../common/notice/email-verification-notice');
-const ErrorBox = require('../common/notice/error-box');
-const ErrorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const MobileButton = require('../common/buttons/mobile-button');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const Notice = require('../common/notice/notice');
-const PasswordInput = require('../common/inputs/password-input');
-const PilotModel = require('../../models/pilot');
-const PublicLinksMixin = require('../mixins/public-links-mixin');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import AppLink from '../common/app-link';
+import Button from '../common/buttons/button';
+import CompactContainer from '../common/compact-container';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import EmailVerificationNotice from '../common/notice/email-verification-notice';
+import ErrorBox from '../common/notice/error-box';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
+import PasswordInput from '../common/inputs/password-input';
+import PilotModel from '../../models/pilot';
+import Section from '../common/section/section';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import Util from '../../utils/util';
+import View from '../common/view';
 
 
-const PilotChangePassword = React.createClass({
-
-  mixins: [ PublicLinksMixin ],
-
-  getInitialState: function() {
-    return {
+export default class PilotChangePassword extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       password: '',
       newPassword: '',
       passwordConfirm: '',
@@ -39,13 +37,19 @@ const PilotChangePassword = React.createClass({
       isUserActivated: true,
       isInputInFocus: false
     };
-  },
 
-  componentWillMount: function() {
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
     PilotModel.hideEmailVerificationNotice();
-  },
+  }
 
-  handleStoreModified: function() {
+  handleStoreModified() {
     const activationStatus = PilotModel.getUserActivationStatus();
     if (activationStatus && activationStatus.error) {
       this.setState({ loadingError: activationStatus.error });
@@ -55,21 +59,21 @@ const PilotChangePassword = React.createClass({
       isUserActivated: activationStatus,
       loadingError: null
     });
-  },
+  }
 
-  handleInputChange: function(inputName, inputValue) {
+  handleInputChange(inputName, inputValue) {
     this.setState({ [inputName]: inputValue });
-  },
+  }
 
-  handleInputFocus: function() {
+  handleInputFocus() {
     this.setState({ isInputInFocus: true });
-  },
+  }
 
-  handleInputBlur: function() {
+  handleInputBlur() {
     this.setState({ isInputInFocus: false });
-  },
+  }
 
-  handleSubmit: function(event) {
+  handleSubmit(event) {
     if (event) {
       event.preventDefault();
     }
@@ -95,32 +99,32 @@ const PilotChangePassword = React.createClass({
         });
       })
       .catch(error => this.updateError(error));
-  },
+  }
 
-  updateError: function(error) {
+  updateError(error) {
     this.setState({
       error: error,
       isSaving: false
     });
-  },
+  }
 
-  getValidationError: function() {
+  getValidationError() {
     if (Util.isEmptyString(this.state.password) || Util.isEmptyString(this.state.newPassword)) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'All fields are required');
     }
 
     if (this.state.newPassword !== this.state.passwordConfirm) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'New password and confirmed password must be the same');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'New password and confirmed password must be the same');
     }
 
     return null;
-  },
+  }
 
-  isSaveButtonsEnabled: function() {
+  isSaveButtonsEnabled() {
     return this.state.isUserActivated && !this.state.isSaving;
-  },
+  }
 
-  renderEmailVerificationNotice: function() {
+  renderEmailVerificationNotice() {
     if (!this.state.isUserActivated) {
       const noticeText = [
         'You need to verify your email before changing your password.',
@@ -129,36 +133,36 @@ const PilotChangePassword = React.createClass({
 
       return <EmailVerificationNotice isPadded={true} text={noticeText} type='error'/>;
     }
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         leftButtonCaption='Back'
         rightButtonCaption='Save'
-        onLeftClick={this.handleGoToPilotView}
+        onLeftClick={navigationService.goToPilotView}
         onRightClick={this.handleSubmit}
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  renderNavigationMenu: function() {
+  renderNavigationMenu() {
     return (
       <NavigationMenu
         currentView={PilotModel.getModelKey()}
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  renderError: function() {
+  renderError() {
     if (this.state.error) {
       return <ErrorBox isPadded={true} error={this.state.error}/>;
     }
-  },
+  }
 
-  renderDesktopButtons: function() {
+  renderDesktopButtons() {
     return (
       <DesktopBottomGrid
         leftElements={[
@@ -167,9 +171,9 @@ const PilotChangePassword = React.createClass({
         ]}
       />
     );
-  },
+  }
 
-  renderSaveButton: function() {
+  renderSaveButton() {
     return (
       <Button
         caption={this.state.isSaving ? 'Saving...' : 'Save'}
@@ -179,20 +183,20 @@ const PilotChangePassword = React.createClass({
         isEnabled={this.isSaveButtonsEnabled()}
       />
     );
-  },
+  }
 
-  renderCancelButton: function() {
+  renderCancelButton() {
     return (
       <Button
         caption='Cancel'
         buttonStyle='secondary'
-        onClick={this.handleGoToPilotView}
+        onClick={navigationService.goToPilotView}
         isEnabled={!this.state.isSaving}
       />
     );
-  },
+  }
 
-  renderMobileButtons: function() {
+  renderMobileButtons() {
     return (
       <div>
         <MobileButton
@@ -205,13 +209,13 @@ const PilotChangePassword = React.createClass({
 
         <MobileButton
           caption='Forgot Password?'
-          onClick={this.handleGoToResetPassword}
+          onClick={navigationService.goToResetPassword}
         />
       </div>
     );
-  },
+  }
 
-  renderSuccessNotice: function() {
+  renderSuccessNotice() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -219,9 +223,9 @@ const PilotChangePassword = React.createClass({
         <Notice text='Your password was successfully changed' type='success'/>
       </div>
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.successNotice) {
       return this.renderSuccessNotice();
     }
@@ -273,7 +277,7 @@ const PilotChangePassword = React.createClass({
               {this.renderDesktopButtons()}
 
               <SectionRow isDesktopOnly={true} isLast={true}>
-                <AppLink onClick={this.handleGoToResetPassword}>Forgot Password?</AppLink>
+                <AppLink onClick={navigationService.goToResetPassword}>Forgot Password?</AppLink>
               </SectionRow>
             </Section>
 
@@ -285,7 +289,4 @@ const PilotChangePassword = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = PilotChangePassword;
+}

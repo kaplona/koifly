@@ -1,17 +1,15 @@
 'use strict';
 
-const React = require('react');
-const { oneOf } = React.PropTypes;
+import React from 'react';
+import { oneOf } from 'prop-types';
 
 if (process.env.BROWSER) {
   require('./feature-column.less');
 }
 
-const FeatureColumn = React.createClass({
-  propTypes: {
-    float: oneOf(['left', 'right'])
-  },
 
+// defined as class for testing purposes
+export default class FeatureColumn extends React.Component {
   render() {
     let className = 'feature-column';
     if (this.props.float) {
@@ -24,7 +22,9 @@ const FeatureColumn = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = FeatureColumn;
+FeatureColumn.propTypes = {
+  float: oneOf(['left', 'right'])
+};

@@ -1,10 +1,10 @@
 'use strict';
 
 const _ = require('lodash');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const getPilotValuesForFrontend = require('./get-pilot-values');
-const SCOPES = require('../../constants/orm-constants').SCOPES;
+const ormConstants = require('../../constants/orm-constants');
 
 const Flight = require('../../orm/models/flights');
 const Site = require('../../orm/models/sites');
@@ -48,7 +48,7 @@ const getAllData = function(pilot, dateFrom) {
   const result = {};
 
   // If no dateFrom => it's first request from the user, so retrieve all data
-  const scope = dateFrom ? SCOPES.all : SCOPES.visible;
+  const scope = dateFrom ? ormConstants.SCOPES.all : ormConstants.SCOPES.visible;
 
   // We are sending all the data to the browser along with the latest date at which DB records were modified
   // So front-end can compare it with the latest date it has in its store
@@ -88,7 +88,7 @@ const getAllData = function(pilot, dateFrom) {
       return result;
     })
     .catch(() => {
-      throw new KoiflyError(ErrorTypes.DB_READ_ERROR);
+      throw new KoiflyError(errorTypes.DB_READ_ERROR);
     });
 };
 

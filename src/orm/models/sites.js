@@ -1,14 +1,13 @@
 'use strict';
 /* eslint-disable new-cap */
 const Sequelize = require('sequelize');
-
-const SCOPES = require('../../constants/orm-constants').SCOPES;
-const ErrorMessages = require('../../errors/error-messages');
+const db = require('../sequelize-db');
+const errorMessages = require('../../errors/error-messages');
 const isUnique = require('../validation-helpers/is-unique');
-const sequelize = require('../sequelize');
+const ormConstants = require('../../constants/orm-constants');
 
 
-const Site = sequelize.define(
+const Site = db.define(
   'site',
 
   // attributes
@@ -26,7 +25,7 @@ const Site = sequelize.define(
       validate: {
         len: {
           args: [0, 100],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Site Name').replace('%max', '100')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Site Name').replace('%max', '100')
         }
       }
     },
@@ -38,7 +37,7 @@ const Site = sequelize.define(
       validate: {
         len: {
           args: [0, 1000],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Location').replace('%max', '1000')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Location').replace('%max', '1000')
         }
       }
     },
@@ -48,10 +47,10 @@ const Site = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isFloat: { msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
+        isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
+          msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
         }
       }
     },
@@ -61,14 +60,14 @@ const Site = sequelize.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: { msg: ErrorMessages.COORDINATES },
+        isFloat: { msg: errorMessages.COORDINATES },
         min: {
           args: [ -90 ],
-          msg: ErrorMessages.COORDINATES
+          msg: errorMessages.COORDINATES
         },
         max: {
           args: [ 90 ],
-          msg: ErrorMessages.COORDINATES
+          msg: errorMessages.COORDINATES
         }
       }
     },
@@ -78,14 +77,14 @@ const Site = sequelize.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: { msg: ErrorMessages.COORDINATES },
+        isFloat: { msg: errorMessages.COORDINATES },
         min: {
           args: [ -180 ],
-          msg: ErrorMessages.COORDINATES
+          msg: errorMessages.COORDINATES
         },
         max: {
           args: [ 180 ],
-          msg: ErrorMessages.COORDINATES
+          msg: errorMessages.COORDINATES
         }
       }
     },
@@ -97,7 +96,7 @@ const Site = sequelize.define(
       validate: {
         len: {
           args: [0, 10000],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
         }
       }
     },
@@ -120,7 +119,7 @@ const Site = sequelize.define(
     timestamps: true, // automatically adds fields updatedAt and createdAt
 
     scopes: {
-      [SCOPES.visible]: {
+      [ormConstants.SCOPES.visible]: {
         where: {
           see: true
         }
@@ -129,7 +128,7 @@ const Site = sequelize.define(
 
     hooks: {
       beforeValidate: function(instance, options) {
-        const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Site');
+        const errorMsg = errorMessages.DOUBLE_VALUE.replace('%field', 'Site');
         return isUnique(Site, instance, 'name', errorMsg, options.transaction);
       }
     },
@@ -156,7 +155,7 @@ const Site = sequelize.define(
     validate: {
       coordinates: function() {
         if ((this.lat === null) !== (this.lng === null)) {
-          throw new Error(ErrorMessages.EITHER_BOTH_COORDS_OR_NON);
+          throw new Error(errorMessages.EITHER_BOTH_COORDS_OR_NON);
         }
       }
     },

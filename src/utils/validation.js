@@ -1,28 +1,28 @@
 'use strict';
 
-const _ = require('lodash');
-const ErrorMessages = require('../errors/error-messages');
-const Util = require('./util');
+import _ from 'lodash';
+import errorMessages from '../errors/error-messages';
+import Util from './util';
 
 
 const Validation = {
-
   /**
    * @param {object} validationConfig - config rules to check user inputs against { fieldName: rulesObj }
    * @param {object} formData - data from html form { fieldName: userInput }
    * @param {boolean} isSoft - if false - the validation is final, check for required empty fields is performed
    * @returns {object|null} - object with validation error messages { fieldName: msg } or null if no errors found
    */
-  getValidationErrors: function(validationConfig, formData, isSoft) {
+  getValidationErrors(validationConfig, formData, isSoft) {
     const validationErrors = {};
 
     // For each field of given form
-    _.each(validationConfig, (config, fieldName) => {
+    Object.keys(validationConfig).forEach(fieldName => {
+      const config = validationConfig[fieldName];
       let nextError = null;
 
       // It's error if required field is empty and it isn't soft validation mode
       if (Util.isEmptyString(formData[fieldName]) && !isSoft && config.isRequired) {
-        nextError = ErrorMessages.NOT_EMPTY.replace('%field', config.rules.field);
+        nextError = errorMessages.NOT_EMPTY.replace('%field', config.rules.field);
       }
 
       // If field isn't empty check its value against its validation config
@@ -51,10 +51,10 @@ const Validation = {
      * @param {string} fieldName
      * @returns {string|null} - error message or null if validation passed
      */
-    date: function(formData, fieldName) {
+    date(formData, fieldName) {
 
       if (!Util.isRightDateFormat(formData[fieldName])) {
-        return ErrorMessages.DATE_FORMAT;
+        return errorMessages.DATE_FORMAT;
       }
 
       return null;
@@ -70,11 +70,11 @@ const Validation = {
      * @param {object} rules - validation rules to check user input against
      * @returns {string|null} - error message or null if validation passed
      */
-    number: function(formData, fieldName, rules) {
+    number(formData, fieldName, rules) {
 
       // If value is not a number
       if (!Util.isNumber(formData[fieldName])) {
-        return ErrorMessages.NUMBER.replace('%field', rules.field);
+        return errorMessages.NUMBER.replace('%field', rules.field);
       }
 
       const errorElements = [];
@@ -109,9 +109,9 @@ const Validation = {
      * @param {object} rules - validation rules to check user input against
      * @returns {string|null} - error message or null if validation passed
      */
-    text: function(formData, fieldName, rules) {
+    text(formData, fieldName, rules) {
       if (formData[fieldName].length > rules.maxLength) {
-        const errorMessage = ErrorMessages.MAX_LENGTH;
+        const errorMessage = errorMessages.MAX_LENGTH;
         return errorMessage.replace('%field', rules.field).replace('%max', rules.maxLength);
       }
 
@@ -132,7 +132,7 @@ const Validation = {
      *
      * @returns {string|null} - error message or null if validation passed
      */
-    coordinates: function(formData, fieldName, rules, isSoft) {
+    coordinates(formData, fieldName, rules, isSoft) {
       // Don't check the format for soft validation
       // so don't interrupt user from typing long coordinates input
       if (isSoft) {
@@ -159,9 +159,9 @@ const Validation = {
       }
 
       // If validation failed
-      return ErrorMessages.COORDINATES;
+      return errorMessages.COORDINATES;
     }
   }
 };
 
-module.exports = Validation;
+export default Validation;

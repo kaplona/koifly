@@ -1,12 +1,14 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
 
 if (process.env.BROWSER) {
   require('./home-block.less');
 }
 
-const HomeBlock = React.createClass({
+
+// defined as class for testing purposes
+export default class HomeBlock extends React.Component {
   render() {
     return (
       <div className='home-block'>
@@ -14,7 +16,4 @@ const HomeBlock = React.createClass({
       </div>
     );
   }
-});
-
-
-module.exports = HomeBlock;
+}

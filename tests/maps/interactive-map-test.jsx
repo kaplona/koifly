@@ -7,7 +7,6 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const TestUtils = require('react-addons-test-utils');
 const Simulate = TestUtils.Simulate;
-const Promise = require('es6-promise').Promise;
 const Chai = require('chai');
 const expect = Chai.expect;
 const Sinon = require('sinon');

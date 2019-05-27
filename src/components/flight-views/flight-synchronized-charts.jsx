@@ -1,27 +1,16 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, func, number, shape } = React.PropTypes;
-const Altitude = require('../../utils/altitude');
-const chartService = require('../../services/chart-service');
-const distanceService = require('../../services/distance-service');
-const Highcharts = require('highcharts');
+import React from 'react';
+import { arrayOf, func, number, shape } from 'prop-types';
+import Altitude from'../../utils/altitude';
+import chartService from'../../services/chart-service';
+import distanceService from'../../services/distance-service';
+import Highcharts from'highcharts';
 
 require('./flight-synchronized-charts.less');
 
 
-const FlightSynchronizedCharts = React.createClass({
-  propTypes: {
-    flightPoints: arrayOf(shape({
-      altInPilotUnit: number.isRequired,
-      lat: number.isRequired,
-      lng: number.isRequired,
-      airtimeInSeconds: number.isRequired
-    })),
-    minAltitude: number,
-    onPointHover: func.isRequired
-  },
-
+export default class FlightSynchronizedCharts extends React.Component {
   componentDidMount() {
     if (!this.props.flightPoints || !this.props.flightPoints.length) {
       return;
@@ -39,7 +28,7 @@ const FlightSynchronizedCharts = React.createClass({
     this.createCharts();
 
     ['mousemove', 'touchmove', 'touchstart'].forEach(eventType => {
-      document.getElementById('charts-container').addEventListener(eventType, this.handleChartHoverListener);
+      document.getElementById('charts-container').addEventListener(eventType, this.handleChartHoverListener.bind(this));
     });
 
     // Override the reset function, we don't need to hide the tooltips and crosshairs.
@@ -48,7 +37,7 @@ const FlightSynchronizedCharts = React.createClass({
         return undefined;
       };
     });
-  },
+  }
 
   handleChartHoverListener(e) {
     this.charts.forEach(chart => {
@@ -61,7 +50,7 @@ const FlightSynchronizedCharts = React.createClass({
         this.props.onPointHover(point.index);
       }
     });
-  },
+  }
 
   createCharts() {
     const pilotAltUnit = Altitude.getUserAltitudeUnitShort();
@@ -118,7 +107,7 @@ const FlightSynchronizedCharts = React.createClass({
       this.createChartInstance(launchDistChartConfig, minAirtime, maxAirtime),
       this.createChartInstance(glideRatioChartConfig, minAirtime, maxAirtime)
     ];
-  },
+  }
 
   createChartInstance(config, minAirtime, maxAirtime) {
     return Highcharts.chart({
@@ -209,7 +198,7 @@ const FlightSynchronizedCharts = React.createClass({
       credits: { enabled: false },
       series: [ config.series ]
     });
-  },
+  }
 
   getTickInterval(maxAirtime) {
     const isSmallScreen = document.body.clientWidth < 600;
@@ -226,7 +215,7 @@ const FlightSynchronizedCharts = React.createClass({
     // Depending on how many hours was the flight, tick every 5 min, 10 min, 15 min, etc.
     const hour = Math.floor(maxAirtime / 3600);
     return (hour + 1) * 5 * 60 * (isSmallScreen ? 2 : 1);
-  },
+  }
 
   render() {
     if (!this.props.flightPoints || !this.props.flightPoints.length) {
@@ -242,7 +231,16 @@ const FlightSynchronizedCharts = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = FlightSynchronizedCharts;
+FlightSynchronizedCharts.propTypes = {
+  flightPoints: arrayOf(shape({
+    altInPilotUnit: number.isRequired,
+    lat: number.isRequired,
+    lng: number.isRequired,
+    airtimeInSeconds: number.isRequired
+  })),
+  minAltitude: number,
+  onPointHover: func.isRequired
+};

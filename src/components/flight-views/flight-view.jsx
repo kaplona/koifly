@@ -1,31 +1,90 @@
 'use strict';
 
-const React = require('react');
-const { shape, string } = React.PropTypes;
-const Altitude = require('../../utils/altitude');
-const BreadCrumbs = require('../common/bread-crumbs');
-const FightMapAndCharts = require('./flight-map-and-charts');
-const FlightModel = require('../../models/flight');
-const itemViewMixin = require('../mixins/item-view-mixin');
-const Link = require('react-router').Link;
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const RemarksRow = require('../common/section/remarks-row');
-const RowContent = require('../common/section/row-content');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import { shape, string } from 'prop-types';
+import Altitude from '../../utils/altitude';
+import BreadCrumbs from '../common/bread-crumbs';
+import ErrorBox from '../common/notice/error-box';
+import FightMapAndCharts from './flight-map-and-charts';
+import FlightModel from '../../models/flight';
+import { Link } from 'react-router';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import RemarksRow from '../common/section/remarks-row';
+import RowContent from '../common/section/row-content';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import Util from '../../utils/util';
+import View from '../common/view';
 
-const FlightView = React.createClass({
 
-  propTypes: {
-    params: shape({ // url args
-      id: string.isRequired
-    }).isRequired
-  },
+export default class FlightView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      item: null, // no data received
+      loadingError: null
+    };
 
-  mixins: [ itemViewMixin(FlightModel.getModelKey()) ],
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+    this.handleEditItem = this.handleEditItem.bind(this);
+  }
+
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model
+   * and updates component's state
+   */
+  handleStoreModified() {
+    const storeContent = FlightModel.getItemOutput(this.props.params.id);
+
+    if (storeContent && storeContent.error) {
+      this.setState({ loadingError: storeContent.error });
+    } else {
+      this.setState({
+        item: storeContent,
+        loadingError: null
+      });
+    }
+  }
+
+  handleGoToListView() {
+    navigationService.goToListView(FlightModel.keys.plural);
+  }
+
+  handleEditItem() {
+    navigationService.goToEditView(FlightModel.keys.single, this.props.params.id);
+  }
+
+  renderNavigationMenu() {
+    return <NavigationMenu currentView={FlightModel.getModelKey()}/>;
+  }
+
+  renderSimpleLayout(children) {
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        <MobileTopMenu
+          leftButtonCaption='Back'
+          onLeftClick={this.handleGoToListView}
+        />
+        {this.renderNavigationMenu()}
+        {children}
+      </View>
+    );
+  }
+
+  renderLoader() {
+    return this.renderSimpleLayout(<SectionLoader/>);
+  }
+
+  renderError() {
+    return this.renderSimpleLayout(
+      <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
+    );
+  }
 
   renderMobileTopMenu() {
     return (
@@ -36,7 +95,7 @@ const FlightView = React.createClass({
         onRightClick={this.handleEditItem}
       />
     );
-  },
+  }
 
   render() {
     if (this.state.loadingError) {
@@ -119,7 +178,11 @@ const FlightView = React.createClass({
       </View>
     );
   }
-});
+}
 
 
-module.exports = FlightView;
+FlightView.propTypes = {
+  params: shape({ // url args
+    id: string.isRequired
+  }).isRequired
+};

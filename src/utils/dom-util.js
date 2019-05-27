@@ -2,11 +2,10 @@
 
 
 const DomUtil = {
-
-  scrollToTheTop: function() {
+  scrollToTheTop() {
     window.scrollTo(0, 0);
   }
 };
 
 
-module.exports = DomUtil;
+export default DomUtil;

@@ -1,12 +1,13 @@
 'use strict';
 
-const Altitude = require('../utils/altitude');
-const distanceService = require('./distance-service');
-const FlightModel = require('../models/flight');
-const Highcharts = require('highcharts');
-const objectValues = require('object.values');
-const SiteModel = require('../models/site');
-const Util = require('../utils/util');
+import Altitude from '../utils/altitude';
+import distanceService from './distance-service';
+import FlightModel from '../models/flight';
+import Highcharts from 'highcharts';
+import objectValues from 'object.values';
+import SiteModel from '../models/site';
+import Util from '../utils/util';
+
 
 const chartService = {
 
@@ -241,4 +242,4 @@ const chartService = {
   }
 };
 
-module.exports = chartService;
+export default chartService;

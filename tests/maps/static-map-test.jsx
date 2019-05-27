@@ -5,7 +5,6 @@
 require('../../src/test-dom')();
 const React = require('react');
 const TestUtils = require('react-addons-test-utils');
-const Promise = require('es6-promise').Promise;
 const Chai = require('chai');
 const expect = Chai.expect;
 const Sinon = require('sinon');

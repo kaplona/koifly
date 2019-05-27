@@ -1,12 +1,10 @@
 'use strict';
 
 
-const DataServiceConstants = {
-
-  TIMEOUT: 6000,
-
-  STORE_MODIFIED_EVENT: 'storeModified'
+const dataServiceConstants = {
+  STORE_MODIFIED_EVENT: 'storeModified',
+  TIMEOUT: 6000
 };
 
 
-module.exports = DataServiceConstants;
+export default dataServiceConstants;

@@ -1,17 +1,13 @@
 'use strict';
 
-const React = require('react');
-const { element, number, oneOfType, string } = React.PropTypes;
-const Label = require('./label');
-const ValueContainer = require('./value-container');
+import React from 'react';
+import { element, number, oneOfType, string } from 'prop-types';
+import Label from './label';
+import ValueContainer from './value-container';
 
 
-const RowContent = React.createClass({
-  propTypes: {
-    label: string,
-    value: oneOfType([element, string, number])
-  },
-
+// defined as class for testing purposes
+export default class RowContent extends React.Component {
   render() {
     return (
       <div>
@@ -20,7 +16,10 @@ const RowContent = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = RowContent;
+RowContent.propTypes = {
+  label: string,
+  value: oneOfType([element, string, number])
+};

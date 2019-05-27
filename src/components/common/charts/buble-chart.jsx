@@ -1,39 +1,13 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, func, number, oneOfType, shape, string } = React.PropTypes;
-const Highcharts = require('highcharts');
+import React from 'react';
+import { arrayOf, func, number, oneOfType, shape, string } from 'prop-types';
+import Highcharts from 'highcharts';
 
 require('highcharts/highcharts-more')(Highcharts);
 
 
-const BubbleChart = React.createClass({
-
-  propTypes: {
-    altitudeUnit: string,
-    categories: arrayOf(oneOfType([string, number])),
-    chartData: arrayOf(shape({
-      data: arrayOf(shape({
-        x: number.isRequired,
-        y: number.isRequired,
-        z: number.isRequired,
-        name: string.isRequired,
-        color: string.isRequired,
-        from: number.isRequired,
-        to: number.isRequired,
-        flightIds: arrayOf(oneOfType([string, number]))
-      })).isRequired
-    })).isRequired,
-    id: string, // pass it if there is several charts of the same type on the page.
-    onClick: func.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      id: 'bubbleChart'
-    };
-  },
-
+export default class BubbleChart extends React.Component {
   componentDidMount() {
     // Need to assign a props callback or value to a local variable,
     // since `this` keyword will be pointing to some Highcharts class instance in any functions passed to Highcharts.
@@ -73,34 +47,30 @@ const BubbleChart = React.createClass({
         formatter: function() {
           const point = this.point;
           return `
-                        <b>${point.x}</b>
-                        <br/>
-                        ${point.name}: <b>${point.z}</b> flights
-                        <br/>
-                        (${point.from} ${altitudeUnit} - ${point.to} ${altitudeUnit})
-                    `;
+            <b>${point.x}</b>
+            <br/>
+            ${point.name}: <b>${point.z}</b> flights
+            <br/>
+            (${point.from} ${altitudeUnit} - ${point.to} ${altitudeUnit})
+          `;
         }
       },
       legend: { enabled: false },
       credits: { enabled: false },
       series: this.props.chartData
     });
-  },
+  }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.chartData !== this.props.chartData) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.chartData !== this.props.chartData) {
       this.chart.update({
         xAxis: {
-          categories: nextProps.categories
+          categories: this.props.categories
         },
-        series: nextProps.chartData
+        series: this.props.chartData
       }, true, false);
     }
-  },
-
-  shouldComponentUpdate() {
-    return false;
-  },
+  }
 
   render() {
     const style = { width: '100%', height: '200px' };
@@ -109,7 +79,28 @@ const BubbleChart = React.createClass({
       <div id={this.props.id} style={style}/>
     );
   }
-});
+}
 
 
-module.exports = BubbleChart;
+BubbleChart.defaultPtops = {
+  id: 'bubbleChart'
+};
+
+BubbleChart.propTypes = {
+  altitudeUnit: string,
+  categories: arrayOf(oneOfType([string, number])),
+  chartData: arrayOf(shape({
+    data: arrayOf(shape({
+      x: number.isRequired,
+      y: number.isRequired,
+      z: number.isRequired,
+      name: string.isRequired,
+      color: string.isRequired,
+      from: number.isRequired,
+      to: number.isRequired,
+      flightIds: arrayOf(oneOfType([string, number]))
+    })).isRequired
+  })).isRequired,
+  id: string, // pass it if there is several charts of the same type on the page.
+  onClick: func.isRequired
+};

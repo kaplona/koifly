@@ -1,33 +1,29 @@
 'use strict';
 
-const React = require('react');
-const { string } = React.PropTypes;
+import React from 'react';
+import { string } from 'prop-types';
 
 if (process.env.BROWSER) {
   require('./signup-button.less');
 }
 
 
-const SignupButton = React.createClass({
-
-  propTypes: {
-    caption: string.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      caption: 'Sign up'
-    };
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class SignupButton extends React.Component {
+  render() {
     return (
       <a href='/signup' className='signup-button'>
         {this.props.caption}
       </a>
     );
   }
-});
+}
 
 
-module.exports = SignupButton;
+SignupButton.defaultProps = {
+  caption: 'Sign up'
+};
+
+SignupButton.propTypes = {
+  caption: string.isRequired
+};

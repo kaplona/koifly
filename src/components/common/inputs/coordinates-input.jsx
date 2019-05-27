@@ -1,48 +1,26 @@
 'use strict';
 
-const React = require('react');
-const { element, func, oneOfType, string } = React.PropTypes;
-const AppLink = require('../app-link');
-const InputContainer = require('./input-container');
-const Label = require('../section/label');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { element, func, oneOfType, string } from 'prop-types';
+import AppLink from '../app-link';
+import InputContainer from './input-container';
+import Label from '../section/label';
+import ValidationError from '../section/validation-error';
 
 require('./after-comment.less');
 
 
-const TextInput = React.createClass({
+export default class TextInput extends React.Component {
+  constructor() {
+    super();
+    this.handleUserInput = this.handleUserInput.bind(this);
+  }
 
-  propTypes: {
-    inputValue: string.isRequired,
-    labelText: oneOfType([
-      string,
-      element
-    ]),
-    inputName: string,
-    errorMessage: string,
-    onChange: func.isRequired,
-    onMapShow: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
+  handleUserInput(e) {
+    this.props.onChange(this.props.inputName, e.target.value);
+  }
 
-  getDefaultProps: function() {
-    return {
-      inputName: 'coordinates'
-    };
-  },
-
-  handleUserInput: function() {
-    this.props.onChange(this.props.inputName, this.refs.input.value);
-  },
-
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  render: function() {
+  render() {
     let className = 'x-text';
     if (this.props.errorMessage) {
       className += ' x-error';
@@ -50,7 +28,9 @@ const TextInput = React.createClass({
 
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -66,7 +46,6 @@ const TextInput = React.createClass({
             onChange={this.handleUserInput}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref='input'
           />
 
           <div className='after-comment'>
@@ -77,7 +56,23 @@ const TextInput = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = TextInput;
+TextInput.defaultProps = {
+  inputName: 'coordinates'
+};
+
+TextInput.propTypes = {
+  inputValue: string.isRequired,
+  labelText: oneOfType([
+    string,
+    element
+  ]),
+  inputName: string,
+  errorMessage: string,
+  onChange: func.isRequired,
+  onMapShow: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

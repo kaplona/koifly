@@ -1,20 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { func, number, shape } = React.PropTypes;
-
-const PropTypes = {
-
-  promise: shape({
-    then: func.isRequired,
-    catch: func
-  }),
-
-  coordinates: shape({
-    lat: number.isRequired,
-    lng: number.isRequired
-  })
-};
+import { func, number, shape } from 'prop-types';
 
 
-module.exports = PropTypes;
+export const coordinatesPropType = shape({
+  lat: number.isRequired,
+  lng: number.isRequired
+});
+
+export const promisePropType = shape({
+  then: func.isRequired,
+  catch: func
+});

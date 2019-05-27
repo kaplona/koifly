@@ -1,79 +1,58 @@
 'use strict';
 
-const React = require('react');
-const { func, number, string } = React.PropTypes;
-const _ = require('lodash');
-const Altitude = require('../../../utils/altitude');
-
-const CENTER = require('../../../constants/map-constants').CENTER;
-const OUT_OF_MAP_COORDINATES = require('../../../constants/map-constants').OUT_OF_MAP_COORDINATES;
-const PROP_TYPES = require('../../../constants/prop-types');
-const UNKNOWN_ADDRESS = require('../../../constants/map-constants').UNKNOWN_ADDRESS;
-const UNKNOWN_ELEVATION = require('../../../constants/map-constants').UNKNOWN_ELEVATION;
-const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
+import React from 'react';
+import { func, number, string } from 'prop-types';
+import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import _ from 'lodash';
+import Altitude from '../../../utils/altitude';
+import mapConstants from '../../../constants/map-constants';
 
 require('./map.less');
 
 
-const InteractiveMap = React.createClass({
+export default class InteractiveMap extends React.Component {
+  constructor() {
+    super();
+    this.mapEl = null;
+    this.setMapRef = this.setMapRef.bind(this);
+  }
 
-  propTypes: {
-    markerId: number.isRequired,
-    center: PROP_TYPES.coordinates.isRequired,
-    zoomLevel: number.isRequired,
-    markerPosition: PROP_TYPES.coordinates.isRequired,
-    location: string.isRequired,
-    launchAltitude: string.isRequired,
-    altitudeUnit: string.isRequired,
-    onDataApply: func.isRequired,
-    onMapClose: func.isRequired,
-    mapFacadePromise: PROP_TYPES.promise.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      markerId: 0,
-      center: CENTER.region, // @TODO current location or last added site
-      zoomLevel: ZOOM_LEVEL.region,
-      markerPosition: OUT_OF_MAP_COORDINATES,
-      location: '',
-      launchAltitude: '',
-      altitudeUnit: 'meters'
-    };
-  },
-
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.createMap(mapFacade);
     });
-  },
+  }
 
-  shouldComponentUpdate: function() {
+  shouldComponentUpdate() {
     return false;
-  },
+  }
 
-  createMap: function(mapFacade) {
-    mapFacade.createMap(this.refs.map, this.props.center, this.props.zoomLevel);
+  setMapRef(el) {
+    this.mapEl = el;
+  }
+
+  createMap(mapFacade) {
+    mapFacade.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
     mapFacade.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);
     mapFacade.createInfowindow(this.props.markerId, '');
     mapFacade.bindMarkerAndInfowindow(this.props.markerId);
     mapFacade.addSearchBarControl(this.props.markerId);
 
-    if (this.props.markerPosition !== OUT_OF_MAP_COORDINATES) {
+    if (this.props.markerPosition !== mapConstants.OUT_OF_MAP_COORDINATES) {
       mapFacade
         .getPositionInfoPromise(this.props.markerPosition)
         .then(positionInfo => {
           this.changeInfowindowContent(positionInfo, mapFacade);
         });
     }
-  },
+  }
 
-  changeInfowindowContent: function(positionInfo, mapFacade) {
+  changeInfowindowContent(positionInfo, mapFacade) {
     // Format infowindow content
     const location = positionInfo.address;
     const coordinates = positionInfo.coordinates;
     let altitude = positionInfo.elevation;
-    if (altitude !== UNKNOWN_ELEVATION) {
+    if (altitude !== mapConstants.UNKNOWN_ELEVATION) {
       // Convert to user altitude unit as Google map returns elevation in meters
       altitude = Altitude.getAltitudeInPilotUnits(parseFloat(altitude));
     }
@@ -89,48 +68,53 @@ const InteractiveMap = React.createClass({
     document.getElementById('close_map').addEventListener('click', () => {
       this.props.onMapClose();
     });
-  },
+  }
 
-  composeInfowindowMessage: function(location, altitude, coordinates) {
+  composeInfowindowMessage(location, altitude, coordinates) {
     // Mark checkbox as checked if related form field is empty
     // Checked values will then be transferred to the fields
-    const checkboxParameters = {
-      location: this.props.location ? '' : 'checked',
-      launchAltitude: this.props.launchAltitude ? '' : 'checked'
-    };
     // Disable checkbox if no google results for it
-    if (location === UNKNOWN_ADDRESS) {
-      checkboxParameters.location = 'disabled';
-    }
-    if (altitude === UNKNOWN_ELEVATION) {
-      checkboxParameters.launchAltitude = 'disabled';
-    }
-
+    const isLocationChecked = !this.props.location;
+    const isUnknownLocation = (location === mapConstants.UNKNOWN_ADDRESS);
+    const isAltitudeChecked = !this.props.launchAltitude;
+    const isUnknownElevation = (altitude === mapConstants.UNKNOWN_ELEVATION);
     const altitudeUnit = (altitude !== 'unknown elevation') ? (' ' + Altitude.getUserAltitudeUnit()) : '';
 
-    return '<div class="infowindow">' +
-      '<div>' +
-      '<input id="location_checkbox" type="checkbox" ' + checkboxParameters.location +
-      ' style="display:inline;width:12px;">' +
-      '<label for="location_checkbox">' + _.escape(location) + '</label>' +
-      '</div>' +
-      '<div>' +
-      '<input id="launchAltitude_checkbox" type="checkbox" ' + checkboxParameters.launchAltitude +
-      ' style="display:inline;width:12px;">' +
-      '<label for="launchAltitude_checkbox">' +
-      _.escape(altitude + ' ' + altitudeUnit) +
-      '</label>' +
-      '</div>' +
-      '<div>' +
-      '<input type="checkbox" style="display:inline;width:12px;" checked disabled>' +
-      _.escape(coordinates) +
-      '</div>' +
-      '<button id="apply_google_data" type="button" class="infowindow-button">Apply</button>' +
-      '<button id="close_map" type="button" class="infowindow-button">Close Map</button>' +
-      '</div>';
-  },
+    return `
+      <div class="infowindow">
+        <div>
+          <input
+            id="location_checkbox"
+            type="checkbox"
+            ${isLocationChecked && !isUnknownLocation ? 'checked' : ''}
+            ${isUnknownLocation ? 'disabled' : ''}
+            style="display:inline;width:12px;"
+          >
+          <label for="location_checkbox">${_.escape(location)}</label>
+        </div>
+        <div>
+          <input
+            id="launchAltitude_checkbox"
+            type="checkbox"
+            ${isAltitudeChecked && !isUnknownElevation ? 'checked' : ''}
+            ${isUnknownElevation ? 'disabled' : ''}
+            style="display:inline;width:12px;"
+          >
+          <label for="launchAltitude_checkbox">
+            ${_.escape(altitude + ' ' + altitudeUnit)}
+          </label>
+        </div>
+        <div>
+          <input type="checkbox" style="display:inline;width:12px;" checked disabled>
+          ${_.escape(coordinates)}
+        </div>
+        <button id="apply_google_data" type="button" class="infowindow-button">Apply</button>
+        <button id="close_map" type="button" class="infowindow-button">Close Map</button>
+      </div>
+    `;
+  }
 
-  applyGoogleData: function(location, elevation, coordinates) {
+  applyGoogleData(location, elevation, coordinates) {
     // If transferring address
     if (document.getElementById('location_checkbox').checked) {
       this.props.onDataApply('location', location);
@@ -145,18 +129,41 @@ const InteractiveMap = React.createClass({
     // Coordinates transfers anyway
     this.props.onDataApply('coordinates', coordinates);
     this.props.onMapClose();
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div className='interactive-wrapper'>
-        <div className='map-container x-full-screen' ref='map'/>
+        <div className='map-container x-full-screen' ref={this.setMapRef}/>
         <div className='dimmer' onClick={this.props.onMapClose}/>
       </div>
     );
   }
-});
+}
 
+
+InteractiveMap.defaultProps = {
+  markerId: 0,
+  center: mapConstants.CENTER.region,
+  zoomLevel: mapConstants.ZOOM_LEVEL.region,
+  markerPosition: mapConstants.OUT_OF_MAP_COORDINATES,
+  location: '',
+  launchAltitude: '',
+  altitudeUnit: 'meters'
+};
+
+InteractiveMap.propTypes = {
+  markerId: number.isRequired,
+  center: coordinatesPropType.isRequired,
+  zoomLevel: number.isRequired,
+  markerPosition: coordinatesPropType.isRequired,
+  location: string.isRequired,
+  launchAltitude: string.isRequired,
+  altitudeUnit: string.isRequired,
+  onDataApply: func.isRequired,
+  onMapClose: func.isRequired,
+  mapFacadePromise: promisePropType.isRequired
+};
 
 InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
@@ -169,5 +176,3 @@ InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-
     />
   );
 };
-
-module.exports = InteractiveMap;

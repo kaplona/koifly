@@ -1,25 +1,15 @@
 'use strict';
 
-const React = require('react');
-const Button = require('./button');
+import React from 'react';
+import { bool, func, string } from 'prop-types';
+import Button from './button';
 
 require('./mobile-button.less');
 
 
-const MobileButton = React.createClass({
-
-  propTypes: {
-    caption: React.PropTypes.string.isRequired,
-    type: React.PropTypes.string,
-    buttonStyle: React.PropTypes.string,
-    onClick: React.PropTypes.func.isRequired,
-    isEnabled: React.PropTypes.bool
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class MobileButton extends React.Component {
+  render() {
     return <Button {...this.props} isMobile={true}/>;
   }
-});
-
-
-module.exports = MobileButton;
+}

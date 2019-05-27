@@ -1,42 +1,40 @@
 'use strict';
 
-const React = require('react');
-const { number, string } = React.PropTypes;
-const FlightSynchronizedCharts = require('./flight-synchronized-charts');
-const igcService = require('../../services/igc-service');
-const StaticMap = require('../common/maps/static-map');
-const SiteModel = require('../../models/site');
-const TrackMap = require('../common/maps/track-map');
-const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
+import React from 'react';
+import { number, string } from 'prop-types';
+import FlightSynchronizedCharts from './flight-synchronized-charts';
+import igcService from '../../services/igc-service';
+import mapConstants from '../../constants/map-constants';
+import StaticMap from '../common/maps/static-map';
+import SiteModel from '../../models/site';
+import TrackMap from '../common/maps/track-map';
 
 
-const FightMapAndCharts = React.createClass({
-  propTypes: {
-    igc: string,
-    siteId: number
-  },
+export default class FightMapAndCharts extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      highlightedIndex: null,
+      parsedIgc: null
+    };
 
-  getInitialState() {
-    this.parsedIgc = null;
+    this.handleChartPointHover = this.handleChartPointHover.bind(this);
+  }
+
+  componentDidMount() {
     if (this.props.igc) {
-      this.parsedIgc = igcService.parseIgc(this.props.igc);
+      const parsedIgc = igcService.parseIgc(this.props.igc);
 
-      if (this.parsedIgc instanceof Error) {
-        this.parsedIgc = null;
-      } else {
+      if (!(parsedIgc instanceof Error)) {
+        this.setState({ parsedIgc });
         this.trackCoords = this.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
       }
     }
-
-
-    return {
-      highlightedIndex: null
-    };
-  },
+  }
 
   handleChartPointHover(index) {
     this.setState({ highlightedIndex: index });
-  },
+  }
 
   renderSiteMap() {
     const siteCoordinates = SiteModel.getLatLng(this.props.siteId);
@@ -49,13 +47,13 @@ const FightMapAndCharts = React.createClass({
 
     return StaticMap.create({
       center: siteCoordinates,
-      zoomLevel: ZOOM_LEVEL.site,
+      zoomLevel: mapConstants.ZOOM_LEVEL.site,
       sites: [ site ]
     });
-  },
+  }
 
   render() {
-    if (!this.parsedIgc) {
+    if (!this.state.parsedIgc) {
       return this.renderSiteMap();
     }
 
@@ -71,14 +69,17 @@ const FightMapAndCharts = React.createClass({
           markerCoords: highlightedCoords
         })}
         <FlightSynchronizedCharts
-          flightPoints={this.parsedIgc.flightPoints}
-          minAltitude={this.parsedIgc.minAltitude}
+          flightPoints={this.state.parsedIgc.flightPoints}
+          minAltitude={this.state.parsedIgc.minAltitude}
           onPointHover={this.handleChartPointHover}
         />
       </div>
     );
   }
-});
+}
 
 
-module.exports = FightMapAndCharts;
+FightMapAndCharts.propTypes = {
+  igc: string,
+  siteId: number
+};

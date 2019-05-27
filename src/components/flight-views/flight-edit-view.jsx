@@ -1,45 +1,160 @@
 'use strict';
 
-const React = require('react');
-const { shape, string } = React.PropTypes;
-const _ = require('lodash');
-const Altitude = require('../../utils/altitude');
-const AltitudeInput = require('../common/inputs/altitude-input');
-const DateInput = require('../common/inputs/date-input');
-const DropdownInput = require('../common/inputs/dropdown-input');
-const editViewMixin = require('../mixins/edit-view-mixin');
-const FlightModel = require('../../models/flight');
-const FightTrackUpload = require('./flight-track-upload');
-const GliderModel = require('../../models/glider');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const RemarksInput = require('../common/inputs/remarks-input');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const SiteModel = require('../../models/site');
-const TimeInput = require('../common/inputs/time-input');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import { shape, string } from 'prop-types';
+import _ from 'lodash';
+import Altitude from '../../utils/altitude';
+import AltitudeInput from '../common/inputs/altitude-input';
+import Button from '../common/buttons/button';
+import DateInput from '../common/inputs/date-input';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import DomUtil from '../../utils/dom-util';
+import DropdownInput from '../common/inputs/dropdown-input';
+import ErrorBox from '../common/notice/error-box';
+import errorTypes from '../../errors/error-types';
+import FlightModel from '../../models/flight';
+import FightTrackUpload from './flight-track-upload';
+import GliderModel from '../../models/glider';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import RemarksInput from '../common/inputs/remarks-input';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import SiteModel from '../../models/site';
+import TimeInput from '../common/inputs/time-input';
+import Util from '../../utils/util';
+import Validation from '../../utils/validation';
+import View from '../common/view';
 
 
-const FlightEditView = React.createClass({
-
-  propTypes: {
-    params: shape({ // url args
-      id: string
-    })
-  },
-
-  mixins: [ editViewMixin(FlightModel.getModelKey()) ],
-
-  getInitialState: function() {
-    return {
-      validationErrors: _.clone(FlightEditView.formFields),
-      isSledRide: false
+export default class FlightEditView extends React.Component {
+  constructor() {
+    super();
+    this.formFields = {
+      date: null,
+      siteId: null,
+      altitude: null,
+      airtime: null,
+      gliderId: null,
+      remarks: null,
+      hours: null,
+      minutes: null
     };
-  },
 
-  handleSledRide: function(isSledRide) {
+    this.state = {
+      isDeleting: false,
+      isInputInFocus: false,
+      isSaving: false,
+      isSledRide: false,
+      item: null, // no data received
+      loadingError: null,
+      processingError: null,
+      validationErrors: Object.assign({}, this.formFields)
+    };
+
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.handleCancelEdit = this.handleCancelEdit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDeleteItem = this.handleDeleteItem.bind(this);
+    this.handleSledRide = this.handleSledRide.bind(this);
+    this.handleFlightTrackData = this.handleFlightTrackData.bind(this);
+  }
+
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model
+   * and updates component's state
+   */
+  handleStoreModified() {
+    // If waiting for server response
+    // ignore any other data updates
+    if (this.isProcessing()) {
+      return;
+    }
+
+    // Fetch item
+    const item = FlightModel.getEditOutput(this.props.params.id);
+
+    // Check for errors
+    if (item && item.error) {
+      this.setState({ loadingError: item.error });
+      return;
+    }
+
+    this.setState({
+      item: item,
+      loadingError: null
+    });
+  }
+
+  /**
+   * Updates state which represents input values
+   * @param {string} inputName - key for this.state.item
+   * @param {string} inputValue
+   */
+  handleInputChange(inputName, inputValue) {
+    const newItem = Object.assign({}, this.state.item, { [inputName]: inputValue });
+    this.setState({ item: newItem }, () => {
+      this.updateValidationErrors(this.getValidationErrors(true));
+    });
+  }
+
+  handleInputFocus() {
+    this.setState({ isInputInFocus: true });
+  }
+
+  handleInputBlur() {
+    this.setState({ isInputInFocus: false });
+  }
+
+  handleCancelEdit() {
+    if (this.props.params.id) {
+      navigationService.goToItemView(FlightModel.keys.single, this.props.params.id);
+    } else {
+      navigationService.goToListView(FlightModel.keys.plural);
+    }
+  }
+
+  handleSubmit(event) {
+    if (event) {
+      event.preventDefault();
+    }
+
+    const validationErrors = this.getValidationErrors();
+    if (validationErrors) {
+      DomUtil.scrollToTheTop();
+      this.updateValidationErrors(validationErrors);
+      return;
+    }
+
+    // If no errors
+    this.setState({ isSaving: true });
+    FlightModel
+      .saveItem(this.state.item)
+      .then(() => this.handleCancelEdit())
+      .catch(error => this.updateProcessingError(error));
+  }
+
+  handleDeleteItem() {
+    const alertMessage = 'Delete this flight?';
+
+    if (window.confirm(alertMessage)) {
+      this.setState({ isDeleting: true });
+      FlightModel
+        .deleteItem(this.props.params.id)
+        .then(() => navigationService.goToListView(FlightModel.keys.plural))
+        .catch(error => this.updateProcessingError(error));
+    }
+  }
+
+  handleSledRide(isSledRide) {
     if (!isSledRide) {
       this.setState({ isSledRide: false });
       return;
@@ -52,17 +167,17 @@ const FlightEditView = React.createClass({
       altitudeUnit = Altitude.getUserAltitudeUnit();
     }
 
-    const item = _.extend({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
+    const item = Object.assign({}, this.state.item, { altitude: altitude, altitudeUnit: altitudeUnit });
 
     this.setState({
       item: item,
       isSledRide: true
     });
-  },
+  }
 
-  handleFlightTrackData: function(flightTrackData, igc) {
+  handleFlightTrackData(flightTrackData, igc) {
     if (!flightTrackData || !igc) {
-      const newItem = _.extend({}, this.state.item, { igc: null });
+      const newItem = Object.assign({}, this.state.item, { igc: null });
       this.setState({ item: newItem });
       return;
     }
@@ -70,7 +185,7 @@ const FlightEditView = React.createClass({
     const { altitude, date, hours, minutes, siteId } = this.state.item;
     const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
 
-    const newItem = _.extend({}, this.state.item, {
+    const newItem = Object.assign({}, this.state.item, {
       date: flightTrackData.date || date,
       siteId: flightTrackData.siteId || siteId,
       altitude: flightTrackData.maxAltitude || altitude,
@@ -82,9 +197,174 @@ const FlightEditView = React.createClass({
     this.setState({ item: newItem }, () => {
       this.updateValidationErrors(this.getValidationErrors(true));
     });
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  getValidationErrors(isSoft) {
+    return Validation.getValidationErrors(
+      FlightModel.getValidationConfig(),
+      this.state.item,
+      isSoft
+    );
+  }
+
+  /**
+   * Updates state with received error
+   * marks that view finished processing saving/deleting operation
+   * @param {object} error
+   *   @param {string} error.type
+   *   @param {string} error.message
+   *   @param {string} [error.errors]
+   */
+  updateProcessingError(error) {
+    if (error.type === errorTypes.VALIDATION_ERROR) {
+      this.updateValidationErrors(error.errors);
+      error = null;
+    }
+
+    this.setState({
+      processingError: error,
+      isSaving: false,
+      isDeleting: false
+    });
+  }
+
+  /**
+   * If validation errors changed, updates validation errors state
+   * @param {object} validationErrors - object where key is a form field name, value is error message
+   */
+  updateValidationErrors(validationErrors) {
+    validationErrors = Object.assign({}, this.formFields, validationErrors);
+
+    if (!_.isEqual(validationErrors, this.state.validationErrors)) {
+      this.setState({ validationErrors: validationErrors });
+    }
+  }
+
+  /**
+   * Whether view is processing saving or deleting operation
+   * @returns {boolean} - true if processing, false - if not
+   */
+  isProcessing() {
+    return this.state.isSaving || this.state.isDeleting;
+  }
+
+  renderNavigationMenu() {
+    return (
+      <NavigationMenu
+        currentView={FlightModel.getModelKey()}
+        isPositionFixed={!this.state.isInputInFocus}
+      />
+    );
+  }
+
+  renderSimpleLayout(children) {
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        <MobileTopMenu
+          leftButtonCaption='Cancel'
+          onLeftClick={this.handleCancelEdit}
+        />
+        {this.renderNavigationMenu()}
+        {children}
+      </View>
+    );
+  }
+
+  renderLoader() {
+    return this.renderSimpleLayout(
+      <SectionLoader/>
+    );
+  }
+
+  renderLoadingError() {
+    return this.renderSimpleLayout(
+      <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
+    );
+  }
+
+  renderProcessingError() {
+    if (this.state.processingError) {
+      return <ErrorBox error={this.state.processingError}/>;
+    }
+  }
+
+  renderMobileButtons() {
+    return (
+      <div>
+        <MobileButton
+          caption={this.state.isSaving ? 'Saving...' : 'Save'}
+          type='submit'
+          buttonStyle='primary'
+          onClick={this.handleSubmit}
+          isEnabled={!this.isProcessing()}
+        />
+        {this.renderMobileDeleteButton()}
+      </div>
+    );
+  }
+
+  renderMobileDeleteButton() {
+    if (this.props.params.id) {
+      return (
+        <MobileButton
+          caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
+          buttonStyle='warning'
+          onClick={this.handleDeleteItem}
+          isEnabled={!this.isProcessing()}
+        />
+      );
+    }
+  }
+
+  renderDesktopButtons() {
+    return (
+      <DesktopBottomGrid
+        leftElements={[
+          this.renderSaveButton(),
+          this.renderCancelButton()
+        ]}
+        rightElement={this.renderDeleteButton()}
+      />
+    );
+  }
+
+  renderSaveButton() {
+    return (
+      <Button
+        caption={this.state.isSaving ? 'Saving...' : 'Save'}
+        type='submit'
+        buttonStyle='primary'
+        onClick={this.handleSubmit}
+        isEnabled={!this.isProcessing()}
+      />
+    );
+  }
+
+  renderCancelButton() {
+    return (
+      <Button
+        caption='Cancel'
+        buttonStyle='secondary'
+        onClick={this.handleCancelEdit}
+        isEnabled={!this.isProcessing()}
+      />
+    );
+  }
+
+  renderDeleteButton() {
+    if (this.props.params.id) {
+      return (
+        <Button
+          caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
+          buttonStyle='warning'
+          onClick={this.handleDeleteItem}
+          isEnabled={!this.isProcessing()}
+        />
+      );
+    }
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         leftButtonCaption='Cancel'
@@ -94,9 +374,9 @@ const FlightEditView = React.createClass({
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }
@@ -225,19 +505,9 @@ const FlightEditView = React.createClass({
       </View>
     );
   }
-});
+}
 
 
-FlightEditView.formFields = {
-  date: null,
-  siteId: null,
-  altitude: null,
-  airtime: null,
-  gliderId: null,
-  remarks: null,
-  hours: null,
-  minutes: null
+FlightEditView.propTypes = {
+  id: string
 };
-
-
-module.exports = FlightEditView;

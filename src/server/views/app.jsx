@@ -1,14 +1,13 @@
 'use strict';
 
-const config = require('../../config/variables');
-const getWebpackAssets = require('../../tools/get-webpack-assets');
-const React = require('react');
+import React from 'react';
+import config from '../../config/variables';
+import getWebpackAssets from '../../tools/get-webpack-assets';
+import trackingCodeSnippet from '../../constants/tracking-code-snippet';
 
-const TRACKING_CODE_SNIPPET = require('../../constants/tracking-code-snippet');
 
-
-const App = React.createClass({
-  render: function() {
+export default class App extends React.Component {
+  render() {
     return (
       <html>
       <head>
@@ -21,7 +20,7 @@ const App = React.createClass({
         <title>Koifly — Flight logging app for freeflight pilots</title>
 
         <script src={getWebpackAssets().app.js}></script>
-        <script dangerouslySetInnerHTML={{ __html: TRACKING_CODE_SNIPPET }}/>
+        <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
 
         <link rel='stylesheet' type='text/css' href={getWebpackAssets().app.css}/>
 
@@ -61,6 +60,4 @@ const App = React.createClass({
       </html>
     );
   }
-});
-
-module.exports = App;
+}

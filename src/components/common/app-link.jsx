@@ -1,7 +1,8 @@
 'use strict';
 
-const React = require('react');
-const { func, string } = React.PropTypes;
+import React from 'react';
+import { func, string } from 'prop-types';
+
 const browserHistory = require('react-router').browserHistory;
 
 require('./app-link.less');
@@ -14,14 +15,13 @@ require('./app-link.less');
  *
  * If component has only onClick prop, it will be invoked on a link click.
  */
-const AppLink = React.createClass({
+export default class AppLink extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
 
-  propTypes: {
-    href: string,
-    onClick: func // will be ignored if "href" prop is passed.
-  },
-
-  handleClick: function(e) {
+  handleClick(e) {
     if (e && (e.ctrlKey || e.metaKey) && this.props.href) {
       // Allow default link behaviour when user opens it with Command or Ctrl key pressed.
       return;
@@ -39,16 +39,19 @@ const AppLink = React.createClass({
     if (this.props.onClick) {
       this.props.onClick();
     }
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <a href={this.props.href} className='app-link' onClick={this.handleClick}>
         {this.props.children}
       </a>
     );
   }
-});
+}
 
 
-module.exports = AppLink;
+AppLink.propTypes = {
+  href: string,
+  onClick: func // will be ignored if "href" prop is passed.
+};

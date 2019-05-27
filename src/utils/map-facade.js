@@ -1,19 +1,12 @@
 'use strict';
 
-const _ = require('lodash');
-const Promise = require('es6-promise').Promise;
-const Util = require('./util');
-
-const CENTER = require('../constants/map-constants').CENTER;
-const GOOGLE_MAPS_API_KEY = require('../secrets').googleMapsApiKey;
-const INFOWINDOW_WIDTH = require('../constants/map-constants').INFOWINDOW_WIDTH;
-const UNKNOWN_ADDRESS = require('../constants/map-constants').UNKNOWN_ADDRESS;
-const UNKNOWN_ELEVATION = require('../constants/map-constants').UNKNOWN_ELEVATION;
+import mapConstants from '../constants/map-constants';
+import Util from './util';
 
 // Load google maps api
 // On success extend basic Map object with map interactive functionality
 // Emit event that map was loaded
-const googleMapsApi = require('google-maps-api')(GOOGLE_MAPS_API_KEY);
+const googleMapsApi = require('google-maps-api')(mapConstants.GOOGLE_MAPS_API_KEY);
 const mapsApiPromise = googleMapsApi();
 
 
@@ -29,7 +22,7 @@ const MapFacade = function(mapsApi) {
   this.infowindowOnClickFunctions = {};
 
   this.mapOptions = {
-    center: CENTER.world,
+    center: mapConstants.CENTER.world,
     zoom: 4,
     mapTypeId: mapsApi.MapTypeId.TERRAIN,
     // map controls setting
@@ -111,7 +104,7 @@ MapFacade.prototype.moveMarker = function(latLng, siteId, changeInfowindowConten
 MapFacade.prototype.createInfowindow = function(siteId, content, onClickFunc) {
   this.siteInfowindows[siteId] = new this.mapsApi.InfoWindow({
     content: content,
-    maxWidth: INFOWINDOW_WIDTH
+    maxWidth: mapConstants.INFOWINDOW_WIDTH
   });
 
   if (onClickFunc) {
@@ -142,8 +135,8 @@ MapFacade.prototype.closeInfowindow = function(siteId) {
 };
 
 MapFacade.prototype.closeAllInfowindows = function() {
-  _.each(this.siteInfowindows, (infowindow, infowindowId) => {
-    this.closeInfowindow(infowindowId);
+  Object.keys(this.siteInfowindows).forEach(siteId => {
+    this.closeInfowindow(siteId);
   });
 };
 
@@ -184,7 +177,7 @@ MapFacade.prototype.zoomToFlightTrack = function() {
   }
   const bounds = new this.mapsApi.LatLngBounds();
   const points = this.flightTrack.getPath().getArray();
-  _.each(points, point => bounds.extend(point));
+  points.forEach(point => bounds.extend(point));
 
   this.map.fitBounds(bounds);
 };
@@ -288,7 +281,7 @@ MapFacade.prototype.getAddressPromise = function(latLng) {
           return;
         }
       }
-      resolve(UNKNOWN_ADDRESS);
+      resolve(mapConstants.UNKNOWN_ADDRESS);
     });
   });
 };
@@ -309,7 +302,7 @@ MapFacade.prototype.getElevationPromise = function(latLng) {
           return;
         }
       }
-      resolve(UNKNOWN_ELEVATION);
+      resolve(mapConstants.UNKNOWN_ELEVATION);
     });
   });
 };
@@ -394,4 +387,4 @@ MapFacade.createPromise = function() {
 };
 
 
-module.exports = MapFacade;
+export default MapFacade;

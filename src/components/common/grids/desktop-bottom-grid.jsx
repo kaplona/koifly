@@ -1,28 +1,20 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, element, oneOfType, string } = React.PropTypes;
-const _ = require('lodash');
+import React from 'react';
+import { arrayOf, element, oneOfType, string } from 'prop-types';
 
 require('./desktop-bottom-grid.less');
 
 
-const DesktopBottomGrid = React.createClass({
-
-  propTypes: {
-    leftElements: arrayOf(oneOfType([element, string])),
-    rightElement: oneOfType([element, string])
-  },
-
-  render: function() {
-    const leftElements = _.map(this.props.leftElements, (el, index) => {
-      return <div key={'left-element-' + index}>{el}</div>;
-    });
-
+// defined as class for testing purposes
+export default class DesktopBottomGrid extends React.Component {
+  render() {
     return (
       <div className='bottom-grid'>
         <div className='left-elements'>
-          {leftElements}
+          {this.props.leftElements.map((el, index) => (
+            <div key={'left-element-' + index}>{el}</div>
+          ))}
         </div>
 
         <div className='right-element'>
@@ -31,7 +23,10 @@ const DesktopBottomGrid = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = DesktopBottomGrid;
+DesktopBottomGrid.propTypes = {
+  leftElements: arrayOf(oneOfType([element, string])),
+  rightElement: oneOfType([element, string])
+};

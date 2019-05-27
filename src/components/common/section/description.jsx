@@ -1,11 +1,12 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
 
 require('./description.less');
 
 
-const Description = React.createClass({
+// defined as class for testing purposes
+export default class Description extends React.Component {
   render() {
     return (
       <div className='description'>
@@ -13,7 +14,4 @@ const Description = React.createClass({
       </div>
     );
   }
-});
-
-
-module.exports = Description;
+}

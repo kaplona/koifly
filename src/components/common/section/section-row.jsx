@@ -1,28 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { bool } = React.PropTypes;
+import React from 'react';
+import { bool } from 'prop-types';
 
 require('./section-row.less');
 
 
-const SectionRow = React.createClass({
-
-  propTypes: {
-    isDesktopOnly: bool,
-    isLast: bool,
-    isMobileLast: bool
-  },
-
-  getDefaultProps: function() {
-    return {
-      isDesktopOnly: false,
-      isLast: false,
-      isMobileLast: false
-    };
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class SectionRow extends React.Component {
+  render() {
     let className = 'section-row';
     if (this.props.isLast) {
       className += ' x-last';
@@ -40,7 +26,17 @@ const SectionRow = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = SectionRow;
+SectionRow.defaultProps = {
+  isDesktopOnly: false,
+  isLast: false,
+  isMobileLast: false
+};
+
+SectionRow.propTypes = {
+  isDesktopOnly: bool,
+  isLast: bool,
+  isMobileLast: bool
+};

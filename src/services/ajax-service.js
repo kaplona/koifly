@@ -1,13 +1,11 @@
 'use strict';
 
-const _ = require('lodash');
-const ErrorTypes = require('../errors/error-types');
-const KoiflyError = require('../errors/error');
-const Promise = require('es6-promise').Promise;
-const TIMEOUT = require('../constants/data-service-constants').TIMEOUT;
+import errorTypes from '../errors/error-types';
+import KoiflyError from '../errors/error';
+import dataServiceConstants from '../constants/data-service-constants';
 
 
-const AjaxService = {
+const ajaxService = {
 
   /**
    * Sends Ajax requests to the server,
@@ -27,7 +25,7 @@ const AjaxService = {
    *
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  send: function(options, isRetry) {
+  send(options, isRetry) {
 
     let url = options.url;
     const data = options.data;
@@ -36,7 +34,7 @@ const AjaxService = {
     if (options.method === 'get') {
       // Make valid query string from params object
       // Add csrf token to prevent csrf attack to the server
-      url = url + '?' + this.buildQuery(_.extend({}, options.queryParams, { csrf: csrfCookie }));
+      url = url + '?' + this.buildQuery(Object.assign({}, options.queryParams, { csrf: csrfCookie }));
     }
 
     if (options.method === 'post') {
@@ -47,17 +45,17 @@ const AjaxService = {
     return new Promise((resolve, reject) => {
 
       const ajaxRequest = new XMLHttpRequest();
-      ajaxRequest.timeout = TIMEOUT;
+      ajaxRequest.timeout = dataServiceConstants.TIMEOUT;
 
       // If we got response from the server
       ajaxRequest.addEventListener('load', () => {
         if (ajaxRequest.status === 401) {
-          reject(new KoiflyError(ErrorTypes.AUTHENTICATION_ERROR));
+          reject(new KoiflyError(errorTypes.AUTHENTICATION_ERROR));
           return;
         }
 
         if (ajaxRequest.status >= 400 && ajaxRequest.status < 600) {
-          reject(new KoiflyError(ErrorTypes.DB_READ_ERROR));
+          reject(new KoiflyError(errorTypes.DB_READ_ERROR));
           return;
         }
 
@@ -72,11 +70,11 @@ const AjaxService = {
           return;
         }
 
-        if (serverResponse.error.type === ErrorTypes.INVALID_CSRF_TOKEN) {
+        if (serverResponse.error.type === errorTypes.INVALID_CSRF_TOKEN) {
           if (isRetry) {
-            reject(new KoiflyError(ErrorTypes.DB_READ_ERROR));
+            reject(new KoiflyError(errorTypes.DB_READ_ERROR));
           } else {
-            AjaxService
+            ajaxService
               .send(options, true)
               .then(resolve)
               .catch(reject);
@@ -88,8 +86,8 @@ const AjaxService = {
       });
 
       // If request failed
-      ajaxRequest.addEventListener('error', () => reject(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
-      ajaxRequest.addEventListener('timeout', () => reject(new KoiflyError(ErrorTypes.AJAX_NETWORK_ERROR)));
+      ajaxRequest.addEventListener('error', () => reject(new KoiflyError(errorTypes.AJAX_NETWORK_ERROR)));
+      ajaxRequest.addEventListener('timeout', () => reject(new KoiflyError(errorTypes.AJAX_NETWORK_ERROR)));
 
       // Open and send request
       ajaxRequest.open(options.method, url);
@@ -108,7 +106,7 @@ const AjaxService = {
    * @param {Object} [queryParams]
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  get: function(url, queryParams) {
+  get(url, queryParams) {
     return this.send({ url: url, method: 'get', queryParams: queryParams });
   },
 
@@ -118,7 +116,7 @@ const AjaxService = {
    * @param {Object} [data]
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  post: function(url, data = {}) {
+  post(url, data = {}) {
     return this.send({ url: url, method: 'post', data: data });
   },
 
@@ -128,7 +126,7 @@ const AjaxService = {
    * @param {object} queryParams
    * @returns {string} - valid url query
    */
-  buildQuery: function(queryParams) {
+  buildQuery(queryParams) {
     return Object
       .keys(queryParams)
       .map(key => {
@@ -145,7 +143,7 @@ const AjaxService = {
    * @private
    * @returns {string|null} - csrf token or null if there is no such
    */
-  getCsrfCookie: function() {
+  getCsrfCookie() {
     // Prepend '; ' to cookie string
     // so as to have '; name=value; name=value;'
     // in this case we are sure that 'csrf' is a full cookie name
@@ -167,4 +165,4 @@ const AjaxService = {
 };
 
 
-module.exports = AjaxService;
+export default ajaxService;

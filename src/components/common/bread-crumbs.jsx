@@ -1,31 +1,29 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, element, number, oneOfType, string } = React.PropTypes;
-const _ = require('lodash');
+import React from 'react';
+import { arrayOf, element, number, oneOfType, string } from 'prop-types';
 
 require('./bread-crumbs.less');
 
 
-const BreadCrumbs = React.createClass({
-  propTypes: {
-    elements: arrayOf(oneOfType([element, string, number])).isRequired
-  },
-
+// defined as class for testing purposes
+export default class BreadCrumbs extends React.Component {
   render() {
     const separator = ' / ';
     return (
       <div className='bread-crumbs'>
-        {_.map(this.props.elements, (el, index, elements) => (
+        {this.props.elements.map((el, index, elements) => (
           <span key={`bread-crumb-${index}`}>
-                        {el}
+            {el}
             {index < (elements.length - 1) ? separator : null}
-                    </span>
+          </span>
         ))}
       </div>
     );
   }
-});
+}
 
 
-module.exports = BreadCrumbs;
+BreadCrumbs.propTypes = {
+  elements: arrayOf(oneOfType([element, string, number])).isRequired
+};

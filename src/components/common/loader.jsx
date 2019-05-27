@@ -1,12 +1,10 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
 
 require('./loader.less');
 
 
-function Loader() {
+export default function Loader() {
   return <div className='loader'/>;
 }
-
-module.exports = Loader;

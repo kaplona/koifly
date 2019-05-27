@@ -1,45 +1,43 @@
 'use strict';
 
-const React = require('react');
-const { func, string } = React.PropTypes;
-const Button = require('../buttons/button');
-const InputContainer = require('./input-container');
-const Label = require('../section/label');
-const Notice = require('../notice/notice');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { func, string } from 'propTypes';
+import Button from '../buttons/button';
+import InputContainer from './input-container';
+import Label from '../section/label';
+import Notice from '../notice/notice';
+import ValidationError from '../section/validation-error';
 
 require('./file-input.less');
 
 
-const FileInput = React.createClass({
-  propTypes: {
-    fileName: string,
-    fileTypes: string.isRequired, // comma separated types, which input[type='file'] expects in "accepts" attr
-    errorMessage: string,
-    onSelect: func.isRequired,
-    onRemove: func.isRequired
-  },
+export default class FileInput extends React.Compoenent {
+  constructor() {
+    super();
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.handleFileSelect = this.handleFileSelect.bind(this);
+  }
 
-  handleButtonClick: function() {
-    if (this.refs.hiddenFileInput) {
-      this.refs.hiddenFileInput.click();
+  handleButtonClick() {
+    if (this.hiddenFileInput) {
+      this.hiddenFileInput.click();
     }
-  },
+  }
 
-  handleFileSelect: function(event) {
+  handleFileSelect(event) {
     const file = event.target.files[0];
     if (!file) {
       return;
     }
     this.props.onSelect(file);
-  },
+  }
 
-  render: function() {
+  render() {
     if (!window.FileReader || !window.File || !window.FileList || !window.Blob) {
       const message = `
-                Your browser doesn't support new html file uploading API.
-                Please, upgrade your browser to the latest version, or use Firefox, Chrome, Safari, or Opera browsers.
-            `;
+        Your browser doesn't support new html file uploading API.
+        Please, upgrade your browser to the latest version, or use Firefox, Chrome, Safari, or Opera browsers.
+      `;
       return <Notice type='error' text={message}/>;
     }
 
@@ -55,8 +53,8 @@ const FileInput = React.createClass({
             <InputContainer>
               <span className='file-name'>{this.props.fileName}</span>
               <span className='remove-file' onClick={this.props.onRemove}>
-                                {'\u274C'}
-                            </span>
+                {'\u274C'}
+              </span>
             </InputContainer>
           </div>
         )}
@@ -71,14 +69,20 @@ const FileInput = React.createClass({
           className='hidden'
           type='file'
           accept={this.props.fileTypes}
-          ref='hiddenFileInput'
+          ref={el => this.hiddenFileInput = el}
           tabIndex='-1'
           onChange={this.handleFileSelect}
         />
       </div>
     );
   }
-});
+}
 
 
-module.exports = FileInput;
+FileInput.propTypes = {
+  fileName: string,
+  fileTypes: string.isRequired, // comma separated types, which input[type='file'] expects in "accepts" attr
+  errorMessage: string,
+  onSelect: func.isRequired,
+  onRemove: func.isRequired
+};

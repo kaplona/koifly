@@ -3,8 +3,8 @@
 const _ = require('lodash');
 const BcryptPromise = require('../../utils/bcrypt-promise');
 const getPilotValuesForFrontend = require('../helpers/get-pilot-values');
-const EmailMessageTemplates = require('../../constants/email-message-templates');
-const ErrorTypes = require('../../errors/error-types');
+const emailMessageTemplates = require('../../constants/email-message-templates');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
@@ -26,7 +26,7 @@ const signupHandler = function(request) {
 
   // Checks payload for required fields
   if (!_.isString(payload.email) || !_.isString(payload.password)) {
-    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   return BcryptPromise
@@ -47,7 +47,7 @@ const signupHandler = function(request) {
     })
     .then(() => {
       // Send user email with auth verification token
-      sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
+      sendAuthTokenToPilot(pilot, emailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
       // Reply with pilot info since it's the only user's data yet
       return getPilotValuesForFrontend(pilot);
     })

@@ -1,7 +1,8 @@
 'use strict';
 
-const React = require('react');
-const { array, object, oneOfType, string } = React.PropTypes;
+import React from 'react';
+import { array, object, oneOfType, string } from 'prop-types';
+
 
 const koiflyErrorPropType = {
   type: string,
@@ -9,4 +10,5 @@ const koiflyErrorPropType = {
   errors: oneOfType([array, object])
 };
 
-module.exports = koiflyErrorPropType;
+
+export default koiflyErrorPropType;

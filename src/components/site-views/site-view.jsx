@@ -1,35 +1,93 @@
 'use strict';
 
-const React = require('react');
-const { shape, string } = React.PropTypes;
-const Altitude = require('../../utils/altitude');
-const BreadCrumbs = require('../common/bread-crumbs');
-const itemViewMixin = require('../mixins/item-view-mixin');
-const Link = require('react-router').Link;
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const RemarksRow = require('../common/section/remarks-row');
-const RowContent = require('../common/section/row-content');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const SiteModel = require('../../models/site');
-const StaticMap = require('../common/maps/static-map');
-const Util = require('../../utils/util');
-const View = require('../common/view');
-const ZOOM_LEVEL = require('../../constants/map-constants').ZOOM_LEVEL;
+import React from 'react';
+import { shape, string } from 'prop-types';
+import Altitude from '../../utils/altitude';
+import BreadCrumbs from '../common/bread-crumbs';
+import ErrorBox from '../common/notice/error-box';
+import { Link } from 'react-router';
+import mapConstants from '../../constants/map-constants';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import RemarksRow from '../common/section/remarks-row';
+import RowContent from '../common/section/row-content';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import SiteModel from '../../models/site';
+import StaticMap from '../common/maps/static-map';
+import Util from '../../utils/util';
+import View from '../common/view';
 
 
-const SiteView = React.createClass({
+export default class SiteView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      item: null, // no data received
+      loadingError: null
+    };
 
-  propTypes: {
-    params: shape({ // url args
-      id: string.isRequired
-    })
-  },
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+    this.handleEditItem = this.handleEditItem.bind(this);
+  }
 
-  mixins: [ itemViewMixin(SiteModel.getModelKey()) ],
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model
+   * and updates component's state
+   */
+  handleStoreModified() {
+    const storeContent = SiteModel.getItemOutput(this.props.params.id);
 
-  renderMobileTopMenu: function() {
+    if (storeContent && storeContent.error) {
+      this.setState({ loadingError: storeContent.error });
+    } else {
+      this.setState({
+        item: storeContent,
+        loadingError: null
+      });
+    }
+  }
+
+  handleGoToListView() {
+    navigationService.goToListView(SiteModel.keys.plural);
+  }
+
+  handleEditItem() {
+    navigationService.goToEditView(SiteModel.keys.single, this.props.params.id);
+  }
+
+  renderNavigationMenu() {
+    return <NavigationMenu currentView={SiteModel.getModelKey()}/>;
+  }
+
+  renderSimpleLayout(children) {
+    return (
+      <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
+        <MobileTopMenu
+          leftButtonCaption='Back'
+          onLeftClick={this.handleGoToListView}
+        />
+        {this.renderNavigationMenu()}
+        {children}
+      </View>
+    );
+  }
+
+  renderLoader() {
+    return this.renderSimpleLayout(<SectionLoader/>);
+  }
+
+  renderError() {
+    return this.renderSimpleLayout(
+      <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
+    );
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         leftButtonCaption='Back'
@@ -38,19 +96,19 @@ const SiteView = React.createClass({
         onRightClick={this.handleEditItem}
       />
     );
-  },
+  }
 
-  renderMap: function() {
+  renderMap() {
     if (this.state.item.coordinates) {
       return StaticMap.create({
         center: SiteModel.getLatLng(this.state.item.id),
-        zoomLevel: ZOOM_LEVEL.site,
+        zoomLevel: mapConstants.ZOOM_LEVEL.site,
         sites: [ this.state.item ]
       });
     }
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -116,7 +174,11 @@ const SiteView = React.createClass({
       </View>
     );
   }
-});
+}
 
 
-module.exports = SiteView;
+SiteView.propTypes = {
+  params: shape({ // url args
+    id: string.isRequired
+  })
+};

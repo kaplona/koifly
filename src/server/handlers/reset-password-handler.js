@@ -3,7 +3,7 @@
 const _ = require('lodash');
 const BcryptPromise = require('../../utils/bcrypt-promise');
 const getAllData = require('../helpers/get-all-data');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
 const setAuthCookie = require('../helpers/set-auth-cookie');
@@ -26,7 +26,7 @@ const resetPasswordHandler = function(request) {
     !_.isString(payload.authToken) ||
     !_.isString(payload.password)
   ) {
-    return { error: new KoiflyError(ErrorTypes.BAD_REQUEST) };
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   return verifyAuthToken(payload.pilotId, payload.authToken)

@@ -1,8 +1,7 @@
 'use strict';
 
 
-const EmailMessageTemplates = {
-
+const emailMessageTemplates = {
   PASSWORD_CHANGE: {
     from: 'Koifly <noreply@koifly.com>',
     subject: 'Your Koifly password was changed',
@@ -77,4 +76,4 @@ const EmailMessageTemplates = {
 };
 
 
-module.exports = EmailMessageTemplates;
+export default emailMessageTemplates;

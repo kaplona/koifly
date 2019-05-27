@@ -1,36 +1,15 @@
 'use strict';
 
-const React = require('react');
-const { bool, func } = React.PropTypes;
-const Button = require('../buttons/button');
+import React from 'react';
+import { bool, func } from 'prop-types';
+import Button from '../buttons/button';
 
 require('./section.less');
 
 
-const Section = React.createClass({
-
-  propTypes: {
-    isFullScreen: bool,
-    onEditClick: func
-  },
-
-  getDefaultProps: function() {
-    return {
-      isFullScreen: false
-    };
-  },
-
-  renderEditButton: function() {
-    if (this.props.onEditClick) {
-      return (
-        <div className='edit-button'>
-          <Button caption='Edit' onClick={this.props.onEditClick}/>
-        </div>
-      );
-    }
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class Section extends React.Component {
+  render() {
     let className = 'section';
     if (this.props.isFullScreen) {
       className += ' x-full-screen';
@@ -39,11 +18,22 @@ const Section = React.createClass({
     return (
       <div className={className}>
         {this.props.children}
-        {this.renderEditButton()}
+        {this.props.onEditClick && (
+          <div className='edit-button'>
+            <Button caption='Edit' onClick={this.props.onEditClick}/>
+          </div>
+        )}
       </div>
     );
   }
-});
+}
 
 
-module.exports = Section;
+Section.defaultProps = {
+  isFullScreen: false
+};
+
+Section.propTypes = {
+  isFullScreen: bool,
+  onEditClick: func
+};

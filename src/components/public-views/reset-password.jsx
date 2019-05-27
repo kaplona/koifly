@@ -1,46 +1,56 @@
 'use strict';
 
-const React = require('react');
-const { shape, string } = React.PropTypes;
-const Button = require('../common/buttons/button');
-const CompactContainer = require('../common/compact-container');
-const dataService = require('../../services/data-service');
-const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-const ErrorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const MobileButton = require('../common/buttons/mobile-button');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const Notice = require('../common/notice/notice');
-const PublicViewMixin = require('../mixins/public-view-mixin');
-const PasswordInput = require('../common/inputs/password-input');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const Util = require('../../utils/util');
+import React from 'react';
+import { shape, string } from 'prop-types';
+import Button from '../common/buttons/button';
+import CompactContainer from '../common/compact-container';
+import dataService from '../../services/data-service';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
+import PasswordInput from '../common/inputs/password-input';
+import Section from '../common/section/section';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import Util from '../../utils/util';
 
 
-const ResetPassword = React.createClass({
-
-  propTypes: {
-    params: shape({ // url args
-      pilotId: string.isRequired,
-      authToken: string.isRequired
-    })
-  },
-
-  mixins: [ PublicViewMixin ],
-
-  getInitialState: function() {
-    return {
+export default class ResetPassword extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       password: '',
       passwordConfirm: '',
       error: null,
+      isInputInFocus: false,
       isSending: false,
       successNotice: false
     };
-  },
 
-  handleSubmit: function(event) {
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleInputFocus = this.handleInputFocus.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleInputChange(inputName, inputValue) {
+    this.setState({ [inputName]: inputValue });
+  }
+
+  handleInputFocus() {
+    this.setState({ isInputInFocus: true });
+  }
+
+  handleInputBlur() {
+    this.setState({ isInputInFocus: false });
+  }
+
+  handleSubmit(event) {
     if (event) {
       event.preventDefault();
     }
@@ -64,36 +74,49 @@ const ResetPassword = React.createClass({
       .resetPassword(password, pilotId, authToken)
       .then(() => this.setState({ successNotice: true }))
       .catch(error => this.updateError(error));
-  },
+  }
 
-  getValidationError: function() {
+  getValidationError() {
     if (Util.isEmptyString(this.state.password)) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'All fields are required');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'All fields are required');
     }
 
     if (this.state.password !== this.state.passwordConfirm) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'Password and confirmed password must be the same');
     }
 
     return null;
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  updateError(error) {
+    this.setState({
+      error: error,
+      isSending: false
+    });
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Koifly'
         rightButtonCaption='Log in'
-        onRightClick={this.handleGoToLogin}
+        onRightClick={navigationService.goToLogin}
         isPositionFixed={!this.state.isInputInFocus}
       />
     );
-  },
+  }
 
-  renderDesktopButtons: function() {
+  renderError() {
+    if (this.state.error) {
+      return <Notice isPadded={true} type='error' text={this.state.error.message}/>;
+    }
+  }
+
+  renderDesktopButtons() {
     return <DesktopBottomGrid leftElements={[ this.renderSaveButton() ]}/>;
-  },
+  }
 
-  renderSaveButton: function() {
+  renderSaveButton() {
     return (
       <Button
         caption={this.state.isSending ? 'Saving...' : 'Save'}
@@ -103,9 +126,9 @@ const ResetPassword = React.createClass({
         isEnabled={!this.state.isSending}
       />
     );
-  },
+  }
 
-  renderMobileButtons: function() {
+  renderMobileButtons() {
     return (
       <MobileButton
         caption={this.state.isSending ? 'Saving ...' : 'Save'}
@@ -115,9 +138,9 @@ const ResetPassword = React.createClass({
         isEnabled={!this.state.isSending}
       />
     );
-  },
+  }
 
-  renderSuccessNotice: function() {
+  renderSuccessNotice() {
     return (
       <div>
         {this.renderMobileTopMenu()}
@@ -125,14 +148,23 @@ const ResetPassword = React.createClass({
         <Notice
           text='Your password was successfully reset'
           type='success'
-          onClick={this.handleGoToFlightLog}
+          onClick={navigationService.goToFlightLog}
           buttonText='Go to App'
         />
       </div>
     );
-  },
+  }
 
-  render: function() {
+  renderNavigationMenu() {
+    return (
+      <NavigationMenu
+        isMobile={true}
+        isPositionFixed={!this.state.isInputInFocus}
+      />
+    );
+  }
+
+  render() {
     if (this.state.successNotice) {
       return this.renderSuccessNotice();
     }
@@ -181,7 +213,12 @@ const ResetPassword = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = ResetPassword;
+ResetPassword.propTypes = {
+  params: shape({ // url args
+    pilotId: string.isRequired,
+    authToken: string.isRequired,
+  })
+};

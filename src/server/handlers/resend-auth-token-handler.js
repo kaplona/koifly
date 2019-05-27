@@ -1,6 +1,6 @@
 'use strict';
 
-const EmailMessageTemplates = require('../../constants/email-message-templates');
+const emailMessageTemplates = require('../../constants/email-message-templates');
 const normalizeError = require('../../errors/normalize-error');
 const Pilot = require('../../orm/models/pilots');
 const sendAuthTokenToPilot = require('../helpers/send-auth-token');
@@ -16,7 +16,7 @@ const resendAuthTokenHandler = function(request) {
   return Pilot
     .findById(request.auth.credentials.userId)
     .then(pilot => {
-      return sendAuthTokenToPilot(pilot, EmailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
+      return sendAuthTokenToPilot(pilot, emailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
     })
     .then(() => {
       return JSON.stringify('success');

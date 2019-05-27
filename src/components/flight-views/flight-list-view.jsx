@@ -1,23 +1,59 @@
 'use strict';
 
-const React = require('react');
-const Altitude = require('../../utils/altitude');
-const DesktopTopGrid = require('../common/grids/desktop-top-grid');
-const ErrorBox = require('../common/notice/error-box');
-const listViewMixin = require('../mixins/list-view-mixin');
-const FlightModel = require('../../models/flight');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const Section = require('../common/section/section');
-const Table = require('../common/table');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import Altitude from '../../utils/altitude';
+import Button from '../common/buttons/button';
+import DesktopTopGrid from '../common/grids/desktop-top-grid';
+import EmptyList from '../common/empty-list';
+import ErrorBox from '../common/notice/error-box';
+import FlightModel from '../../models/flight';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import Table from '../common/table';
+import Util from '../../utils/util';
+import View from '../common/view';
 
 
-const FlightListView = React.createClass({
+export default class FlightListView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      items: null, // no data received
+      loadingError: null
+    };
 
-  mixins: [ listViewMixin(FlightModel.getModelKey()) ],
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+  }
 
-  renderMobileTopMenu: function() {
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model and updates component's state
+   */
+  handleStoreModified() {
+    const storeContent = FlightModel.getListOutput();
+
+    if (storeContent && storeContent.error) {
+      this.setState({ loadingError: storeContent.error });
+    } else {
+      this.setState({
+        items: storeContent,
+        loadingError: null
+      });
+    }
+  }
+
+  handleAddItem() {
+    navigationService.goToNewItemView(FlightModel.keys.single);
+  }
+
+  handleRowClick(itemId) {
+    navigationService.goToItemView(FlightModel.keys.single, itemId)
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Flights'
@@ -25,9 +61,9 @@ const FlightListView = React.createClass({
         onRightClick={this.handleAddItem}
       />
     );
-  },
+  }
 
-  renderError: function() {
+  renderError() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Flights'/>
@@ -35,9 +71,27 @@ const FlightListView = React.createClass({
         <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
       </View>
     );
-  },
+  }
 
-  renderTable: function() {
+  renderLoader() {
+    return (this.state.items === null) ? <SectionLoader/> : null;
+  }
+
+  renderEmptyList() {
+    if (this.state.items && this.state.items.length === 0) {
+      return <EmptyList ofWhichItems={FlightModel.keys.plural} onAdding={this.handleAddItem}/>;
+    }
+  }
+
+  renderNavigationMenu() {
+    return <NavigationMenu currentView={FlightModel.getModelKey()}/>;
+  }
+
+  renderAddItemButton() {
+    return <Button caption='Add Flight' onClick={this.handleAddItem}/>;
+  }
+
+  renderTable() {
     const columns = [
       {
         key: 'formattedDate',
@@ -80,9 +134,9 @@ const FlightListView = React.createClass({
         onRowClick={this.handleRowClick}
       />
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -106,7 +160,4 @@ const FlightListView = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = FlightListView;
+}

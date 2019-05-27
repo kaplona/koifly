@@ -1,8 +1,8 @@
 'use strict';
 
-const React = require('react');
-const ReactDOM = require('react-dom');
-const NavigationMenu = require('./components/common/menu/navigation-menu');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import NavigationMenu from './components/common/menu/navigation-menu';
 
 
 if (process.env.NODE_ENV !== 'development') {

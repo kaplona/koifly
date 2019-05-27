@@ -1,37 +1,27 @@
 'use strict';
 
-const React = require('react');
-const { func, oneOf, string } = React.PropTypes;
+import React from 'react';
+import { func, oneOf, string } from 'prop-types';
 
 require('./switcher.less');
 
 
-const Switcher = React.createClass({
+export default class Switcher extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
 
-  propTypes: {
-    leftButtonCaption: string.isRequired,
-    rightButtonCaption: string.isRequired,
-    onLeftClick: func,
-    onRightClick: func,
-    initialPosition: oneOf(['left', 'right']).isRequired
-  },
-
-  getInitialState: function() {
-    return {
-      isLeftPosition: (this.props.initialPosition === 'left')
-    };
-  },
-
-  handleClick: function() {
+  handleClick() {
     if (this.state.isLeftPosition) {
       this.props.onRightClick();
     } else {
       this.props.onLeftClick();
     }
     this.setState({ isLeftPosition: !this.state.isLeftPosition });
-  },
+  }
 
-  render: function() {
+  render() {
     return (
       <div className='switcher' onClick={this.handleClick}>
         <div className={this.state.isLeftPosition ? 'active' : null}>
@@ -43,7 +33,17 @@ const Switcher = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = Switcher;
+Switcher.defaultProps = {
+  isLeftPosition: (this.props.initialPosition === 'left')
+};
+
+Switcher.propTypes = {
+  leftButtonCaption: string.isRequired,
+  rightButtonCaption: string.isRequired,
+  onLeftClick: func,
+  onRightClick: func,
+  initialPosition: oneOf(['left', 'right']).isRequired
+};

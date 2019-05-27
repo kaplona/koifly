@@ -1,6 +1,6 @@
 'use strict';
 
-const ErrorMessages = require('../../errors/error-messages');
+const errorMessages = require('../../errors/error-messages');
 const Util = require('../../utils/util');
 
 /**
@@ -9,7 +9,7 @@ const Util = require('../../utils/util');
  */
 function isDate(value) {
   if (typeof value !== 'string' || !Util.isRightDateFormat(value)) {
-    throw new Error(ErrorMessages.DATE_FORMAT);
+    throw new Error(errorMessages.DATE_FORMAT);
   }
 }
 

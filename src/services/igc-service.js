@@ -1,11 +1,11 @@
 'use strict';
 
-const Altitude = require('../utils/altitude');
-const distanceService = require('./distance-service');
-const ErrorTypes = require('../errors/error-types');
-const KoiflyError = require('../errors/error');
-const SiteModel = require('../models/site');
-const Util = require('../utils/util');
+import Altitude from '../utils/altitude';
+import distanceService from './distance-service';
+import errorTypes from '../errors/error-types';
+import KoiflyError from '../errors/error';
+import SiteModel from '../models/site';
+import Util from '../utils/util';
 
 /**
  * @name igcService
@@ -37,7 +37,7 @@ const igcService = {
     });
 
     if (!fixedRecords.length) {
-      return new KoiflyError(ErrorTypes.VALIDATION_ERROR, 'No flight records in IGC file.');
+      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'No flight records in IGC file.');
     }
 
     let flightStartTime;
@@ -296,4 +296,4 @@ const igcService = {
   }
 };
 
-module.exports = igcService;
+export default igcService;

@@ -1,11 +1,12 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
 
 require('./value-container.less');
 
 
-const Value = React.createClass({
+// defined as class for testing purposes
+export default class ValueContainer extends React.Component {
   render() {
     return (
       <div className='value-container'>
@@ -13,7 +14,4 @@ const Value = React.createClass({
       </div>
     );
   }
-});
-
-
-module.exports = Value;
+}

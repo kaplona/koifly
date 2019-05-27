@@ -1,40 +1,65 @@
 'use strict';
 
-const React = require('react');
-const browserHistory = require('react-router').browserHistory;
-const DesktopTopGrid = require('../common/grids/desktop-top-grid');
-const ErrorBox = require('../common/notice/error-box');
-const listViewMixin = require('../mixins/list-view-mixin');
-const Loader = require('../common/loader');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const Section = require('../common/section/section');
-const SiteModel = require('../../models/site');
-const StaticMap = require('../common/maps/static-map');
-const Switcher = require('../common/switcher');
-const View = require('../common/view');
+import React from 'react';
+import Button from '../common/buttons/button';
+import DesktopTopGrid from '../common/grids/desktop-top-grid';
+import ErrorBox from '../common/notice/error-box';
+import Loader from '../common/loader';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Section from '../common/section/section';
+import SiteModel from '../../models/site';
+import StaticMap from '../common/maps/static-map';
+import Switcher from '../common/switcher';
+import View from '../common/view';
 
 
-const SiteListMapView = React.createClass({
+export default class SiteListMapView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      items: null, // no data received
+      loadingError: null
+    };
 
-  mixins: [ listViewMixin(SiteModel.getModelKey()) ],
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+  }
 
-  handleGoToListView: function() {
-    browserHistory.push('/sites/');
-  },
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model and updates component's state
+   */
+  handleStoreModified() {
+    const storeContent = SiteModel.getListOutput();
 
-  renderMobileTopMenu: function() {
+    if (storeContent && storeContent.error) {
+      this.setState({ loadingError: storeContent.error });
+    } else {
+      this.setState({
+        items: storeContent,
+        loadingError: null
+      });
+    }
+  }
+
+  handleAddItem() {
+    navigationService.goToNewItemView(SiteModel.keys.single);
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Sites'
         leftButtonCaption='List'
         rightButtonCaption='Add'
-        onLeftClick={this.handleGoToListView}
+        onLeftClick={navigationService.goToSiteListView}
         onRightClick={this.handleAddItem}
       />
     );
-  },
+  }
 
-  renderError: function() {
+  renderError() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Sites'/>
@@ -42,25 +67,33 @@ const SiteListMapView = React.createClass({
         <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>;
       </View>
     );
-  },
+  }
 
-  renderSwitcher: function() {
+  renderSwitcher() {
     return (
       <Switcher
         leftButtonCaption='List'
         rightButtonCaption='Map'
-        onLeftClick={this.handleGoToListView}
+        onLeftClick={navigationService.goToSiteListView}
         initialPosition='right'
       />
     );
-  },
+  }
 
-  renderMap: function() {
+  renderNavigationMenu() {
+    return <NavigationMenu currentView={SiteModel.getModelKey()}/>;
+  }
+
+  renderAddItemButton() {
+    return <Button caption='Add Site' onClick={this.handleAddItem}/>;
+  }
+
+  renderMap() {
     const siteList = this.state.items;
     return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader/>;
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -81,7 +114,4 @@ const SiteListMapView = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = SiteListMapView;
+}

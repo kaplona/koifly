@@ -13,7 +13,7 @@ const Chai = require('chai');
 const expect = Chai.expect;
 const Sinon = require('sinon');
 const sinonChai = require('sinon-chai');
-const ErrorTypes = require('../../src/errors/error-types');
+const errorTypes = require('../../src/errors/error-types');
 const PilotModel = require('../../src/models/pilot');
 Chai.use(sinonChai);
 
@@ -36,7 +36,7 @@ describe('View component.', () => {
   const mocks = {
     childText: 'test child text',
     childClassName: 'testChild',
-    authError: { type: ErrorTypes.AUTHENTICATION_ERROR },
+    authError: { type: errorTypes.AUTHENTICATION_ERROR },
     notAuthError: { type: 'notAuthError' },
     handleStoreModified: Sinon.spy(),
     handleHideNotice: null

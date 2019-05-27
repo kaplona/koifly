@@ -1,7 +1,7 @@
 'use strict';
 
 const BcryptPromise = require('../../utils/bcrypt-promise');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const Pilot = require('../../orm/models/pilots');
 
@@ -23,14 +23,14 @@ const verifyAuthToken = function(pilotId, authToken) {
     .then(pilotRecord => {
       pilot = pilotRecord;
       if (!pilot || pilot.id.toString() !== pilotId || pilot.tokenExpirationTime < Date.now()) {
-        throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
+        throw new KoiflyError(errorTypes.INVALID_AUTH_TOKEN);
       }
 
       // Compare auth token with the token hash stored in DB
       return BcryptPromise.compare(authToken, pilot.token);
     })
     .catch(() => {
-      throw new KoiflyError(ErrorTypes.INVALID_AUTH_TOKEN);
+      throw new KoiflyError(errorTypes.INVALID_AUTH_TOKEN);
     })
     .then(() => {
       // Everything is OK

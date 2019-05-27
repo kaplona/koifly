@@ -1,47 +1,31 @@
 'use strict';
 
-const React = require('react');
-const { bool, func, string } = React.PropTypes;
-const dataService = require('../../../services/data-service');
-const Notice = require('./notice');
-const PilotModel = require('../../../models/pilot');
+import React from 'react';
+import { bool, func, string } from 'prop-types';
+import dataService from '../../../services/data-service';
+import Notice from './notice';
+import PilotModel from '../../../models/pilot';
 
 
-const EmailVerificationNotice = React.createClass({
-
-  propTypes: {
-    isPadded: bool,
-    text: string,
-    type: string,
-    onClose: func
-  },
-
-  getDefaultProps: function() {
-    return {
-      text: [
-        'We sent you an email with a verification link.',
-        'Please follow it to activate your account.',
-        'It is required for safety of your records',
-        'since your email is the only way to access the application'
-      ].join(' ')
-    };
-  },
-
-  getInitialState: function() {
-    return {
+export default class EmailVerificationNotice extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       isSending: false,
       isEmailSent: false
     };
-  },
 
-  handleEmailVerification: function() {
+    this.handleEmailVerification = this.handleEmailVerification.bind(this);
+  }
+
+  handleEmailVerification() {
     this.setState({ isSending: true });
     dataService.sendVerificationEmail().then(() => {
       this.setState({ isEmailSent: true });
     });
-  },
+  }
 
-  render: function() {
+  render() {
     let noticeText = this.props.text;
     let type = this.props.type;
     let onClick = this.handleEmailVerification;
@@ -64,7 +48,21 @@ const EmailVerificationNotice = React.createClass({
       />
     );
   }
-});
+}
 
 
-module.exports = EmailVerificationNotice;
+EmailVerificationNotice.defaultProps = {
+  text: [
+    'We sent you an email with a verification link.',
+    'Please follow it to activate your account.',
+    'It is required for safety of your records',
+    'since your email is the only way to access the application'
+  ].join(' ')
+};
+
+EmailVerificationNotice.propTypes = {
+  isPadded: bool,
+  text: string,
+  type: string,
+  onClose: func
+};

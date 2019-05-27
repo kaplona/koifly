@@ -3,16 +3,16 @@
 /* since I define helpers functions which are not invoked in this file  */
 const Altitude = require('../../utils/altitude');
 const Converter = require('csvtojson').Converter;
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
-const sequelize = require('../../orm/sequelize');
+const db = require('../../orm/sequelize-db');
 
 const Glider = require('../../orm/models/gliders');
 const Flight = require('../../orm/models/flights');
 const Pilot = require('../../orm/models/pilots');
 const Site = require('../../orm/models/sites');
-const SCOPES = require('../../constants/orm-constants').SCOPES;
+const ormConstants = require('../../constants/orm-constants');
 
 /**
  * Parses csv data and saves it into DB.
@@ -77,7 +77,7 @@ function importFlightsHandler(request) {
       const glidersHashMap = result[3];
 
       // For each csv file row save new flight, glider, and site (if they didn't exist) in one transaction.
-      return sequelize.transaction(transactionId => {
+      return db.transaction(transactionId => {
         // We need to save each row data sequentially in order to correctly add new sites and gliders to the DB.
         let lastPromise = Promise.resolve();
         rows.forEach((row, index) => {
@@ -89,7 +89,7 @@ function importFlightsHandler(request) {
         // If we encountered any validation error throw Koifly validation error, thus cancelling transaction.
         return lastPromise.then(() => {
           if (validationErrors.length) {
-            throw new KoiflyError(ErrorTypes.VALIDATION_ERROR);
+            throw new KoiflyError(errorTypes.VALIDATION_ERROR);
           }
           return Promise.resolve();
         });
@@ -102,11 +102,11 @@ function importFlightsHandler(request) {
       const normalisedError = normalizeError(error);
 
       // If we encountered validation error, reply with list of validation errors.
-      if (normalisedError.type === ErrorTypes.VALIDATION_ERROR) {
+      if (normalisedError.type === errorTypes.VALIDATION_ERROR) {
         return { error: validationErrors };
       }
       // if we encountered csv file parsing error and know lines with errors, reply with list of these errors.
-      if (normalisedError.type === ErrorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
+      if (normalisedError.type === errorTypes.FILE_IMPORT_ERROR && normalisedError.errors.length) {
         return { error: normalisedError.errors };
       }
       // Otherwise reply with generic Koifly error.
@@ -148,11 +148,11 @@ function convertCsvToJson(csvString) {
       if (err.err && (err.line || err.line === 0)) {
         errors.push({
           row: err.line + 1,
-          error: new KoiflyError(ErrorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err])
+          error: new KoiflyError(errorTypes.VALIDATION_ERROR, csvToJsonErrorMessages[err.err])
         });
       }
 
-      reject(new KoiflyError(ErrorTypes.FILE_IMPORT_ERROR, null, errors));
+      reject(new KoiflyError(errorTypes.FILE_IMPORT_ERROR, null, errors));
     });
   });
 }
@@ -182,7 +182,7 @@ function getRecordsNameHashMap(Model, pilotId, options = {}) {
   });
 
   return Model
-    .scope(SCOPES.visible)
+    .scope(ormConstants.SCOPES.visible)
     .findAll(queryOptions)
     .then(records => {
       records.forEach(record => {
@@ -359,8 +359,8 @@ function saveRecord(Model, newRecord, namesHashMap, transaction) {
  */
 function saveValidationError(error, rowIndex, validationErrors) {
   const normalisedError = normalizeError(error);
-  if (normalisedError.type !== ErrorTypes.VALIDATION_ERROR) {
-    throw new KoiflyError(ErrorTypes.DB_WRITE_ERROR);
+  if (normalisedError.type !== errorTypes.VALIDATION_ERROR) {
+    throw new KoiflyError(errorTypes.DB_WRITE_ERROR);
   }
 
   // TODO merge all messages for one row into one record

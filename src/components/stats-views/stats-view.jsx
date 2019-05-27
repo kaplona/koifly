@@ -1,38 +1,35 @@
 'use strict';
 
-const React = require('react');
-const Altitude = require('../../utils/altitude');
-const AppLink = require('../common/app-link');
-const BubbleChart = require('../common/charts/buble-chart');
-const Button = require('../common/buttons/button');
-const chartService = require('../../services/chart-service');
-const DropdownInput = require('../common/inputs/dropdown-input');
-const ErrorBox = require('../common/notice/error-box');
-const FlightModel = require('../../models/flight');
-const HistogramChart = require('../common/charts/histogram-chart');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const PieChart = require('../common/charts/pie-chart');
-const PublicLinksMixin = require('../mixins/public-links-mixin');
-const pubSub = require('../../utils/pubsub');
-const Section = require('../common/section/section');
-const SectionLoader = require('../common/section/section-loader');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const SiteModel = require('../../models/site');
-const statsViewStore = require('./stats-view-store');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import Altitude from '../../utils/altitude';
+import AppLink from '../common/app-link';
+import BubbleChart from '../common/charts/buble-chart';
+import Button from '../common/buttons/button';
+import chartService from '../../services/chart-service';
+import DropdownInput from '../common/inputs/dropdown-input';
+import ErrorBox from '../common/notice/error-box';
+import FlightModel from '../../models/flight';
+import HistogramChart from '../common/charts/histogram-chart';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import PieChart from '../common/charts/pie-chart';
+import pubSub from '../../utils/pubsub';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import SiteModel from '../../models/site';
+import statsViewStore from './stats-view-store';
+import Util from '../../utils/util';
+import View from '../common/view';
 
 require('./stats-view.less');
 
 
-const StatsView = React.createClass({
-
-  mixins: [ PublicLinksMixin ],
-
-  getInitialState: function() {
-    return {
+export default class StatsView extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       flightStats: null,
       isLoading: true,
       loadingError: null,
@@ -41,15 +38,21 @@ const StatsView = React.createClass({
       selectedYear: statsViewStore.selectedYear,
       selectedMonth: statsViewStore.selectedMonth
     };
-  },
 
-  componentDidMount: function() {
+    this.handleDataStoreModified = this.handleDataStoreModified.bind(this);
+    this.handleSiteSelect = this.handleSiteSelect.bind(this);
+    this.handleTimeRangeSelect = this.handleTimeRangeSelect.bind(this);
+    this.handleUnzoom = this.handleUnzoom.bind(this);
+    this.handleBubbleClick = this.handleBubbleClick.bind(this);
+  }
+
+  componentDidMount() {
     pubSub.on(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     pubSub.removeListener(statsViewStore.events.STATS_VIEW_STORE_UPDATED, this.handleStatsViewStoreModified, this);
-  },
+  }
 
   handleStatsViewStoreModified() {
     this.setState({
@@ -58,7 +61,7 @@ const StatsView = React.createClass({
       selectedYear: statsViewStore.selectedYear,
       selectedMonth: statsViewStore.selectedMonth
     });
-  },
+  }
 
   handleDataStoreModified() {
     const flightStats = chartService.getFlightStatsForEachSite();
@@ -78,12 +81,12 @@ const StatsView = React.createClass({
       loadingError: null,
       isLoading: false
     });
-  },
+  }
 
   handleSiteSelect(siteId) {
     const selectedSiteId = (this.state.selectedSiteId === siteId) ? null : siteId;
     statsViewStore.updateState({ selectedSiteId, selectedFlightIds: [] });
-  },
+  }
 
   handleTimeRangeSelect(timeRange) {
     if (!this.state.selectedYear) {
@@ -91,7 +94,7 @@ const StatsView = React.createClass({
     } else if (!this.state.selectedMonth) {
       statsViewStore.updateState({ selectedMonth: timeRange, selectedFlightIds: [] });
     }
-  },
+  }
 
   handleYearSelect(year) {
     if (year) {
@@ -99,11 +102,11 @@ const StatsView = React.createClass({
     } else {
       statsViewStore.updateState({ selectedYear: null, selectedMonth: null, selectedFlightIds: [] });
     }
-  },
+  }
 
   handleMonthSelect(monthShort) {
     statsViewStore.updateState({ selectedMonth: monthShort, selectedFlightIds: [] });
-  },
+  }
 
   handleUnzoom() {
     if (this.state.selectedMonth) {
@@ -111,11 +114,11 @@ const StatsView = React.createClass({
     } else if (this.state.selectedYear) {
       this.handleYearSelect(null);
     }
-  },
+  }
 
   handleBubbleClick(flightIds) {
     statsViewStore.updateState({ selectedFlightIds: flightIds });
-  },
+  }
 
   getChartData() {
     const selectedMonthIndex = Util.shortMonthNames.indexOf(this.state.selectedMonth) + 1;
@@ -239,7 +242,7 @@ const StatsView = React.createClass({
       maxAltitudeBubble,
       timeRangeCategories
     };
-  },
+  }
 
   renderSimpleLayout(children) {
     return (
@@ -249,7 +252,7 @@ const StatsView = React.createClass({
         {children}
       </View>
     );
-  },
+  }
 
   renderUnzoomButton() {
     if (this.state.selectedYear) {
@@ -265,7 +268,7 @@ const StatsView = React.createClass({
         </div>
       );
     }
-  },
+  }
 
   render() {
     if (this.state.loadingError) {
@@ -421,7 +424,4 @@ const StatsView = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = StatsView;
+}

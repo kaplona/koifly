@@ -1,37 +1,20 @@
 'use strict';
 
-const React = require('react');
-const { bool, string } = React.PropTypes;
-const browserHistory = require('react-router').browserHistory;
-const FlightModel = require('../../../models/flight');
-const GliderModel = require('../../../models/glider');
-const NavigationItem = require('./navigation-item');
-const SiteModel = require('../../../models/site');
-const PilotModel = require('../../../models/pilot');
+import React from 'react';
+import { bool, string } from 'prop-types';
+import FlightModel from '../../../models/flight';
+import GliderModel from '../../../models/glider';
+import NavigationItem from './navigation-item';
+import navigationService from '../../../services/navigation-service';
+import SiteModel from '../../../models/site';
+import PilotModel from '../../../models/pilot';
 
 require('./navigation-menu.less');
 
 
-const NavigationMenu = React.createClass({
-
-  propTypes: {
-    currentView: string,
-    isMobile: bool.isRequired,
-    isPositionFixed: bool.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      isMobile: false,
-      isPositionFixed: true
-    };
-  },
-
-  handleLinkTo: function(page) {
-    browserHistory.push(`/${encodeURIComponent(page)}`);
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class NavigationMenu extends React.Component {
+  render() {
     const itemsNumber = 5;
     let className = 'navigation-menu';
     if (this.props.isMobile) {
@@ -52,39 +35,49 @@ const NavigationMenu = React.createClass({
           label='Flights'
           itemsNumber={itemsNumber}
           isActive={this.props.currentView === FlightModel.getModelKey()}
-          onClick={() => this.handleLinkTo('flights')}
+          onClick={navigationService.goToFlightLog}
         />
         <NavigationItem
           iconFileName='mountains.png'
           label='Sites'
           itemsNumber={itemsNumber}
           isActive={this.props.currentView === SiteModel.getModelKey()}
-          onClick={() => this.handleLinkTo('sites')}
+          onClick={navigationService.goToSiteListView}
         />
         <NavigationItem
           iconFileName='glider.png'
           label='Gliders'
           itemsNumber={itemsNumber}
           isActive={this.props.currentView === GliderModel.getModelKey()}
-          onClick={() => this.handleLinkTo('gliders')}
+          onClick={navigationService.goToGliderListView}
         />
         <NavigationItem
           iconFileName='statistics.png'
           label='Stats'
           itemsNumber={itemsNumber}
           isActive={this.props.currentView === 'stats'}
-          onClick={() => this.handleLinkTo('stats')}
+          onClick={navigationService.goToStatsView}
         />
         <NavigationItem
           iconFileName='person.png'
           label='Pilot'
           itemsNumber={itemsNumber}
           isActive={this.props.currentView === PilotModel.getModelKey()}
-          onClick={() => this.handleLinkTo('pilot')}
+          onClick={navigationService.goToPilotView}
         />
       </div>
     );
   }
-});
+}
 
-module.exports = NavigationMenu;
+
+NavigationMenu.defaultProps = {
+  isMobile: false,
+  isPositionFixed: true
+};
+
+NavigationMenu.propTypes = {
+  currentView: string,
+  isMobile: bool.isRequired,
+  isPositionFixed: bool.isRequired
+};

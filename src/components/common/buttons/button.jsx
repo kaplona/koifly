@@ -1,43 +1,24 @@
 'use strict';
 
-const React = require('react');
-const { bool, func, oneOf, string } = React.PropTypes;
+import React from 'react';
+import { bool, func, oneOf, string } from 'prop-types';
 
 require('./button.less');
 
 
-const Button = React.createClass({
+export default class Button extends React.Component {
+  constructor() {
+    super();
+    this.handleClick = this.handleClick.bind(this);
+  }
 
-  propTypes: {
-    buttonStyle: oneOf(['primary', 'secondary', 'warning']),
-    caption: string.isRequired,
-    fitContent: bool,
-    isAllScreens: bool,
-    isEnabled: bool,
-    isMobile: bool,
-    isSmall: bool,
-    type: oneOf(['button', 'submit']),
-    onClick: func.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      fitContent: false,
-      isAllScreens: false,
-      isEnabled: true,
-      isMobile: false,
-      isSmall: false,
-      type: 'button'
-    };
-  },
-
-  handleClick: function(event) {
+  handleClick(event) {
     if (this.props.onClick && this.props.isEnabled) {
       this.props.onClick(event);
     }
-  },
+  }
 
-  render: function() {
+  render() {
     let className = this.props.isMobile ? 'mobile-button' : 'button';
     if (!this.props.isAllScreens && !this.props.isMobile) {
       className += ' desktop-only';
@@ -62,7 +43,26 @@ const Button = React.createClass({
       />
     );
   }
-});
+}
 
 
-module.exports = Button;
+Button.defaultProps = {
+  fitContent: false,
+  isAllScreens: false,
+  isEnabled: true,
+  isMobile: false,
+  isSmall: false,
+  type: 'button'
+};
+
+Button.propTypes = {
+  buttonStyle: oneOf(['primary', 'secondary', 'warning']),
+  caption: string.isRequired,
+  fitContent: bool,
+  isAllScreens: bool,
+  isEnabled: bool,
+  isMobile: bool,
+  isSmall: bool,
+  type: oneOf(['button', 'submit']),
+  onClick: func.isRequired
+};

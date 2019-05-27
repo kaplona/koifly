@@ -1,15 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { arrayOf, number, oneOfType, shape } = React.PropTypes;
-const koiflyErrorPropType = require('../../../errors/error-prop-type');
-
-const Notice = require('./notice');
+import React from 'react';
+import { arrayOf, number, oneOfType, shape } from 'prop-types';
+import koiflyErrorPropType from '../../../errors/error-prop-type';
+import Notice from './notice';
 
 require('./import-error.less');
 
 
-function ImportError(props) {
+export default function ImportError(props) {
   if (!(props.error instanceof Array)) {
     const errorMessage = props.error.message || 'Couldn\'t import your file';
     return <Notice text={errorMessage} type='error'/>;
@@ -49,6 +48,3 @@ ImportError.propTypes = {
     }))
   ]).isRequired
 };
-
-
-module.exports = ImportError;

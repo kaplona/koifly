@@ -1,41 +1,71 @@
 'use strict';
 
-const React = require('react');
-const _ = require('lodash');
-const Altitude = require('../../utils/altitude');
-const browserHistory = require('react-router').browserHistory;
-const DesktopTopGrid = require('../common/grids/desktop-top-grid');
-const ErrorBox = require('../common/notice/error-box');
-const listViewMixin = require('../mixins/list-view-mixin');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const Section = require('../common/section/section');
-const SiteModel = require('../../models/site');
-const Switcher = require('../common/switcher');
-const Table = require('../common/table');
-const View = require('../common/view');
+import React from 'react';
+import Altitude from '../../utils/altitude';
+import Button from '../common/buttons/button';
+import DesktopTopGrid from '../common/grids/desktop-top-grid';
+import EmptyList from '../common/empty-list';
+import ErrorBox from '../common/notice/error-box';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SiteModel from '../../models/site';
+import Switcher from '../common/switcher';
+import Table from '../common/table';
+import View from '../common/view';
 
 
-const SiteListView = React.createClass({
+export default class SiteListView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      items: null, // no data received
+      loadingError: null
+    };
 
-  mixins: [ listViewMixin(SiteModel.getModelKey()) ],
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+  }
 
-  handleGoToMapView: function() {
-    browserHistory.push('/sites/map');
-  },
+  /**
+   * Once store data was modified or on initial rendering,
+   * requests for presentational data form the Model and updates component's state
+   */
+  handleStoreModified() {
+    const storeContent = SiteModel.getListOutput();
 
-  renderMobileTopMenu: function() {
+    if (storeContent && storeContent.error) {
+      this.setState({ loadingError: storeContent.error });
+    } else {
+      this.setState({
+        items: storeContent,
+        loadingError: null
+      });
+    }
+  }
+
+  handleAddItem() {
+    navigationService.goToNewItemView(SiteModel.keys.single);
+  }
+
+  handleRowClick(itemId) {
+    navigationService.goToItemView(SiteModel.keys.single, itemId)
+  }
+
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Sites'
         leftButtonCaption='Map'
         rightButtonCaption='Add'
-        onLeftClick={this.handleGoToMapView}
+        onLeftClick={navigationService.goToSiteMapView}
         onRightClick={this.handleAddItem}
       />
     );
-  },
+  }
 
-  renderError: function() {
+  renderError() {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Sites'/>
@@ -43,20 +73,38 @@ const SiteListView = React.createClass({
         <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>;
       </View>
     );
-  },
+  }
 
-  renderSwitcher: function() {
+  renderSwitcher() {
     return (
       <Switcher
         leftButtonCaption='List'
         rightButtonCaption='Map'
-        onRightClick={this.handleGoToMapView}
+        onRightClick={navigationService.goToSiteMapView}
         initialPosition='left'
       />
     );
-  },
+  }
 
-  renderTable: function() {
+  renderLoader() {
+    return (this.state.items === null) ? <SectionLoader/> : null;
+  }
+
+  renderEmptyList() {
+    if (this.state.items && this.state.items.length === 0) {
+      return <EmptyList ofWhichItems={SiteModel.keys.plural} onAdding={this.handleAddItem}/>;
+    }
+  }
+
+  renderNavigationMenu() {
+    return <NavigationMenu currentView={SiteModel.getModelKey()}/>;
+  }
+
+  renderAddItemButton() {
+    return <Button caption='Add Site' onClick={this.handleAddItem}/>;
+  }
+
+  renderTable() {
     const columnsConfig = [
       {
         key: 'name',
@@ -76,18 +124,11 @@ const SiteListView = React.createClass({
       }
     ];
 
-    const rows = [];
-    if (this.state.items) {
-      for (let i = 0; i < this.state.items.length; i++) {
-        rows.push(_.extend(
-          {},
-          this.state.items[i],
-          {
-            formattedAltitude: Altitude.formatAltitudeShort(this.state.items[i].launchAltitude)
-          }
-        ));
-      }
-    }
+    const rows = (this.state.items || []).map(site => (
+      Object.assign({}, site, {
+        formattedAltitude: Altitude.formatAltitudeShort(site.launchAltitude)
+      })
+    ));
 
     return (
       <Table
@@ -97,9 +138,9 @@ const SiteListView = React.createClass({
         onRowClick={this.handleRowClick}
       />
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -126,7 +167,4 @@ const SiteListView = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = SiteListView;
+}

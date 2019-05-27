@@ -1,51 +1,50 @@
 'use strict';
 
-const React = require('react');
-const AppLink = require('../common/app-link');
-const browserHistory = require('react-router').browserHistory;
-const DaysSinceLastFlight = require('../common/days-since-last-flight');
-const ErrorBox = require('../common/notice/error-box');
-const SectionLoader = require('../common/section/section-loader');
-const MobileButton = require('../common/buttons/mobile-button');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const PilotModel = require('../../models/pilot');
-const PublicLinksMixin = require('../mixins/public-links-mixin');
-const RowContent = require('../common/section/row-content');
-const Section = require('../common/section/section');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const Util = require('../../utils/util');
-const View = require('../common/view');
+import React from 'react';
+import AppLink from '../common/app-link';
+import DaysSinceLastFlight from '../common/days-since-last-flight';
+import ErrorBox from '../common/notice/error-box';
+import SectionLoader from '../common/section/section-loader';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import PilotModel from '../../models/pilot';
+import RowContent from '../common/section/row-content';
+import Section from '../common/section/section';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import Util from '../../utils/util';
+import View from '../common/view';
 
 
-const PilotView = React.createClass({
-
-  mixins: [ PublicLinksMixin ],
-
-  getInitialState: function() {
-    return {
+export default class PilotView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       pilot: null, // no data received
       loadingError: null
     };
-  },
 
-  handleEditPilotInfo: function() {
-    browserHistory.push('/pilot/edit');
-  },
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+  }
 
-  handleChangePassword: function() {
-    browserHistory.push('/pilot/edit/change-password');
-  },
+  handleEditPilotInfo() {
+    navigationService.goToPilotEdit();
+  }
 
-  handleLogout: function() {
+  handleChangePassword() {
+    navigationService.goToPilotChangePassword();
+  }
+
+  handleLogout() {
     PilotModel
       .logout()
-      .then(() => this.handleGoToLogin)
+      .then(() => navigationService.goToLogin)
       .catch(() => window.alert('Server error. Could not log out.'));
-  },
+  }
 
-  handleStoreModified: function() {
+  handleStoreModified() {
     const pilot = PilotModel.getPilotOutput();
     if (pilot && pilot.error) {
       this.setState({ loadingError: pilot.error });
@@ -55,9 +54,9 @@ const PilotView = React.createClass({
         loadingError: null
       });
     }
-  },
+  }
 
-  renderMobileTopMenu: function() {
+  renderMobileTopMenu() {
     return (
       <MobileTopMenu
         header='Pilot'
@@ -65,13 +64,13 @@ const PilotView = React.createClass({
         onRightClick={this.handleEditPilotInfo}
       />
     );
-  },
+  }
 
-  renderNavigationMenu: function() {
+  renderNavigationMenu() {
     return <NavigationMenu currentView={PilotModel.getModelKey()}/>;
-  },
+  }
 
-  renderSimpleLayout: function(children) {
+  renderSimpleLayout(children) {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         <MobileTopMenu header='Pilot'/>
@@ -79,19 +78,19 @@ const PilotView = React.createClass({
         {children}
       </View>
     );
-  },
+  }
 
-  renderError: function() {
+  renderError() {
     return this.renderSimpleLayout(
       <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>
     );
-  },
+  }
 
-  renderLoader: function() {
+  renderLoader() {
     return this.renderSimpleLayout(<SectionLoader/>);
-  },
+  }
 
-  renderMobileButtons: function() {
+  renderMobileButtons() {
     return (
       <div>
         <MobileButton
@@ -106,9 +105,9 @@ const PilotView = React.createClass({
         />
       </div>
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderError();
     }
@@ -186,7 +185,4 @@ const PilotView = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = PilotView;
+}

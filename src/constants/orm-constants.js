@@ -1,7 +1,7 @@
 'use strict';
 
 
-const OrmConstants = {
+const ormConstants = {
   SCOPES: {
     all: null,
     visible: 'see'
@@ -9,4 +9,4 @@ const OrmConstants = {
 };
 
 
-module.exports = OrmConstants;
+export default ormConstants;

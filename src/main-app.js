@@ -43,7 +43,7 @@ const ResetPassword = require('./components/public-views/reset-password');
 const EmailVerified = require('./components/public-views/email-verified');
 const InvalidVerificationLink = require('./components/public-views/invalid-verification-link');
 
-const pageNotFound = require('./components/public-views/page-not-found');
+const PageNotFound = require('./components/public-views/page-not-found');
 
 
 require('./components/koifly.less');

@@ -1,20 +1,15 @@
 'use strict';
 
-const config = require('../../config/variables');
-const getWebpackAssets = require('../../tools/get-webpack-assets');
-const React = require('react');
-const Home = require('../../components/home-page/home.jsx');
+import React from 'react';
+import { bool } from 'prop-types';
+import config from '../../config/variables';
+import getWebpackAssets from '../../tools/get-webpack-assets';
+import Home from '../../components/home-page/home.jsx';
+import trackingCodeSnippet from '../../constants/tracking-code-snippet';
 
-const TRACKING_CODE_SNIPPET = require('../../constants/tracking-code-snippet');
 
-
-const About = React.createClass({
-
-  propTypes: {
-    isLoggedIn: React.PropTypes.bool.isRequired
-  },
-
-  render: function() {
+export default class About extends React.Component {
+  render() {
     return (
       <html>
       <head>
@@ -37,7 +32,7 @@ const About = React.createClass({
         <meta property='og:image:width' content='480'/>
         <meta property='og:image:height' content='248'/>
 
-        <script dangerouslySetInnerHTML={{ __html: TRACKING_CODE_SNIPPET }}/>
+        <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
       </head>
 
       <body>
@@ -46,7 +41,9 @@ const About = React.createClass({
       </html>
     );
   }
-});
+}
 
 
-module.exports = About;
+About.propTypes = {
+  isLoggedIn: bool.isRequired
+};

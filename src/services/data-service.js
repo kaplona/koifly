@@ -1,10 +1,9 @@
 'use strict';
 
-const _ = require('lodash');
-const AjaxService = require('./ajax-service');
-const ErrorTypes = require('../errors/error-types');
-const PubSub = require('../utils/pubsub');
-const STORE_MODIFIED_EVENT = require('../constants/data-service-constants').STORE_MODIFIED_EVENT;
+import ajaxService from './ajax-service';
+import dataServiceConstants from '../constants/data-service-constants';
+import errorTypes from '../errors/error-types';
+import PubSub from '../utils/pubsub';
 
 
 const DataService = function() {
@@ -33,7 +32,7 @@ DataService.prototype.getLoadingError = function() {
 };
 
 DataService.prototype.emit = function() {
-  setTimeout(() => PubSub.emit(STORE_MODIFIED_EVENT), 0);
+  setTimeout(() => PubSub.emit(dataServiceConstants.STORE_MODIFIED_EVENT), 0);
 };
 
 
@@ -47,7 +46,7 @@ DataService.prototype.requestServerData = function(isRetry = false) {
   }
 
   this.isRequestPending = true;
-  AjaxService
+  ajaxService
     .get('/api/data', { lastModified: this.lastModified })
     .then(serverResponse => {
       this.isRequestPending = false;
@@ -66,7 +65,7 @@ DataService.prototype.requestServerData = function(isRetry = false) {
  * @returns {Promise} - whether logout was successful
  */
 DataService.prototype.logout = function() {
-  return AjaxService
+  return ajaxService
     .post('/api/logout')
     .then(() => {
       this.clearStore();
@@ -92,7 +91,7 @@ DataService.prototype.saveData = function(data, dataType) {
     pilotId: this.store.pilot ? this.store.pilot.id : null
   };
 
-  return AjaxService
+  return ajaxService
     .post('/api/data', data)
     .then(serverResponse => this.populateStore(serverResponse));
 };
@@ -108,7 +107,7 @@ DataService.prototype.saveData = function(data, dataType) {
  * @returns {Promise} - whether request was successful
  */
 DataService.prototype.createPilot = function(pilotCredentials) {
-  return AjaxService
+  return ajaxService
     .post('/api/signup', pilotCredentials)
     .then(newPilotInfo => {
       this.clearStore();
@@ -131,9 +130,9 @@ DataService.prototype.loginPilot = function(pilotCredentials) {
   // We are sending lastModified date along with user's credentials
   // in case if user was logged out due to expiring cookie and still has data in js
   // this saves amount of data sending between server and client
-  const data = _.extend({}, pilotCredentials, { lastModified: null });
+  const data = Object.assign({}, pilotCredentials, { lastModified: null });
 
-  return AjaxService
+  return ajaxService
     .post('/api/login', data)
     .then(serverResponse => {
       this.clearStore();
@@ -155,22 +154,22 @@ DataService.prototype.changePassword = function(currentPassword, nextPassword) {
     pilotId: this.store.pilot ? this.store.pilot.id : null
   };
 
-  return AjaxService.post('/api/change-password', passwords);
+  return ajaxService.post('/api/change-password', passwords);
 };
 
 
 DataService.prototype.sendVerificationEmail = function() {
-  return AjaxService.post('/api/resend-auth-token');
+  return ajaxService.post('/api/resend-auth-token');
 };
 
 
 DataService.prototype.sendOneTimeLoginEmail = function(email) {
-  return AjaxService.post('/api/one-time-login', { email: email });
+  return ajaxService.post('/api/one-time-login', { email: email });
 };
 
 
 DataService.prototype.sendInitiateResetPasswordEmail = function(email) {
-  return AjaxService.post('/api/initiate-reset-password', { email: email });
+  return ajaxService.post('/api/initiate-reset-password', { email: email });
 };
 
 
@@ -188,7 +187,7 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
     authToken: authToken
   };
 
-  return AjaxService
+  return ajaxService
     .post('/api/reset-password', data)
     .then(serverResponse => this.populateStore(serverResponse));
 };
@@ -200,7 +199,7 @@ DataService.prototype.resetPassword = function(nextPassword, pilotId, authToken)
  * many flights, sites, gliders were created.
  */
 DataService.prototype.importFlights = function(dataUri) {
-  return AjaxService
+  return ajaxService
     .post('/api/import-flights', { encodedContent: dataUri })
     .then(res => {
       this.requestServerData();
@@ -229,7 +228,7 @@ DataService.prototype.initializeStore = function() {
  * Once user logged out we clear all his data from the front-end store
  */
 DataService.prototype.clearStore = function() {
-  _.each(this.store, (value, key) => {
+  Object.keys(this.store).forEach(key => {
     this.store[key] = null;
   });
   this.lastModified = null;
@@ -254,15 +253,15 @@ DataService.prototype.populateStore = function(serverResponse) {
     this.lastModified = serverResponse.lastModified;
     this.initializeStore();
 
-    _.each(serverResponse, (data, storeKey) => {
-      if (storeKey === 'pilot') {
-        this.addPilotInfo(data);
+    Object.keys(serverResponse).forEach(key => {
+      if (key === 'pilot') {
+        this.addPilotInfo(serverResponse[key]);
         return;
       }
 
       // if we have such data type update data
-      if (this.store[storeKey] !== undefined) {
-        this.addItems(storeKey, data);
+      if (this.store[key] !== undefined) {
+        this.addItems(key, serverResponse[key]);
       }
     });
 
@@ -291,7 +290,7 @@ DataService.prototype.setLoadingError = function(error, isRetry) {
   }
 
   // try to get data again
-  if (!isRetry && error.type !== ErrorTypes.AUTHENTICATION_ERROR) {
+  if (!isRetry && error.type !== errorTypes.AUTHENTICATION_ERROR) {
     this.requestServerData(true);
   }
 };
@@ -307,7 +306,7 @@ DataService.prototype.addPilotInfo = function(pilotInfo) {
   if (this.store.pilot === null) {
     this.store.pilot = {};
   }
-  this.store.pilot = _.extend(this.store.pilot, pilotInfo);
+  this.store.pilot = Object.assign(this.store.pilot, pilotInfo);
 };
 
 
@@ -330,4 +329,4 @@ DataService.prototype.addItems = function(storeKey, newItems) {
 };
 
 
-module.exports = new DataService();
+export default new DataService();

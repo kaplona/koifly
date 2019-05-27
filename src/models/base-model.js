@@ -1,18 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
-const dataService = require('../services/data-service');
-const ErrorTypes = require('../errors/error-types');
-const KoiflyError = require('../errors/error');
-const Util = require('../utils/util');
+import dataService from '../services/data-service';
+import errorTypes from '../errors/error-types';
+import KoiflyError from '../errors/error';
+import Util from '../utils/util';
 
 
 const BaseModel = {
-
-  getModelKey: function() {
+  getModelKey() {
     return this.keys.single;
   },
-
 
   /**
    *
@@ -21,7 +18,7 @@ const BaseModel = {
    * null - if store is empty
    * error - if loading error occurred or there is no item with requested id
    */
-  getStoreContent: function(itemId) {
+  getStoreContent(itemId) {
     // There is loading error
     const loadingError = dataService.getLoadingError();
     if (loadingError) {
@@ -37,7 +34,7 @@ const BaseModel = {
 
     // No item with requested id
     if (itemId && !storeContent[itemId]) {
-      return { error: new KoiflyError(ErrorTypes.RECORD_NOT_FOUND) };
+      return { error: new KoiflyError(errorTypes.RECORD_NOT_FOUND) };
     }
 
     if (itemId) {
@@ -47,49 +44,45 @@ const BaseModel = {
     return storeContent;
   },
 
-
-  getValidationConfig: function() {
+  getValidationConfig() {
     return this.formValidationConfig;
   },
-
 
   /**
    * @param {object} newItem
    * @returns {Promise} - if saving was successful or not
    */
-  saveItem: function(newItem) {
+  saveItem(newItem) {
     newItem = this.getDataForServer(newItem);
     return dataService.saveData(newItem, this.getModelKey());
   },
-
 
   /**
    * @param {number} itemId
    * @returns {Promise} - if deleting was successful or not
    */
-  deleteItem: function(itemId) {
+  deleteItem(itemId) {
     return dataService.saveData({ id: itemId, see: false }, this.getModelKey());
   },
-
 
   /**
    * Walks through new item and replace all empty values with default ones
    * @param {object} newItem
    * @returns {object} - with replaced empty fields
    */
-  setDefaultValues: function(newItem) {
+  setDefaultValues(newItem) {
     const fieldsToReplace = {};
-    _.each(this.getValidationConfig(), (config, fieldName) => {
+    const validationConfig = this.getValidationConfig();
+    Object.keys(validationConfig).forEach(fieldName => {
+      const fieldConfig = validationConfig[fieldName];
       // If there is default value for empty field - set it
-      if (Util.isEmptyString(newItem[fieldName]) &&
-        config.rules.defaultVal !== undefined
-      ) {
-        fieldsToReplace[fieldName] = config.rules.defaultVal;
+      if (Util.isEmptyString(newItem[fieldName]) && fieldConfig.rules.defaultVal !== undefined) {
+        fieldsToReplace[fieldName] = fieldConfig.rules.defaultVal;
       }
     });
-    return _.extend({}, newItem, fieldsToReplace);
+    return Object.assign({}, newItem, fieldsToReplace);
   }
 };
 
 
-module.exports = BaseModel;
+export default BaseModel;

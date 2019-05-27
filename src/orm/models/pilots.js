@@ -1,17 +1,16 @@
 'use strict';
 /* eslint-disable new-cap */
 const Sequelize = require('sequelize');
-
-const ErrorMessages = require('../../errors/error-messages');
+const db = require('../sequelize-db');
+const errorMessages = require('../../errors/error-messages');
 const isUnique = require('../validation-helpers/is-unique');
-const sequelize = require('../sequelize');
 
 const Flight = require('./flights');
 const Site = require('./sites');
 const Glider = require('./gliders');
 
 
-const Pilot = sequelize.define(
+const Pilot = db.define(
   'pilot',
 
   // attributes
@@ -29,7 +28,7 @@ const Pilot = sequelize.define(
       validate: {
         len: {
           args: [0, 100],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'User Name').replace('%max', '100')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'User Name').replace('%max', '100')
         }
       }
     },
@@ -41,7 +40,7 @@ const Pilot = sequelize.define(
         this.setDataValue('email', value.toLowerCase());
       },
       validate: {
-        isEmail: { msg: ErrorMessages.NOT_VALID_EMAIL }
+        isEmail: { msg: errorMessages.NOT_VALID_EMAIL }
       }
     },
 
@@ -55,10 +54,10 @@ const Pilot = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
+        isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
+          msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
     },
@@ -68,10 +67,10 @@ const Pilot = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
+        isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
+          msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
     },
@@ -90,7 +89,7 @@ const Pilot = sequelize.define(
       validate: {
         len: {
           args: [0, 64],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'token!!!').replace('%max', '64')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'token!!!').replace('%max', '64')
         }
       }
     },
@@ -120,7 +119,7 @@ const Pilot = sequelize.define(
 
     hooks: {
       beforeValidate: function(instance, options) {
-        const errorMsg = ErrorMessages.EXISTENT_EMAIL;
+        const errorMsg = errorMessages.EXISTENT_EMAIL;
         return isUnique(Pilot, instance, 'email', errorMsg, options.transaction, true);
       }
     },

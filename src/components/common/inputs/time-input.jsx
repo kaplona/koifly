@@ -1,37 +1,20 @@
 'use strict';
 
-const React = require('react');
-const { func, number, oneOfType, string } = React.PropTypes;
-const Label = require('../section/label');
-const InputContainer = require('./input-container');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { func, number, oneOfType, string } from 'prop-types';
+import Label from '../section/label';
+import InputContainer from './input-container';
+import ValidationError from '../section/validation-error';
 
 require('./four-input-elements.less');
 
 
-const TimeInput = React.createClass({
+export default class TimeInput extends React.Component {
+  handleUserInput(e, inputName) {
+    this.props.onChange(inputName, e.target.value);
+  }
 
-  propTypes: {
-    hours: oneOfType([number, string]),
-    minutes: oneOfType([number, string]),
-    labelText: string,
-    errorMessage: string,
-    onChange: func.isRequired,
-    onFocus: func,
-    onBlur: func
-  },
-
-  handleUserInput: function(inputName) {
-    this.props.onChange(inputName, this.refs[inputName].value);
-  },
-
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  render: function() {
+  render() {
     let inputClassName = 'col-of-four input x-number';
     if (this.props.errorMessage) {
       inputClassName += ' x-error';
@@ -39,7 +22,9 @@ const TimeInput = React.createClass({
 
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -52,10 +37,9 @@ const TimeInput = React.createClass({
             type='text'
             pattern='[0-9]*'
             placeholder='0'
-            onChange={() => this.handleUserInput('hours')}
+            onChange={e => this.handleUserInput(e, 'hours')}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref='hours'
           />
           <div className='mobile col-of-four'>h</div>
           <div className='desktop col-of-four'>hours</div>
@@ -65,10 +49,9 @@ const TimeInput = React.createClass({
             type='text'
             pattern='[0-9]*'
             placeholder='0'
-            onChange={() => this.handleUserInput('minutes')}
+            onChange={e => this.handleUserInput(e, 'minutes')}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref='minutes'
           />
           <div className='mobile col-of-four'>min</div>
           <div className='desktop col-of-four'>minutes</div>
@@ -76,7 +59,15 @@ const TimeInput = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = TimeInput;
+TimeInput.propTypes = {
+  hours: oneOfType([number, string]),
+  minutes: oneOfType([number, string]),
+  labelText: string,
+  errorMessage: string,
+  onChange: func.isRequired,
+  onFocus: func,
+  onBlur: func
+};

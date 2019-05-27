@@ -1,15 +1,13 @@
 'use strict';
 
-const React = require('react');
-const { func, string } = React.PropTypes;
+import React from 'react';
+import { func, string } from 'prop-types';
 
 require('./empty-list.less');
 
-const EmptyList = React.createClass({
-  propTypes: {
-    ofWhichItems: string.isRequired, // plural
-    onAdding: func.isRequired
-  },
+
+// defined as class for testing purposes
+export default class EmptyList extends React.Component {
   render() {
     return (
       <div className='empty-list'>
@@ -18,7 +16,10 @@ const EmptyList = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = EmptyList;
+EmptyList.propTypes = {
+  ofWhichItems: string.isRequired, // plural
+  onAdding: func.isRequired
+};

@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
-const Altitude = require('../utils/altitude');
-const BaseModel = require('./base-model');
-const objectValues = require('object.values');
-const Util = require('../utils/util');
+import _ from 'lodash';
+import Altitude from '../utils/altitude';
+import BaseModel from './base-model';
+import objectValues from 'object.values';
+import Util from '../utils/util';
 
 
 let SiteModel = {
-
   keys: {
     single: 'site',
     plural: 'sites'
@@ -62,7 +61,6 @@ let SiteModel = {
     }
   },
 
-
   /**
    * Returns raw site list.
    * @return {Array}
@@ -75,14 +73,13 @@ let SiteModel = {
     return objectValues(storeContent);
   },
 
-
   /**
    * Prepare data to show to user
    * @returns {array|null|object} - array of sites
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getListOutput: function() {
+  getListOutput() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -100,7 +97,6 @@ let SiteModel = {
     });
   },
 
-
   /**
    * Prepare data to show to user
    * @param {number} siteId
@@ -108,7 +104,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getItemOutput: function(siteId) {
+  getItemOutput(siteId) {
     const site = this.getStoreContent(siteId);
     if (!site || site.error) {
       return site;
@@ -131,7 +127,6 @@ let SiteModel = {
     };
   },
 
-
   /**
    * Prepare data to show to user
    * @param {string} siteId
@@ -139,7 +134,7 @@ let SiteModel = {
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getEditOutput: function(siteId) {
+  getEditOutput(siteId) {
     if (siteId === undefined) {
       return this.getNewItemOutput();
     }
@@ -164,14 +159,13 @@ let SiteModel = {
     };
   },
 
-
   /**
    * Prepare data to show to user
    * @returns {object|null} - site
    * null - if no data in front end
    * error object - if data wasn't loaded due to error
    */
-  getNewItemOutput: function() {
+  getNewItemOutput() {
     const storeContent = this.getStoreContent();
     if (!storeContent || storeContent.error) {
       return storeContent;
@@ -187,7 +181,6 @@ let SiteModel = {
     };
   },
 
-
   /**
    * Fills empty fields with their defaults
    * takes only fields that should be send to the server
@@ -195,7 +188,7 @@ let SiteModel = {
    * @param {object} newSite
    * @returns {object} - site ready to send to the server
    */
-  getDataForServer: function(newSite) {
+  getDataForServer(newSite) {
     // Set default values to empty fields
     newSite = this.setDefaultValues(newSite);
 
@@ -216,39 +209,35 @@ let SiteModel = {
     return site;
   },
 
-
   /**
    * @param {number} siteId - assumption: site id exists
    * @returns {string|null} - site's name or null if no site with given id
    */
-  getSiteName: function(siteId) {
+  getSiteName(siteId) {
     const getStoreContent = this.getStoreContent(siteId);
     return !getStoreContent.error ? getStoreContent.name : null;
   },
-
 
   /**
    * @param {number|null} siteId - assumption: site id exists
    * @returns {{lat: number, lng: number}|null} - coordinates object or null if siteId or coordinates are not specified
    */
-  getLatLng: function(siteId) {
+  getLatLng(siteId) {
     return siteId ? this.getStoreContent(siteId).coordinates : null;
   },
-
 
   /**
    * @param {number} siteId - assumption: site id exists
    * @returns {number} - site launch altitude in pilot units
    */
-  getLaunchAltitude: function(siteId) {
+  getLaunchAltitude(siteId) {
     return Altitude.getAltitudeInPilotUnits(this.getStoreContent(siteId).launchAltitude);
   },
-
 
   /**
    * @returns {number|null} - id of last created site or null if no sites yet
    */
-  getLastAddedId: function() {
+  getLastAddedId() {
     const storeContent = this.getStoreContent();
     if (_.isEmpty(storeContent)) {
       return null;
@@ -257,18 +246,15 @@ let SiteModel = {
     return _.max(storeContent, site => Date.parse(site.createdAt)).id;
   },
 
-
   /**
    * This presentation is required for dropdown options
    * @returns {Array} - array of objects where value is site id, text is site name
    */
-  getSiteValueTextList: function() {
+  getSiteValueTextList() {
     return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
   }
 };
 
 
-SiteModel = _.extend({}, BaseModel, SiteModel);
-
-
-module.exports = SiteModel;
+SiteModel = Object.assign({}, BaseModel, SiteModel);
+export default SiteModel;

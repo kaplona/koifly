@@ -1,29 +1,14 @@
 'use strict';
 
-const React = require('react');
-const { bool, func, string } = React.PropTypes;
+import React from 'react';
+import { bool, func, string } from 'prop-types';
 
 require('./mobile-top-menu.less');
 
 
-const MobileTopMenu = React.createClass({
-
-  propTypes: {
-    header: string,
-    leftButtonCaption: string,
-    rightButtonCaption: string,
-    onLeftClick: func,
-    onRightClick: func,
-    isPositionFixed: bool
-  },
-
-  getDefaultProps: function() {
-    return {
-      isPositionFixed: true
-    };
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class MobileTopMenu extends React.Component {
+  render() {
     let className = 'mobile-top-menu';
     // Virtual keyboard breaks fixed position of the menu
     // thus we leave position: static if any input is focused
@@ -37,9 +22,7 @@ const MobileTopMenu = React.createClass({
         <div
           className='top-navigation'
           onClick={this.props.onLeftClick}
-          ref='left-navigation'
-          onTouchStart={() => {
-          }} // required for iOS webkit browser to trigger :active pseudo state
+          onTouchStart={() => {}} // required for iOS webkit browser to trigger :active pseudo state
         >
           {this.props.leftButtonCaption}
         </div>
@@ -49,15 +32,25 @@ const MobileTopMenu = React.createClass({
         <div
           className='top-navigation'
           onClick={this.props.onRightClick}
-          ref='right-navigation'
-          onTouchStart={() => {
-          }} // required for iOS webkit browser to trigger :active pseudo state
+          onTouchStart={() => {}} // required for iOS webkit browser to trigger :active pseudo state
         >
           {this.props.rightButtonCaption}
         </div>
       </div>
     );
   }
-});
+}
 
-module.exports = MobileTopMenu;
+
+MobileTopMenu.defaultProps = {
+  isPositionFixed: true
+};
+
+MobileTopMenu.propTypes = {
+  header: string,
+  leftButtonCaption: string,
+  rightButtonCaption: string,
+  onLeftClick: func,
+  onRightClick: func,
+  isPositionFixed: bool
+};

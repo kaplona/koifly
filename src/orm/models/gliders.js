@@ -1,14 +1,13 @@
 'use strict';
 /* eslint-disable new-cap */
 const Sequelize = require('sequelize');
-
-const SCOPES = require('../../constants/orm-constants').SCOPES;
-const ErrorMessages = require('../../errors/error-messages');
+const db = require('../sequelize-db');
+const errorMessages = require('../../errors/error-messages');
 const isUnique = require('../validation-helpers/is-unique');
-const sequelize = require('../sequelize');
+const ormConstants = require('../../constants/orm-constants');
 
 
-const Glider = sequelize.define(
+const Glider = db.define(
   'glider',
 
   // attributes
@@ -26,7 +25,7 @@ const Glider = sequelize.define(
       validate: {
         len: {
           args: [0, 100],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Glider Name').replace('%max', '100')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Glider Name').replace('%max', '100')
         }
       }
     },
@@ -36,10 +35,10 @@ const Glider = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
+        isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
+          msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
     },
@@ -49,10 +48,10 @@ const Glider = sequelize.define(
       allowNull: false,
       defaultValue: 0,
       validate: {
-        isInt: { msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
+        isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
           args: [ 0 ],
-          msg: ErrorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
+          msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
     },
@@ -64,7 +63,7 @@ const Glider = sequelize.define(
       validate: {
         len: {
           args: [0, 10000],
-          msg: ErrorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
+          msg: errorMessages.MAX_LENGTH.replace('%field', 'Remarks').replace('%max', '10000')
         }
       }
     },
@@ -87,7 +86,7 @@ const Glider = sequelize.define(
     timestamps: true, // automatically adds fields updatedAt and createdAt
 
     scopes: {
-      [SCOPES.visible]: {
+      [ormConstants.SCOPES.visible]: {
         where: {
           see: true
         }
@@ -96,7 +95,7 @@ const Glider = sequelize.define(
 
     hooks: {
       beforeValidate: function(instance, options) {
-        const errorMsg = ErrorMessages.DOUBLE_VALUE.replace('%field', 'Glider');
+        const errorMsg = errorMessages.DOUBLE_VALUE.replace('%field', 'Glider');
         return isUnique(Glider, instance, 'name', errorMsg, options.transaction);
       }
     },

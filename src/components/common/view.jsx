@@ -1,67 +1,62 @@
 'use strict';
 
-const React = require('react');
-const { func, object } = React.PropTypes;
-const EmailVerificationNotice = require('./notice/email-verification-notice');
-const ErrorTypes = require('../../errors/error-types');
-const Login = require('../public-views/login');
-const PilotModel = require('../../models/pilot');
-const PubSub = require('../../utils/pubsub');
+import React from 'react';
+import { func, object } from 'prop-types';
+import dataServiceConstants from '../../constants/data-service-constants';
+import EmailVerificationNotice from './notice/email-verification-notice';
+import errorTypes from '../../errors/error-types';
+import Login from '../public-views/login';
+import PilotModel from '../../models/pilot';
+import PubSub from '../../utils/pubsub';
 
-const STORE_MODIFIED_EVENT = require('../../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
-
-const View = React.createClass({
-
-  propTypes: {
-    onStoreModified: func.isRequired,
-    error: object
-  },
-
-  getInitialState: function() {
-    return {
+export default class View extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       isEmailVerificationNotice: false
     };
-  },
 
-  componentDidMount: function() {
-    PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+    this.handleCloseNotice = this.handleCloseNotice.bind(this);
+  }
+
+  componentDidMount() {
+    PubSub.on(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     this.handleStoreModified();
-  },
+  }
 
-  componentWillUnmount: function() {
-    PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
-  },
+  componentWillUnmount() {
+    PubSub.removeListener(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+  }
 
-  handleStoreModified: function() {
+  handleStoreModified() {
     this.props.onStoreModified();
     this.setState({ isEmailVerificationNotice: PilotModel.getEmailVerificationNoticeStatus() });
-  },
+  }
 
-  handleCloseNotice: function() {
+  handleCloseNotice() {
     PilotModel.hideEmailVerificationNotice();
     this.setState({ isEmailVerificationNotice: false });
-  },
+  }
 
-  renderNotice: function() {
-    if (this.state.isEmailVerificationNotice) {
-      return <EmailVerificationNotice isPadded={true} onClose={this.handleCloseNotice}/>;
-    }
-  },
-
-  render: function() {
-    if (this.props.error && this.props.error.type === ErrorTypes.AUTHENTICATION_ERROR) {
+  render() {
+    if (this.props.error && this.props.error.type === errorTypes.AUTHENTICATION_ERROR) {
       return <Login isStayOnThisPage={true}/>;
     }
 
     return (
       <div>
-        {this.renderNotice()}
+        {this.state.isEmailVerificationNotice && (
+          <EmailVerificationNotice isPadded={true} onClose={this.handleCloseNotice}/>
+        )}
         {this.props.children}
       </div>
     );
   }
-});
+}
 
 
-module.exports = View;
+View.propTypes = {
+  onStoreModified: func.isRequired,
+  error: object
+};

@@ -1,31 +1,31 @@
 'use strict';
 
-const React = require('react');
-const browserHistory = require('react-router').browserHistory;
-const Button = require('../common/buttons/button');
-const Description = require('../common/section/description');
-const DesktopBottomGrid = require('../common/grids/desktop-bottom-grid');
-const ErrorBox = require('../common/notice/error-box');
-const ErrorTypes = require('../../errors/error-types');
-const FileInput = require('../common/inputs/file-input');
-const ImportError = require('../common/notice/import-error');
-const KoiflyError = require('../../errors/error');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const Notice = require('../common/notice/notice');
-const PilotModel = require('../../models/pilot');
-const Section = require('../common/section/section');
-const SectionLoader = require('../common/section/section-loader');
-const SectionRow = require('../common/section/section-row');
-const SectionTitle = require('../common/section/section-title');
-const View = require('../common/view');
+import React from 'react';
+import Button from '../common/buttons/button';
+import Description from '../common/section/description';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import ErrorBox from '../common/notice/error-box';
+import errorTypes from '../../errors/error-types';
+import FileInput from '../common/inputs/file-input';
+import ImportError from '../common/notice/import-error';
+import KoiflyError from '../../errors/error';
+import NavigationMenu from '../common/menu/navigation-menu';
+import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
+import PilotModel from '../../models/pilot';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import View from '../common/view';
 
 require('./pilot-flight-upload.less');
 
 
-const PilotFlightsUpload = React.createClass({
-
-  getInitialState: function() {
-    return {
+export default class PilotFlightsUpload extends React.Component {
+  constructor() {
+    super();
+    this.state = {
       dataUri: null,
       email: null,
       fileName: null,
@@ -36,9 +36,14 @@ const PilotFlightsUpload = React.createClass({
       validationError: null,
       userName: null
     };
-  },
 
-  handleStoreModified: function() {
+    this.handleStoreModified = this.handleStoreModified.bind(this);
+    this.handleFile = this.handleFile.bind(this);
+    this.handleRemoveFile = this.handleRemoveFile.bind(this);
+    this.handleImportFile = this.handleImportFile.bind(this);
+  }
+
+  handleStoreModified() {
     const pilot = PilotModel.getEditOutput();
 
     if (pilot && pilot.error) {
@@ -53,13 +58,9 @@ const PilotFlightsUpload = React.createClass({
         loadingError: null
       });
     }
-  },
+  }
 
-  handleGoToPilotEdit: function() {
-    browserHistory.push('/pilot/edit');
-  },
-
-  handleFile: function(file) {
+  handleFile(file) {
     this.setState({
       dataUri: null,
       fileName: file.name,
@@ -85,7 +86,7 @@ const PilotFlightsUpload = React.createClass({
     };
 
     reader.readAsDataURL(file);
-  },
+  }
 
   handleRemoveFile() {
     this.setState({
@@ -95,9 +96,9 @@ const PilotFlightsUpload = React.createClass({
       successSummary: null,
       validationError: null
     });
-  },
+  }
 
-  handleImportFile: function() {
+  handleImportFile() {
     this.setState({ isImporting: true });
 
     PilotModel
@@ -110,11 +111,11 @@ const PilotFlightsUpload = React.createClass({
       })
       .catch(error => {
         this.setState({
-          fileReadError: error || new KoiflyError(ErrorTypes.DB_WRITE_ERROR),
+          fileReadError: error || new KoiflyError(errorTypes.DB_WRITE_ERROR),
           isImporting: false
         });
       });
-  },
+  }
 
   validateFile(file) {
     const errors = [];
@@ -125,32 +126,32 @@ const PilotFlightsUpload = React.createClass({
       errors.push('File must be less than 1MB');
     }
 
-    return errors.length ? new KoiflyError(ErrorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
-  },
+    return errors.length ? new KoiflyError(errorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
+  }
 
-  renderNavigationMenu: function() {
+  renderNavigationMenu() {
     return <NavigationMenu currentView={PilotModel.getModelKey()}/>;
-  },
+  }
 
-  renderSimpleLayout: function(children) {
+  renderSimpleLayout(children) {
     return (
       <View onStoreModified={this.handleStoreModified} error={this.state.loadingError}>
         {this.renderNavigationMenu()}
         {children}
       </View>
     );
-  },
+  }
 
-  renderLoader: function() {
+  renderLoader() {
     return this.renderSimpleLayout(<SectionLoader/>);
-  },
+  }
 
-  renderLoadingError: function() {
+  renderLoadingError() {
     const errorBox = <ErrorBox error={this.state.loadingError} onTryAgain={this.handleStoreModified}/>;
     return this.renderSimpleLayout(errorBox);
-  },
+  }
 
-  renderSuccessMessage: function() {
+  renderSuccessMessage() {
     return (
       <div className='pilot-flight-upload__notice'>
         <Notice
@@ -168,9 +169,9 @@ const PilotFlightsUpload = React.createClass({
         />
       </div>
     );
-  },
+  }
 
-  render: function() {
+  render() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
     }
@@ -246,7 +247,7 @@ const PilotFlightsUpload = React.createClass({
                 <Button
                   buttonStyle='secondary'
                   caption='Cancel'
-                  onClick={this.handleGoToPilotEdit}
+                  onClick={navigationService.goToPilotEdit}
                 />
               ]}
             />
@@ -257,7 +258,4 @@ const PilotFlightsUpload = React.createClass({
       </View>
     );
   }
-});
-
-
-module.exports = PilotFlightsUpload;
+}

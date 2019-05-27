@@ -1,12 +1,12 @@
 'use strict';
 
-const React = require('react');
-const MobileTopMenu = require('../common/menu/mobile-top-menu');
-const NavigationMenu = require('../common/menu/navigation-menu');
-const Notice = require('../common/notice/notice');
+import React from 'react';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
+import Notice from '../common/notice/notice';
 
 
-function EmailVerified() {
+export default function EmailVerified() {
   return (
     <div>
       <MobileTopMenu header='Koifly'/>
@@ -15,6 +15,3 @@ function EmailVerified() {
     </div>
   );
 }
-
-
-module.exports = EmailVerified;

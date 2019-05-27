@@ -3,10 +3,10 @@
 /* since I define helpers functions which are not invoked in this file  */
 const _ = require('lodash');
 const getAllData = require('../helpers/get-all-data');
-const ErrorTypes = require('../../errors/error-types');
+const errorTypes = require('../../errors/error-types');
 const KoiflyError = require('../../errors/error');
 const normalizeError = require('../../errors/normalize-error');
-const sequelize = require('../../orm/sequelize');
+const db = require('../../orm/sequelize-db');
 
 const Flight = require('../../orm/models/flights');
 const Glider = require('../../orm/models/gliders');
@@ -33,23 +33,23 @@ const queryHandler = function(request) {
 
         // Check that user are trying to change his/her own data
         if (requestPayload.pilotId !== pilot.id) {
-          throw new KoiflyError(ErrorTypes.USER_MISMATCH);
+          throw new KoiflyError(errorTypes.USER_MISMATCH);
         }
 
         // If data type is not specified throw error
         if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
-          throw new KoiflyError(ErrorTypes.BAD_REQUEST);
+          throw new KoiflyError(errorTypes.BAD_REQUEST);
         }
 
         // If data is not an Object throw error
         if (!(requestPayload.data instanceof Object)) {
-          throw new KoiflyError(ErrorTypes.BAD_REQUEST);
+          throw new KoiflyError(errorTypes.BAD_REQUEST);
         }
 
         return saveData(requestPayload.dataType, requestPayload.data, pilot)
           .catch(error => {
             // If it's any other error but KoiflyError will replace it with KoiflyError with given type
-            throw normalizeError(error, ErrorTypes.DB_WRITE_ERROR);
+            throw normalizeError(error, errorTypes.DB_WRITE_ERROR);
           })
           .then(() => {
             // Get all data from the DB since lastModified
@@ -123,7 +123,7 @@ function saveFlight(data, pilotId) {
     .findOne({ where: { id: data.id, pilotId: pilotId } })
     .then(flight => {
       if (!flight || flight.id.toString() !== data.id.toString()) {
-        throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
+        throw new KoiflyError(errorTypes.RECORD_NOT_FOUND);
       }
 
       return flight.update(data);
@@ -162,12 +162,12 @@ function saveSite(data, pilotId) {
 
   // Start transaction
   // in order to delete glider with all its references in flight records
-  return sequelize.transaction(t => {
+  return db.transaction(t => {
     return Site
       .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
       .then(site => {
         if (!site || site.id.toString() !== data.id.toString()) {
-          throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
+          throw new KoiflyError(errorTypes.RECORD_NOT_FOUND);
         }
 
         return site.update(data, { transaction: t });
@@ -214,12 +214,12 @@ function saveGlider(data, pilotId) {
 
   // Start transaction
   // in order to delete glider with all its references in flight records
-  return sequelize.transaction(t => {
+  return db.transaction(t => {
     return Glider
       .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
       .then(glider => {
         if (!glider || glider.id.toString() !== data.id.toString()) {
-          throw new KoiflyError(ErrorTypes.RECORD_NOT_FOUND);
+          throw new KoiflyError(errorTypes.RECORD_NOT_FOUND);
         }
 
         return glider.update(data, { transaction: t });

@@ -1,60 +1,47 @@
 'use strict';
 
-const React = require('react');
-
-const CENTER = require('../../../constants/map-constants').CENTER;
-const PROP_TYPES = require('../../../constants/prop-types');
-const ZOOM_LEVEL = require('../../../constants/map-constants').ZOOM_LEVEL;
-
+import React from 'react';
+import { arrayOf, bool } from 'prop-types';
+import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import mapConstants from '../../../constants/map-constants';
 
 require('./map.less');
 
 
-const { arrayOf, bool } = React.PropTypes;
+export default class TrackMap extends React.Component {
+  constructor() {
+    super();
+    this.mapEl = null;
+    this.setMapRef = this.setMapRef.bind(this);
+  }
 
-const TrackMap = React.createClass({
-
-  propTypes: {
-    isFullScreen: bool,
-    markerCoords: PROP_TYPES.coordinates,
-    trackCoords: arrayOf(PROP_TYPES.coordinates).isRequired,
-    mapFacadePromise: PROP_TYPES.promise.isRequired
-  },
-
-  getDefaultProps: function() {
-    return {
-      isFullScreen: false
-    };
-  },
-
-  componentDidMount: function() {
+  componentDidMount() {
     this.props.mapFacadePromise.then(mapFacade => {
       this.mapFacade = mapFacade;
       this.createMap();
     });
-  },
+  }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.mapFacade && nextProps.trackCoords !== this.props.trackCoords) {
-      this.mapFacade.updateFlightTrack(nextProps.trackCoords);
+  componentDidUpdate(prevProps) {
+    if (this.mapFacade && prevProps.trackCoords !== this.props.trackCoords) {
+      this.mapFacade.updateFlightTrack(this.props.trackCoords);
     }
     if (
-      this.mapFacade && !!nextProps.markerCoords && !!this.props.markerCoords &&
-      nextProps.markerCoords.lat !== this.props.markerCoords.lat &&
-      nextProps.markerCoords.lng !== this.props.markerCoords.lng
+      this.mapFacade && !!prevProps.markerCoords && !!this.props.markerCoords &&
+      prevProps.markerCoords.lat !== this.props.markerCoords.lat &&
+      prevProps.markerCoords.lng !== this.props.markerCoords.lng
     ) {
-      this.mapFacade.moveTrackMarker(nextProps.markerCoords);
+      this.mapFacade.moveTrackMarker(this.props.markerCoords);
     }
-  },
+  }
 
-  shouldComponentUpdate: function() {
-    return false;
-  },
+  setMapRef(el) {
+    this.mapEl = el;
+  }
 
-  createMap: function() {
-    const mapContainer = this.refs.map;
-    const center = this.props.trackCoords[0] || CENTER.region;
-    this.mapFacade.createMap(mapContainer, center, ZOOM_LEVEL.track);
+  createMap() {
+    const center = this.props.trackCoords[0] || mapConstants.CENTER.region;
+    this.mapFacade.createMap(this.mapEl, center, mapConstants.ZOOM_LEVEL.track);
 
     if (this.props.trackCoords) {
       this.mapFacade.createFlightTrack(this.props.trackCoords);
@@ -62,19 +49,30 @@ const TrackMap = React.createClass({
     if (this.props.markerCoords) {
       this.mapFacade.moveTrackMarker(this.props.markerCoords);
     }
-  },
+  }
 
-  render: function() {
+  render() {
     const className = this.props.isFullScreen ? 'map-container x-full-screen' : 'map-container';
 
     return (
-      <div className={this.props.isFullScreen ? 'static-wrapper' : null}>
-        <div className={className} ref='map'/>
+      <div className={this.props.isFullScreen ? 'static-wrapper' : ''}>
+        <div className={className} ref={this.setMapRef}/>
       </div>
     );
   }
-});
+}
 
+
+TrackMap.defaultProps = {
+  isFullScreen: false
+};
+
+TrackMap.propTypes = {
+  isFullScreen: bool,
+  markerCoords: coordinatesPropType,
+  trackCoords: arrayOf(coordinatesPropType).isRequired,
+  mapFacadePromise: promisePropType.isRequired
+};
 
 TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
   // this loads external google-maps-api
@@ -87,6 +85,3 @@ TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
     />
   );
 };
-
-
-module.exports = TrackMap;

@@ -1,56 +1,54 @@
 'use strict';
 
-const React = require('react');
-const PilotModel = require('../../../models/pilot');
-const PubSub = require('../../../utils/pubsub');
-const PublicLinksMixin = require('../../mixins/public-links-mixin');
+import React from 'react';
+import dataServiceConstants from '../../../constants/data-service-constants';
+import navigationService from '../../../services/navigation-service';
+import PilotModel from '../../../models/pilot';
+import PubSub from '../../../utils/pubsub';
 
-const STORE_MODIFIED_EVENT = require('../../../constants/data-service-constants').STORE_MODIFIED_EVENT;
 
 require('./header.less');
 
 
-const Header = React.createClass({
+export default class Header extends React.Component {
+  constructor() {
+    super();
+    this.state = { isLoggedIn: false };
 
-  mixins: [ PublicLinksMixin ],
+    this.handleLogOut = this.handleLogOut.bind(this);
+  }
 
-  getInitialState: function() {
-    return { isLoggedIn: false };
-  },
-
-  componentDidMount: function() {
-    PubSub.on(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+  componentDidMount() {
+    PubSub.on(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
     this.handleStoreModified();
-  },
+  }
 
-  componentWillUnmount: function() {
-    PubSub.removeListener(STORE_MODIFIED_EVENT, this.handleStoreModified, this);
-  },
+  componentWillUnmount() {
+    PubSub.removeListener(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+  }
 
-  handleStoreModified: function() {
+  handleStoreModified() {
     this.setState({ isLoggedIn: PilotModel.isLoggedIn() });
-  },
+  }
 
-  handleLogOut: function() {
+  handleLogOut() {
     PilotModel
       .logout()
-      .then(() => this.handleGoToLogin)
+      .then(() => navigationService.goToLogin)
       .catch(() => window.alert('Server error. Could not log out.'));
-  },
+  }
 
-  render: function() {
+  render() {
     const loginText = this.state.isLoggedIn ? 'Log Out' : 'Log In';
-    const loginHandler = this.state.isLoggedIn ? this.handleLogOut : this.handleGoToLogin;
+    const loginHandler = this.state.isLoggedIn ? this.handleLogOut : navigationService.goToLogin;
 
     return (
       <div className='main-header desktop'>
         <div className='logo'>
-          <a onClick={this.handleGoToHomePage}>Koifly</a>
+          <a onClick={navigationService.goToHomePage}>Koifly</a>
         </div>
         <a className='logout' onClick={loginHandler}>{loginText}</a>
       </div>
     );
   }
-});
-
-module.exports = Header;
+}

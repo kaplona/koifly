@@ -1,11 +1,11 @@
 'use strict';
 
-const getWebpackAssets = require('../../tools/get-webpack-assets');
-const React = require('react');
+import React from 'react';
+import getWebpackAssets from '../../tools/get-webpack-assets';
 
 
-const Sandbox = React.createClass({
-  render: function() {
+export default class Sandbox extends React.Component {
+  render() {
     return (
       <html>
       <head>
@@ -25,7 +25,4 @@ const Sandbox = React.createClass({
       </html>
     );
   }
-});
-
-
-module.exports = Sandbox;
+}

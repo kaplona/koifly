@@ -1,60 +1,38 @@
 'use strict';
 
-const React = require('react');
-const { bool, element, func, number, oneOfType, string } = React.PropTypes;
-const Altitude = require('../../../utils/altitude');
-const Label = require('../section/label');
-const InputContainer = require('./input-container');
-const Dropdown = require('./dropdown');
-const ValidationError = require('../section/validation-error');
+import React from 'react';
+import { bool, element, func, number, oneOfType, string } from 'prop-types';
+import Altitude from '../../../utils/altitude';
+import Label from '../section/label';
+import InputContainer from './input-container';
+import Dropdown from './dropdown';
+import ValidationError from '../section/validation-error';
 
 require('./two-input-elements.less');
 require('./after-comment.less');
 
 
-const AltitudeInput = React.createClass({
+export default class AltitudeInput extends React.Component {
+  constructor() {
+    super();
+    this.handleAltitudeChange = this.handleAltitudeChange.bind(this);
+    this.handleUnitChange = this.handleUnitChange.bind(this);
+    this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
+  }
 
-  propTypes: {
-    inputValue: oneOfType([number, string]).isRequired,
-    selectedAltitudeUnit: string,
-    inputName: string.isRequired,
-    labelText: oneOfType([string, element]),
-    errorMessage: string,
-    onChange: func.isRequired,
-    onFocus: func,
-    onBlur: func,
-    onSledRide: func,
-    isSledRide: bool
-  },
+  handleAltitudeChange(e) {
+    this.props.onChange(this.props.inputName, e.target.value);
+  }
 
-  getDefaultProps: function() {
-    return {
-      inputName: 'altitude'
-    };
-  },
-
-  handleUserInput: function(inputName, inputValue) {
-    // When function is triggered from embedded component
-    // both parameters are provided
-    // otherwise retrieve input value from the DOM
-    if (inputValue === undefined) {
-      inputValue = this.refs[inputName].value;
-    }
-
+  handleUnitChange(inputName, inputValue) {
     this.props.onChange(inputName, inputValue);
-  },
+  }
 
-  handleCheckboxChange: function() {
+  handleCheckboxChange() {
     this.props.onSledRide(!this.props.isSledRide);
-  },
+  }
 
-  renderErrorMessage: function() {
-    if (this.props.errorMessage) {
-      return <ValidationError message={this.props.errorMessage}/>;
-    }
-  },
-
-  renderSledRideCheckbox: function() {
+  renderSledRideCheckbox() {
     if (this.props.onSledRide) {
       return (
         <div className='after-comment'>
@@ -68,14 +46,16 @@ const AltitudeInput = React.createClass({
         </div>
       );
     }
-  },
+  }
 
-  render: function() {
+  render() {
     const altitudeUnitsList = Altitude.getAltitudeUnitsValueTextList();
 
     return (
       <div>
-        {this.renderErrorMessage()}
+        {!!this.props.errorMessage && (
+          <ValidationError message={this.props.errorMessage}/>
+        )}
 
         <Label>
           {this.props.labelText}
@@ -90,10 +70,9 @@ const AltitudeInput = React.createClass({
             pattern='[0-9]*'
             placeholder='0'
             disabled={this.props.isSledRide}
-            onChange={() => this.handleUserInput(this.props.inputName)}
+            onChange={this.handleAltitudeChange}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
-            ref={this.props.inputName}
           />
 
           <div className='col-of-two'>
@@ -102,7 +81,7 @@ const AltitudeInput = React.createClass({
               options={altitudeUnitsList}
               inputName='altitudeUnit'
               isEnabled={!this.props.isSledRide}
-              onChangeFunc={this.handleUserInput}
+              onChangeFunc={this.handleUnitChange}
               onFocus={this.props.onFocus}
               onBlur={this.props.onBlur}
             />
@@ -113,7 +92,22 @@ const AltitudeInput = React.createClass({
       </div>
     );
   }
-});
+}
 
 
-module.exports = AltitudeInput;
+AltitudeInput.defaultProps = {
+  inputName: 'altitude'
+};
+
+AltitudeInput.propTypes = {
+  inputValue: oneOfType([number, string]).isRequired,
+  selectedAltitudeUnit: string,
+  inputName: string.isRequired,
+  labelText: oneOfType([string, element]),
+  errorMessage: string,
+  onChange: func.isRequired,
+  onFocus: func,
+  onBlur: func,
+  onSledRide: func,
+  isSledRide: bool
+};

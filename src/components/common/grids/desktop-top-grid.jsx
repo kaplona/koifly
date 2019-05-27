@@ -1,19 +1,14 @@
 'use strict';
 
-const React = require('react');
+import React from 'react';
+import { element } from 'prop-types';
 
 require('./desktop-top-grid.less');
 
 
-const DesktopTopGrid = React.createClass({
-
-  propTypes: {
-    leftElement: React.PropTypes.element,
-    middleElement: React.PropTypes.element,
-    rightElement: React.PropTypes.element
-  },
-
-  render: function() {
+// defined as class for testing purposes
+export default class DesktopTopGrid extends React.Component {
+  render() {
     return (
       <div className='top-grid'>
         <div className='left-element'>
@@ -30,7 +25,11 @@ const DesktopTopGrid = React.createClass({
       </div>
     );
   }
-});
+}
 
+DesktopTopGrid.propTypes = {
+  leftElement: element,
+  middleElement: element,
+  rightElement: element
+};
 
-module.exports = DesktopTopGrid;
