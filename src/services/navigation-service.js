@@ -1,6 +1,6 @@
 'use strict';
 
-const browserHistory = require('react-router').browserHistory;
+import browserHistory from './browser-history';
 
 
 const navigationService = {

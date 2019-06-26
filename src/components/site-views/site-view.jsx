@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { shape, string } from 'prop-types';
+import { Link } from 'react-router-dom';
 import Altitude from '../../utils/altitude';
 import BreadCrumbs from '../common/bread-crumbs';
 import ErrorBox from '../common/notice/error-box';
-import { Link } from 'react-router';
 import mapConstants from '../../constants/map-constants';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
@@ -40,7 +40,7 @@ export default class SiteView extends React.Component {
    * and updates component's state
    */
   handleStoreModified() {
-    const storeContent = SiteModel.getItemOutput(this.props.params.id);
+    const storeContent = SiteModel.getItemOutput(this.props.match.params.id);
 
     if (storeContent && storeContent.error) {
       this.setState({ loadingError: storeContent.error });
@@ -57,7 +57,7 @@ export default class SiteView extends React.Component {
   }
 
   handleEditItem() {
-    navigationService.goToEditView(SiteModel.keys.single, this.props.params.id);
+    navigationService.goToEditView(SiteModel.keys.single, this.props.match.params.id);
   }
 
   renderNavigationMenu() {
@@ -178,7 +178,9 @@ export default class SiteView extends React.Component {
 
 
 SiteView.propTypes = {
-  params: shape({ // url args
-    id: string.isRequired
-  })
+  match: shape({
+    params: shape({
+      id: string.isRequired // url args
+    }).isRequired
+  }).isRequired
 };

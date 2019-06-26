@@ -68,8 +68,8 @@ export default class ResetPassword extends React.Component {
     });
 
     const password = this.state.password;
-    const pilotId = this.props.params.pilotId;
-    const authToken = this.props.params.authToken;
+    const pilotId = this.props.match.params.pilotId;
+    const authToken = this.props.match.params.authToken;
     dataService
       .resetPassword(password, pilotId, authToken)
       .then(() => this.setState({ successNotice: true }))
@@ -217,8 +217,10 @@ export default class ResetPassword extends React.Component {
 
 
 ResetPassword.propTypes = {
-  params: shape({ // url args
-    pilotId: string.isRequired,
-    authToken: string.isRequired,
-  })
+  match: shape({
+    params: shape({ // url args
+      pilotId: string.isRequired,
+      authToken: string.isRequired,
+    }).isRequired
+  }).isRequired
 };

@@ -7,7 +7,7 @@
         "targets": {
           "chrome": "29",
           "edge": "12",
-          "ie": "9",
+          "ie": "10",
           "firefox": "28",
           "node": true,
           "opera": "58",

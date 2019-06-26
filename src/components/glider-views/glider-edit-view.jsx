@@ -69,7 +69,7 @@ export default class GliderEditView extends React.Component {
     }
 
     // Fetch item
-    const item = GliderModel.getEditOutput(this.props.params.id);
+    const item = GliderModel.getEditOutput(this.props.match.params.id);
 
     // Check for errors
     if (item && item.error) {
@@ -104,8 +104,8 @@ export default class GliderEditView extends React.Component {
   }
 
   handleCancelEdit() {
-    if (this.props.params.id) {
-      navigationService.goToItemView(GliderModel.keys.single, this.props.params.id);
+    if (this.props.match.params.id) {
+      navigationService.goToItemView(GliderModel.keys.single, this.props.match.params.id);
     } else {
       navigationService.goToListView(GliderModel.keys.plural);
     }
@@ -137,7 +137,7 @@ export default class GliderEditView extends React.Component {
     if (window.confirm(alertMessage)) {
       this.setState({ isDeleting: true });
       GliderModel
-        .deleteItem(this.props.params.id)
+        .deleteItem(this.props.match.params.id)
         .then(() => navigationService.goToListView(GliderModel.keys.plural))
         .catch(error => this.updateProcessingError(error));
     }
@@ -248,7 +248,7 @@ export default class GliderEditView extends React.Component {
   }
 
   renderMobileDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <MobileButton
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -296,7 +296,7 @@ export default class GliderEditView extends React.Component {
   }
 
   renderDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <Button
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -412,7 +412,9 @@ export default class GliderEditView extends React.Component {
 
 
 GliderEditView.propTypes = {
-  params: shape({ // url args
-    id: string
-  })
+  match: shape({
+    params: shape({
+      id: string // url args
+    })
+  }).isRequired
 };

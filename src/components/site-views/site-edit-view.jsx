@@ -74,7 +74,7 @@ export default class SiteEditView extends React.Component {
     }
 
     // Fetch item
-    const item = SiteModel.getEditOutput(this.props.params.id);
+    const item = SiteModel.getEditOutput(this.props.match.params.id);
 
     // Check for errors
     if (item && item.error) {
@@ -109,8 +109,8 @@ export default class SiteEditView extends React.Component {
   }
 
   handleCancelEdit() {
-    if (this.props.params.id) {
-      navigationService.goToItemView(SiteModel.keys.single, this.props.params.id);
+    if (this.props.match.params.id) {
+      navigationService.goToItemView(SiteModel.keys.single, this.props.match.params.id);
     } else {
       navigationService.goToListView(SiteModel.keys.plural);
     }
@@ -142,7 +142,7 @@ export default class SiteEditView extends React.Component {
     if (window.confirm(alertMessage)) {
       this.setState({ isDeleting: true });
       SiteModel
-        .deleteItem(this.props.params.id)
+        .deleteItem(this.props.match.params.id)
         .then(() => navigationService.goToListView(SiteModel.keys.plural))
         .catch(error => this.updateProcessingError(error));
     }
@@ -273,7 +273,7 @@ export default class SiteEditView extends React.Component {
   }
 
   renderMobileDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <MobileButton
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -321,7 +321,7 @@ export default class SiteEditView extends React.Component {
   }
 
   renderDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <Button
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -465,7 +465,9 @@ export default class SiteEditView extends React.Component {
 
 
 SiteEditView.propTypes = {
-  params: shape({ // url args
-    id: string
-  })
+  match: shape({
+    params: shape({
+      id: string // url args
+    })
+  }).isRequired
 };

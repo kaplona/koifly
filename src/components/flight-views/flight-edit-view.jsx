@@ -80,7 +80,7 @@ export default class FlightEditView extends React.Component {
     }
 
     // Fetch item
-    const item = FlightModel.getEditOutput(this.props.params.id);
+    const item = FlightModel.getEditOutput(this.props.match.params.id);
 
     // Check for errors
     if (item && item.error) {
@@ -115,8 +115,8 @@ export default class FlightEditView extends React.Component {
   }
 
   handleCancelEdit() {
-    if (this.props.params.id) {
-      navigationService.goToItemView(FlightModel.keys.single, this.props.params.id);
+    if (this.props.match.params.id) {
+      navigationService.goToItemView(FlightModel.keys.single, this.props.match.params.id);
     } else {
       navigationService.goToListView(FlightModel.keys.plural);
     }
@@ -148,7 +148,7 @@ export default class FlightEditView extends React.Component {
     if (window.confirm(alertMessage)) {
       this.setState({ isDeleting: true });
       FlightModel
-        .deleteItem(this.props.params.id)
+        .deleteItem(this.props.match.params.id)
         .then(() => navigationService.goToListView(FlightModel.keys.plural))
         .catch(error => this.updateProcessingError(error));
     }
@@ -304,7 +304,7 @@ export default class FlightEditView extends React.Component {
   }
 
   renderMobileDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <MobileButton
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -352,7 +352,7 @@ export default class FlightEditView extends React.Component {
   }
 
   renderDeleteButton() {
-    if (this.props.params.id) {
+    if (this.props.match.params.id) {
       return (
         <Button
           caption={this.state.isDeleting ? 'Deleting...' : 'Delete'}
@@ -509,5 +509,9 @@ export default class FlightEditView extends React.Component {
 
 
 FlightEditView.propTypes = {
-  id: string
+  match: shape({
+    params: shape({
+      id: string // url args
+    })
+  }).isRequired
 };

@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { shape, string } from 'prop-types';
+import { Link } from 'react-router-dom';
 import Altitude from '../../utils/altitude';
 import BreadCrumbs from '../common/bread-crumbs';
 import ErrorBox from '../common/notice/error-box';
 import FightMapAndCharts from './flight-map-and-charts';
 import FlightModel from '../../models/flight';
-import { Link } from 'react-router';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
@@ -39,7 +39,7 @@ export default class FlightView extends React.Component {
    * and updates component's state
    */
   handleStoreModified() {
-    const storeContent = FlightModel.getItemOutput(this.props.params.id);
+    const storeContent = FlightModel.getItemOutput(this.props.match.params.id);
 
     if (storeContent && storeContent.error) {
       this.setState({ loadingError: storeContent.error });
@@ -56,7 +56,7 @@ export default class FlightView extends React.Component {
   }
 
   handleEditItem() {
-    navigationService.goToEditView(FlightModel.keys.single, this.props.params.id);
+    navigationService.goToEditView(FlightModel.keys.single, this.props.match.params.id);
   }
 
   renderNavigationMenu() {
@@ -182,7 +182,9 @@ export default class FlightView extends React.Component {
 
 
 FlightView.propTypes = {
-  params: shape({ // url args
-    id: string.isRequired
+  match: shape({
+    params: shape({
+      id: string.isRequired // url args
+    }).isRequired
   }).isRequired
 };

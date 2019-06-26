@@ -1,9 +1,8 @@
 'use strict';
 
 import React from 'react';
-import { func, string } from 'prop-types';
-
-const browserHistory = require('react-router').browserHistory;
+import { func, shape, string } from 'prop-types';
+import { withRouter } from 'react-router';
 
 require('./app-link.less');
 
@@ -15,7 +14,7 @@ require('./app-link.less');
  *
  * If component has only onClick prop, it will be invoked on a link click.
  */
-export default class AppLink extends React.Component {
+class AppLink extends React.Component {
   constructor() {
     super();
     this.handleClick = this.handleClick.bind(this);
@@ -32,7 +31,7 @@ export default class AppLink extends React.Component {
     }
 
     if (this.props.href) {
-      browserHistory.push(this.props.href);
+      this.props.history.push(this.props.href);
       return;
     }
 
@@ -52,6 +51,11 @@ export default class AppLink extends React.Component {
 
 
 AppLink.propTypes = {
+  history: shape({ // from withRouter
+    push: func.isRequired
+  }).isRequired,
   href: string,
   onClick: func // will be ignored if "href" prop is passed.
 };
+
+export default withRouter(AppLink);
