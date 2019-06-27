@@ -1,6 +1,7 @@
 'use strict';
 
-const Bcrypt = require('bcrypt');
+import Bcrypt from 'bcrypt';
+
 const BCRYPT_ROUNDS = require('../secrets').bcryptRounds;
 
 
@@ -31,4 +32,4 @@ const BcryptPromise = {
 };
 
 
-module.exports = BcryptPromise;
+export default BcryptPromise;

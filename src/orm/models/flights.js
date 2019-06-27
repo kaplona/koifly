@@ -1,14 +1,15 @@
 'use strict';
 /* eslint-disable new-cap */
-const Sequelize = require('sequelize');
-const db = require('../sequelize-db');
-const errorMessages = require('../../errors/error-messages');
-const isDate = require('../validation-helpers/is-date');
-const isValidId = require('../validation-helpers/is-valid-id');
-const ormConstants = require('../../constants/orm-constants');
+import Sequelize from 'sequelize';
+import db from '../sequelize-db';
+import errorMessages from '../../errors/error-messages';
+import isDate from '../validation-helpers/is-date';
+import isValidId from '../validation-helpers/is-valid-id';
+import ormConstants from '../../constants/orm-constants';
 
-const Site = require('./sites');
-const Glider = require('./gliders');
+import Pilot from './pilots';
+import Site from './sites';
+import Glider from './gliders';
 
 
 const Flight = db.define(
@@ -44,7 +45,7 @@ const Flight = db.define(
       validate: {
         isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
         }
       }
@@ -57,7 +58,7 @@ const Flight = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
         }
       }
@@ -148,16 +149,22 @@ const Flight = db.define(
 
 
 Site.hasMany(Flight, {
-  as: 'Flights',
+  as: 'Flights', // siteInstance.getFlights, siteInstance.setFlights
   foreignKey: 'siteId',
   constraints: false
 });
 
 Glider.hasMany(Flight, {
-  as: 'Flights',
+  as: 'Flights', // gliderInstance.getFlights, gliderInstance.setFlights
   foreignKey: 'gliderId',
   constraints: false
 });
 
+Pilot.hasMany(Flight, {
+  as: 'Flights', // pilotInstance.getFlights, pilotInstance.setFlights
+  foreignKey: 'pilotId',
+  constraints: false
+});
 
-module.exports = Flight;
+
+export default Flight;

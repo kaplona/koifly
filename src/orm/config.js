@@ -1,5 +1,5 @@
 'use strict';
-
+// config to be used by sequelize-cli
 let dbSecrets = require('../secrets').dbApp;
 if (process.env.MYSQL_ADMIN) {
   dbSecrets = require('../secrets').dbAdmin;

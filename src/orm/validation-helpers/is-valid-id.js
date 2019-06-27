@@ -1,9 +1,9 @@
 'use strict';
 
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const ormConstants = require('../../constants/orm-constants');
-const Util = require('../../utils/util');
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import ormConstants from '../../constants/orm-constants';
+import Util from '../../utils/util';
 
 /**
  * Checks if in given model there is a record with given id.
@@ -15,7 +15,7 @@ const Util = require('../../utils/util');
  * @param {string} [transaction] – Transaction id to use for querying DB.
  * @returns {Promise} - Resolved Promise if id exists, rejected Promise if it doesn't or DB read error occurred.
  */
-function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
+export default function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
   // If value is empty it should be checked by other validation rules.
   if (Util.isEmptyString(recordId)) {
     return Promise.resolve();
@@ -41,5 +41,3 @@ function isValidId(Model, recordId, pilotId, errorMsg, transaction) {
       }
     });
 }
-
-module.exports = isValidId;

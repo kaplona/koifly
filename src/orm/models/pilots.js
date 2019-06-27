@@ -1,13 +1,9 @@
 'use strict';
 /* eslint-disable new-cap */
-const Sequelize = require('sequelize');
-const db = require('../sequelize-db');
-const errorMessages = require('../../errors/error-messages');
-const isUnique = require('../validation-helpers/is-unique');
-
-const Flight = require('./flights');
-const Site = require('./sites');
-const Glider = require('./gliders');
+import Sequelize from 'sequelize';
+import db from '../sequelize-db';
+import errorMessages from '../../errors/error-messages';
+import isUnique from '../validation-helpers/is-unique';
 
 
 const Pilot = db.define(
@@ -56,7 +52,7 @@ const Pilot = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
@@ -69,7 +65,7 @@ const Pilot = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
@@ -135,23 +131,4 @@ const Pilot = db.define(
 );
 
 
-Pilot.hasMany(Flight, {
-  as: 'Flights',
-  foreignKey: 'pilotId',
-  constraints: false
-});
-
-Pilot.hasMany(Site, {
-  as: 'Sites',
-  foreignKey: 'pilotId',
-  constraints: false
-});
-
-Pilot.hasMany(Glider, {
-  as: 'Gliders',
-  foreignKey: 'pilotId',
-  constraints: false
-});
-
-
-module.exports = Pilot;
+export default Pilot;

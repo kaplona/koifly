@@ -163,7 +163,7 @@ function convertCsvToJson(csvString) {
  * @return {Promise<string>}
  */
 function getPilotUnit(pilotId) {
-  return Pilot.findById(pilotId).then(pilot => pilot.altitudeUnit);
+  return Pilot.findByPk(pilotId).then(pilot => pilot.altitudeUnit);
 }
 
 /**

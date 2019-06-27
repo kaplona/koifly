@@ -1,10 +1,12 @@
 'use strict';
 /* eslint-disable new-cap */
-const Sequelize = require('sequelize');
-const db = require('../sequelize-db');
-const errorMessages = require('../../errors/error-messages');
-const isUnique = require('../validation-helpers/is-unique');
-const ormConstants = require('../../constants/orm-constants');
+import Sequelize from 'sequelize';
+import db from '../sequelize-db';
+import errorMessages from '../../errors/error-messages';
+import isUnique from '../validation-helpers/is-unique';
+import ormConstants from '../../constants/orm-constants';
+
+import Pilot from './pilots';
 
 
 const Site = db.define(
@@ -49,7 +51,7 @@ const Site = db.define(
       validate: {
         isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
         }
       }
@@ -60,13 +62,13 @@ const Site = db.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: { msg: errorMessages.COORDINATES },
+        isDecimal: { msg: errorMessages.COORDINATES },
         min: {
-          args: [ -90 ],
+          args: -90,
           msg: errorMessages.COORDINATES
         },
         max: {
-          args: [ 90 ],
+          args: 90,
           msg: errorMessages.COORDINATES
         }
       }
@@ -77,13 +79,13 @@ const Site = db.define(
       allowNull: true,
       defaultValue: null,
       validate: {
-        isFloat: { msg: errorMessages.COORDINATES },
+        isDecimal: { msg: errorMessages.COORDINATES },
         min: {
-          args: [ -180 ],
+          args: -180,
           msg: errorMessages.COORDINATES
         },
         max: {
-          args: [ 180 ],
+          args: 180,
           msg: errorMessages.COORDINATES
         }
       }
@@ -135,7 +137,7 @@ const Site = db.define(
 
     getterMethods: {
       coordinates: function() {
-        if (this.lat === null && this.lng === null) {
+        if (this.lat === null || this.lng === null) {
           return null;
         }
         return { lat: this.lat, lng: this.lng };
@@ -155,7 +157,7 @@ const Site = db.define(
     validate: {
       coordinates: function() {
         if ((this.lat === null) !== (this.lng === null)) {
-          throw new Error(errorMessages.EITHER_BOTH_COORDS_OR_NON);
+          throw new Error(errorMessages.EITHER_BOTH_COORDS_OR_NONE);
         }
       }
     },
@@ -174,4 +176,11 @@ const Site = db.define(
 );
 
 
-module.exports = Site;
+Pilot.hasMany(Site, {
+  as: 'Sites', // pilotInstance.getSites, pilotInstance.setSites
+  foreignKey: 'pilotId',
+  constraints: false
+});
+
+
+export default Site;

@@ -20,7 +20,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * @param {Object} request
  */
 const changePasswordHandler = function(request) {
-  let pilot; // we need it to have reference to current pilot
+  let pilot; // so we have reference to current pilot from several then callbacks
   const payload = request.payload;
 
   // Checks payload for required fields
@@ -34,7 +34,7 @@ const changePasswordHandler = function(request) {
   }
 
   return Pilot
-    .findById(request.auth.credentials.userId)
+    .findByPk(request.auth.credentials.userId)
     .catch(() => {
       throw new KoiflyError(errorTypes.DB_READ_ERROR);
     })

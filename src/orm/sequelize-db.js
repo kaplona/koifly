@@ -1,11 +1,13 @@
 'use strict';
 /* eslint-disable no-console */
-const Sequelize = require('sequelize');
+import chalk from 'chalk';
+import Sequelize from 'sequelize';
+import Secrets from '../secrets';
 
-let dbSecrets = require('../secrets').dbApp;
+let dbSecrets = Secrets.dbApp;
 if (process.env.MYSQL_ADMIN) {
-  console.log('---- init db -----');
-  dbSecrets = require('../secrets').dbAdmin;
+  console.log(chalk.green('---- init db -----'));
+  dbSecrets = Secrets.dbAdmin;
 }
 
 const DATABASE = dbSecrets.database;
@@ -20,4 +22,4 @@ const db = new Sequelize(DATABASE, USER, PASSWORD, {
 });
 
 
-module.exports = db;
+export default db;

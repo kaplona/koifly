@@ -17,9 +17,9 @@ const checkAuthCookie = function(request, session) {
     return { valid: false };
   }
 
-  let pilot; // we need it to have reference to current pilot
+  let pilot; // so we have reference to current pilot from several then callbacks
 
-  return Pilot.findById(session.userId)
+  return Pilot.findByPk(session.userId)
     .then(pilotRecord => {
       pilot = pilotRecord;
 

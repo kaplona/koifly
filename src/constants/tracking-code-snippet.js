@@ -14,4 +14,4 @@ const trackingCodeSnippet = `
 `;
 
 
-module.exports = trackingCodeSnippet;
+export default trackingCodeSnippet;

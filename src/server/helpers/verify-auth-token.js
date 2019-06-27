@@ -19,7 +19,7 @@ const verifyAuthToken = function(pilotId, authToken) {
   let pilot; // we need it to have reference to current pilot
 
   return Pilot
-    .findById(pilotId)
+    .findByPk(pilotId)
     .then(pilotRecord => {
       pilot = pilotRecord;
       if (!pilot || pilot.id.toString() !== pilotId || pilot.tokenExpirationTime < Date.now()) {

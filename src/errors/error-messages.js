@@ -5,7 +5,7 @@ const errorMessages = {
   COORDINATES: 'Coordinates must be in Decimal Degrees format, like 38.8897°, -77.0089° or 45.455678 56.452332',
   DATE_FORMAT: 'Date must be in yyyy-mm-dd format',
   DOUBLE_VALUE: '%field with this name already exists',
-  EITHER_BOTH_COORDS_OR_NON: 'Require either both latitude and longitude or neither',
+  EITHER_BOTH_COORDS_OR_NONE: 'Require either both latitude and longitude or neither',
   EXISTENT_EMAIL: 'User with this email already exists',
   MAX_LENGTH: '%field exceeds maximum field length %max characters',
   NOT_EMPTY: '%field cannot be empty',

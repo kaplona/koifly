@@ -14,7 +14,7 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  */
 const resendAuthTokenHandler = function(request) {
   return Pilot
-    .findById(request.auth.credentials.userId)
+    .findByPk(request.auth.credentials.userId)
     .then(pilot => {
       return sendAuthTokenToPilot(pilot, emailMessageTemplates.EMAIL_VERIFICATION, '/email-verification');
     })

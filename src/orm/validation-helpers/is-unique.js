@@ -1,10 +1,11 @@
 'use strict';
 
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const errorMessages = require('../../errors/error-messages');
-const ormConstants = require('../../constants/orm-constants');
-const Util = require('../../utils/util');
+import errorMessages from '../../errors/error-messages';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import Sequelize from 'sequelize';
+import ormConstants from '../../constants/orm-constants';
+import Util from '../../utils/util';
 
 /**
  * Checks if value is unique for given model and column.
@@ -18,7 +19,7 @@ const Util = require('../../utils/util');
  * weren't deleted).
  * @returns {Promise} - Resolved Promise if value is unique, rejected Promise if it isn't or DB read error occurred.
  */
-function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = false) {
+export default function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = false) {
   const fieldValue = record[fieldName];
 
   // Unique value can't be empty.
@@ -30,7 +31,7 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
   const scope = scopeAll ? ormConstants.SCOPES.all : ormConstants.SCOPES.visible;
   const queryOptions = {
     where: {
-      id: { $ne: record.id },
+      id: { [Sequelize.Op.ne]: record.id },
       [fieldName]: fieldValue
     },
     attributes: [ 'id' ]
@@ -54,5 +55,3 @@ function isUnique(Model, record, fieldName, errorMsg, transaction, scopeAll = fa
       }
     });
 }
-
-module.exports = isUnique;

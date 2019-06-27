@@ -2,8 +2,9 @@
 
 const _ = require('lodash');
 const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
 const getPilotValuesForFrontend = require('./get-pilot-values');
+const KoiflyError = require('../../errors/error');
+const Op = require('sequelize').Op;
 const ormConstants = require('../../constants/orm-constants');
 
 const Flight = require('../../orm/models/flights');
@@ -57,7 +58,7 @@ const getAllData = function(pilot, dateFrom) {
 
   const whereQuery = { pilotId: pilot.id };
   if (dateFrom) {
-    whereQuery.updatedAt = { $gt: dateFrom };
+    whereQuery.updatedAt = { [Op.gt]: dateFrom };
     maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;
   }
 

@@ -1,10 +1,12 @@
 'use strict';
 /* eslint-disable new-cap */
-const Sequelize = require('sequelize');
-const db = require('../sequelize-db');
-const errorMessages = require('../../errors/error-messages');
-const isUnique = require('../validation-helpers/is-unique');
-const ormConstants = require('../../constants/orm-constants');
+import Sequelize from 'sequelize';
+import db from '../sequelize-db';
+import errorMessages from '../../errors/error-messages';
+import isUnique from '../validation-helpers/is-unique';
+import ormConstants from '../../constants/orm-constants';
+
+import Pilot from './pilots';
 
 
 const Glider = db.define(
@@ -37,7 +39,7 @@ const Glider = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
@@ -50,7 +52,7 @@ const Glider = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
-          args: [ 0 ],
+          args: 0,
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }
@@ -114,4 +116,11 @@ const Glider = db.define(
 );
 
 
-module.exports = Glider;
+Pilot.hasMany(Glider, {
+  as: 'Gliders', // pilotInstance.getGliders, pilotInstance.setGliders
+  foreignKey: 'pilotId',
+  constraints: false
+});
+
+
+export default Glider;

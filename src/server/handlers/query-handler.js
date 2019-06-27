@@ -21,7 +21,7 @@ const Site = require('../../orm/models/sites');
  */
 const queryHandler = function(request) {
   return Pilot
-    .findById(request.auth.credentials.userId)
+    .findByPk(request.auth.credentials.userId)
     .then(pilot => {
       if (request.method === 'get') {
         // Get all data from the DB since lastModified
@@ -161,7 +161,7 @@ function saveSite(data, pilotId) {
   }
 
   // Start transaction
-  // in order to delete glider with all its references in flight records
+  // in order to delete site with all its references in flight records
   return db.transaction(t => {
     return Site
       .findOne({ where: { id: data.id, pilotId: pilotId }, transaction: t })
