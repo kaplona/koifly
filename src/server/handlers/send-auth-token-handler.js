@@ -1,13 +1,12 @@
 'use strict';
 
-const _ = require('lodash');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const emailMessageTemplates = require('../../constants/email-message-templates');
-const normalizeError = require('../../errors/normalize-error');
-const Pilot = require('../../orm/models/pilots');
-const sendAuthTokenToPilot = require('../helpers/send-auth-token');
-
+import _ from'lodash';
+import errorTypes from'../../errors/error-types';
+import KoiflyError from'../../errors/error';
+import emailMessageTemplates from'../../constants/email-message-templates';
+import normalizeError from'../../errors/normalize-error';
+import Pilot from'../../orm/models/pilots';
+import sendAuthTokenToPilot from'../helpers/send-auth-token';
 
 /**
  * Checks that we got email from the client,
@@ -16,7 +15,7 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * reply to client with 'success' or error if the latest occurred
  * @param {Object} request
  */
-const sendAuthTokenHandler = function(request) {
+export default function sendAuthTokenHandler(request) {
   const payload = request.payload;
 
   // Checks payload for required fields
@@ -54,6 +53,3 @@ const sendAuthTokenHandler = function(request) {
       return { error: normalizeError(error) };
     });
 };
-
-
-module.exports = sendAuthTokenHandler;

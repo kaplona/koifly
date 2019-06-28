@@ -59,7 +59,7 @@
     "less-loader": "2.2.3",
     "lodash": "3.10.1",
     "mysql2": "1.6.5",
-    "nodemailer": "1.11.0",
+    "nodemailer": "6.2.1",
     "object.values": "1.0.4",
     "prop-types": "15.7.2",
     "react": "16.8.6",

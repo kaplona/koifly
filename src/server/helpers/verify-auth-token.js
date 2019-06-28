@@ -1,10 +1,9 @@
 'use strict';
 
-const BcryptPromise = require('../../utils/bcrypt-promise');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const Pilot = require('../../orm/models/pilots');
-
+import BcryptPromise from '../../utils/bcrypt-promise';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import Pilot from '../../orm/models/pilots';
 
 /**
  * Search for pilot by id
@@ -15,7 +14,7 @@ const Pilot = require('../../orm/models/pilots');
  * @param {string} authToken
  * @returns {Promise.<pilot>} - sequelize instance of pilot record
  */
-const verifyAuthToken = function(pilotId, authToken) {
+export default function verifyAuthToken(pilotId, authToken) {
   let pilot; // we need it to have reference to current pilot
 
   return Pilot
@@ -43,6 +42,3 @@ const verifyAuthToken = function(pilotId, authToken) {
       });
     });
 };
-
-
-module.exports = verifyAuthToken;

@@ -1,11 +1,10 @@
 'use strict';
 
-
 /**
  * @param {object} pilot - sequelize pilot record instance
  * @returns {object} - pilot information for frontend
  */
-const getPilotValuesForFrontend = function(pilot) {
+export default function getPilotValuesForFrontend(pilot) {
   return {
     id: pilot.get('id'),
     email: pilot.get('email'),
@@ -16,7 +15,4 @@ const getPilotValuesForFrontend = function(pilot) {
     updatedAt: pilot.get('updatedAt'),
     isActivated: pilot.get('isActivated') // true / false
   };
-};
-
-
-module.exports = getPilotValuesForFrontend;
+}

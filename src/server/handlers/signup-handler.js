@@ -1,16 +1,15 @@
 'use strict';
 
-const _ = require('lodash');
-const BcryptPromise = require('../../utils/bcrypt-promise');
-const getPilotValuesForFrontend = require('../helpers/get-pilot-values');
-const emailMessageTemplates = require('../../constants/email-message-templates');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const normalizeError = require('../../errors/normalize-error');
-const Pilot = require('../../orm/models/pilots');
-const sendAuthTokenToPilot = require('../helpers/send-auth-token');
-const setAuthCookie = require('../helpers/set-auth-cookie');
-
+import _ from 'lodash';
+import BcryptPromise from '../../utils/bcrypt-promise';
+import getPilotValuesForFrontend from '../helpers/get-pilot-values';
+import emailMessageTemplates from '../../constants/email-message-templates';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import normalizeError from '../../errors/normalize-error';
+import Pilot from '../../orm/models/pilots';
+import sendAuthTokenToPilot from '../helpers/send-auth-token';
+import setAuthCookie from '../helpers/set-auth-cookie';
 
 /**
  * Creates a new user/pilot in DB with given email and hash of given password,
@@ -20,7 +19,7 @@ const setAuthCookie = require('../helpers/set-auth-cookie');
  * replies with only pilot info since new user doesn't have any other data yet
  * @param {Object} request
  */
-const signupHandler = function(request) {
+export default function signupHandler(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
@@ -55,6 +54,3 @@ const signupHandler = function(request) {
       return { error: normalizeError(error) };
     });
 };
-
-
-module.exports = signupHandler;

@@ -1,11 +1,7 @@
 'use strict';
 
-const _ = require('lodash');
-const NodeMailer = require('nodemailer');
-
-const MAILGUN_LOGIN = require('../../secrets').mailgunLogin;
-const MAILGUN_PASSWORD = require('../../secrets').mailgunPassword;
-
+import nodeMailer from 'nodemailer';
+import secrets from '../../secrets';
 
 /**
  * @param {string} emailAddress - recipient
@@ -14,25 +10,24 @@ const MAILGUN_PASSWORD = require('../../secrets').mailgunPassword;
  * e.g. { url: '/some-path' } will result in all '%url' in template to be replaced with '/some-path'
  * @returns {Promise} - whether email was send or error occurred
  */
-const SendMail = function(emailAddress, message, templateData) {
+export default function sendMail(emailAddress, message, templateData) {
   return new Promise((resolve, reject) => {
-    // more options: https://github.com/nodemailer/nodemailer#set-up-smtp
+    // more options: https://nodemailer.com/smtp/
     const smtpConfig = {
-      service: 'Mailgun',
+      host: secrets.mailgunHost,
       auth: {
-        user: MAILGUN_LOGIN,
-        pass: MAILGUN_PASSWORD
+        user: secrets.mailgunLogin,
+        pass: secrets.mailgunPassword
       }
     };
-    const transporter = NodeMailer.createTransport(smtpConfig);
+    const transporter = nodeMailer.createTransport(smtpConfig);
 
-    message = _.extend({}, message, { to: emailAddress });
-
+    message = Object.assign({}, message, { to: emailAddress });
     if (templateData) {
-      _.each(templateData, (value, key) => {
+      Object.keys(templateData).forEach(key => {
         const rex = new RegExp('%' + key, 'g');
-        message.text = message.text.replace(rex, value);
-        message.html = message.html.replace(rex, value);
+        message.text = message.text.replace(rex, templateData[key]);
+        message.html = message.html.replace(rex, templateData[key]);
       });
     }
 
@@ -45,6 +40,3 @@ const SendMail = function(emailAddress, message, templateData) {
     });
   });
 };
-
-
-module.exports = SendMail;

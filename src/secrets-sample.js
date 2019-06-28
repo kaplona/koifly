@@ -1,7 +1,7 @@
 'use strict';
 
 
-const Secrets = {
+const secrets = {
   // public data which is different on production and development
   domain: 'www.example.com',
   bareDomain: 'example.com',
@@ -34,6 +34,7 @@ const Secrets = {
   cookieLifeTime: 1000 * 60 * 60 * 24 * 30, // one month
 
   // your mail agent config
+  mailgunHost: 'smtp.mailgun.org',
   mailgunLogin: 'mailgun-login',
   mailgunPassword: 'mailgun-password',
 
@@ -55,4 +56,4 @@ const Secrets = {
 };
 
 
-module.exports = Secrets;
+module.exports = secrets;

@@ -1,17 +1,16 @@
 'use strict';
 
-const BcryptPromise = require('../../utils/bcrypt-promise');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const Pilot = require('../../orm/models/pilots');
-const setAuthCookie = require('../helpers/set-auth-cookie');
-
+import BcryptPromise from '../../utils/bcrypt-promise';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import Pilot from '../../orm/models/pilots';
+import setAuthCookie from '../helpers/set-auth-cookie';
 
 /**
  * @param {object} request
  * @param {object} session
  */
-const checkAuthCookie = function(request, session) {
+export default function checkAuthCookie(request, session) {
 
   if (!session.userId || session.expiryDate < Date.now()) {
     return { valid: false };
@@ -41,6 +40,3 @@ const checkAuthCookie = function(request, session) {
       return { valid: false };
     });
 };
-
-
-module.exports = checkAuthCookie;

@@ -1,18 +1,15 @@
 'use strict';
 /* eslint-disable no-use-before-define */
 /* since I define helpers functions which are not invoked in this file  */
-const _ = require('lodash');
-const getAllData = require('../helpers/get-all-data');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const normalizeError = require('../../errors/normalize-error');
-const db = require('../../orm/sequelize-db');
-
-const Flight = require('../../orm/models/flights');
-const Glider = require('../../orm/models/gliders');
-const Pilot = require('../../orm/models/pilots');
-const Site = require('../../orm/models/sites');
-
+import db from '../../orm/sequelize-db';
+import errorTypes from '../../errors/error-types';
+import getAllData from '../helpers/get-all-data';
+import KoiflyError from '../../errors/error';
+import normalizeError from '../../errors/normalize-error';
+import Flight from '../../orm/models/flights';
+import Glider from '../../orm/models/gliders';
+import Pilot from '../../orm/models/pilots';
+import Site from '../../orm/models/sites';
 
 /**
  * Saves data in case of POST request
@@ -37,7 +34,7 @@ const queryHandler = function(request) {
         }
 
         // If data type is not specified throw error
-        if (_.indexOf(['flight', 'site', 'glider', 'pilot'], requestPayload.dataType) === -1) {
+        if (!['flight', 'site', 'glider', 'pilot'].includes(requestPayload.dataType)) {
           throw new KoiflyError(errorTypes.BAD_REQUEST);
         }
 
@@ -254,4 +251,4 @@ function savePilotInfo(data, pilot) {
 }
 
 
-module.exports = queryHandler;
+export default queryHandler;

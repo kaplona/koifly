@@ -1,15 +1,14 @@
 'use strict';
 
-const _ = require('lodash');
-const errorTypes = require('../../errors/error-types');
-const getPilotValuesForFrontend = require('./get-pilot-values');
-const KoiflyError = require('../../errors/error');
-const Op = require('sequelize').Op;
-const ormConstants = require('../../constants/orm-constants');
+import errorTypes from '../../errors/error-types';
+import getPilotValuesForFrontend from './get-pilot-values';
+import KoiflyError from '../../errors/error';
+import ormConstants from '../../constants/orm-constants';
+import Sequelize from 'sequelize';
 
-const Flight = require('../../orm/models/flights');
-const Site = require('../../orm/models/sites');
-const Glider = require('../../orm/models/gliders');
+import Flight from '../../orm/models/flights';
+import Site from '../../orm/models/sites';
+import Glider from '../../orm/models/gliders';
 
 
 /**
@@ -21,7 +20,7 @@ const Glider = require('../../orm/models/gliders');
  * don't use it for pilot records
  */
 function getRecordsValues(sequelizeRecordInstances) {
-  return _.map(sequelizeRecordInstances, record => {
+  return sequelizeRecordInstances.map(record => {
     // If instance was deleted
     // user doesn't need its content
     if (!record.see) {
@@ -44,7 +43,7 @@ function getRecordsValues(sequelizeRecordInstances) {
  * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
-const getAllData = function(pilot, dateFrom) {
+function getAllData(pilot, dateFrom) {
 
   const result = {};
 
@@ -58,7 +57,7 @@ const getAllData = function(pilot, dateFrom) {
 
   const whereQuery = { pilotId: pilot.id };
   if (dateFrom) {
-    whereQuery.updatedAt = { [Op.gt]: dateFrom };
+    whereQuery.updatedAt = { [Sequelize.Op.gt]: dateFrom };
     maxLastModified = dateFrom > maxLastModified ? dateFrom : maxLastModified;
   }
 
@@ -77,8 +76,8 @@ const getAllData = function(pilot, dateFrom) {
       result.gliders = getRecordsValues(recordsSet[2]);
 
       // Find the latest updating date of all records
-      _.each(result, records => {
-        _.each(records, record => {
+      Object.values(result).forEach(records => {
+        records.forEach(record => {
           maxLastModified = (record.updatedAt > maxLastModified) ? record.updatedAt : maxLastModified;
         });
       });
@@ -91,7 +90,6 @@ const getAllData = function(pilot, dateFrom) {
     .catch(() => {
       throw new KoiflyError(errorTypes.DB_READ_ERROR);
     });
-};
+}
 
-
-module.exports = getAllData;
+export default getAllData;

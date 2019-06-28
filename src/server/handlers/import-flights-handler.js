@@ -1,18 +1,19 @@
 'use strict';
 /* eslint-disable no-use-before-define */
 /* since I define helpers functions which are not invoked in this file  */
-const Altitude = require('../../utils/altitude');
-const Converter = require('csvtojson').Converter;
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const normalizeError = require('../../errors/normalize-error');
-const db = require('../../orm/sequelize-db');
+import Altitude from '../../utils/altitude';
+import db from '../../orm/sequelize-db';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import normalizeError from '../../errors/normalize-error';
+import ormConstants from '../../constants/orm-constants';
 
-const Glider = require('../../orm/models/gliders');
-const Flight = require('../../orm/models/flights');
-const Pilot = require('../../orm/models/pilots');
-const Site = require('../../orm/models/sites');
-const ormConstants = require('../../constants/orm-constants');
+import Glider from '../../orm/models/gliders';
+import Flight from '../../orm/models/flights';
+import Pilot from '../../orm/models/pilots';
+import Site from '../../orm/models/sites';
+
+const Converter = require('csvtojson').Converter;
 
 /**
  * Parses csv data and saves it into DB.
@@ -371,4 +372,4 @@ function saveValidationError(error, rowIndex, validationErrors) {
 }
 
 
-module.exports = importFlightsHandler;
+export default importFlightsHandler;

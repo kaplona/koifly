@@ -1,9 +1,8 @@
 'use strict';
 
-const BcryptPromise = require('../../utils/bcrypt-promise');
+import BcryptPromise from '../../utils/bcrypt-promise';
 
 const COOKIE_LIFETIME = require('../../secrets').cookieLifeTime;
-
 
 /**
  * @param {object} request
@@ -11,7 +10,7 @@ const COOKIE_LIFETIME = require('../../secrets').cookieLifeTime;
  * @param {string} passwordHash
  * @returns {Promise} - whether cookie was set
  */
-const setAuthCookie = function(request, userId, passwordHash) {
+export default function setAuthCookie(request, userId, passwordHash) {
   const expiryDate = Date.now() + COOKIE_LIFETIME;
   const secret = expiryDate.toString() + passwordHash;
   return BcryptPromise
@@ -25,6 +24,3 @@ const setAuthCookie = function(request, userId, passwordHash) {
       request.cookieAuth.set(cookie);
     });
 };
-
-
-module.exports = setAuthCookie;

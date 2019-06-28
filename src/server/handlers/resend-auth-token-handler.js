@@ -1,10 +1,9 @@
 'use strict';
 
-const emailMessageTemplates = require('../../constants/email-message-templates');
-const normalizeError = require('../../errors/normalize-error');
-const Pilot = require('../../orm/models/pilots');
-const sendAuthTokenToPilot = require('../helpers/send-auth-token');
-
+import emailMessageTemplates from '../../constants/email-message-templates';
+import normalizeError from '../../errors/normalize-error';
+import Pilot from '../../orm/models/pilots';
+import sendAuthTokenToPilot from '../helpers/send-auth-token';
 
 /**
  * Finds a pilot by id provided in cookie,
@@ -12,7 +11,7 @@ const sendAuthTokenToPilot = require('../helpers/send-auth-token');
  * reply to client with 'success' or error if the latest occurred
  * @param {Object} request
  */
-const resendAuthTokenHandler = function(request) {
+export default function resendAuthTokenHandler(request) {
   return Pilot
     .findByPk(request.auth.credentials.userId)
     .then(pilot => {
@@ -25,6 +24,3 @@ const resendAuthTokenHandler = function(request) {
       return { error: normalizeError(error) };
     });
 };
-
-
-module.exports = resendAuthTokenHandler;

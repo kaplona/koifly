@@ -13,23 +13,23 @@ const HapiReactViews = require('hapi-react-views');
 const Inert = require('@hapi/inert');
 const path = require('path');
 const secrets = require('./secrets');
-const Vision = require('vision');
+const Vision = require('@hapi/vision');
 const Url = require('url');
 
 const AuthCookie = require('@hapi/cookie');
-const setAuthCookie = require('./server/helpers/set-auth-cookie');
-const checkAuthCookie = require('./server/auth-handlers/check-auth-cookie');
-const checkCsrfToken = require('./server/auth-handlers/check-csrf-token');
+const setAuthCookie = require('./server/helpers/set-auth-cookie').default;
+const checkAuthCookie = require('./server/auth-handlers/check-auth-cookie').default;
+const checkCsrfToken = require('./server/auth-handlers/check-csrf-token').default;
 
-const changePasswordHandler = require('./server/handlers/change-password-handler');
-const importFlightsHandler = require('./server/handlers/import-flights-handler');
-const loginHandler = require('./server/handlers/login-handler');
-const queryHandler = require('./server/handlers/query-handler');
-const resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler');
-const resetPasswordHandler = require('./server/handlers/reset-password-handler');
-const sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler');
-const signupHandler = require('./server/handlers/signup-handler');
-const verifyAuthToken = require('./server/helpers/verify-auth-token');
+const changePasswordHandler = require('./server/handlers/change-password-handler').default;
+const importFlightsHandler = require('./server/handlers/import-flights-handler').default;
+const loginHandler = require('./server/handlers/login-handler').default;
+const queryHandler = require('./server/handlers/query-handler').default;
+const resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler').default;
+const resetPasswordHandler = require('./server/handlers/reset-password-handler').default;
+const sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler').default;
+const signupHandler = require('./server/handlers/signup-handler').default;
+const verifyAuthToken = require('./server/helpers/verify-auth-token').default;
 
 
 async function start() {
@@ -186,11 +186,11 @@ async function start() {
   // TODO 404 error page
   // Catch-all
   // server.route({
-  //     method: 'GET',
-  //     path: '/{path*}',
-  //     handler: function (request) {
-  //         return 'Hapi catch-all view for /' + encodeURIComponent(request.params.path);
-  //     }
+  //   method: 'GET',
+  //   path: '/{path*}',
+  //   handler: function (request) {
+  //     return 'Hapi catch-all view for /' + encodeURIComponent(request.params.path);
+  //   }
   // });
 
   // App

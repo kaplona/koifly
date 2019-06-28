@@ -1,10 +1,9 @@
 'use strict';
 
-const _ = require('lodash');
-const generateToken = require('../helpers/generate-token');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-
+import _ from 'lodash';
+import generateToken from '../helpers/generate-token';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
 
 /**
  * Takes csrf token from request query (get) or payload (post),
@@ -15,7 +14,7 @@ const KoiflyError = require('../../errors/error');
  * @param {Object} request
  * @param {Object} reply – Response toolkit.
  */
-const checkCsrfToken = function(request, reply) {
+export default function checkCsrfToken(request, reply) {
   let requestCsrfToken;
   const cookieCsrfToken = request.state.csrf;
 
@@ -41,6 +40,3 @@ const checkCsrfToken = function(request, reply) {
 
   return reply.continue;
 };
-
-
-module.exports = checkCsrfToken;

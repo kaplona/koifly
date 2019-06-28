@@ -1,14 +1,13 @@
 'use strict';
 
-const _ = require('lodash');
-const BcryptPromise = require('../../utils/bcrypt-promise');
-const getAllData = require('../helpers/get-all-data');
-const errorTypes = require('../../errors/error-types');
-const KoiflyError = require('../../errors/error');
-const normalizeError = require('../../errors/normalize-error');
-const setAuthCookie = require('../helpers/set-auth-cookie');
-const verifyAuthToken = require('../helpers/verify-auth-token');
-
+import _ from 'lodash';
+import BcryptPromise from '../../utils/bcrypt-promise';
+import getAllData from '../helpers/get-all-data';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import normalizeError from '../../errors/normalize-error';
+import setAuthCookie from '../helpers/set-auth-cookie';
+import verifyAuthToken from '../helpers/verify-auth-token';
 
 /**
  * Verifies auth token received from client
@@ -17,7 +16,7 @@ const verifyAuthToken = require('../helpers/verify-auth-token');
  * replies with all user's data or error it the latest occurred
  * @param {Object} request
  */
-const resetPasswordHandler = function(request) {
+export default function resetPasswordHandler(request) {
   let pilot; // we need it to have reference to current pilot
   const payload = request.payload;
 
@@ -50,6 +49,3 @@ const resetPasswordHandler = function(request) {
       return { error: normalizeError(error) };
     });
 };
-
-
-module.exports = resetPasswordHandler;
