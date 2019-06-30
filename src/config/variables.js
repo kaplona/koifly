@@ -1,7 +1,6 @@
 'use strict';
 /* eslint-disable no-console */
 const chalk = require('chalk');
-const deepExtend = require('deep-extend');
 const path = require('path');
 const secrets = require('../secrets');
 
@@ -53,8 +52,6 @@ const config = {
   webpack: {
     // Webpack bundle filename
     outputFilename: '[name]-bundle-[hash].js',
-    // Webpack bundle filename for stylesheets
-    stylesFilename: '[name].css',
     // Assets-webpack-plugin generates a JSON file containing actual
     // webpack bundle filenames on every webpack emit event.
     // To get the actual bundle filenames, use config/webpack-assets.js
@@ -68,29 +65,31 @@ const config = {
 
 
 if (process.env.NODE_ENV === 'development') {
-  deepExtend(config, {
-    server: {
-      host: DEV_SERVER_HOST,
-      httpPort: DEV_SERVER_PORT,
-      protocol: DEV_SERVER_PROTOCOL,
-      rootUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT
-    },
-    webpack: {
-      port: WEBPACK_DEV_SERVER_PORT,
-      devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT
-    }
+  Object.assign(config.server, {
+    host: DEV_SERVER_HOST,
+    httpPort: DEV_SERVER_PORT,
+    protocol: DEV_SERVER_PROTOCOL,
+    rootUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + DEV_SERVER_PORT
+  });
+  Object.assign(config.webpack, {
+    port: WEBPACK_DEV_SERVER_PORT,
+    devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT,
+    // Webpack bundle filename for stylesheets
+    stylesFilename: '[name].css',
   });
 
 } else if (process.env.NODE_ENV === 'production') {
-  deepExtend(config, {
-    server: {
-      host: SERVER_HOST,
-      bareHost: SERVER_BARE_HOST,
-      httpsPort: SERVER_HTTPS_PORT,
-      httpPort: SERVER_HTTP_PORT,
-      protocol: SERVER_PROTOCOL,
-      rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
-    }
+  Object.assign(config.server, {
+    host: SERVER_HOST,
+    bareHost: SERVER_BARE_HOST,
+    httpsPort: SERVER_HTTPS_PORT,
+    httpPort: SERVER_HTTP_PORT,
+    protocol: SERVER_PROTOCOL,
+    rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
+  });
+  Object.assign(config.webpack, {
+    // Webpack bundle filename for stylesheets
+    stylesFilename: '[name]-[hash].css',
   });
 
 } else {

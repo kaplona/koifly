@@ -31,7 +31,7 @@ app.use(webpackHotMiddleware(compiler));
 
 app.listen(config.webpack.port, config.server.host, err => {
   if (err) {
-    console.log(err);
+    console.log(chalk.red('[ERROR] Couldn\'t start webpack dev server'), err);
     return;
   }
 
