@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { number, string } from 'prop-types';
 import FlightSynchronizedCharts from './flight-synchronized-charts';

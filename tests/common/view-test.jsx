@@ -25,7 +25,6 @@ const Login = require('../../src/components/public-views/login');
 
 
 describe('View component.', () => {
-
   let component;
   let renderedDOMElement;
 
@@ -45,7 +44,6 @@ describe('View component.', () => {
 
   describe('Defaults testing.', () => {
     before(() => {
-
       Sinon
         .stub(PilotModel, 'getEmailVerificationNoticeStatus')
         .onFirstCall().returns(false)

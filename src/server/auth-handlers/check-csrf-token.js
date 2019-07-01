@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import generateToken from '../helpers/generate-token';
 import errorTypes from '../../errors/error-types';
@@ -39,4 +37,4 @@ export default function checkCsrfToken(request, reply) {
   }
 
   return reply.continue;
-};
+}

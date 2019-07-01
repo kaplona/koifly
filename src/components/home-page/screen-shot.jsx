@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { oneOf } from 'prop-types';
 
@@ -8,9 +6,9 @@ if (process.env.BROWSER) {
 }
 
 
-export default function ScreenShort() {
-  const firstScreenShort = ' x-' + this.props.type + '-1';
-  const secondScreenShort = ' x-' + this.props.type + '-2';
+export default function ScreenShort(props) {
+  const firstScreenShort = ' x-' + props.type + '-1';
+  const secondScreenShort = ' x-' + props.type + '-2';
 
   return (
     <div className='screen-shots'>

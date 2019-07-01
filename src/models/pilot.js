@@ -1,5 +1,3 @@
-'use strict';
-
 import BaseModel from './base-model';
 import dataService from '../services/data-service';
 import errorTypes from '../errors/error-types';

@@ -17,7 +17,6 @@ const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('Notice component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import getAllData from '../helpers/get-all-data';
@@ -48,4 +46,4 @@ export default function resetPasswordHandler(request) {
     .catch(error => {
       return { error: normalizeError(error) };
     });
-};
+}

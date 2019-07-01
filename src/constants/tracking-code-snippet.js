@@ -1,7 +1,4 @@
-'use strict';
-
 const TRACKING_ID = require('../secrets').googleTrackingId;
-
 
 const trackingCodeSnippet = `
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -12,6 +9,5 @@ const trackingCodeSnippet = `
   ga('create', '${TRACKING_ID}', 'auto');
   ga('send', 'pageview');
 `;
-
 
 export default trackingCodeSnippet;

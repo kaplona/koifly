@@ -22,7 +22,6 @@ const Header = require('../../src/components/common/menu/header');
 
 
 describe('Header component', () => {
-
   let component;
   let renderedDOMElement;
 

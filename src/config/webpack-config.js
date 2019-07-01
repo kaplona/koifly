@@ -25,7 +25,7 @@ let webpackConfig = {
   output: {
     publicPath: config.publicPaths.build, // Expose bundles in this web directory (Note: only dev server uses this option)
     filename: config.webpack.outputFilename, // Bundle filename pattern
-    path: config.paths.build  // Put bundle files in this directory (Note: dev server does not generate bundle files)
+    path: config.paths.build // Put bundle files in this directory (Note: dev server does not generate bundle files)
   },
   module: {
     rules: [
@@ -39,8 +39,8 @@ let webpackConfig = {
             loader: MiniCssExtractPlugin.loader,
             options: {
               publicPath: config.paths.assets,
-              hmr: process.env.NODE_ENV === 'development',
-            },
+              hmr: process.env.NODE_ENV === 'development'
+            }
           },
           'css-loader',
           'less-loader'
@@ -49,7 +49,7 @@ let webpackConfig = {
       {
         test: /\.(js|jsx)$/,
         loader: 'babel-loader',
-        include: config.paths.source,
+        include: config.paths.source
       }
     ]
   },
@@ -86,7 +86,6 @@ let webpackConfig = {
 
 
 if (process.env.NODE_ENV === 'development') {
-
   webpackConfig = webpackMerge(webpackConfig, {
     mode: 'development',
     entry: {
@@ -110,12 +109,10 @@ if (process.env.NODE_ENV === 'development') {
       ]
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin(), // Enables HMR. Adds webpack/hot/dev-server entry point if hot=true
+      new webpack.HotModuleReplacementPlugin() // Enables HMR. Adds webpack/hot/dev-server entry point if hot=true
     ]
   });
-
 } else if (process.env.NODE_ENV === 'production') {
-
   /** @lends webpackConfig */
   webpackConfig = webpackMerge(webpackConfig, {
     mode: 'production',

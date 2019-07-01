@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { string } from 'prop-types';
 import Label from './label';

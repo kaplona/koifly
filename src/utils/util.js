@@ -1,5 +1,3 @@
-'use strict';
-
 import generalConstants from '../constants/general-constants';
 
 

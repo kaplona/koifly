@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import Button from '../common/buttons/button';
 import Description from '../common/section/description';

@@ -17,7 +17,6 @@ const AppLink = require('../../src/components/common/app-link');
 
 
 describe('AppLink component', () => {
-
   let component;
   let renderedDOMElement;
 

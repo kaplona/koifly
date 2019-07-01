@@ -1,6 +1,3 @@
-'use strict';
-
-
 const ormConstants = {
   // Scope names
   SCOPES: {
@@ -8,6 +5,5 @@ const ormConstants = {
     visible: 'SCOPE_VISIBLE'
   }
 };
-
 
 export default ormConstants;

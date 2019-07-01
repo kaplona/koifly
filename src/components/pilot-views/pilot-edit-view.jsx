@@ -1,6 +1,5 @@
-'use strict';
-
 import React from 'react';
+import { shape, string } from 'prop-types';
 import _ from 'lodash';
 import Altitude from '../../utils/altitude';
 import AppLink from '../common/app-link';
@@ -67,7 +66,7 @@ export default class PilotEditView extends React.Component {
     }
 
     // Fetch item
-    const item = PilotModel.getEditOutput(this.props.params.id);
+    const item = PilotModel.getEditOutput(this.props.match.params.id);
 
     // Check for errors
     if (item && item.error) {
@@ -102,8 +101,8 @@ export default class PilotEditView extends React.Component {
   }
 
   handleCancelEdit() {
-    if (this.props.params.id) {
-      navigationService.goToItemView(PilotModel.keys.single, this.props.params.id);
+    if (this.props.match.params.id) {
+      navigationService.goToItemView(PilotModel.keys.single, this.props.match.params.id);
     } else {
       navigationService.goToListView(PilotModel.keys.plural);
     }
@@ -376,3 +375,12 @@ export default class PilotEditView extends React.Component {
     );
   }
 }
+
+
+PilotEditView.propTypes = {
+  match: shape({
+    params: shape({
+      id: string // url args
+    })
+  }).isRequired
+};

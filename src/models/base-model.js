@@ -1,5 +1,3 @@
-'use strict';
-
 import dataService from '../services/data-service';
 import errorTypes from '../errors/error-types';
 import KoiflyError from '../errors/error';

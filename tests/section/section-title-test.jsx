@@ -10,7 +10,6 @@ const SectionTitle = require('../../src/components/common/section/section-title'
 
 
 describe('SectionTitle component', () => {
-
   let component;
   let renderedDOMElement;
 

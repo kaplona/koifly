@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, element, func, oneOfType, string } from 'prop-types';
 import DomUtil from '../../../utils/dom-util';

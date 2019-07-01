@@ -1,4 +1,3 @@
-'use strict';
 /* eslint-disable no-use-before-define */
 /* since I define helpers functions which are not invoked in this file  */
 import db from '../../orm/sequelize-db';
@@ -16,7 +15,7 @@ import Site from '../../orm/models/sites';
  * Replies with all user's data or error if the latest occurred
  * @param {Object} request
  */
-const queryHandler = function(request) {
+function queryHandler(request) {
   return Pilot
     .findByPk(request.auth.credentials.userId)
     .then(pilot => {
@@ -61,7 +60,7 @@ const queryHandler = function(request) {
 
       return { error: normalizeError(error) };
     });
-};
+}
 
 
 /**

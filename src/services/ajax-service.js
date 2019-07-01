@@ -1,5 +1,3 @@
-'use strict';
-
 import errorTypes from '../errors/error-types';
 import KoiflyError from '../errors/error';
 import dataServiceConstants from '../constants/data-service-constants';
@@ -26,7 +24,6 @@ const ajaxService = {
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
   send(options, isRetry) {
-
     let url = options.url;
     const data = options.data;
     const csrfCookie = this.getCsrfCookie();
@@ -43,7 +40,6 @@ const ajaxService = {
     }
 
     return new Promise((resolve, reject) => {
-
       const ajaxRequest = new XMLHttpRequest();
       ajaxRequest.timeout = dataServiceConstants.TIMEOUT;
 

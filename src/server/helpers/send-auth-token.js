@@ -1,5 +1,3 @@
-'use strict';
-
 import BcryptPromise from '../../utils/bcrypt-promise';
 import generateToken from './generate-token';
 import sendMail from './send-mail';
@@ -36,4 +34,4 @@ export default function sendAuthTokenToPilot(pilot, emailMessageTemplate, path) 
       };
       return sendMail(updatedPilot.email, emailMessageTemplate, templateData);
     });
-};
+}

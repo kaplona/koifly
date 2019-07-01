@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, string } from 'prop-types';
 import FlightModel from '../../../models/flight';
@@ -78,6 +76,6 @@ NavigationMenu.defaultProps = {
 
 NavigationMenu.propTypes = {
   currentView: string,
-  isMobile: bool.isRequired,
-  isPositionFixed: bool.isRequired
+  isMobile: bool,
+  isPositionFixed: bool
 };

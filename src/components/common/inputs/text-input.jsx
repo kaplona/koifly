@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, element, func, oneOfType, string } from 'prop-types';
 import Label from '../section/label';
@@ -60,8 +58,8 @@ TextInput.propTypes = {
   inputValue: string.isRequired,
   labelText: oneOfType([string, element]),
   inputName: string.isRequired,
-  isNumber: bool.isRequired,
-  isEmail: bool.isRequired,
+  isNumber: bool,
+  isEmail: bool,
   errorMessage: string,
   onChange: func.isRequired,
   onFocus: func,

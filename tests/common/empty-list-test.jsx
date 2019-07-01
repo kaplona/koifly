@@ -17,7 +17,6 @@ const EmptyList = require('../../src/components/common/empty-list');
 
 
 describe('EmptyList component', () => {
-
   let component;
   let renderedDOMElement;
 

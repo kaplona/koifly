@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import emailMessageTemplates from '../../constants/email-message-templates';
@@ -71,4 +69,4 @@ export default function changePasswordHandler(request) {
     .catch(error => {
       return { error: normalizeError(error) };
     });
-};
+}

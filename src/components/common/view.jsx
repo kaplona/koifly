@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, object } from 'prop-types';
 import dataServiceConstants from '../../constants/data-service-constants';

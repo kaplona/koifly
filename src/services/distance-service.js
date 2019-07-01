@@ -1,5 +1,3 @@
-'use strict';
-
 const distanceService = {
   distanceUnits: {
     km: 'km',

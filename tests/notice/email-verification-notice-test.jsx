@@ -16,7 +16,6 @@ const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('EmailVerificationNotice component', () => {
-
   let component;
 
   const defaults = {

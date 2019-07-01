@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
@@ -33,7 +31,8 @@ import PageNotFound from './components/public-views/page-not-found';
 
 
 function mainApp() {
-  ReactDOM.render((
+  ReactDOM.render(
+    (
       <BrowserRouter history={browserHistory}>
         <ScrollToTop>
           <Koifly>

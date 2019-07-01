@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, number, string } from 'prop-types';
 import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
@@ -153,13 +151,13 @@ InteractiveMap.defaultProps = {
 };
 
 InteractiveMap.propTypes = {
-  markerId: number.isRequired,
-  center: coordinatesPropType.isRequired,
-  zoomLevel: number.isRequired,
-  markerPosition: coordinatesPropType.isRequired,
-  location: string.isRequired,
-  launchAltitude: string.isRequired,
-  altitudeUnit: string.isRequired,
+  markerId: number,
+  center: coordinatesPropType,
+  zoomLevel: number,
+  markerPosition: coordinatesPropType,
+  location: string,
+  launchAltitude: string,
+  altitudeUnit: string,
   onDataApply: func.isRequired,
   onMapClose: func.isRequired,
   mapFacadePromise: promisePropType.isRequired

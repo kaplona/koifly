@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * @param {object} pilot - sequelize pilot record instance
  * @returns {object} - pilot information for frontend

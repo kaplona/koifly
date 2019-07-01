@@ -10,7 +10,6 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 
 describe('ValidationError component', () => {
-
   let component;
   let renderedDOMElement;
 

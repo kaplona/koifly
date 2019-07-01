@@ -1,12 +1,10 @@
-'use strict';
-
-import _ from'lodash';
-import errorTypes from'../../errors/error-types';
-import KoiflyError from'../../errors/error';
-import emailMessageTemplates from'../../constants/email-message-templates';
-import normalizeError from'../../errors/normalize-error';
-import Pilot from'../../orm/models/pilots';
-import sendAuthTokenToPilot from'../helpers/send-auth-token';
+import _ from 'lodash';
+import errorTypes from '../../errors/error-types';
+import KoiflyError from '../../errors/error';
+import emailMessageTemplates from '../../constants/email-message-templates';
+import normalizeError from '../../errors/normalize-error';
+import Pilot from '../../orm/models/pilots';
+import sendAuthTokenToPilot from '../helpers/send-auth-token';
 
 /**
  * Checks that we got email from the client,
@@ -52,4 +50,4 @@ export default function sendAuthTokenHandler(request) {
     .catch(error => {
       return { error: normalizeError(error) };
     });
-};
+}

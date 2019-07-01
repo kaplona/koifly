@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, func, oneOf, string } from 'prop-types';
 
@@ -26,7 +24,7 @@ export default class Button extends React.Component {
     if (this.props.buttonStyle) {
       className += ` x-${this.props.buttonStyle}`;
     }
-    if (this.props.fitContent) {
+    if (this.props.isFitContent) {
       className += ' x-content-width';
     }
     if (this.props.isSmall) {
@@ -47,7 +45,7 @@ export default class Button extends React.Component {
 
 
 Button.defaultProps = {
-  fitContent: false,
+  isFitContent: false,
   isAllScreens: false,
   isEnabled: true,
   isMobile: false,
@@ -58,7 +56,7 @@ Button.defaultProps = {
 Button.propTypes = {
   buttonStyle: oneOf(['primary', 'secondary', 'warning']),
   caption: string.isRequired,
-  fitContent: bool,
+  isFitContent: bool,
   isAllScreens: bool,
   isEnabled: bool,
   isMobile: bool,

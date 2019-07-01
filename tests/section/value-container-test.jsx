@@ -10,7 +10,6 @@ const ValueContainer = require('../../src/components/common/section/value-contai
 
 
 describe('ValueContainer component', () => {
-
   let component;
   let renderedDOMElement;
 

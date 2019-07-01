@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import Altitude from '../../utils/altitude';
 import AppLink from '../common/app-link';
@@ -260,7 +258,7 @@ export default class StatsView extends React.Component {
         <div className='stats-view__unzoom'>
           <Button
             caption={this.state.selectedMonth ? '< Months' : '< Years'}
-            fitContent={true}
+            isFitContent={true}
             isAllScreens={true}
             isSmall={true}
             onClick={this.handleUnzoom}
@@ -407,15 +405,15 @@ export default class StatsView extends React.Component {
             {!!bubbleFlights.length && (
               <table className='stats-view__flights-table'>
                 <tbody>
-                {bubbleFlights.map((flight, index) => (
-                  <tr key={flight.id}>
-                    <td><AppLink href={`/flight/${flight.id}`}>Flight {index + 1}:</AppLink></td>
-                    <td>{Util.formatDate(flight.date)}</td>
-                    <td>{flight.siteName}</td>
-                    <td>{Altitude.formatAltitudeShort(flight.altitude)}</td>
-                    <td>{Util.formatTime(flight.airtime)}</td>
-                  </tr>
-                ))}
+                  {bubbleFlights.map((flight, index) => (
+                    <tr key={flight.id}>
+                      <td><AppLink href={`/flight/${flight.id}`}>Flight {index + 1}:</AppLink></td>
+                      <td>{Util.formatDate(flight.date)}</td>
+                      <td>{flight.siteName}</td>
+                      <td>{Altitude.formatAltitudeShort(flight.altitude)}</td>
+                      <td>{Util.formatTime(flight.airtime)}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             )}

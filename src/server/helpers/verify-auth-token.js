@@ -1,5 +1,3 @@
-'use strict';
-
 import BcryptPromise from '../../utils/bcrypt-promise';
 import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
@@ -41,4 +39,4 @@ export default function verifyAuthToken(pilotId, authToken) {
         isActivated: true
       });
     });
-};
+}

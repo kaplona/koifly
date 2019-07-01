@@ -1,9 +1,7 @@
-'use strict';
-
-import React from'react';
+import React from 'react';
 import { arrayOf, bool, number, shape, string } from 'prop-types';
 import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
-import _ from'lodash';
+import _ from 'lodash';
 import mapConstants from '../../../constants/map-constants';
 import navigationService from '../../../services/navigation-service';
 
@@ -92,8 +90,8 @@ StaticMap.defaultProps = {
 };
 
 StaticMap.propTypes = {
-  center: coordinatesPropType.isRequired,
-  zoomLevel: number.isRequired,
+  center: coordinatesPropType,
+  zoomLevel: number,
   sites: arrayOf(shape({
     id: number.isRequired,
     name: string.isRequired,
@@ -102,8 +100,8 @@ StaticMap.propTypes = {
     altitudeUnit: string,
     coordinates: string,
     latLng: coordinatesPropType
-  })).isRequired,
-  isFullScreen: bool.isRequired,
+  })),
+  isFullScreen: bool,
   mapFacadePromise: promisePropType.isRequired
 };
 

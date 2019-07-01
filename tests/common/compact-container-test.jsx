@@ -10,7 +10,6 @@ const CompactContainer = require('../../src/components/common/compact-container'
 
 
 describe('CompactContainer component', () => {
-
   let component;
   let renderedDOMElement;
 

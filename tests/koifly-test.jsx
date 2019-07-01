@@ -13,7 +13,6 @@ const Header = require('../src/components/common/menu/header');
 
 
 describe('Koifly component', () => {
-
   let component;
   let renderedDOMElement;
 

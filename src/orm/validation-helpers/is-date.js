@@ -1,5 +1,3 @@
-'use strict';
-
 import errorMessages from '../../errors/error-messages';
 import Util from '../../utils/util';
 

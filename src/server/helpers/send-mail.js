@@ -1,5 +1,3 @@
-'use strict';
-
 import nodeMailer from 'nodemailer';
 import secrets from '../../secrets';
 
@@ -39,4 +37,4 @@ export default function sendMail(emailAddress, message, templateData) {
       }
     });
   });
-};
+}

@@ -11,7 +11,6 @@ const ScreenShot = require('../../src/components/home-page/screen-shot');
 
 
 describe('ScreenShot component', () => {
-
   let component;
   let renderedDOMElement;
 

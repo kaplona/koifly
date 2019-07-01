@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import errorMessages from '../errors/error-messages';
 import Util from './util';
@@ -44,7 +42,6 @@ const Validation = {
 
   // Validation methods return either true or error message
   methods: {
-
     /**
      * Check whether value is yyyy-mm-dd date format
      * @param {object} formData - data from html form { fieldName: userInput }
@@ -52,7 +49,6 @@ const Validation = {
      * @returns {string|null} - error message or null if validation passed
      */
     date(formData, fieldName) {
-
       if (!Util.isRightDateFormat(formData[fieldName])) {
         return errorMessages.DATE_FORMAT;
       }
@@ -71,7 +67,6 @@ const Validation = {
      * @returns {string|null} - error message or null if validation passed
      */
     number(formData, fieldName, rules) {
-
       // If value is not a number
       if (!Util.isNumber(formData[fieldName])) {
         return errorMessages.NUMBER.replace('%field', rules.field);

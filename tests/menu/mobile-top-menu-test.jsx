@@ -17,7 +17,6 @@ const MobileTopMenu = require('../../src/components/common/menu/mobile-top-menu'
 
 
 describe('MobileTopMenu component', () => {
-
   let component;
 
   const defaults = {

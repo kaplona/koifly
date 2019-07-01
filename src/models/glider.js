@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import BaseModel from './base-model';
 import objectValues from 'object.values';

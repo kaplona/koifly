@@ -15,7 +15,6 @@ const NavigationItem = require('../../src/components/common/menu/navigation-item
 
 
 describe('BottomMenu component', () => {
-
   let component;
 
   const defaults = {

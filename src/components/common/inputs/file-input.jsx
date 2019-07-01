@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, string } from 'propTypes';
 import Button from '../buttons/button';
@@ -61,7 +59,7 @@ export default class FileInput extends React.Compoenent {
 
         <Button
           caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
-          fitContent={true}
+          isFitContent={true}
           onClick={this.handleButtonClick}
         />
 

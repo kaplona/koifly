@@ -17,7 +17,6 @@ const NavigationItem = require('../../src/components/common/menu/navigation-item
 
 
 describe('NavigationItem component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import Button from '../common/buttons/button';
 import DesktopTopGrid from '../common/grids/desktop-top-grid';
@@ -49,7 +47,7 @@ export default class GliderListView extends React.Component {
   }
 
   handleRowClick(itemId) {
-    navigationService.goToItemView(GliderModel.keys.single, itemId)
+    navigationService.goToItemView(GliderModel.keys.single, itemId);
   }
 
   renderMobileTopMenu() {

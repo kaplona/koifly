@@ -1,11 +1,8 @@
-'use strict';
-
 import React from 'react';
 import dataServiceConstants from '../../../constants/data-service-constants';
 import navigationService from '../../../services/navigation-service';
 import PilotModel from '../../../models/pilot';
 import PubSub from '../../../utils/pubsub';
-
 
 require('./header.less');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, element, func, number, oneOfType, string } from 'prop-types';
 import Altitude from '../../../utils/altitude';
@@ -102,12 +100,12 @@ AltitudeInput.defaultProps = {
 AltitudeInput.propTypes = {
   inputValue: oneOfType([number, string]).isRequired,
   selectedAltitudeUnit: string,
-  inputName: string.isRequired,
+  inputName: string,
+  isSledRide: bool,
   labelText: oneOfType([string, element]),
   errorMessage: string,
   onChange: func.isRequired,
   onFocus: func,
   onBlur: func,
-  onSledRide: func,
-  isSledRide: bool
+  onSledRide: func
 };

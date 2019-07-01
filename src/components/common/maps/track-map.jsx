@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, bool } from 'prop-types';
 import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';

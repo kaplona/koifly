@@ -11,7 +11,6 @@ const ValueContainer = require('../../src/components/common/section/value-contai
 
 
 describe('RowContent component', () => {
-
   let component;
 
   const mocks = {

@@ -1,6 +1,3 @@
-'use strict';
-
-
 const errorTypes = {
   AJAX_NETWORK_ERROR: 'ajaxNetworkError',
   AUTHENTICATION_ERROR: 'authenticationError',
@@ -16,6 +13,5 @@ const errorTypes = {
   USER_MISMATCH: 'userMismatch',
   VALIDATION_ERROR: 'validationError'
 };
-
 
 export default errorTypes;

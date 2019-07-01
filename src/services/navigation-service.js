@@ -1,5 +1,3 @@
-'use strict';
-
 import browserHistory from './browser-history';
 
 

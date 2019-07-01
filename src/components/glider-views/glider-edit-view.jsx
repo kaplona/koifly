@@ -1,27 +1,25 @@
-'use strict';
-
 import React from 'react';
 import { shape, string } from 'prop-types';
-import _ from'lodash';
-import Button from'../common/buttons/button';
-import DesktopBottomGrid from'../common/grids/desktop-bottom-grid';
-import DomUtil from'../../utils/dom-util';
-import ErrorBox from'../common/notice/error-box';
-import errorTypes from'../../errors/error-types';
-import GliderModel from'../../models/glider';
-import MobileButton from'../common/buttons/mobile-button';
-import MobileTopMenu from'../common/menu/mobile-top-menu';
-import NavigationMenu from'../common/menu/navigation-menu';
+import _ from 'lodash';
+import Button from '../common/buttons/button';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import DomUtil from '../../utils/dom-util';
+import ErrorBox from '../common/notice/error-box';
+import errorTypes from '../../errors/error-types';
+import GliderModel from '../../models/glider';
+import MobileButton from '../common/buttons/mobile-button';
+import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
-import RemarksInput from'../common/inputs/remarks-input';
-import Section from'../common/section/section';
-import SectionLoader from'../common/section/section-loader';
-import SectionRow from'../common/section/section-row';
-import SectionTitle from'../common/section/section-title';
-import TextInput from'../common/inputs/text-input';
-import TimeInput from'../common/inputs/time-input';
-import Validation from'../../utils/validation';
-import View from'../common/view';
+import RemarksInput from '../common/inputs/remarks-input';
+import Section from '../common/section/section';
+import SectionLoader from '../common/section/section-loader';
+import SectionRow from '../common/section/section-row';
+import SectionTitle from '../common/section/section-title';
+import TextInput from '../common/inputs/text-input';
+import TimeInput from '../common/inputs/time-input';
+import Validation from '../../utils/validation';
+import View from '../common/view';
 
 
 export default class GliderEditView extends React.Component {

@@ -10,7 +10,6 @@ const BreadCrumbs = require('../../src/components/common/bread-crumbs');
 
 
 describe('BreadCrumbs component', () => {
-
   let component;
 
   const mocks = {

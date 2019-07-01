@@ -1,5 +1,3 @@
-'use strict';
-
 import mapConstants from '../constants/map-constants';
 import Util from './util';
 
@@ -11,7 +9,6 @@ const mapsApiPromise = googleMapsApi();
 
 
 const MapFacade = function(mapsApi) {
-
   this.mapsApi = mapsApi;
   this.map = null;
   this.elevator = null;

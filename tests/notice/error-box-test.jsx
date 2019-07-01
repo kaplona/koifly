@@ -11,7 +11,6 @@ const Notice = require('../../src/components/common/notice/notice');
 
 
 describe('ErrorBox component', () => {
-
   let component;
 
   const defaults = {
@@ -28,7 +27,6 @@ describe('ErrorBox component', () => {
 
 
   describe('Defaults testing', () => {
-
     it('renders notice with proper default props', () => {
       component = TestUtils.renderIntoDocument(
         <ErrorBox

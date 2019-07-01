@@ -10,7 +10,6 @@ const DesktopTopGrid = require('../../src/components/common/grids/desktop-top-gr
 
 
 describe('DesktopTopGrid component', () => {
-
   let component;
   let renderedDomElement;
 

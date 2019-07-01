@@ -33,7 +33,6 @@ const verifyAuthToken = require('./server/helpers/verify-auth-token').default;
 
 
 async function start() {
-
   // all connections
   const serverOptions = {
     host: config.server.host,

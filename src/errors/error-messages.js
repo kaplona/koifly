@@ -1,6 +1,3 @@
-'use strict';
-
-
 const errorMessages = {
   COORDINATES: 'Coordinates must be in Decimal Degrees format, like 38.8897°, -77.0089° or 45.455678 56.452332',
   DATE_FORMAT: 'Date must be in yyyy-mm-dd format',
@@ -15,6 +12,5 @@ const errorMessages = {
   POSITIVE_NUMBER: '%field must be number greater than 0',
   POSITIVE_ROUND: '%field must be round number greater than 0'
 };
-
 
 export default errorMessages;

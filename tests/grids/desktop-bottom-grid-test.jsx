@@ -11,7 +11,6 @@ const DesktopBottomGrid = require('../../src/components/common/grids/desktop-bot
 
 
 describe('DesktopBottomGrid component', () => {
-
   let component;
   let renderedDomElement;
 

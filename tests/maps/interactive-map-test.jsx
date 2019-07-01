@@ -17,7 +17,6 @@ const InteractiveMap = require('../../src/components/common/maps/interactive-map
 
 
 describe('InteractiveMap component', () => {
-
   let component;
   let renderedDOMMapContainer;
 
@@ -50,7 +49,6 @@ describe('InteractiveMap component', () => {
 
   describe('Defaults and behavior testing', () => {
     before(() => {
-
       const mapFacadePromise = Promise.resolve(mocks.mapFacade);
 
       component = TestUtils.renderIntoDocument(
@@ -104,7 +102,6 @@ describe('InteractiveMap component', () => {
 
   describe('Empty marker position testing (creating new site)', () => {
     before(() => {
-
       const mapFacadePromise = Promise.resolve(mocks.mapFacade);
 
       component = TestUtils.renderIntoDocument(

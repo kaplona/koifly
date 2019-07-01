@@ -1,4 +1,3 @@
-'use strict';
 /* eslint-disable no-console */
 import chalk from 'chalk';
 import Sequelize from 'sequelize';

@@ -1,6 +1,3 @@
-'use strict';
-
-
 const emailMessageTemplates = {
   PASSWORD_CHANGE: {
     from: 'Koifly <noreply@koifly.com>',

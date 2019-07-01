@@ -1,4 +1,3 @@
-'use strict';
 /* eslint-disable new-cap */
 import Sequelize from 'sequelize';
 import db from '../sequelize-db';

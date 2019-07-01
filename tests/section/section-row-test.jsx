@@ -10,7 +10,6 @@ const SectionRow = require('../../src/components/common/section/section-row');
 
 
 describe('SectionRow component', () => {
-
   let component;
   let renderedDOMElement;
 

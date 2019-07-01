@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, element, number, oneOfType, string } from 'prop-types';
 

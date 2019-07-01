@@ -19,7 +19,6 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 
 describe('TimeInput component', () => {
-
   let component;
   let renderedDOMElement;
 
@@ -125,7 +124,6 @@ describe('TimeInput component', () => {
 
 
   describe('Error message testing', () => {
-
     before(() => {
       component = TestUtils.renderIntoDocument(
         <TimeInput

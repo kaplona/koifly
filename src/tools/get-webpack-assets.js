@@ -20,7 +20,6 @@ if (process.env.NODE_ENV === 'production') {
   getWebpackAssets = () => {
     return assets;
   };
-
 } else {
   const fs = require('fs');
   const chalk = require('chalk');
@@ -30,7 +29,6 @@ if (process.env.NODE_ENV === 'production') {
     const fileContents = fs.readFileSync(assetsJsonPath).toString();
     try {
       return JSON.parse(fileContents);
-
     } catch (err) {
       console.log(chalk.red('ERROR: Could not parse ' + config.webpack.assetsFilename + ' - maybe webpack is still processing?'));
       throw err;

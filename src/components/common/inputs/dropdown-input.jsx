@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, bool, func, number, oneOfType, shape, string } from 'propTypes';
 import Label from '../section/label';

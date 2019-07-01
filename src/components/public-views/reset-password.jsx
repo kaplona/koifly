@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { shape, string } from 'prop-types';
 import Button from '../common/buttons/button';
@@ -220,7 +218,7 @@ ResetPassword.propTypes = {
   match: shape({
     params: shape({ // url args
       pilotId: string.isRequired,
-      authToken: string.isRequired,
+      authToken: string.isRequired
     }).isRequired
   }).isRequired
 };

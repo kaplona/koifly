@@ -1,5 +1,3 @@
-'use strict';
-
 import ajaxService from './ajax-service';
 import dataServiceConstants from '../constants/data-service-constants';
 import errorTypes from '../errors/error-types';
@@ -7,19 +5,15 @@ import PubSub from '../utils/pubsub';
 
 
 const DataService = function() {
-
+  this.isRequestPending = false;
   this.lastModified = null;
-
+  this.loadingError = null;
   this.store = {
     pilot: null,
     flights: null,
     sites: null,
     gliders: null
   };
-
-  this.loadingError = null;
-
-  this.isRequestPending = false;
 };
 
 

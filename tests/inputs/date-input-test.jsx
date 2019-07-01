@@ -19,7 +19,6 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 
 describe('DateInput component', () => {
-
   let component;
   let renderedDOMElement;
 

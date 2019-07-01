@@ -20,7 +20,6 @@ const Dropdown = require('../../src/components/common/inputs/dropdown');
 
 
 describe('AltitudeInput component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -16,7 +16,6 @@ const Table = require('../../src/components/common/table');
 
 
 describe('Table component', () => {
-
   let component;
   let renderedDOMElement;
 

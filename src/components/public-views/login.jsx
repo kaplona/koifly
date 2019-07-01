@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool } from 'prop-types';
 import AppLink from '../common/app-link';
@@ -245,5 +243,5 @@ Login.defaultProps = {
 };
 
 Login.propTypes = {
-  isStayOnThisPage: bool.isRequired
+  isStayOnThisPage: bool
 };

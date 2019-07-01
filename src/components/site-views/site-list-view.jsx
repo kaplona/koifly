@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import Altitude from '../../utils/altitude';
 import Button from '../common/buttons/button';
@@ -50,7 +48,7 @@ export default class SiteListView extends React.Component {
   }
 
   handleRowClick(itemId) {
-    navigationService.goToItemView(SiteModel.keys.single, itemId)
+    navigationService.goToItemView(SiteModel.keys.single, itemId);
   }
 
   renderMobileTopMenu() {

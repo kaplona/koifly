@@ -15,7 +15,6 @@ const StaticMap = require('../../src/components/common/maps/static-map');
 
 
 describe('StaticMap component', () => {
-
   let component;
   let renderedDOMMapContainer;
 
@@ -69,7 +68,6 @@ describe('StaticMap component', () => {
 
   describe('Defaults and behavior testing', () => {
     before(() => {
-
       const mapFacadePromise = Promise.resolve(mocks.mapFacade);
 
       component = TestUtils.renderIntoDocument(
@@ -142,7 +140,6 @@ describe('StaticMap component', () => {
 
 
   describe('Full screen testing', () => {
-
     const mapFacadePromise = Promise.reject();
 
     before(() => {

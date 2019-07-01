@@ -1,5 +1,3 @@
-'use strict';
-
 import dataService from '../services/data-service';
 import Util from './util';
 

@@ -18,7 +18,6 @@ const Button = require('../../src/components/common/buttons/button');
 
 
 describe('Section component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -10,7 +10,6 @@ const Description = require('../../src/components/common/section/description');
 
 
 describe('Description component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -1,7 +1,4 @@
-'use strict';
-
 import { func, number, shape } from 'prop-types';
-
 
 export const coordinatesPropType = shape({
   lat: number.isRequired,

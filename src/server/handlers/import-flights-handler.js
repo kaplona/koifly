@@ -1,4 +1,3 @@
-'use strict';
 /* eslint-disable no-use-before-define */
 /* since I define helpers functions which are not invoked in this file  */
 import Altitude from '../../utils/altitude';

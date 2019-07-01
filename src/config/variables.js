@@ -75,9 +75,8 @@ if (process.env.NODE_ENV === 'development') {
     port: WEBPACK_DEV_SERVER_PORT,
     devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT,
     // Webpack bundle filename for stylesheets
-    stylesFilename: '[name].css',
+    stylesFilename: '[name].css'
   });
-
 } else if (process.env.NODE_ENV === 'production') {
   Object.assign(config.server, {
     host: SERVER_HOST,
@@ -89,9 +88,8 @@ if (process.env.NODE_ENV === 'development') {
   });
   Object.assign(config.webpack, {
     // Webpack bundle filename for stylesheets
-    stylesFilename: '[name]-[hash].css',
+    stylesFilename: '[name]-[hash].css'
   });
-
 } else {
   const errorText = '[' + path.basename(__filename) + '] ERROR: NODE_ENV is not set: ' + process.env.NODE_ENV;
   console.log(chalk.red(errorText));

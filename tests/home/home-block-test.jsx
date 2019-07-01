@@ -10,7 +10,6 @@ const HomeBlock = require('../../src/components/home-page/home-block');
 
 
 describe('HomeBlock component', () => {
-
   let component;
   let renderedDOMElement;
 

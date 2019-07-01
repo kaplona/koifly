@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, bool, func, number, oneOfType, shape, string } from 'prop-types';
 import _ from 'lodash';
@@ -76,7 +74,7 @@ Dropdown.propTypes = {
   emptyText: oneOfType([string, number]),
   emptyValue: oneOfType([string, number]),
   className: string,
-  isEnabled: bool.isRequired,
+  isEnabled: bool,
   noSort: bool,
   onChangeFunc: func.isRequired,
   onFocus: func,

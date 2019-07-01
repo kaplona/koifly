@@ -10,7 +10,6 @@ const Button = require('../../src/components/common/buttons/button');
 
 
 describe('MobileButton component', () => {
-
   let component;
 
   const mocks = {

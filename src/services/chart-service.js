@@ -1,5 +1,3 @@
-'use strict';
-
 import Altitude from '../utils/altitude';
 import distanceService from './distance-service';
 import FlightModel from '../models/flight';

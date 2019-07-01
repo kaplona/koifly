@@ -19,7 +19,6 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 
 describe('PasswordInput component', () => {
-
   let component;
   let renderedDOMElement;
 

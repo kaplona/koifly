@@ -18,7 +18,6 @@ const Button = require('../../src/components/common/buttons/button');
 
 
 describe('Button component', () => {
-
   let component;
   let renderedDOMElement;
   let handleClick;
@@ -133,7 +132,6 @@ describe('Button component', () => {
   // For the sake of example purpose only I'm doing shallow rendering tests here
   // it saves even more code-space and test running time (which is not an issue for me... yet)
   describe('Testing with React shallow rendering', () => {
-
     const renderer = TestUtils.createRenderer();
 
     before(() => {

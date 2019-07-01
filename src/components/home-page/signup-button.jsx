@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { string } from 'prop-types';
 
@@ -25,5 +23,5 @@ SignupButton.defaultProps = {
 };
 
 SignupButton.propTypes = {
-  caption: string.isRequired
+  caption: string
 };

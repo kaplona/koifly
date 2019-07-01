@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, number, oneOfType, shape } from 'prop-types';
 import koiflyErrorPropType from '../../../errors/error-prop-type';
@@ -19,18 +17,18 @@ export default function ImportError(props) {
       <div className='title'>Couldn't process next file lines:</div>
       <table>
         <thead>
-        <tr>
-          <th className='first-column'>Line</th>
-          <th>Error Message</th>
-        </tr>
+          <tr>
+            <th className='first-column'>Line</th>
+            <th>Error Message</th>
+          </tr>
         </thead>
         <tbody>
-        {props.error.map((importError, index) => (
-          <tr key={index}>
-            <td>{importError.row}</td>
-            <td>{importError.error.message}</td>
-          </tr>
-        ))}
+          {props.error.map((importError, index) => (
+            <tr key={index}>
+              <td>{importError.row}</td>
+              <td>{importError.error.message}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

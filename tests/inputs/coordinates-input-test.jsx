@@ -20,7 +20,6 @@ const ValidationError = require('../../src/components/common/section/validation-
 
 
 describe('CoordinatesInput component', () => {
-
   let component;
   let renderedDOMElement;
 

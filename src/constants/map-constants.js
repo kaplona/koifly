@@ -1,6 +1,3 @@
-'use strict';
-
-
 const mapConstants = {
   ZOOM_LEVEL: {
     world: 4,

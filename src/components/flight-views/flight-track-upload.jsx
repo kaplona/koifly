@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, string } from 'prop-types';
 import Altitude from '../../utils/altitude';
@@ -41,7 +39,7 @@ export default class FightTrackUpload extends React.Component {
       validationError = parsedFile;
     }
 
-    this.setState({ parsedFile, validationError });
+    this.setState({ parsedIgc: parsedFile, validationError });
   }
 
   handleFile(file) {

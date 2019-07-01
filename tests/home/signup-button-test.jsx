@@ -10,7 +10,6 @@ const SignupButton = require('../../src/components/home-page/signup-button');
 
 
 describe('SignupButton component', () => {
-
   let component;
   let renderedDOMElement;
 

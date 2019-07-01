@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import NavigationMenu from './components/common/menu/navigation-menu';

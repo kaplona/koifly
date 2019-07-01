@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, bool, func, number, shape, string } from 'prop-types';
 import _ from 'lodash';
@@ -13,7 +11,7 @@ export default class Table extends React.Component {
     super(props);
     this.state = {
       sortingField: this.props.initialSortingField,
-      sortingDirection: this.getDefaultSortingDirection(sortingField)
+      sortingDirection: this.getDefaultSortingDirection(this.props.initialSortingField)
     };
 
     this.handleSorting = this.handleSorting.bind(this);
@@ -114,7 +112,7 @@ export default class Table extends React.Component {
     return (
       <table className='koifly-table'>
         <thead>
-        <tr>{headerNodes}</tr>
+          <tr>{headerNodes}</tr>
         </thead>
         <tbody>{rowNodes}</tbody>
       </table>

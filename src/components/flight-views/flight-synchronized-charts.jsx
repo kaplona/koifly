@@ -1,11 +1,9 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, func, number, shape } from 'prop-types';
-import Altitude from'../../utils/altitude';
-import chartService from'../../services/chart-service';
-import distanceService from'../../services/distance-service';
-import Highcharts from'highcharts';
+import Altitude from '../../utils/altitude';
+import chartService from '../../services/chart-service';
+import distanceService from '../../services/distance-service';
+import Highcharts from 'highcharts';
 
 require('./flight-synchronized-charts.less');
 

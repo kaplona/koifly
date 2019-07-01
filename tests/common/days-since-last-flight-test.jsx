@@ -10,7 +10,6 @@ const DaysSinceLastFlight = require('../../src/components/common/days-since-last
 
 
 describe('DaysSinceLastFlight component', () => {
-
   let component;
   let renderedDOMElement;
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
 import ormConstants from '../../constants/orm-constants';

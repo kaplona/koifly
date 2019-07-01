@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, oneOf, string } from 'prop-types';
 
@@ -7,8 +5,12 @@ require('./switcher.less');
 
 
 export default class Switcher extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLeftPosition: (this.props.initialPosition === 'left')
+    };
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -35,10 +37,6 @@ export default class Switcher extends React.Component {
   }
 }
 
-
-Switcher.defaultProps = {
-  isLeftPosition: (this.props.initialPosition === 'left')
-};
 
 Switcher.propTypes = {
   leftButtonCaption: string.isRequired,

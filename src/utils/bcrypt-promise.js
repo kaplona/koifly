@@ -1,5 +1,3 @@
-'use strict';
-
 import Bcrypt from 'bcrypt';
 
 const BCRYPT_ROUNDS = require('../secrets').bcryptRounds;

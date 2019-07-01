@@ -10,7 +10,6 @@ const RemarksRow = require('../../src/components/common/section/remarks-row');
 
 
 describe('RemarksRow component', () => {
-
   let component;
 
   const defaults = {

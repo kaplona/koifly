@@ -1,5 +1,3 @@
-'use strict';
-
 import errorTypes from '../../errors/error-types';
 import getPilotValuesForFrontend from './get-pilot-values';
 import KoiflyError from '../../errors/error';
@@ -44,7 +42,6 @@ function getRecordsValues(sequelizeRecordInstances) {
  * lastModified - is the date of last modification in DB
  */
 function getAllData(pilot, dateFrom) {
-
   const result = {};
 
   // If no dateFrom => it's first request from the user, so retrieve all data

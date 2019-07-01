@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';

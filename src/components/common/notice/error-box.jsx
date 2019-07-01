@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { bool, func, shape, string } from 'prop-types';
 import errorTypes from '../../../errors/error-types';

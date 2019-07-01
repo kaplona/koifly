@@ -1,5 +1,3 @@
-'use strict';
-
 import BcryptPromise from '../../utils/bcrypt-promise';
 
 const COOKIE_LIFETIME = require('../../secrets').cookieLifeTime;
@@ -23,4 +21,4 @@ export default function setAuthCookie(request, userId, passwordHash) {
       };
       request.cookieAuth.set(cookie);
     });
-};
+}

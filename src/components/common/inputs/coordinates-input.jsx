@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { element, func, oneOfType, string } from 'prop-types';
 import AppLink from '../app-link';

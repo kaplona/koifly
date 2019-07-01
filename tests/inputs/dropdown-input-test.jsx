@@ -13,7 +13,6 @@ const Dropdown = require('../../src/components/common/inputs/dropdown');
 
 
 describe('DropdownInput component', () => {
-
   let component;
   let renderedDOMElement;
 

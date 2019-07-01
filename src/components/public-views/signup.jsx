@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import AppLink from '../common/app-link';
 import Button from '../common/buttons/button';

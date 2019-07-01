@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { arrayOf, bool, func, number, shape, string } from 'prop-types';
 import Highcharts from 'highcharts';

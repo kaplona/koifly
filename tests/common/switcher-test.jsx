@@ -18,7 +18,6 @@ const Switcher = require('../../src/components/common/switcher');
 
 
 describe('Switcher component', () => {
-
   let component;
   let renderedDOMElement;
 

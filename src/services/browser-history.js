@@ -1,6 +1,4 @@
-'use strict';
-
-import { createBrowserHistory } from "history";
+import { createBrowserHistory } from 'history';
 
 const browserHistory = createBrowserHistory();
 

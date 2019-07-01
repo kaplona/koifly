@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, shape, string } from 'prop-types';
 import { withRouter } from 'react-router';

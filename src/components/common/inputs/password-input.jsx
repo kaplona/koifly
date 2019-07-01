@@ -1,10 +1,8 @@
-'use strict';
-
 import React from 'react';
 import { element, func, oneOfType, string } from 'prop-types';
-import InputContainer from'./input-container';
-import Label from'../section/label';
-import ValidationError from'../section/validation-error';
+import InputContainer from './input-container';
+import Label from '../section/label';
+import ValidationError from '../section/validation-error';
 
 
 export default class PasswordInput extends React.Component {

@@ -10,7 +10,6 @@ const FeatureColumn = require('../../src/components/home-page/feature-column');
 
 
 describe('FeatureColumn component', () => {
-
   let component;
   let renderedDOMElement;
 

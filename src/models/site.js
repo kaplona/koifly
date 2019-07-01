@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash';
 import Altitude from '../utils/altitude';
 import BaseModel from './base-model';

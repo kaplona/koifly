@@ -1,5 +1,3 @@
-'use strict';
-
 import emailMessageTemplates from '../../constants/email-message-templates';
 import normalizeError from '../../errors/normalize-error';
 import Pilot from '../../orm/models/pilots';
@@ -23,4 +21,4 @@ export default function resendAuthTokenHandler(request) {
     .catch(error => {
       return { error: normalizeError(error) };
     });
-};
+}

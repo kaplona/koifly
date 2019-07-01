@@ -10,7 +10,6 @@ const InputContainer = require('../../src/components/common/inputs/input-contain
 
 
 describe('InputContainer component', () => {
-
   let component;
 
   const mocks = {

@@ -1,5 +1,3 @@
-'use strict';
-
 import Altitude from '../utils/altitude';
 import distanceService from './distance-service';
 import errorTypes from '../errors/error-types';

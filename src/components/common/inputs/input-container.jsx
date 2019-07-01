@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 
 require('./input-container.less');

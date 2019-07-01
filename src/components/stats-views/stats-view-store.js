@@ -1,5 +1,3 @@
-'use strict';
-
 import pubSub from '../../utils/pubsub';
 
 class StatsViewStore {
@@ -42,4 +40,4 @@ class StatsViewStore {
   }
 }
 
-module.exports = new StatsViewStore();
+export default new StatsViewStore();

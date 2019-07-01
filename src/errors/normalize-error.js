@@ -1,5 +1,3 @@
-'use strict';
-
 import errorTypes from './error-types';
 import KoiflyError from './error';
 

@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 import { func, string } from 'prop-types';
 import Label from '../section/label';
@@ -49,7 +47,7 @@ RemarksInput.defaultProps = {
 RemarksInput.propTypes = {
   inputValue: string.isRequired,
   labelText: string,
-  inputName: string.isRequired,
+  inputName: string,
   errorMessage: string,
   onChange: func.isRequired,
   onFocus: func,
