@@ -63,7 +63,7 @@ let PilotModel = {
     }
 
     // require FlightModel here so as to avoid circle requirements
-    const FlightModel = require('./flight');
+    const FlightModel = require('./flight').default;
 
     const flightNumTotal = pilot.initialFlightNum + FlightModel.getNumberOfFlights();
     const flightNumThisYear = FlightModel.getNumberOfFlightsThisYear();

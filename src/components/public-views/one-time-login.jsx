@@ -58,7 +58,8 @@ export default class OneTimeLogin extends React.Component {
 
     this.setState({
       isSending: true,
-      error: null
+      error: null,
+      lastSentEmailAddress: null
     });
 
     const emailAddress = this.state.email;

@@ -4,6 +4,7 @@ import { coordinatesPropType, promisePropType } from '../../../constants/prop-ty
 import _ from 'lodash';
 import Altitude from '../../../utils/altitude';
 import mapConstants from '../../../constants/map-constants';
+import MapFacade from '../../../utils/map-facade';
 
 require('./map.less');
 
@@ -13,11 +14,12 @@ export default class InteractiveMap extends React.Component {
     super();
     this.mapEl = null;
     this.setMapRef = this.setMapRef.bind(this);
+    this.changeInfowindowContent = this.changeInfowindowContent.bind(this);
   }
 
   componentDidMount() {
-    this.props.mapFacadePromise.then(mapFacade => {
-      this.createMap(mapFacade);
+    MapFacade.createPromise().then(mapInstance => {
+      this.createMap(mapInstance);
     });
   }
 
@@ -29,23 +31,23 @@ export default class InteractiveMap extends React.Component {
     this.mapEl = el;
   }
 
-  createMap(mapFacade) {
-    mapFacade.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
-    mapFacade.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);
-    mapFacade.createInfowindow(this.props.markerId, '');
-    mapFacade.bindMarkerAndInfowindow(this.props.markerId);
-    mapFacade.addSearchBarControl(this.props.markerId);
+  createMap(mapInstance) {
+    mapInstance.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
+    mapInstance.createMarker(this.props.markerId, this.props.markerPosition, true, this.changeInfowindowContent);
+    mapInstance.createInfowindow(this.props.markerId, '');
+    mapInstance.bindMarkerAndInfowindow(this.props.markerId);
+    mapInstance.addSearchBarControl(this.props.markerId, this.changeInfowindowContent);
 
     if (this.props.markerPosition !== mapConstants.OUT_OF_MAP_COORDINATES) {
-      mapFacade
+      mapInstance
         .getPositionInfoPromise(this.props.markerPosition)
         .then(positionInfo => {
-          this.changeInfowindowContent(positionInfo, mapFacade);
+          this.changeInfowindowContent(positionInfo, mapInstance);
         });
     }
   }
 
-  changeInfowindowContent(positionInfo, mapFacade) {
+  changeInfowindowContent(positionInfo, mapInstance) {
     // Format infowindow content
     const location = positionInfo.address;
     const coordinates = positionInfo.coordinates;
@@ -56,16 +58,19 @@ export default class InteractiveMap extends React.Component {
     }
     const infowindowContentHtml = this.composeInfowindowMessage(location, altitude, coordinates);
 
-    mapFacade.setInfowindowContent(this.props.markerId, infowindowContentHtml);
-    mapFacade.openInfowindow(this.props.markerId);
+    mapInstance.setInfowindowContent(this.props.markerId, infowindowContentHtml);
+    mapInstance.openInfowindow(this.props.markerId);
 
-    document.getElementById('apply_google_data').addEventListener('click', () => {
-      this.applyGoogleData(location, positionInfo.elevation, coordinates);
-    });
+    // Wait for map instance to render changes into the DOM.
+    setTimeout(() => {
+      document.getElementById('apply_google_data').addEventListener('click', () => {
+        this.applyGoogleData(location, positionInfo.elevation, coordinates);
+      });
 
-    document.getElementById('close_map').addEventListener('click', () => {
-      this.props.onMapClose();
-    });
+      document.getElementById('close_map').addEventListener('click', () => {
+        this.props.onMapClose();
+      });
+    }, 0);
   }
 
   composeInfowindowMessage(location, altitude, coordinates) {
@@ -160,17 +165,4 @@ InteractiveMap.propTypes = {
   altitudeUnit: string,
   onDataApply: func.isRequired,
   onMapClose: func.isRequired,
-  mapFacadePromise: promisePropType.isRequired
-};
-
-InteractiveMap.create = function(props) { // eslint-disable-line react/no-multi-comp
-  // this loads external google-maps-api
-  const mapFacadePromise = require('../../../utils/map-facade').createPromise();
-
-  return (
-    <InteractiveMap
-      {...props}
-      mapFacadePromise={mapFacadePromise}
-    />
-  );
 };

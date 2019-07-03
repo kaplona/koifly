@@ -2,6 +2,7 @@ import React from 'react';
 import { arrayOf, bool } from 'prop-types';
 import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
 import mapConstants from '../../../constants/map-constants';
+import MapFacade from '../../../utils/map-facade';
 
 require('./map.less');
 
@@ -14,7 +15,7 @@ export default class TrackMap extends React.Component {
   }
 
   componentDidMount() {
-    this.props.mapFacadePromise.then(mapFacade => {
+    MapFacade.createPromise().then(mapFacade => {
       this.mapFacade = mapFacade;
       this.createMap();
     });
@@ -69,17 +70,4 @@ TrackMap.propTypes = {
   isFullScreen: bool,
   markerCoords: coordinatesPropType,
   trackCoords: arrayOf(coordinatesPropType).isRequired,
-  mapFacadePromise: promisePropType.isRequired
-};
-
-TrackMap.create = function(props) { // eslint-disable-line react/no-multi-comp
-  // this loads external google-maps-api
-  const mapFacadePromise = require('../../../utils/map-facade').createPromise();
-
-  return (
-    <TrackMap
-      {...props}
-      mapFacadePromise={mapFacadePromise}
-    />
-  );
 };

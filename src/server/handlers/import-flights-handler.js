@@ -297,13 +297,12 @@ function composeFlight(row, pilotId, glidersHashMap, sitesHashMap, altitudeUnit)
  * @return {Object}
  */
 function composeSite(row, pilotId, altitudeUnit) {
-  const coordinates = (row.latitude && row.longitude) ? { lat: row.latitude, lng: row.longitude } : null;
-
   return {
     name: row.site,
     launchAltitude: Altitude.convertAltitudeToMeters(row.launchAltitude || 0, altitudeUnit),
     location: row.location,
-    coordinates: coordinates,
+    lat: row.latitude,
+    lng: row.longitude,
     pilotId: pilotId
   };
 }

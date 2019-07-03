@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 import browserHistory from './services/browser-history';
 import ScrollToTop from './components/common/scroll-to-top';
 
@@ -33,7 +33,7 @@ import PageNotFound from './components/public-views/page-not-found';
 function mainApp() {
   ReactDOM.render(
     (
-      <BrowserRouter history={browserHistory}>
+      <Router history={browserHistory}>
         <ScrollToTop>
           <Koifly>
             <Switch>
@@ -66,7 +66,7 @@ function mainApp() {
             </Switch>
           </Koifly>
         </ScrollToTop>
-      </BrowserRouter>
+      </Router>
     ),
     document.getElementById('koifly')
   );

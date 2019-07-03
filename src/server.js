@@ -284,7 +284,7 @@ async function start() {
     method: 'GET',
     path: '/email-verification/{pilotId}/{authToken}',
     handler: function(request, reply) {
-      verifyAuthToken(request.params.pilotId, request.params.authToken)
+      return verifyAuthToken(request.params.pilotId, request.params.authToken)
         .then(user => {
           return setAuthCookie(request, user.id, user.password);
         })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { func, string } from 'propTypes';
+import { func, string } from 'prop-types';
 import Button from '../buttons/button';
 import InputContainer from './input-container';
 import Label from '../section/label';
@@ -9,7 +9,7 @@ import ValidationError from '../section/validation-error';
 require('./file-input.less');
 
 
-export default class FileInput extends React.Compoenent {
+export default class FileInput extends React.Component {
   constructor() {
     super();
     this.handleButtonClick = this.handleButtonClick.bind(this);

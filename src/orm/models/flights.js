@@ -44,7 +44,7 @@ const Flight = db.define(
       validate: {
         isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude') },
         min: {
-          args: 0,
+          args: [ 0 ],
           msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Altitude')
         }
       }
@@ -57,7 +57,7 @@ const Flight = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime') },
         min: {
-          args: 0,
+          args: [ 0 ],
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Airtime')
         }
       }

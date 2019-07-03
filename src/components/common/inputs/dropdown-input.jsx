@@ -1,5 +1,5 @@
 import React from 'react';
-import { arrayOf, bool, func, number, oneOfType, shape, string } from 'propTypes';
+import { arrayOf, bool, func, number, oneOfType, shape, string } from 'prop-types';
 import Label from '../section/label';
 import InputContainer from './input-container';
 import Dropdown from './dropdown';

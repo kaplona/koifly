@@ -25,7 +25,7 @@ export default class FightMapAndCharts extends React.Component {
 
       if (!(parsedIgc instanceof Error)) {
         this.setState({ parsedIgc });
-        this.trackCoords = this.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
+        this.trackCoords = parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
       }
     }
   }
@@ -42,12 +42,13 @@ export default class FightMapAndCharts extends React.Component {
     }
 
     const site = SiteModel.getItemOutput(this.props.siteId);
-
-    return StaticMap.create({
-      center: siteCoordinates,
-      zoomLevel: mapConstants.ZOOM_LEVEL.site,
-      sites: [ site ]
-    });
+    return (
+      <StaticMap
+        center={siteCoordinates}
+        zoomLevel={mapConstants.ZOOM_LEVEL.site}
+        sites={[ site ]}
+      />
+    );
   }
 
   render() {
@@ -62,10 +63,10 @@ export default class FightMapAndCharts extends React.Component {
 
     return (
       <div>
-        {TrackMap.create({
-          trackCoords: this.trackCoords,
-          markerCoords: highlightedCoords
-        })}
+        <TrackMap
+          trackCoords={this.trackCoords}
+          markerCoords={highlightedCoords}
+        />
         <FlightSynchronizedCharts
           flightPoints={this.state.parsedIgc.flightPoints}
           minAltitude={this.state.parsedIgc.minAltitude}

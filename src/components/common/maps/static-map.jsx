@@ -3,6 +3,7 @@ import { arrayOf, bool, number, shape, string } from 'prop-types';
 import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
 import _ from 'lodash';
 import mapConstants from '../../../constants/map-constants';
+import MapFacade from '../../../utils/map-facade';
 import navigationService from '../../../services/navigation-service';
 
 require('./map.less');
@@ -16,8 +17,8 @@ export default class StaticMap extends React.Component {
   }
 
   componentDidMount() {
-    this.props.mapFacadePromise.then(mapFacade => {
-      this.createMap(mapFacade);
+    MapFacade.createPromise().then(mapInstance => {
+      this.createMap(mapInstance);
     });
   }
 
@@ -29,30 +30,20 @@ export default class StaticMap extends React.Component {
     this.mapEl = el;
   }
 
-  createMap(mapFacade) {
-    let markerId;
-    let markerPosition;
-    let infowindowContent;
-    let infowindowOnClickFunc;
+  createMap(mapInstance) {
+    mapInstance.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
 
-    mapFacade.createMap(this.mapEl, this.props.center, this.props.zoomLevel);
+    this.props.sites.forEach(site => {
+      if (!site.latLng) return;
 
-    for (let i = 0; i < this.props.sites.length; i++) {
-      if (this.props.sites[i].latLng) {
-        markerId = this.props.sites[i].id;
-        markerPosition = this.props.sites[i].latLng;
+      const markerId = site.id;
+      const infowindowContent = this.composeInfowindowMessage(site);
+      const infowindowOnClickFunc = () => navigationService.goToSiteView(site.id);
 
-        mapFacade.createMarker(markerId, markerPosition);
-
-        infowindowContent = this.composeInfowindowMessage(this.props.sites[i]);
-        infowindowOnClickFunc = (siteId => {
-          return () => navigationService.goToSiteView(siteId);
-        })(markerId);
-
-        mapFacade.createInfowindow(markerId, infowindowContent, infowindowOnClickFunc);
-        mapFacade.bindMarkerAndInfowindow(markerId);
-      }
-    }
+      mapInstance.createMarker(markerId, site.latLng);
+      mapInstance.createInfowindow(markerId, infowindowContent, infowindowOnClickFunc);
+      mapInstance.bindMarkerAndInfowindow(markerId);
+    });
   }
 
   composeInfowindowMessage(site) {
@@ -102,17 +93,4 @@ StaticMap.propTypes = {
     latLng: coordinatesPropType
   })),
   isFullScreen: bool,
-  mapFacadePromise: promisePropType.isRequired
-};
-
-StaticMap.create = function(props) { // eslint-disable-line react/no-multi-comp
-  // this loads external google-maps-api
-  const mapFacadePromise = require('../../../utils/map-facade').createPromise();
-
-  return (
-    <StaticMap
-      {...props}
-      mapFacadePromise={mapFacadePromise}
-    />
-  );
 };

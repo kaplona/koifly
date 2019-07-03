@@ -1,4 +1,7 @@
+import secrets from '../secrets';
+
 const mapConstants = {
+  GOOGLE_MAPS_API_KEY: secrets.googleMapsApiKey,
   ZOOM_LEVEL: {
     world: 4,
     region: 6,

@@ -51,7 +51,7 @@ const Pilot = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number') },
         min: {
-          args: 0,
+          args: [ 0 ],
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Flight Number')
         }
       }
@@ -64,7 +64,7 @@ const Pilot = db.define(
       validate: {
         isInt: { msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime') },
         min: {
-          args: 0,
+          args: [ 0 ],
           msg: errorMessages.POSITIVE_ROUND.replace('%field', 'Initial Airtime')
         }
       }

@@ -97,12 +97,14 @@ export default class SiteView extends React.Component {
   }
 
   renderMap() {
-    if (this.state.item.coordinates) {
-      return StaticMap.create({
-        center: SiteModel.getLatLng(this.state.item.id),
-        zoomLevel: mapConstants.ZOOM_LEVEL.site,
-        sites: [ this.state.item ]
-      });
+    if (this.state.item.latLng) {
+      return (
+        <StaticMap
+          center={SiteModel.getLatLng(this.state.item.id)}
+          zoomLevel={mapConstants.ZOOM_LEVEL.site}
+          sites={[ this.state.item ]}
+        />
+      );
     }
   }
 

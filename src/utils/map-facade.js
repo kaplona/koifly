@@ -57,7 +57,7 @@ MapFacade.prototype.createMap = function(htmlContainer, centerCoordinates, zoomL
 };
 
 
-MapFacade.prototype.createMarker = function(siteId, position, draggable = false, changeInfowindowContent) {
+MapFacade.prototype.createMarker = function(siteId, position, draggable = false, changeInfowindowContent = undefined) {
   this.siteMarkers[siteId] = new this.mapsApi.Marker({
     position: position,
     map: this.map,
@@ -191,15 +191,15 @@ MapFacade.prototype.moveTrackMarker = function(coords) {
 };
 
 
-MapFacade.prototype.addSearchBarControl = function(siteId) {
+MapFacade.prototype.addSearchBarControl = function(siteId, changeInfowindowContent) {
   // Create control element
   const searchControl = document.createElement('div');
-  this.createSearchControl(searchControl, siteId);
+  this.createSearchControl(searchControl, siteId, changeInfowindowContent);
   // Add element to google map controls
   this.map.controls[this.mapsApi.ControlPosition.TOP_CENTER].push(searchControl);
 };
 
-MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
+MapFacade.prototype.createSearchControl = function(containerDiv, siteId, changeInfowindowContent) {
   // Set CSS for the search control container
   containerDiv.className = 'search-control';
 
@@ -220,25 +220,25 @@ MapFacade.prototype.createSearchControl = function(containerDiv, siteId) {
 
   // Add search event to search button
   this.mapsApi.event.addDomListener(searchButton, 'click', () => {
-    this.searchAddress(siteId);
+    this.searchAddress(siteId, changeInfowindowContent);
   });
   // Trigger search event if Enter key is pressed on search bar
   this.mapsApi.event.addDomListener(searchBar, 'keypress', event => {
-    // @TODO event.keyCode will be deprecated, event.key === 'Enter' (still doesn't supported by all browseers)
-    if (event.keyCode === 13) {
+    // event.keyCode will be deprecated, event.key === 'Enter' still isn't supported by all browsers
+    if (event.keyCode === 13 || event.key === 'Enter') {
       event.preventDefault();
-      this.searchAddress(siteId);
+      this.searchAddress(siteId, changeInfowindowContent);
     }
   });
 };
 
-MapFacade.prototype.searchAddress = function(siteId) {
+MapFacade.prototype.searchAddress = function(siteId, changeInfowindowContent) {
   const address = document.getElementById('search-bar').value;
 
   this.geocoder.geocode({ 'address': address }, (results, status) => {
     if (status == this.mapsApi.GeocoderStatus.OK) { // eslint-disable-line eqeqeq
       const position = results[0].geometry.location;
-      this.moveMarker(position, siteId);
+      this.moveMarker(position, siteId, changeInfowindowContent);
     } else if (process.env.NODE_ENV === 'development') {
       console.log(`Geocode was not successful for the following reason: ${status}`); // eslint-disable-line no-console
     }

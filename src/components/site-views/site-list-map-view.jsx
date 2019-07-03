@@ -88,7 +88,10 @@ export default class SiteListMapView extends React.Component {
 
   renderMap() {
     const siteList = this.state.items;
-    return siteList ? StaticMap.create({ sites: siteList, isFullScreen: true }) : <Loader/>;
+    if (!siteList) {
+      return <Loader/>;
+    }
+    return <StaticMap sites={siteList} isFullScreen={true} />;
   }
 
   render() {

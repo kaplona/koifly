@@ -93,21 +93,22 @@ if (process.env.NODE_ENV === 'development') {
       sandbox: [path.join(config.paths.source, 'main-sandbox'), WEBPACK_HOT_ENTRY]
     },
     devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
-    module: {
-      rules: [
-        {
-          enforce: 'pre', // Lint all JS files before compiling the bundles (see .eslintrc for rules)
-          test: /\.(js|jsx)$/,
-          loader: 'eslint-loader',
-          include: config.paths.source,
-          options: {
-            emitError: true,
-            emitWarning: true,
-            failOnError: true
-          }
-        }
-      ]
-    },
+    // TODO check that eslint parses the code before each bundle creation
+    // module: {
+    //   rules: [
+    //     {
+    //       enforce: 'pre', // Lint all JS files before compiling the bundles (see .eslintrc for rules)
+    //       test: /\.(js|jsx)$/,
+    //       loader: 'eslint-loader',
+    //       include: config.paths.source,
+    //       options: {
+    //         emitError: true,
+    //         emitWarning: true,
+    //         failOnError: true
+    //       }
+    //     }
+    //   ]
+    // },
     plugins: [
       new webpack.HotModuleReplacementPlugin() // Enables HMR. Adds webpack/hot/dev-server entry point if hot=true
     ]

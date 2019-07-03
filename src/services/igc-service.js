@@ -258,29 +258,27 @@ const igcService = {
 
   /**
    * Searches for a nearest launch within 1 km radius.
-   * @param {number} lat
-   * @param {number} lng
+   * @param {number} launchLat
+   * @param {number} launchLng
    * @return {{id:number|string, distance: number}|null}
    */
-  findNearestSite(lat, lng) {
-    if (!lat || !lng) {
+  findNearestSite(launchLat, launchLng) {
+    if (!launchLat || !launchLng) {
       return null;
     }
 
     let nearestSite = null;
     SiteModel
       .getList()
-      .filter(({ coordinates }) => {
-        if (!coordinates) {
+      .filter(({ lat, lng }) => {
+        if (!lat || !lng) {
           return false;
         }
-        const siteLat = coordinates.lat;
-        const siteLng = coordinates.lng;
         // Take only flights which are within a rectangular area of 0.1 degree latitude or longitude.
-        return !!siteLat && !!siteLng && (Math.abs(siteLat - lat) < 0.1) && (Math.abs(siteLng - lng) < 0.1);
+        return (Math.abs(lat - launchLat) < 0.1) && (Math.abs(lng - launchLng) < 0.1);
       })
       .forEach(site => {
-        const distance = distanceService.getDistance(lat, lng, site.coordinates.lat, site.coordinates.lng);
+        const distance = distanceService.getDistance(launchLat, launchLng, site.lat, site.lng);
         // Take only sites within 1 km radius.
         if ((distance < 1000) && (!nearestSite || distance < nearestSite.distance)) {
           nearestSite = {

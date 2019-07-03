@@ -352,17 +352,19 @@ export default class SiteEditView extends React.Component {
 
     const markerPosition = this.getMarkerPosition();
 
-    return InteractiveMap.create({
-      markerId: this.state.item.id,
-      center: markerPosition || undefined,
-      zoomLevel: markerPosition ? mapConstants.ZOOM_LEVEL.site : mapConstants.ZOOM_LEVEL.region,
-      markerPosition: markerPosition || undefined,
-      location: this.state.item.location,
-      launchAltitude: this.state.item.launchAltitude,
-      altitudeUnit: this.state.item.altitudeUnit,
-      onDataApply: this.handleInputChange,
-      onMapClose: this.handleMapHide
-    });
+    return (
+      <InteractiveMap
+        markerId={this.state.item.id}
+        center={markerPosition || undefined}
+        zoomLevel={markerPosition ? mapConstants.ZOOM_LEVEL.site : mapConstants.ZOOM_LEVEL.region}
+        markerPosition={markerPosition || undefined}
+        location={this.state.item.location}
+        launchAltitude={this.state.item.launchAltitude}
+        altitudeUnit={this.state.item.altitudeUnit}
+        onDataApply={this.handleInputChange}
+        onMapClose={this.handleMapHide}
+      />
+    );
   }
 
   render() {

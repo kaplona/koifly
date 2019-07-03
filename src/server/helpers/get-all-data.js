@@ -38,7 +38,7 @@ function getRecordsValues(sequelizeRecordInstances) {
 /**
  * @param {object} pilot - sequelize pilot instance
  * @param {string|null} dateFrom - If provided, only changes since that date are returned
- * @returns {Promise.<{pilot: Object, flights: Object, sites: Object, gliders: Object, lastModified: string}>}
+ * @returns {Promise.<{pilot: Object[], flights: Object[], sites: Object[], gliders: Object[], lastModified: string}>}
  * lastModified - is the date of last modification in DB
  */
 function getAllData(pilot, dateFrom) {
@@ -72,7 +72,7 @@ function getAllData(pilot, dateFrom) {
       result.sites = getRecordsValues(recordsSet[1]);
       result.gliders = getRecordsValues(recordsSet[2]);
 
-      // Find the latest updating date of all records
+      // Find the latest updated date of all records
       Object.values(result).forEach(records => {
         records.forEach(record => {
           maxLastModified = (record.updatedAt > maxLastModified) ? record.updatedAt : maxLastModified;

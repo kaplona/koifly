@@ -84,13 +84,15 @@ let SiteModel = {
     }
 
     return objectValues(storeContent).map(site => {
+      const latLng = Util.getLatLngObj(site.lat, site.lng);
       return {
         id: site.id,
         name: site.name,
         location: site.location,
         launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
-        coordinates: Util.coordinatesToString(site.coordinates),
-        latLng: site.coordinates
+        altitudeUnit: Altitude.getUserAltitudeUnit(),
+        latLng: latLng,
+        coordinates: Util.coordinatesToString(latLng)
       };
     });
   },
@@ -109,16 +111,18 @@ let SiteModel = {
     }
 
     // require FlightModel here so as to avoid circle requirements
-    const FlightModel = require('./flight');
+    const FlightModel = require('./flight').default;
     const flightStats = FlightModel.getNumberOfFlightsAtSite(site.id);
+    const latLng = Util.getLatLngObj(site.lat, site.lng);
 
     return {
       id: site.id,
       name: site.name,
       location: site.location,
-      coordinates: Util.coordinatesToString(site.coordinates),
-      latLng: site.coordinates,
+      latLng: latLng,
+      coordinates: Util.coordinatesToString(latLng),
       launchAltitude: Altitude.getAltitudeInPilotUnits(site.launchAltitude),
+      altitudeUnit: Altitude.getUserAltitudeUnit(),
       flightNum: flightStats.total,
       flightNumThisYear: flightStats.thisYear,
       remarks: site.remarks
@@ -150,7 +154,7 @@ let SiteModel = {
       id: site.id,
       name: site.name,
       location: site.location,
-      coordinates: Util.coordinatesToString(site.coordinates),
+      coordinates: Util.coordinatesToString(Util.getLatLngObj(site.lat, site.lng)),
       launchAltitude: launchAltitude.toString(),
       altitudeUnit: Altitude.getUserAltitudeUnit(),
       remarks: site.remarks
@@ -172,7 +176,7 @@ let SiteModel = {
     return {
       name: '',
       location: '',
-      coordinates: '', // @TODO default local coordinates
+      coordinates: '',
       launchAltitude: '',
       altitudeUnit: Altitude.getUserAltitudeUnit(),
       remarks: ''
@@ -195,9 +199,12 @@ let SiteModel = {
       id: newSite.id,
       name: newSite.name,
       location: newSite.location,
-      coordinates: newSite.coordinates ? Util.stringToCoordinates(newSite.coordinates) : newSite.coordinates,
       remarks: newSite.remarks
     };
+
+    const latLng = newSite.coordinates ? Util.stringToCoordinates(newSite.coordinates) : { lat: null, lng: null };
+    site.lat = latLng.lat;
+    site.lng = latLng.lng;
 
     const currentAltitude = (newSite.id !== undefined) ? this.getStoreContent(newSite.id).launchAltitude : 0;
     const nextAltitude = parseInt(newSite.launchAltitude);
@@ -221,7 +228,12 @@ let SiteModel = {
    * @returns {{lat: number, lng: number}|null} - coordinates object or null if siteId or coordinates are not specified
    */
   getLatLng(siteId) {
-    return siteId ? this.getStoreContent(siteId).coordinates : null;
+    if (!siteId) {
+      return null;
+    }
+
+    const site = this.getStoreContent(siteId);
+    return Util.getLatLngObj(site.lat, site.lng);
   },
 
   /**

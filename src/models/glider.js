@@ -70,7 +70,7 @@ let GliderModel = {
     }
 
     // require FlightModel here so as to avoid circle requirements
-    const FlightModel = require('./flight');
+    const FlightModel = require('./flight').default;
 
     return objectValues(storeContent).map(glider => {
       return {
@@ -96,7 +96,7 @@ let GliderModel = {
     }
 
     // require FlightModel here so as to avoid circle requirements
-    const FlightModel = require('./flight');
+    const FlightModel = require('./flight').default;
 
     const flightNumObj = FlightModel.getNumberOfFlightsOnGlider(glider.id);
     const trueFlightNum = glider.initialFlightNum + flightNumObj.total;

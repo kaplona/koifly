@@ -108,9 +108,7 @@ export default class FightTrackUpload extends React.Component {
   renderMap() {
     const trackCoords = this.state.parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
 
-    return TrackMap.create({
-      trackCoords: trackCoords
-    });
+    return <TrackMap trackCoords={trackCoords} />;
   }
 
   render() {

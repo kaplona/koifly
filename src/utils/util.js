@@ -330,6 +330,21 @@ const Util = {
     }
 
     return null;
+  },
+
+
+  /**
+   * Takes latitude and longitude coords and return an object with "lat" and "lng" keys.
+   * @param {number|string} lat
+   * @param {number|string} lng
+   * @return {{lat:number, lng:number}|null}
+   */
+  getLatLngObj(lat, lng) {
+    if (!lat || !lng) {
+      return null;
+    }
+
+    return { lat: parseFloat(lat), lng: parseFloat(lng) };
   }
 };
 

@@ -80,7 +80,7 @@ export default class BubbleChart extends React.Component {
 }
 
 
-BubbleChart.defaultPtops = {
+BubbleChart.defaultProps = {
   id: 'bubbleChart'
 };
 

@@ -50,7 +50,7 @@ const Site = db.define(
       validate: {
         isFloat: { msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude') },
         min: {
-          args: 0,
+          args: [ 0 ],
           msg: errorMessages.POSITIVE_NUMBER.replace('%field', 'Launch altitude')
         }
       }
@@ -63,11 +63,11 @@ const Site = db.define(
       validate: {
         isDecimal: { msg: errorMessages.COORDINATES },
         min: {
-          args: -90,
+          args: [ -90 ],
           msg: errorMessages.COORDINATES
         },
         max: {
-          args: 90,
+          args: [ 90 ],
           msg: errorMessages.COORDINATES
         }
       }
@@ -80,11 +80,11 @@ const Site = db.define(
       validate: {
         isDecimal: { msg: errorMessages.COORDINATES },
         min: {
-          args: -180,
+          args: [ -180 ],
           msg: errorMessages.COORDINATES
         },
         max: {
-          args: 180,
+          args: [ 180 ],
           msg: errorMessages.COORDINATES
         }
       }
@@ -131,25 +131,6 @@ const Site = db.define(
       beforeValidate: function(instance, options) {
         const errorMsg = errorMessages.DOUBLE_VALUE.replace('%field', 'Site');
         return isUnique(Site, instance, 'name', errorMsg, options.transaction);
-      }
-    },
-
-    getterMethods: {
-      coordinates: function() {
-        if (this.lat === null || this.lng === null) {
-          return null;
-        }
-        return { lat: this.lat, lng: this.lng };
-      }
-    },
-
-    setterMethods: {
-      coordinates: function(coordinatesObj) {
-        if (coordinatesObj === null) {
-          coordinatesObj = { lat: null, lng: null };
-        }
-        this.setDataValue('lat', coordinatesObj.lat);
-        this.setDataValue('lng', coordinatesObj.lng);
       }
     },
 

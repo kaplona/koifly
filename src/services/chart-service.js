@@ -170,7 +170,7 @@ const chartService = {
       }
     }
 
-    objectValues(flights).forEach(flight => {
+    objectValues(flights).filter(flight => !!flight.siteId).forEach(flight => {
       // Calculate flight max altitude bucket
       const siteAlt = siteStats[flight.siteId].launchAltitude;
       const bucketNumber = (flight.altitude - siteAlt) / bucketHeight;
