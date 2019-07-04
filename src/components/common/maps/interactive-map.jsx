@@ -1,6 +1,6 @@
 import React from 'react';
 import { func, number, string } from 'prop-types';
-import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import { coordinatesPropType } from '../../../constants/prop-types';
 import _ from 'lodash';
 import Altitude from '../../../utils/altitude';
 import mapConstants from '../../../constants/map-constants';
@@ -164,5 +164,5 @@ InteractiveMap.propTypes = {
   launchAltitude: string,
   altitudeUnit: string,
   onDataApply: func.isRequired,
-  onMapClose: func.isRequired,
+  onMapClose: func.isRequired
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { arrayOf, bool, number, shape, string } from 'prop-types';
-import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import { coordinatesPropType } from '../../../constants/prop-types';
 import _ from 'lodash';
 import mapConstants from '../../../constants/map-constants';
 import MapFacade from '../../../utils/map-facade';
@@ -92,5 +92,5 @@ StaticMap.propTypes = {
     coordinates: string,
     latLng: coordinatesPropType
   })),
-  isFullScreen: bool,
+  isFullScreen: bool
 };

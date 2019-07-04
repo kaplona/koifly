@@ -1,6 +1,6 @@
 import React from 'react';
 import { arrayOf, bool } from 'prop-types';
-import { coordinatesPropType, promisePropType } from '../../../constants/prop-types';
+import { coordinatesPropType } from '../../../constants/prop-types';
 import mapConstants from '../../../constants/map-constants';
 import MapFacade from '../../../utils/map-facade';
 
@@ -69,5 +69,5 @@ TrackMap.defaultProps = {
 TrackMap.propTypes = {
   isFullScreen: bool,
   markerCoords: coordinatesPropType,
-  trackCoords: arrayOf(coordinatesPropType).isRequired,
+  trackCoords: arrayOf(coordinatesPropType).isRequired
 };
