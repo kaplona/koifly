@@ -10,6 +10,7 @@ const config = require('./variables');
 const APP_ENTRY = path.join(config.paths.source, 'main-app');
 const HOME_ENTRY = path.join(config.paths.components, 'home-page/home');
 const WEBPACK_HOT_ENTRY = 'webpack-hot-middleware/client?path=' + config.webpack.devServerUrl + '/__webpack_hmr';
+const REACT_HOT_ENTRY = 'react-hot-loader/patch';
 
 
 let webpackConfig = {
@@ -89,8 +90,8 @@ if (process.env.NODE_ENV === 'development') {
   webpackConfig = webpackMerge(webpackConfig, {
     mode: 'development',
     entry: {
-      app: [APP_ENTRY, WEBPACK_HOT_ENTRY],
-      sandbox: [path.join(config.paths.source, 'main-sandbox'), WEBPACK_HOT_ENTRY]
+      app: [WEBPACK_HOT_ENTRY, REACT_HOT_ENTRY, APP_ENTRY],
+      sandbox: [WEBPACK_HOT_ENTRY, REACT_HOT_ENTRY, path.join(config.paths.source, 'main-sandbox')]
     },
     devtool: 'cheap-module-eval-source-map', // Generate source maps (more or less efficiently)
     module: {

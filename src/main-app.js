@@ -1,3 +1,4 @@
+import { hot } from 'react-hot-loader/root';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, Switch } from 'react-router-dom';
@@ -30,10 +31,12 @@ import InvalidVerificationLink from './components/public-views/invalid-verificat
 import PageNotFound from './components/public-views/page-not-found';
 
 
+const HotRouter = hot(Router);
+
 function mainApp() {
   ReactDOM.render(
     (
-      <Router history={browserHistory}>
+      <HotRouter history={browserHistory}>
         <ScrollToTop>
           <Koifly>
             <Switch>
@@ -66,7 +69,7 @@ function mainApp() {
             </Switch>
           </Koifly>
         </ScrollToTop>
-      </Router>
+      </HotRouter>
     ),
     document.getElementById('koifly')
   );
