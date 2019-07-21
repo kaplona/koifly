@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import NavigationMenu from './components/common/menu/navigation-menu';
 
-require('./main-sandbox.less');
+require('./components/koifly.less');
 
 
 if (process.env.NODE_ENV !== 'development') {
@@ -11,6 +11,7 @@ if (process.env.NODE_ENV !== 'development') {
 }
 
 
+// Render a test component here.
 let sandbox = function() {
   return <NavigationMenu isSiteView={true} />;
 };
