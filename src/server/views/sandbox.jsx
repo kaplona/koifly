@@ -9,6 +9,8 @@ export default class Sandbox extends React.Component {
         <head>
           <meta charSet='utf-8'/>
           <title>Sandbox</title>
+          <script src={getWebpackAssets().runtime.js} />
+          <script src={getWebpackAssets().vendors.js} />
           <script src={getWebpackAssets().sandbox.js} />
           <link rel='stylesheet' type='text/css' href={getWebpackAssets().sandbox.css} />
         </head>

@@ -5,6 +5,8 @@ const webpack = require('webpack');
 const webpackMerge = require('webpack-merge'); // concatenates arrays for the same key instead of replacing the first array
 const AssetsWebpackPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserJSPlugin = require('terser-webpack-plugin');
 const config = require('./variables');
 
 const APP_ENTRY = path.join(config.paths.source, 'main-app');
@@ -54,19 +56,20 @@ let webpackConfig = {
       }
     ]
   },
-  // TODO check that optimizations are working
-  // optimization: {
-  //   runtimeChunk: 'single',
-  //   splitChunks: {
-  //     cacheGroups: {
-  //       vendor: {
-  //         test: /[\\/]node_modules[\\/]/,
-  //         name: 'vendors',
-  //         chunks: 'all'
-  //       }
-  //     }
-  //   }
-  // },
+  optimization: {
+    // Extracting webpack runtime and manifest into separate bundle,
+    // so that code is not included in the main bundle and content hashes in generated file names work as expected.
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all'
+        }
+      }
+    }
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
@@ -116,10 +119,12 @@ if (process.env.NODE_ENV === 'development') {
   /** @lends webpackConfig */
   webpackConfig = webpackMerge(webpackConfig, {
     mode: 'production',
-    devtool: 'source-map', // generate full source maps
-    plugins: [
-      new webpack.HashedModuleIdsPlugin() // bundle name hash will be based on the relative path thus enable browser caching
-    ]
+    devtool: 'cheap-source-map', // generate full source maps
+    optimization: {
+      // Setting minimizer for css overrides the defaults provided by webpack,
+      // so we have to also specify a JS minimizer.
+      minimizer: [new TerserJSPlugin({ sourceMap: true }), new OptimizeCSSAssetsPlugin({})]
+    }
   });
 }
 

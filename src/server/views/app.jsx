@@ -17,6 +17,8 @@ export default class App extends React.Component {
 
           <title>Koifly — Flight logging app for freeflight pilots</title>
 
+          <script src={getWebpackAssets().runtime.js} />
+          <script src={getWebpackAssets().vendors.js} />
           <script src={getWebpackAssets().app.js} />
           <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
 

@@ -50,8 +50,8 @@ const config = {
     ]
   },
   webpack: {
-    // Webpack bundle filename
-    outputFilename: '[name]-bundle-[hash].js',
+    // Webpack bundle filename for stylesheets
+    stylesFilename: '[name]-[hash].css',
     // Assets-webpack-plugin generates a JSON file containing actual
     // webpack bundle filenames on every webpack emit event.
     // To get the actual bundle filenames, use config/webpack-assets.js
@@ -74,8 +74,8 @@ if (process.env.NODE_ENV === 'development') {
   Object.assign(config.webpack, {
     port: WEBPACK_DEV_SERVER_PORT,
     devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT,
-    // Webpack bundle filename for stylesheets
-    stylesFilename: '[name].css'
+    // Webpack bundle filename
+    outputFilename: '[name]-bundle-[hash].js'
   });
 } else if (process.env.NODE_ENV === 'production') {
   Object.assign(config.server, {
@@ -87,8 +87,8 @@ if (process.env.NODE_ENV === 'development') {
     rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
   });
   Object.assign(config.webpack, {
-    // Webpack bundle filename for stylesheets
-    stylesFilename: '[name]-[hash].css'
+    // Webpack bundle filename
+    outputFilename: '[name]-bundle-[contenthash].js'
   });
 } else {
   const errorText = '[' + path.basename(__filename) + '] ERROR: NODE_ENV is not set: ' + process.env.NODE_ENV;
