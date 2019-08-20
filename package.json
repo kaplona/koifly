@@ -43,7 +43,7 @@
     "chalk": "2.4.2",
     "csvtojson": "1.1.9",
     "es6-promise": "3.3.1",
-    "eventemitter3": "1.2.0",
+    "eventemitter3": "4.0.0",
     "google-maps-api": "2.0.1",
     "hapi-react-views": "10.0.1",
     "highcharts": "7.0.2",
