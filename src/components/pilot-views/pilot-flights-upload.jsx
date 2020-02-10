@@ -17,7 +17,7 @@ import SectionRow from '../common/section/section-row';
 import SectionTitle from '../common/section/section-title';
 import View from '../common/view';
 
-require('./pilot-flight-upload.less');
+require('./pilot-flights-upload.less');
 
 
 export default class PilotFlightsUpload extends React.Component {
@@ -69,7 +69,7 @@ export default class PilotFlightsUpload extends React.Component {
 
     const validationError = this.validateFile(file);
     if (validationError) {
-      this.setState({ validationError: validationError });
+      this.setState({ validationError });
       return;
     }
 

@@ -63,14 +63,16 @@ export default class FileInput extends React.Component {
           onClick={this.handleButtonClick}
         />
 
-        <input
-          className='hidden'
-          type='file'
-          accept={this.props.fileTypes}
-          ref={el => this.hiddenFileInput = el}
-          tabIndex='-1'
-          onChange={this.handleFileSelect}
-        />
+        {!this.props.fileName && (
+          <input
+            className='hidden'
+            type='file'
+            accept={this.props.fileTypes}
+            ref={el => this.hiddenFileInput = el}
+            tabIndex='-1'
+            onChange={this.handleFileSelect}
+          />
+        )}
       </div>
     );
   }

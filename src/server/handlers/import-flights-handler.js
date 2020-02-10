@@ -12,6 +12,9 @@ import Flight from '../../orm/models/flights';
 import Pilot from '../../orm/models/pilots';
 import Site from '../../orm/models/sites';
 
+// Can't switch to csvtojson version ^2 because they introduced Promise syntax but they don't use real Promises.
+// Their updated "fromString" method returns a then-able object – an object with "then" method on it,
+// so I can't chain promises or catch errors.
 const Converter = require('csvtojson').Converter;
 
 /**
@@ -122,7 +125,7 @@ function importFlightsHandler(request) {
  */
 function convertCsvToJson(csvString) {
   const csvConverter = new Converter({
-    // If `checkColumn` is true, converter doesn't ignore empty lines. Uncomment when this issue is resolved:
+    // If `checkColumn` is true, converter doesn't ignore empty columns. Uncomment when this issue is resolved:
     // @see https://github.com/Keyang/node-csvtojson/issues/231
     // checkColumn: true,
     checkType: false,

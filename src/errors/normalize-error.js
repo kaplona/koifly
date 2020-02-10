@@ -36,7 +36,7 @@ import KoiflyError from './error';
  *
  * @param {Error|Object} error – Error occurred.
  * @param {string} defaultErrorType – Pass it to override default Koifly error type.
- * @param {string} defaultMessage – Default error message.
+ * @param {string|null} defaultMessage – Default error message.
  * @return {KoiflyError}
  */
 export default function normalizeError(error, defaultErrorType = errorTypes.DB_READ_ERROR, defaultMessage = null) {

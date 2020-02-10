@@ -14,11 +14,11 @@ export default function ImportError(props) {
 
   const noticeText = (
     <div className='import-error'>
-      <div className='title'>Couldn't process next file lines:</div>
+      <div className='title'>Couldn't import your file. Please correct next records:</div>
       <table>
         <thead>
           <tr>
-            <th className='first-column'>Line</th>
+            <th className='first-column'>Record#</th>
             <th>Error Message</th>
           </tr>
         </thead>
