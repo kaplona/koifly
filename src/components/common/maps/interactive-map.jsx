@@ -1,8 +1,8 @@
 import React from 'react';
 import { func, number, string } from 'prop-types';
 import { coordinatesPropType } from '../../../constants/prop-types';
-import _ from 'lodash';
 import Altitude from '../../../utils/altitude';
+import escape from 'lodash.escape';
 import mapConstants from '../../../constants/map-constants';
 import MapFacade from '../../../utils/map-facade';
 
@@ -93,7 +93,7 @@ export default class InteractiveMap extends React.Component {
             ${isUnknownLocation ? 'disabled' : ''}
             style="display:inline;width:12px;"
           >
-          <label for="location_checkbox">${_.escape(location)}</label>
+          <label for="location_checkbox">${escape(location)}</label>
         </div>
         <div>
           <input
@@ -104,12 +104,12 @@ export default class InteractiveMap extends React.Component {
             style="display:inline;width:12px;"
           >
           <label for="launchAltitude_checkbox">
-            ${_.escape(altitude + ' ' + altitudeUnit)}
+            ${escape(altitude + ' ' + altitudeUnit)}
           </label>
         </div>
         <div>
           <input type="checkbox" style="display:inline;width:12px;" checked disabled>
-          ${_.escape(coordinates)}
+          ${escape(coordinates)}
         </div>
         <button id="apply_google_data" type="button" class="infowindow-button">Apply</button>
         <button id="close_map" type="button" class="infowindow-button">Close Map</button>

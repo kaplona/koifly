@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import getPilotValuesForFrontend from '../helpers/get-pilot-values';
 import emailMessageTemplates from '../../constants/email-message-templates';
@@ -22,7 +21,7 @@ export default function signupHandler(request) {
   const payload = request.payload;
 
   // Checks payload for required fields
-  if (!_.isString(payload.email) || !_.isString(payload.password)) {
+  if (typeof payload.email !== 'string' || typeof payload.password !== 'string') {
     return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 

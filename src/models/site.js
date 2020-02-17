@@ -1,7 +1,5 @@
-import _ from 'lodash';
 import Altitude from '../utils/altitude';
 import BaseModel from './base-model';
-import objectValues from 'object.values';
 import Util from '../utils/util';
 
 
@@ -68,7 +66,7 @@ let SiteModel = {
     if (!storeContent || storeContent.error) {
       return [];
     }
-    return objectValues(storeContent);
+    return Object.values(storeContent);
   },
 
   /**
@@ -83,7 +81,7 @@ let SiteModel = {
       return storeContent;
     }
 
-    return objectValues(storeContent).map(site => {
+    return Object.values(storeContent).map(site => {
       const latLng = Util.getLatLngObj(site.lat, site.lng);
       return {
         id: site.id,
@@ -249,11 +247,14 @@ let SiteModel = {
    */
   getLastAddedId() {
     const storeContent = this.getStoreContent();
-    if (_.isEmpty(storeContent)) {
+    if (!storeContent || storeContent.error || !Object.keys(storeContent).length) {
       return null;
     }
 
-    return _.max(storeContent, site => Date.parse(site.createdAt)).id;
+    const lastAddedSite = Object.values(storeContent).reduce((lastAdded, site) => {
+      return lastAdded.createdAt > site.createdAt ? lastAdded : site;
+    });
+    return lastAddedSite.id;
   },
 
   /**
@@ -261,7 +262,7 @@ let SiteModel = {
    * @returns {Array} - array of objects where value is site id, text is site name
    */
   getSiteValueTextList() {
-    return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
+    return Object.values(this.getStoreContent() || {}).map(Util.valueTextPairs('id', 'name'));
   }
 };
 

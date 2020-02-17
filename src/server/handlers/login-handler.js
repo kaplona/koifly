@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import getAllData from '../helpers/get-all-data';
 import errorTypes from '../../errors/error-types';
@@ -18,7 +17,7 @@ export default function loginHandler(request) {
   const payload = request.payload;
 
   // Checks payload for required fields
-  if (!_.isString(payload.email) || !_.isString(payload.password)) {
+  if (typeof payload.email !== 'string' || typeof payload.password !== 'string') {
     return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 

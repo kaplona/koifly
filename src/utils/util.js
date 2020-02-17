@@ -263,6 +263,16 @@ const Util = {
 
 
   /**
+   * Returns true if passed object doesn't have own properties or if it's not defined
+   * @param {object|null} [object]
+   * @return {boolean}
+   */
+  isEmptyObject(object) {
+    return object === undefined || object === null || !Object.keys(object).length;
+  },
+
+
+  /**
    * @param {string} key
    * @returns {Function} - iteratee for reduce to get list of unique values of certain field
    */

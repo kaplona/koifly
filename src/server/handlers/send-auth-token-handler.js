@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
 import emailMessageTemplates from '../../constants/email-message-templates';
@@ -17,7 +16,7 @@ export default function sendAuthTokenHandler(request) {
   const payload = request.payload;
 
   // Checks payload for required fields
-  if (!_.isString(payload.email)) {
+  if (typeof payload.email !== 'string') {
     return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 

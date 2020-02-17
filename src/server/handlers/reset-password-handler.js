@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import getAllData from '../helpers/get-all-data';
 import errorTypes from '../../errors/error-types';
@@ -19,9 +18,9 @@ export default function resetPasswordHandler(request) {
   const payload = request.payload;
 
   // Checks payload for required fields
-  if (!_.isString(payload.pilotId) ||
-    !_.isString(payload.authToken) ||
-    !_.isString(payload.password)
+  if (typeof payload.pilotId !== 'string' ||
+    typeof payload.authToken !== 'string' ||
+    typeof payload.password !== 'string'
   ) {
     return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }

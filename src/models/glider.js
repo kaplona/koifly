@@ -1,6 +1,4 @@
-import _ from 'lodash';
 import BaseModel from './base-model';
-import objectValues from 'object.values';
 import Util from '../utils/util';
 
 
@@ -72,7 +70,7 @@ let GliderModel = {
     // require FlightModel here so as to avoid circle requirements
     const FlightModel = require('./flight').default;
 
-    return objectValues(storeContent).map(glider => {
+    return Object.values(storeContent).map(glider => {
       return {
         id: glider.id,
         name: glider.name,
@@ -202,11 +200,14 @@ let GliderModel = {
    */
   getLastAddedId() {
     const storeContent = this.getStoreContent();
-    if (_.isEmpty(storeContent)) {
+    if (!storeContent || storeContent.error || !Object.keys(storeContent).length) {
       return null;
     }
 
-    return _.max(storeContent, glider => Date.parse(glider.createdAt)).id;
+    const lastAddedGlider = Object.values(storeContent).reduce((lastAdded, glider) => {
+      return lastAdded.createdAt > glider.createdAt ? lastAdded : glider;
+    });
+    return lastAddedGlider.id;
   },
 
   /**
@@ -214,7 +215,7 @@ let GliderModel = {
    * @returns {Array} - array of objects where value is glider id, text is glider name
    */
   getGliderValueTextList() {
-    return objectValues(this.getStoreContent()).map(Util.valueTextPairs('id', 'name'));
+    return Object.values(this.getStoreContent() || {}).map(Util.valueTextPairs('id', 'name'));
   }
 };
 

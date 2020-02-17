@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import errorMessages from '../errors/error-messages';
 import Util from './util';
 
@@ -36,7 +35,7 @@ const Validation = {
       }
     });
 
-    return _.isEmpty(validationErrors) ? null : validationErrors;
+    return Util.isEmptyObject(validationErrors) ? null : validationErrors;
   },
 
 
@@ -89,7 +88,7 @@ const Validation = {
       }
 
       // If quality control failed
-      if (!_.isEmpty(errorElements)) {
+      if (errorElements.length) {
         return `${rules.field} must be${errorElements.join(',')}`;
       }
 

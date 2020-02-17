@@ -1,7 +1,7 @@
 import React from 'react';
 import { arrayOf, bool, number, shape, string } from 'prop-types';
 import { coordinatesPropType } from '../../../constants/prop-types';
-import _ from 'lodash';
+import escape from 'lodash.escape';
 import mapConstants from '../../../constants/map-constants';
 import MapFacade from '../../../utils/map-facade';
 import navigationService from '../../../services/navigation-service';
@@ -49,14 +49,14 @@ export default class StaticMap extends React.Component {
   composeInfowindowMessage(site) {
     return `
       <div class="infowindow">
-        <div class="infowindow-title" id="site-${_.escape(site.id)}">
-          ${_.escape(site.name)}
+        <div class="infowindow-title" id="site-${escape(site.id)}">
+          ${escape(site.name)}
         </div>
-        <div>${_.escape(site.location)}</div>
+        <div>${escape(site.location)}</div>
         <div>
-          ${_.escape(site.launchAltitude + ' ' + site.altitudeUnit)}
+          ${escape(site.launchAltitude + ' ' + site.altitudeUnit)}
         </div>
-        <div>${_.escape(site.coordinates)}</div>
+        <div>${escape(site.coordinates)}</div>
       </div>
     `;
   }

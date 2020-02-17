@@ -4,7 +4,7 @@ require('../../src/test-dom')();
 const React = require('react');
 const ReactDOM = require('react-dom');
 const TestUtils = require('react-addons-test-utils');
-const _ = require('lodash');
+const sample = require('lodash.sample');
 const expect = require('chai').expect;
 
 const ScreenShot = require('../../src/components/home-page/screen-shot');
@@ -23,7 +23,7 @@ describe('ScreenShot component', () => {
   };
 
   before(() => {
-    mocks.randomType = _.sample(defaults.types);
+    mocks.randomType = sample(defaults.types);
 
     component = TestUtils.renderIntoDocument(
       <ScreenShot type={mocks.randomType}/>

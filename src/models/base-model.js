@@ -23,8 +23,9 @@ const BaseModel = {
       return { error: loadingError };
     }
 
-    // No data has been received yet
     const storeContent = dataService.getStoreContent(this.keys.plural);
+
+    // No data has been received yet
     if (!storeContent) {
       dataService.requestServerData();
       return null;

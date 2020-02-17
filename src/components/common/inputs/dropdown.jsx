@@ -1,6 +1,6 @@
 import React from 'react';
 import { arrayOf, bool, func, number, oneOfType, shape, string } from 'prop-types';
-import _ from 'lodash';
+import orderBy from 'lodash.orderby';
 
 require('./dropdown.less');
 
@@ -24,9 +24,9 @@ export default class Dropdown extends React.Component {
     // Sort options in ascending order if needed
     let sortedOptions = this.props.options;
     if (!this.props.noSort) {
-      sortedOptions = _.sortBy(this.props.options, option => {
+      sortedOptions = orderBy(this.props.options, [option => {
         return option.text.toString().toUpperCase();
-      });
+      }]);
     }
 
     // Add an empty value to options list if needed

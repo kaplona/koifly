@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import BcryptPromise from '../../utils/bcrypt-promise';
 import emailMessageTemplates from '../../constants/email-message-templates';
 import errorTypes from '../../errors/error-types';
@@ -20,14 +19,14 @@ export default function changePasswordHandler(request) {
   let pilot; // so we have reference to current pilot from several then callbacks
   const payload = request.payload;
 
-  // Checks payload for required fields
-  if (!_.isString(payload.currentPassword) || !_.isString(payload.nextPassword)) {
-    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
-  }
-
   // Check that user are trying to change his/her own data
   if (payload.pilotId !== request.auth.credentials.userId) {
     return { error: new KoiflyError(errorTypes.USER_MISMATCH) };
+  }
+
+  // Checks payload for required fields
+  if (typeof payload.currentPassword !== 'string' || typeof payload.nextPassword !== 'string') {
+    return { error: new KoiflyError(errorTypes.BAD_REQUEST) };
   }
 
   return Pilot

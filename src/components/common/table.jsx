@@ -1,6 +1,6 @@
 import React from 'react';
 import { arrayOf, bool, func, number, shape, string } from 'prop-types';
-import _ from 'lodash';
+import orderBy from 'lodash.orderby';
 import Util from '../../utils/util';
 
 require('./table.less');
@@ -82,9 +82,9 @@ export default class Table extends React.Component {
 
 
     const sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
-    const sortedRows = _.sortByOrder(
+    const sortedRows = orderBy(
       this.props.rows,
-      // make string uppercase so as to avoid ABCabc type of sorting
+      // Sort is case insensitive
       [ row => Util.upperCaseString(row[this.state.sortingField]) ],
       [ sortingOrder ]
     );

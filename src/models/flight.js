@@ -1,8 +1,6 @@
-import _ from 'lodash';
 import Altitude from '../utils/altitude';
 import BaseModel from './base-model';
 import GliderModel from './glider';
-import objectValues from 'object.values';
 import SiteModel from './site';
 import Util from '../utils/util';
 
@@ -70,7 +68,7 @@ let FlightModel = {
       return storeContent;
     }
 
-    return objectValues(storeContent).map(flight => {
+    return Object.values(storeContent).map(flight => {
       return {
         id: flight.id,
         date: flight.date.substring(0, 10),
@@ -226,7 +224,7 @@ let FlightModel = {
   getLastFlight() {
     let lastFlight = null;
 
-    objectValues(this.getStoreContent()).forEach(flight => {
+    Object.values(this.getStoreContent() || {}).forEach(flight => {
       if (lastFlight === null ||
         flight.date > lastFlight.date ||
         (flight.date.substring(0, 10) === lastFlight.date.substring(0, 10) &&
@@ -257,7 +255,7 @@ let FlightModel = {
       numOfFlightsThatDay: 1
     };
 
-    objectValues(this.getStoreContent()).forEach(flight => {
+    Object.values(this.getStoreContent() || {}).forEach(flight => {
       // Don't increment anything if it's our target flight or it was performed after our target flight
       if (flight.id === targetFlight.id ||
         flight.date.substring(0, 10) > targetFlight.date.substring(0, 10)
@@ -322,7 +320,7 @@ let FlightModel = {
     const date = new Date();
     const year = date.getFullYear();
 
-    return objectValues(this.getStoreContent())
+    return Object.values(this.getStoreContent() || {})
       .reduce(
         (numberOfFlights, flight) => {
           if (flight.date.substring(0, 4) === year.toString()) {
@@ -347,7 +345,7 @@ let FlightModel = {
       thisYear: 0
     };
 
-    objectValues(this.getStoreContent()).forEach(flight => {
+    Object.values(this.getStoreContent() || {}).forEach(flight => {
       if (statFilter(flight)) {
         numberOfFlights.total++;
 
@@ -382,7 +380,7 @@ let FlightModel = {
    * @returns {number} - number of sites which pilot flew at and has flight record in App
    */
   getNumberOfVisitedSites() {
-    return objectValues(this.getStoreContent())
+    return Object.values(this.getStoreContent() || {})
       .reduce(
         Util.uniqueValues('siteId'),
         []
@@ -394,7 +392,7 @@ let FlightModel = {
    * @returns {number} - number of gliders which pilot used and has flight record in App
    */
   getNumberOfUsedGliders() {
-    return objectValues(this.getStoreContent())
+    return Object.values(this.getStoreContent() || {})
       .reduce(
         Util.uniqueValues('gliderId'),
         []
@@ -406,7 +404,8 @@ let FlightModel = {
    * @returns {number} - airtime of all flights recorded in App
    */
   getTotalAirtime() {
-    return _.sum(this.getStoreContent(), 'airtime');
+    const flights = Object.values(this.getStoreContent() || {});
+    return flights.reduce((sum, { airtime }) => (sum + airtime), 0);
   },
 
   /**
@@ -414,7 +413,7 @@ let FlightModel = {
    * @returns {number} - airtime for given glider recorded in App
    */
   getGliderAirtime(gliderId) {
-    return objectValues(this.getStoreContent())
+    return Object.values(this.getStoreContent() || {})
       .reduce(
         (totalAirtime, flight) => {
           if (flight.gliderId === gliderId) {

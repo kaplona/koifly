@@ -2,7 +2,6 @@ import Altitude from '../utils/altitude';
 import distanceService from './distance-service';
 import FlightModel from '../models/flight';
 import Highcharts from 'highcharts';
-import objectValues from 'object.values';
 import SiteModel from '../models/site';
 import Util from '../utils/util';
 
@@ -170,7 +169,7 @@ const chartService = {
       }
     }
 
-    objectValues(flights).filter(flight => !!flight.siteId).forEach(flight => {
+    Object.values(flights).filter(flight => !!flight.siteId).forEach(flight => {
       // Calculate flight max altitude bucket
       const siteAlt = siteStats[flight.siteId].launchAltitude;
       const bucketNumber = (flight.altitude - siteAlt) / bucketHeight;
@@ -235,7 +234,7 @@ const chartService = {
 
     return {
       years: years.sort(),
-      bySite: objectValues(siteStats)
+      bySite: Object.values(siteStats)
     };
   }
 };

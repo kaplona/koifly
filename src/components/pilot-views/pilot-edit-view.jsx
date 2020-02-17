@@ -1,6 +1,5 @@
 import React from 'react';
 import { shape, string } from 'prop-types';
-import _ from 'lodash';
 import Altitude from '../../utils/altitude';
 import AppLink from '../common/app-link';
 import Button from '../common/buttons/button';
@@ -9,6 +8,7 @@ import DomUtil from '../../utils/dom-util';
 import DropdownInput from '../common/inputs/dropdown-input';
 import ErrorBox from '../common/notice/error-box';
 import errorTypes from '../../errors/error-types';
+import isEqual from 'lodash.isequal';
 import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
@@ -163,7 +163,7 @@ export default class PilotEditView extends React.Component {
   updateValidationErrors(validationErrors) {
     validationErrors = Object.assign({}, this.formFields, validationErrors);
 
-    if (!_.isEqual(validationErrors, this.state.validationErrors)) {
+    if (!isEqual(validationErrors, this.state.validationErrors)) {
       this.setState({ validationErrors: validationErrors });
     }
   }

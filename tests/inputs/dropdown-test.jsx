@@ -7,7 +7,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const TestUtils = require('react-addons-test-utils');
 const Simulate = TestUtils.Simulate;
-const _ = require('lodash');
+const shuffle = require('lodash.shuffle');
 const Chai = require('chai');
 const Sinon = require('sinon');
 const sinonChai = require('sinon-chai');
@@ -48,7 +48,7 @@ describe('Dropdown component', () => {
       component = TestUtils.renderIntoDocument(
         <Dropdown
           selectedValue={mocks.selectedValue}
-          options={_.shuffle(mockOptions)}
+          options={shuffle(mockOptions)}
           inputName={mocks.inputName}
           className={mocks.className}
           onChangeFunc={mocks.handleSelectChange}

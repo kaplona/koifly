@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import generateToken from '../helpers/generate-token';
 import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
@@ -25,8 +24,8 @@ export default function checkCsrfToken(request, reply) {
   }
 
   if (
-    !_.isString(cookieCsrfToken) ||
-    !_.isString(requestCsrfToken) ||
+    typeof cookieCsrfToken !== 'string' ||
+    typeof requestCsrfToken !== 'string' ||
     cookieCsrfToken !== requestCsrfToken
   ) {
     const csrfToken = generateToken(10);

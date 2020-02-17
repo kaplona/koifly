@@ -1,6 +1,5 @@
 import React from 'react';
 import { shape, string } from 'prop-types';
-import _ from 'lodash';
 import AltitudeInput from '../common/inputs/altitude-input';
 import Button from '../common/buttons/button';
 import CoordinatesInput from '../common/inputs/coordinates-input';
@@ -9,6 +8,7 @@ import DomUtil from '../../utils/dom-util';
 import ErrorBox from '../common/notice/error-box';
 import errorTypes from '../../errors/error-types';
 import InteractiveMap from '../common/maps/interactive-map';
+import isEqual from 'lodash.isequal';
 import mapConstants from '../../constants/map-constants';
 import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
@@ -202,7 +202,7 @@ export default class SiteEditView extends React.Component {
   updateValidationErrors(validationErrors) {
     validationErrors = Object.assign({}, this.formFields, validationErrors);
 
-    if (!_.isEqual(validationErrors, this.state.validationErrors)) {
+    if (!isEqual(validationErrors, this.state.validationErrors)) {
       this.setState({ validationErrors: validationErrors });
     }
   }
