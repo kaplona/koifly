@@ -6,7 +6,7 @@ const webpackMerge = require('webpack-merge'); // concatenates arrays for the sa
 const AssetsWebpackPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const TerserJSPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const config = require('./variables');
 
 const APP_ENTRY = path.join(config.paths.source, 'main-app');
@@ -123,7 +123,8 @@ if (process.env.NODE_ENV === 'development') {
     optimization: {
       // Setting minimizer for css overrides the defaults provided by webpack,
       // so we have to also specify a JS minimizer.
-      minimizer: [new TerserJSPlugin({ sourceMap: true }), new OptimizeCSSAssetsPlugin({})]
+      minimize: true,
+      minimizer: [new TerserPlugin({ sourceMap: true }), new OptimizeCSSAssetsPlugin({})]
     }
   });
 }

@@ -24,9 +24,9 @@ export default class Dropdown extends React.Component {
     // Sort options in ascending order if needed
     let sortedOptions = this.props.options;
     if (!this.props.noSort) {
-      sortedOptions = orderBy(this.props.options, [option => {
+      sortedOptions = orderBy(this.props.options, [ option => {
         return option.text.toString().toUpperCase();
-      }]);
+      } ]);
     }
 
     // Add an empty value to options list if needed
