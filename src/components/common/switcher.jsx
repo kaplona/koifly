@@ -25,7 +25,7 @@ export default class Switcher extends React.Component {
 
   render() {
     return (
-      <div className='switcher' onClick={this.handleClick}>
+      <div className='switcher' data-testid='switcher' onClick={this.handleClick}>
         <div className={this.state.isLeftPosition ? 'active' : null}>
           {this.props.leftButtonCaption}
         </div>

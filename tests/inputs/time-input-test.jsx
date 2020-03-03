@@ -1,26 +1,20 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = Chai.expect;
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Label = require('../../src/components/common/section/label');
-const TimeInput = require('../../src/components/common/inputs/time-input');
-const ValidationError = require('../../src/components/common/section/validation-error');
+import TimeInput from '../../src/components/common/inputs/time-input';
 
 
 describe('TimeInput component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleInputChange;
+  let handleInputFocus;
+  let handleInputBlur;
 
   const defaults = {
     hoursInputName: 'hours',
@@ -36,37 +30,44 @@ describe('TimeInput component', () => {
     nextHoursValue: '2',
     nextMinutesValue: '45',
     labelText: 'Test label',
-    errorMessage: 'test error message',
-    handleInputChange: Sinon.spy(),
-    handleInputFocus: Sinon.spy(),
-    handleInputBlur: Sinon.spy()
+    errorMessage: 'test error message'
   };
+
+  beforeEach(() => {
+    handleInputChange = Sinon.spy();
+    handleInputFocus = Sinon.spy();
+    handleInputBlur = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults and behavior testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <TimeInput
           hours={mocks.hoursValue}
           minutes={mocks.minutesValue}
           labelText={mocks.labelText}
-          onChange={mocks.handleInputChange}
-          onFocus={mocks.handleInputFocus}
-          onBlur={mocks.handleInputBlur}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders label with proper text', () => {
-      const label = TestUtils.findRenderedComponentWithType(component, Label);
+      const { getByText } = render(element);
+      const label = getByText(mocks.labelText);
 
-      expect(label).to.have.deep.property('props.children', mocks.labelText);
+      expect(label).to.be.ok;
     });
 
     it('renders inputs with proper value, classes and attributes', () => {
-      const inputs = renderedDOMElement.getElementsByTagName('input');
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
 
       expect(inputs).to.have.lengthOf(2);
       expect(inputs[0]).to.have.property('value', mocks.hoursValue);
@@ -84,63 +85,73 @@ describe('TimeInput component', () => {
     });
 
     it('doesn\'t show error message if wasn\'t provided', () => {
-      const errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessages).to.have.lengthOf(0);
+      expect(errorMessages).to.not.be.ok;
     });
 
     it('triggers onChange function with proper parameters when changed', () => {
-      const hoursInput = component.refs[defaults.hoursInputName];
-      hoursInput.value = mocks.nextHoursValue;
-      Simulate.change(hoursInput);
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
 
-      expect(mocks.handleInputChange).to.have.been.calledOnce;
-      expect(mocks.handleInputChange).to.have.been.calledWith(defaults.hoursInputName, mocks.nextHoursValue);
+      const hoursInput = inputs[0];
+      fireEvent.change(hoursInput, { target: { value: mocks.nextHoursValue } });
 
-      const minutesInput = component.refs[defaults.minutesInputName];
-      minutesInput.value = mocks.nextMinutesValue;
-      Simulate.change(minutesInput);
+      expect(handleInputChange).to.have.been.calledOnce;
+      expect(handleInputChange).to.have.been.calledWith(defaults.hoursInputName, mocks.nextHoursValue);
 
-      expect(mocks.handleInputChange).to.have.been.calledTwice;
-      expect(mocks.handleInputChange).to.have.been.calledWith(defaults.minutesInputName, mocks.nextMinutesValue);
+      const minutesInput = inputs[1];
+      fireEvent.change(minutesInput, { target: { value: mocks.nextMinutesValue } });
+
+      expect(handleInputChange).to.have.been.calledTwice;
+      expect(handleInputChange).to.have.been.calledWith(defaults.minutesInputName, mocks.nextMinutesValue);
     });
 
     it('calls onFocus and onBlur functions', () => {
-      const hoursInput = component.refs[defaults.hoursInputName];
-      Simulate.focus(hoursInput);
-      Simulate.blur(hoursInput);
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
+      const hoursInput = inputs[0];
+      fireEvent.focus(hoursInput);
+      fireEvent.blur(hoursInput);
 
-      expect(mocks.handleInputFocus).to.have.been.calledOnce;
-      expect(mocks.handleInputBlur).to.have.been.calledOnce;
+      expect(handleInputFocus).to.have.been.calledOnce;
+      expect(handleInputBlur).to.have.been.calledOnce;
 
-      const minutesInput = component.refs[defaults.minutesInputName];
-      Simulate.focus(minutesInput);
-      Simulate.blur(minutesInput);
+      const minutesInput = inputs[1];
+      fireEvent.focus(minutesInput);
+      fireEvent.blur(minutesInput);
 
-      expect(mocks.handleInputFocus).to.have.been.calledTwice;
-      expect(mocks.handleInputBlur).to.have.been.calledTwice;
+      expect(handleInputFocus).to.have.been.calledTwice;
+      expect(handleInputBlur).to.have.been.calledTwice;
     });
   });
 
 
   describe('Error message testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <TimeInput
           hours={mocks.hoursValue}
           minutes={mocks.minutesValue}
           labelText={mocks.labelText}
           errorMessage={mocks.errorMessage}
-          onChange={mocks.handleInputChange}
+          onChange={handleInputChange}
         />
       );
     });
 
     it('renders error when general errorMessage provided', () => {
-      const errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
-      const highlightedInputs = ReactDOM.findDOMNode(component).querySelectorAll(`input.${defaults.errorClassName}`);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
+      expect(errorMessages).to.be.ok;
+    });
+
+    it('renders input with error classes if error message presents', () => {
+      const { container } = render(element);
+      const highlightedInputs = container.querySelectorAll(`input.${defaults.errorClassName}`);
+
       expect(highlightedInputs).to.have.lengthOf(2);
     });
   });

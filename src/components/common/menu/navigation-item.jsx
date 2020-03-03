@@ -17,6 +17,7 @@ export default class NavigationItem extends React.Component {
     return (
       <div
         className={className}
+        data-testid='navigation-item'
         onClick={this.props.onClick}
         onTouchStart={() => {}} // required for iOS webkit browser to trigger :active pseudo state
       >

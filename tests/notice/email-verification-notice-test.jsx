@@ -1,22 +1,20 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, fireEvent, render, wait } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+Chai.use(sinonChai);
 
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const then = require('../../src/utils/then');
-const expect = require('chai').expect;
-const Sinon = require('sinon');
-const dataService = require('../../src/services/data-service');
-const PilotModel = require('../../src/models/pilot');
-
-const EmailVerificationNotice = require('../../src/components/common/notice/email-verification-notice');
-const Notice = require('../../src/components/common/notice/notice');
+import dataService from '../../src/services/data-service';
+import PilotModel from '../../src/models/pilot';
+import EmailVerificationNotice from '../../src/components/common/notice/email-verification-notice';
 
 
 describe('EmailVerificationNotice component', () => {
-  let component;
+  let element;
+  let handleClose;
 
   const defaults = {
     successNoticeText: 'The verification link was sent to your email',
@@ -27,71 +25,81 @@ describe('EmailVerificationNotice component', () => {
 
   const mocks = {
     noticeText: 'test text',
-    noticeType: 'test type',
-    email: 'testEmail@test.com',
-    handleClose: () => {
-    }
+    noticeType: 'error',
+    email: 'testEmail@test.com'
   };
+
+  before(() => {
+    Sinon.stub(window, 'scrollTo');
+  });
+
+  after(() => {
+    window.scrollTo.restore();
+  });
+
+  beforeEach(() => {
+    handleClose = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults testing', () => {
-    before(() => {
-      Sinon.stub(dataService, 'sendVerificationEmail', () => {
-        return Promise.resolve();
-      });
+    beforeEach(() => {
+      Sinon.stub(dataService, 'sendVerificationEmail').returns(Promise.resolve());
+      Sinon.stub(PilotModel, 'getEmailAddress').returns(mocks.email);
 
-      Sinon.stub(PilotModel, 'getEmailAddress', () => {
-        return mocks.email;
-      });
-
-      component = TestUtils.renderIntoDocument(
+      element = (
         <EmailVerificationNotice
           text={mocks.noticeText}
           type={mocks.noticeType}
-          onClose={mocks.handleClose}
+          onClose={handleClose}
         />
       );
     });
 
-    after(() => {
+    afterEach(() => {
       dataService.sendVerificationEmail.restore();
       PilotModel.getEmailAddress.restore();
     });
 
-    it('sets default state and renders notice with proper props', () => {
-      const notice = TestUtils.findRenderedComponentWithType(component, Notice);
+    it('displays passed text', () => {
+      const { getByText } = render(element);
+      const notice = getByText(mocks.noticeText);
 
-      expect(component).to.have.deep.property('state.isEmailSent', false);
-      expect(component).to.have.deep.property('state.isSending', false);
-      expect(notice).to.have.deep.property('props.text', mocks.noticeText);
-      expect(notice).to.have.deep.property('props.type', mocks.noticeType);
-      expect(notice).to.have.deep.property('props.buttonText', defaults.buttonText);
-      expect(notice).to.have.deep.property('props.isButtonEnabled', true);
-      expect(notice).to.have.deep.property('props.onClose', mocks.handleClose);
+      expect(notice).to.be.ok;
     });
 
-    it('changes state and view once send-email button clicked', done => {
-      const button = ReactDOM.findDOMNode(component).querySelector('input');
+    it('sets notification styles based on type', () => {
+      const { container } = render(element);
+      const notice = container.querySelectorAll(`x-${mocks.noticeType}`);
 
-      Simulate.click(button);
+      expect(notice).to.be.ok;
+    });
 
-      then(() => {
-        const notice = TestUtils.findRenderedComponentWithType(component, Notice);
+    it('can be closed', () => {
+      const { getByText } = render(element);
+      const closeButton = getByText('x');
+      fireEvent.click(closeButton);
 
-        expect(component).to.have.deep.property('state.isEmailSent', true);
-        expect(component).to.have.deep.property('state.isSending', true);
-        expect(notice)
-          .to.have.deep.property('props.text')
-          .that.contain(defaults.successNoticeText)
-          .and.contain(mocks.email);
-        expect(notice).to.have.deep.property('props.type', defaults.successType);
-        expect(notice).to.have.deep.property('props.buttonText', defaults.buttonSendingText);
-        expect(notice).to.have.deep.property('props.isButtonEnabled', false);
-        expect(notice).to.have.deep.property('props.onClick', null);
-        expect(notice).to.have.deep.property('props.onClose', mocks.handleClose);
+      expect(handleClose).to.have.been.calledOnce;
+    });
 
-        done();
-      });
+    it('changes state to success when email is sent', async () => {
+      const { getByText } = render(element);
+      const button = getByText('Send email again');
+      fireEvent.click(button);
+
+      expect(button.value).to.equal('Sending...');
+      expect(dataService.sendVerificationEmail).to.have.been.calledOnce;
+
+      await wait(() => getByText(defaults.successNoticeText, { exact: false }));
+      const notice = getByText(defaults.successNoticeText, { exact: false });
+
+      expect(notice).to.be.ok;
+      expect(notice.className).to.contain(`x-${defaults.successType}`);
     });
   });
 });

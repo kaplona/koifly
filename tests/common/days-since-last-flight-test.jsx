@@ -1,20 +1,15 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, render } from '@testing-library/react';
 
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const expect = require('chai').expect;
-
-const DaysSinceLastFlight = require('../../src/components/common/days-since-last-flight');
+import DaysSinceLastFlight from '../../src/components/common/days-since-last-flight';
 
 
 describe('DaysSinceLastFlight component', () => {
-  let component;
-  let renderedDOMElement;
-
   const defaults = {
     noFlightsYetText: 'No flights yet',
+    todayText: 'You had a blast today!',
     greenClassName: 'x-green'
   };
 
@@ -23,60 +18,48 @@ describe('DaysSinceLastFlight component', () => {
     lessThatTwoWeeks: 5
   };
 
+  afterEach(() => {
+    cleanup();
+  });
 
-  describe('No flights yet testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
-        <DaysSinceLastFlight/>
-      );
+  it('renders default text if no flights yet', () => {
+    const { getByText } = render(<DaysSinceLastFlight />);
+    const element = getByText(defaults.noFlightsYetText);
+    const className = element.className;
 
-      renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
-
-    it('renders default text if no days prop parsed', () => {
-      const className = renderedDOMElement.className;
-
-      expect(renderedDOMElement).to.have.property('textContent', defaults.noFlightsYetText);
-      expect(className).to.not.contain(defaults.greenClassName);
-    });
+    expect(element).to.be.ok;
+    expect(className).to.not.contain(defaults.greenClassName);
   });
 
 
   describe('Days props testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
-        <DaysSinceLastFlight
-          days={mocks.moreThatTwoWeeks}
-        />
-      );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
-    });
-
     it('renders text with parsed days', () => {
-      const className = renderedDOMElement.className;
+      const { getByText } = render(
+        <DaysSinceLastFlight days={mocks.moreThatTwoWeeks} />
+      );
+      const element = getByText(`${mocks.moreThatTwoWeeks} days since last flight`);
+      const className = element.className;
 
-      expect(renderedDOMElement)
-        .to.have.property('textContent')
-        .that.contain(mocks.moreThatTwoWeeks);
+      expect(element).to.be.ok;
       expect(className).to.not.contain(defaults.greenClassName);
     });
-  });
 
-
-  describe('Less than two weeks break test', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
-        <DaysSinceLastFlight
-          days={mocks.lessThatTwoWeeks}
-        />
+    it('highlights text in green if passed days are less than two weeks', () => {
+      const { getByText } = render(
+        <DaysSinceLastFlight days={mocks.lessThatTwoWeeks} />
       );
+      const element = getByText(`${mocks.lessThatTwoWeeks} days since last flight`);
+      const className = element.className;
 
-      renderedDOMElement = ReactDOM.findDOMNode(component);
+      expect(className).to.contain(defaults.greenClassName);
     });
 
-    it('renders component with proper class', () => {
-      const className = renderedDOMElement.className;
+    it('today text test', () => {
+      const { getByText } = render(
+        <DaysSinceLastFlight days={0} />
+      );
+      const element = getByText(defaults.todayText);
+      const className = element.className;
 
       expect(className).to.contain(defaults.greenClassName);
     });

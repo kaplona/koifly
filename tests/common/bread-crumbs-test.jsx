@@ -1,25 +1,25 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, render } from '@testing-library/react';
 
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const expect = require('chai').expect;
-
-const BreadCrumbs = require('../../src/components/common/bread-crumbs');
+import BreadCrumbs from '../../src/components/common/bread-crumbs';
 
 
 describe('BreadCrumbs component', () => {
-  let component;
-
   const mocks = {
+    crumbsClassName: 'bread-crumbs',
     firstElementText: 'test first element text',
     secondElementText: 'test second element text',
     thirdElementText: 'test third element text'
   };
 
-  before(() => {
-    component = TestUtils.renderIntoDocument(
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders proper layout and parsed element at proper places', () => {
+    const { container, getByText } = render(
       <BreadCrumbs
         elements={[
           <div>{mocks.firstElementText}</div>,
@@ -28,25 +28,11 @@ describe('BreadCrumbs component', () => {
         ]}
       />
     );
-  });
+    const children = container.querySelector(`.${mocks.crumbsClassName}`).children;
 
-  it('renders proper layout and parsed element at proper places', () => {
-    const crumbs = ReactDOM.findDOMNode(component).children;
-
-    expect(crumbs).to.have.lengthOf(3);
-
-    // First crumb should contain a div element
-    const firstCrumbChildren = crumbs[0].children;
-
-    expect(firstCrumbChildren).to.have.lengthOf(1);
-    expect(firstCrumbChildren[0]).to.have.property('textContent', mocks.firstElementText);
-
-    // Other crumbs should contain plain text
-    expect(crumbs[1])
-      .to.have.property('textContent')
-      .that.contain(mocks.secondElementText);
-    expect(crumbs[2])
-      .to.have.property('textContent')
-      .that.contain(mocks.thirdElementText);
+    expect(children).to.have.lengthOf(3);
+    expect(getByText(mocks.firstElementText)).to.be.ok;
+    expect(getByText(`${mocks.secondElementText} /`)).to.be.ok;
+    expect(getByText(mocks.thirdElementText)).to.be.ok;
   });
 });

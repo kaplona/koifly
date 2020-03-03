@@ -1,58 +1,50 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const expect = Chai.expect;
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const EmptyList = require('../../src/components/common/empty-list');
+import EmptyList from '../../src/components/common/empty-list';
 
 
 describe('EmptyList component', () => {
-  let component;
-  let renderedDOMElement;
-
-  const defaults = {
-    buttonClass: 'add-button'
-  };
+  let handleAdding;
+  let element;
 
   const mocks = {
-    itemsName: 'test type',
-    handleAdding: Sinon.spy()
+    itemsName: 'TESTS'
   };
 
-  before(() => {
-    component = TestUtils.renderIntoDocument(
+  beforeEach(() => {
+    handleAdding = Sinon.spy();
+
+    element = (
       <EmptyList
         ofWhichItems={mocks.itemsName}
-        onAdding={mocks.handleAdding}
+        onAdding={handleAdding}
       />
     );
+  });
 
-    renderedDOMElement = ReactDOM.findDOMNode(component);
+  afterEach(() => {
+    cleanup();
   });
 
   it('renders proper text', () => {
-    const children = renderedDOMElement.children;
+    const { getByText } = render(element);
+    const message = getByText('You don\'t have any TESTS yet');
 
-    expect(children[0])
-      .to.have.property('textContent')
-      .that.contain(mocks.itemsName);
+    expect(message).to.be.ok;
   });
 
   it('triggers onAdding once button clicked', () => {
-    const button = renderedDOMElement.querySelector(`.${defaults.buttonClass}`);
+    const { getByText } = render(element);
+    const button = getByText('+');
+    fireEvent.click(button);
 
-    Simulate.click(button);
-
-    expect(mocks.handleAdding).to.have.been.calledOnce;
+    expect(handleAdding).to.have.been.calledOnce;
   });
 });

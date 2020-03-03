@@ -1,25 +1,21 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const shuffle = require('lodash.shuffle');
-const Chai = require('chai');
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = Chai.expect;
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import shuffle from 'lodash.shuffle';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Dropdown = require('../../src/components/common/inputs/dropdown');
+import Dropdown from '../../src/components/common/inputs/dropdown';
 
 
 describe('Dropdown component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleSelectChange;
+  let handleSelectFocus;
+  let handleSelectBlur;
 
   const defaults = {
     emptyText: ''
@@ -37,78 +33,91 @@ describe('Dropdown component', () => {
   };
 
   const mockOptions = [
-    { value: mocks.nextSelectedValue, text: 'a - first' },
-    { value: 'another value', text: 'b - second' },
-    { value: mocks.selectedValue, text: 'c - third' }
+    { value: mocks.nextSelectedValue, text: 'c - third' },
+    { value: 'another value', text: 'a - first' },
+    { value: mocks.selectedValue, text: 'b - second' }
   ];
+
+  beforeEach(() => {
+    handleSelectChange = Sinon.spy();
+    handleSelectFocus = Sinon.spy();
+    handleSelectBlur = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults and behavior testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <Dropdown
           selectedValue={mocks.selectedValue}
           options={shuffle(mockOptions)}
           inputName={mocks.inputName}
           className={mocks.className}
-          onChangeFunc={mocks.handleSelectChange}
-          onFocus={mocks.handleSelectFocus}
-          onBlur={mocks.handleSelectBlur}
+          onChangeFunc={handleSelectChange}
+          onFocus={handleSelectFocus}
+          onBlur={handleSelectBlur}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders select tag with proper selected value and options in alphabetic order', () => {
-      const select = renderedDOMElement.querySelector('select');
-      const options = renderedDOMElement.getElementsByTagName('option');
+      const { container } = render(element);
+      const select = container.querySelector('select');
+      const options = container.getElementsByTagName('option');
 
       expect(select).to.have.property('value', mocks.selectedValue);
       expect(select).to.have.property('className', mocks.className);
       expect(options).to.have.lengthOf(mockOptions.length);
 
-      for (let i = 0; i < options.length; i++) {
-        expect(options[i]).to.have.property('value', mockOptions[i].value);
-        expect(options[i]).to.have.property('textContent', mockOptions[i].text);
-      }
+      expect(options[0]).to.have.property('value', mockOptions[1].value);
+      expect(options[0]).to.have.property('textContent', mockOptions[1].text);
+      expect(options[1]).to.have.property('value', mockOptions[2].value);
+      expect(options[1]).to.have.property('textContent', mockOptions[2].text);
+      expect(options[2]).to.have.property('value', mockOptions[0].value);
+      expect(options[2]).to.have.property('textContent', mockOptions[0].text);
     });
 
     it('triggers onChange function with proper parameters when changed', () => {
-      const select = renderedDOMElement.querySelector('select');
-      select.value = mocks.nextSelectedValue;
-      Simulate.change(select);
+      const { container } = render(element);
+      const select = container.querySelector('select');
+      fireEvent.change(select, { target: { value: mocks.nextSelectedValue } });
 
-      expect(mocks.handleSelectChange).to.have.been.calledOnce;
-      expect(mocks.handleSelectChange).to.have.been.calledWith(mocks.inputName, mocks.nextSelectedValue);
+      expect(handleSelectChange).to.have.been.calledOnce;
+      expect(handleSelectChange).to.have.been.calledWith(mocks.inputName, mocks.nextSelectedValue);
     });
 
     it('calls onFocus and onBlur functions', () => {
-      const select = renderedDOMElement.querySelector('select');
-      Simulate.focus(select);
-      Simulate.blur(select);
+      const { container } = render(element);
+      const select = container.querySelector('select');
+      fireEvent.focus(select);
+      fireEvent.blur(select);
 
-      expect(mocks.handleSelectFocus).to.have.been.calledOnce;
-      expect(mocks.handleSelectBlur).to.have.been.calledOnce;
+      expect(handleSelectFocus).to.have.been.calledOnce;
+      expect(handleSelectBlur).to.have.been.calledOnce;
     });
   });
 
 
   describe('Empty option testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <Dropdown
           selectedValue={mocks.selectedValue}
           options={mockOptions}
           emptyValue={mocks.emptyValue}
           inputName={mocks.inputName}
-          onChangeFunc={mocks.handleSelectChange}
+          onChangeFunc={handleSelectChange}
         />
       );
     });
 
     it('renders first option with empty text and value', () => {
-      const options = ReactDOM.findDOMNode(component).getElementsByTagName('option');
+      const { container } = render(element);
+      const options = container.getElementsByTagName('option');
 
       expect(options).to.have.lengthOf(mockOptions.length + 1);
       expect(options[0]).to.have.property('value', mocks.emptyValue);

@@ -1,32 +1,24 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = Chai.expect;
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Label = require('../../src/components/common/section/label');
-const TextInput = require('../../src/components/common/inputs/text-input');
-const ValidationError = require('../../src/components/common/section/validation-error');
+import TextInput from '../../src/components/common/inputs/text-input';
 
 
 describe('TextInput component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleInputChange;
+  let handleInputFocus;
+  let handleInputBlur;
 
   const defaults = {
     textClassName: 'x-text',
-    numberClassName: 'x-number',
-    errorClassName: 'x-error',
-    numberInputPattern: '[0-9]*'
+    errorClassName: 'x-error'
   };
 
   const mocks = {
@@ -34,41 +26,47 @@ describe('TextInput component', () => {
     nextInputValue: 'next test value',
     labelText: 'Test label',
     errorMessage: 'test error message',
-    inputName: 'testInput',
-    handleInputChange: Sinon.spy(),
-    handleInputFocus: Sinon.spy(),
-    handleInputBlur: Sinon.spy()
+    inputName: 'testInput'
   };
+
+  beforeEach(() => {
+    handleInputChange = Sinon.spy();
+    handleInputFocus = Sinon.spy();
+    handleInputBlur = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults and behavior testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <TextInput
           inputValue={mocks.initialInputValue}
           labelText={mocks.labelText}
           inputName={mocks.inputName}
-          onChange={mocks.handleInputChange}
-          onFocus={mocks.handleInputFocus}
-          onBlur={mocks.handleInputBlur}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders label with proper text', () => {
-      const label = TestUtils.findRenderedComponentWithType(component, Label);
+      const { getByText } = render(element);
+      const label = getByText(mocks.labelText);
 
-      expect(label).to.have.deep.property('props.children', mocks.labelText);
+      expect(label).to.be.ok;
     });
 
     it('renders input with proper value and classes', () => {
-      const inputs = renderedDOMElement.getElementsByTagName('input');
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
 
       expect(inputs).to.have.lengthOf(1);
       expect(inputs[0]).to.have.property('value', mocks.initialInputValue);
-      expect(inputs[0]).to.not.have.property('pattern', defaults.numberInputPattern);
 
       const className = inputs[0].className;
 
@@ -77,60 +75,59 @@ describe('TextInput component', () => {
     });
 
     it('doesn\'t show error message if wasn\'t provided', () => {
-      const errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessages).to.have.lengthOf(0);
+      expect(errorMessages).to.not.be.ok;
     });
 
     it('triggers onChange function with proper parameters when changed', () => {
-      const input = component.refs.input;
-      input.value = mocks.nextInputValue;
-      Simulate.change(input);
+      const { container } = render(element);
+      const input = container.querySelector('input');
+      fireEvent.change(input, { target: { value: mocks.nextInputValue } });
 
-      expect(mocks.handleInputChange).to.have.been.calledOnce;
-      expect(mocks.handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
+      expect(handleInputChange).to.have.been.calledOnce;
+      expect(handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
     });
 
     it('calls onFocus and onBlur functions', () => {
-      const input = component.refs.input;
-      Simulate.focus(input);
-      Simulate.blur(input);
+      const { container } = render(element);
+      const input = container.querySelector('input');
+      fireEvent.focus(input);
+      fireEvent.blur(input);
 
-      expect(mocks.handleInputFocus).to.have.been.calledOnce;
-      expect(mocks.handleInputBlur).to.have.been.calledOnce;
+      expect(handleInputFocus).to.have.been.calledOnce;
+      expect(handleInputBlur).to.have.been.calledOnce;
     });
   });
 
 
   describe('Error message and number input type testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <TextInput
           inputValue={mocks.initialInputValue}
           labelText={mocks.labelText}
           isNumber={true}
           errorMessage={mocks.errorMessage}
           inputName={mocks.inputName}
-          onChange={mocks.handleInputChange}
+          onChange={handleInputChange}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders error message if provided', () => {
-      const errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
+      expect(errorMessages).to.be.ok;
     });
 
-    it('renders input with error and number classes', () => {
-      const input = renderedDOMElement.querySelector('input');
-      const inputClassName = input.className;
+    it('renders input with error classes if error message presents', () => {
+      const { container } = render(element);
+      const input = container.querySelector('input');
 
-      expect(input).to.have.property('pattern', defaults.numberInputPattern);
-      expect(inputClassName).to.contain(defaults.numberClassName);
-      expect(inputClassName).to.contain(defaults.errorClassName);
+      expect(input.className).to.contain(defaults.errorClassName);
     });
   });
 });

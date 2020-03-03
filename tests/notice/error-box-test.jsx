@@ -1,17 +1,18 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import errorTypes from '../../src/errors/error-types';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+Chai.use(sinonChai);
 
-require('../../src/test-dom')();
-const React = require('react');
-const TestUtils = require('react-addons-test-utils');
-const expect = require('chai').expect;
-const errorTypes = require('../../src/errors/error-types');
-const ErrorBox = require('../../src/components/common/notice/error-box');
-
-const Notice = require('../../src/components/common/notice/notice');
+import ErrorBox from '../../src/components/common/notice/error-box';
 
 
 describe('ErrorBox component', () => {
-  let component;
+  let handleTryAgain;
 
   const defaults = {
     noticeType: 'error',
@@ -21,67 +22,68 @@ describe('ErrorBox component', () => {
 
   const mocks = {
     error: { type: 'testError', message: 'test error' },
-    handleTryAgain: () => {
-    }
+    recordNotFoundError: { type: errorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' },
+    validationError: { type: errorTypes.VALIDATION_ERROR, message: 'non clickable error box' }
   };
 
+  before(() => {
+    Sinon.stub(window, 'scrollTo');
+  });
 
-  describe('Defaults testing', () => {
-    it('renders notice with proper default props', () => {
-      component = TestUtils.renderIntoDocument(
-        <ErrorBox
-          error={mocks.error}
-          onTryAgain={mocks.handleTryAgain}
-        />
-      );
+  after(() => {
+    window.scrollTo.restore();
+  });
 
-      const notice = TestUtils.findRenderedComponentWithType(component, Notice);
+  beforeEach(() => {
+    handleTryAgain = Sinon.spy();
+  });
 
-      expect(notice).to.have.deep.property('props.text', mocks.error.message);
-      expect(notice).to.have.deep.property('props.type', defaults.noticeType);
-      expect(notice).to.have.deep.property('props.buttonText', defaults.buttonText);
-      expect(notice).to.have.deep.property('props.onClick', mocks.handleTryAgain);
-    });
-
-    it('renders notice with proper button text', () => {
-      component = TestUtils.renderIntoDocument(
-        <ErrorBox
-          error={mocks.error}
-          isTrying={true}
-          onTryAgain={mocks.handleTryAgain}
-        />
-      );
-
-      const notice = TestUtils.findRenderedComponentWithType(component, Notice);
-
-      expect(notice).to.have.deep.property('props.buttonText', defaults.buttonTryingText);
-    });
-
-    it('doesn\'t pass onClick function for some designated errors', () => {
-      let error = { type: errorTypes.RECORD_NOT_FOUND, message: 'non clickable error box' };
-      component = TestUtils.renderIntoDocument(
-        <ErrorBox
-          error={error}
-          onTryAgain={mocks.handleTryAgain}
-        />
-      );
-
-      let notice = TestUtils.findRenderedComponentWithType(component, Notice);
-
-      expect(notice).to.have.deep.property('props.onClick', null);
+  afterEach(() => {
+    cleanup();
+  });
 
 
-      error = { type: errorTypes.VALIDATION_ERROR, message: 'non clickable error box' };
-      component = TestUtils.renderIntoDocument(
-        <ErrorBox
-          error={error}
-          onTryAgain={mocks.handleTryAgain}
-        />
-      );
+  it('renders notice with proper default props', () => {
+    const { getByText } = render(<ErrorBox error={mocks.error} onTryAgain={handleTryAgain}/>);
+    const errorMessage = getByText(mocks.error.message);
+    const tryAgainButton = getByText(defaults.buttonText);
 
-      notice = TestUtils.findRenderedComponentWithType(component, Notice);
+    expect(errorMessage).to.be.ok;
+    expect(tryAgainButton).to.be.ok;
+  });
 
-      expect(notice).to.have.deep.property('props.onClick', null);
-    });
+  it('calls callback when Try Again button is clicked', () => {
+    const { getByText } = render(<ErrorBox error={mocks.error} onTryAgain={handleTryAgain}/>);
+    const tryAgainButton = getByText(defaults.buttonText);
+    fireEvent.click(tryAgainButton);
+
+    expect(handleTryAgain).to.have.been.calledOnce;
+  });
+
+  it('renders correct button text when loading', () => {
+    const { getByText } = render(
+      <ErrorBox
+        error={mocks.error}
+        isTrying={true}
+        onTryAgain={handleTryAgain}
+      />
+    );
+    const tryAgainButton = getByText(defaults.buttonTryingText);
+
+    expect(tryAgainButton).to.be.ok;
+  });
+
+  it('doesn\'t show Try Again button for RECORD_NOT_FOUND errors', () => {
+    const { queryByText } = render(<ErrorBox error={mocks.recordNotFoundError} onTryAgain={handleTryAgain}/>);
+    const tryAgainButton = queryByText(defaults.buttonText);
+
+    expect(tryAgainButton).to.not.be.ok;
+  });
+
+  it('doesn\'t show Try Again button for VALIDATION_ERROR errors', () => {
+    const { queryByText } = render(<ErrorBox error={mocks.validationError} onTryAgain={handleTryAgain}/>);
+    const tryAgainButton = queryByText(defaults.buttonText);
+
+    expect(tryAgainButton).to.not.be.ok;
   });
 });

@@ -1,41 +1,32 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, render } from '@testing-library/react';
 
-require('../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const expect = require('chai').expect;
-
-const Koifly = require('../src/components/koifly');
-const Header = require('../src/components/common/menu/header');
+import Koifly from '../src/components/koifly';
 
 
-describe('Koifly component', () => {
-  let component;
-  let renderedDOMElement;
-
+describe('main Koifly app component', () => {
   const mocks = {
     childText: 'test child text',
     childClassName: 'childClass'
   };
 
-  before(() => {
-    component = TestUtils.renderIntoDocument(
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('renders header component and parsed children', () => {
+    const element = (
       <Koifly>
         <div className={mocks.childClassName}>{mocks.childText}</div>
       </Koifly>
     );
+    const { container, getByTestId } = render(element);
 
-    renderedDOMElement = ReactDOM.findDOMNode(component);
-  });
+    const children = container.querySelector(`.${mocks.childClassName}`);
 
-  it('renders header component and parsed children', () => {
-    const header = TestUtils.findRenderedComponentWithType(component, Header);
-    const children = renderedDOMElement.querySelector(`.${mocks.childClassName}`);
-
-    expect(header).to.be.ok;
     expect(children).to.have.property('textContent', mocks.childText);
+    expect(getByTestId('header')).to.be.ok;
   });
 });

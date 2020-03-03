@@ -1,99 +1,101 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
+import React from 'react';
+import { cleanup, render } from '@testing-library/react';
+import FlightModel from '../../src/models/flight';
+import GliderModel from '../../src/models/glider';
+import SiteModel from '../../src/models/site';
+import PilotModel from '../../src/models/pilot';
 
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const expect = require('chai').expect;
-const FlightModel = require('../../src/models/flight');
-const GliderModel = require('../../src/models/glider');
-const SiteModel = require('../../src/models/site');
-const PilotModel = require('../../src/models/pilot');
-
-const NavigationMenu = require('../../src/components/common/menu/navigation-menu');
-const NavigationItem = require('../../src/components/common/menu/navigation-item');
+import NavigationMenu from '../../src/components/common/menu/navigation-menu';
 
 
 describe('BottomMenu component', () => {
-  let component;
-
   const defaults = {
-    mobileClassName: 'x-mobile'
+    mobileClassName: 'x-mobile',
+    activeClassName: 'x-active',
+    flightsLabel: 'Flights',
+    sitesLabel: 'Sites',
+    glidersLabel: 'Gliders',
+    statsLabel: 'Stats',
+    pilotLabel: 'Pilot'
   };
 
-  it('renders default class and doesn\'t highlight any navigation items', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu/>);
-    const className = ReactDOM.findDOMNode(component).className;
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+  afterEach(() => {
+    cleanup();
+  });
 
-    expect(className).to.not.contain(defaults.mobileClassName);
+
+  it('renders default class and doesn\'t highlight any navigation items', () => {
+    const { container, queryAllByTestId } = render(<NavigationMenu />);
+    const mobileMenu = container.querySelector(`.${defaults.mobileClassName}`);
+
+    expect(mobileMenu).to.not.be.ok;
+
+    const navigationItems = queryAllByTestId('navigation-item');
+
     expect(navigationItems).to.have.lengthOf(5);
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    expect(navigationItems[0].className).to.not.contain(defaults.activeClassName);
+    expect(navigationItems[1].className).to.not.contain(defaults.activeClassName);
+    expect(navigationItems[2].className).to.not.contain(defaults.activeClassName);
+    expect(navigationItems[3].className).to.not.contain(defaults.activeClassName);
+    expect(navigationItems[4].className).to.not.contain(defaults.activeClassName);
   });
 
   it('renders mobile class if required', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu isMobile={true}/>);
-    const className = ReactDOM.findDOMNode(component).className;
+    const { container } = render(<NavigationMenu isMobile={true} />);
+    const mobileMenu = container.querySelector(`.${defaults.mobileClassName}`);
 
-    expect(className).to.contain(defaults.mobileClassName);
+    expect(mobileMenu).to.be.ok;
   });
 
   it('highlights only flights navigation item', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu currentView={FlightModel.getModelKey()}/>);
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+    const { getByText } = render(<NavigationMenu currentView={FlightModel.getModelKey()} />);
 
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', true);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    expect(getByText(defaults.flightsLabel).className).to.contain(defaults.activeClassName);
+    expect(getByText(defaults.sitesLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.glidersLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.statsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.pilotLabel).className).to.not.contain(defaults.activeClassName);
   });
 
   it('highlights only sites navigation item', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu currentView={SiteModel.getModelKey()}/>);
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+    const { getByText } = render(<NavigationMenu currentView={SiteModel.getModelKey()} />);
 
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', true);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    expect(getByText(defaults.flightsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.sitesLabel).className).to.contain(defaults.activeClassName);
+    expect(getByText(defaults.glidersLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.statsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.pilotLabel).className).to.not.contain(defaults.activeClassName);
   });
 
   it('highlights only gliders navigation item', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu currentView={GliderModel.getModelKey()}/>);
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+    const { getByText } = render(<NavigationMenu currentView={GliderModel.getModelKey()} />);
 
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', true);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    expect(getByText(defaults.flightsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.sitesLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.glidersLabel).className).to.contain(defaults.activeClassName);
+    expect(getByText(defaults.statsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.pilotLabel).className).to.not.contain(defaults.activeClassName);
   });
 
   it('highlights only stats navigation item', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu currentView='stats'/>);
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+    const { getByText } = render(<NavigationMenu currentView='stats' />);
 
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', true);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', false);
+    expect(getByText(defaults.flightsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.sitesLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.glidersLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.statsLabel).className).to.contain(defaults.activeClassName);
+    expect(getByText(defaults.pilotLabel).className).to.not.contain(defaults.activeClassName);
   });
 
   it('highlights only pilot navigation item', () => {
-    component = TestUtils.renderIntoDocument(<NavigationMenu currentView={PilotModel.getModelKey()}/>);
-    const navigationItems = TestUtils.scryRenderedComponentsWithType(component, NavigationItem);
+    const { getByText } = render(<NavigationMenu currentView={PilotModel.getModelKey()} />);
 
-    expect(navigationItems[0]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[1]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[2]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[3]).to.have.deep.property('props.isActive', false);
-    expect(navigationItems[4]).to.have.deep.property('props.isActive', true);
+    expect(getByText(defaults.flightsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.sitesLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.glidersLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.statsLabel).className).to.not.contain(defaults.activeClassName);
+    expect(getByText(defaults.pilotLabel).className).to.contain(defaults.activeClassName);
   });
 });

@@ -49,11 +49,19 @@ class AppLink extends React.Component {
 
 
 AppLink.propTypes = {
-  history: shape({ // from withRouter
+  history: shape({ // from withRouter, thus isRequired
     push: func.isRequired
   }).isRequired,
   href: string,
   onClick: func // will be ignored if "href" prop is passed.
 };
 
-export default withRouter(AppLink);
+
+let toExport;
+if (process.env.NODE_ENV === 'testing') {
+  toExport = AppLink;
+} else {
+  toExport = withRouter(AppLink);
+}
+
+export default toExport;

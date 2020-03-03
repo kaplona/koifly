@@ -35,9 +35,9 @@ export default class Table extends React.Component {
     });
   }
 
-  handleRowClick(flightId) {
+  handleRowClick(rowId) {
     if (this.props.onRowClick) {
-      this.props.onRowClick(flightId);
+      this.props.onRowClick(rowId);
     }
   }
 

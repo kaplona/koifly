@@ -1,24 +1,18 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const expect = Chai.expect;
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const NavigationItem = require('../../src/components/common/menu/navigation-item');
+import NavigationItem from '../../src/components/common/menu/navigation-item';
 
 
 describe('NavigationItem component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleClick;
 
   const defaults = {
     itemClassName: 'navigation-item-',
@@ -28,58 +22,64 @@ describe('NavigationItem component', () => {
   const mocks = {
     iconFileName: 'test-file.gif',
     itemLabel: 'test label',
-    itemsNumber: 3,
-    handleClick: Sinon.spy()
+    itemsNumber: 3
   };
+
+  beforeEach(() => {
+    handleClick = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <NavigationItem
           iconFileName={mocks.iconFileName}
           label={mocks.itemLabel}
           itemsNumber={mocks.itemsNumber}
-          onClick={mocks.handleClick}
+          onClick={handleClick}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
-    it('sets default state and renders notice with proper props', () => {
-      const imgSrc = renderedDOMElement.querySelector('img');
+    it('renders provided label and sets default styles', () => {
+      const { container, getByText } = render(element);
+      const label = getByText(mocks.itemLabel);
+      const img = container.querySelector('img');
 
-      expect(renderedDOMElement).to.have.property('className', `${defaults.itemClassName}${mocks.itemsNumber}`);
-      expect(renderedDOMElement).to.have.property('textContent', mocks.itemLabel);
-      expect(imgSrc)
-        .to.have.property('src')
-        .that.contain(mocks.iconFileName);
+      expect(label.className).to.contain(`${defaults.itemClassName}${mocks.itemsNumber}`);
+      expect(img).to.have.property('src').that.contain(mocks.iconFileName);
     });
 
     it('triggers onClick event once clicked', () => {
-      Simulate.click(renderedDOMElement);
+      const { getByText } = render(element);
+      const label = getByText(mocks.itemLabel);
+      fireEvent.click(label);
 
-      expect(mocks.handleClick).to.be.calledOnce;
+      expect(handleClick).to.be.calledOnce;
     });
   });
 
 
   describe('isActive testing', () => {
     it('marks navigation item as active if isActive prop was passed', () => {
-      component = TestUtils.renderIntoDocument(
+      element = (
         <NavigationItem
           iconFileName={mocks.iconFileName}
           label={mocks.itemLabel}
           itemsNumber={mocks.itemsNumber}
           isActive={true}
-          onClick={mocks.handleClick}
+          onClick={handleClick}
         />
       );
+      const { getByText } = render(element);
+      const label = getByText(mocks.itemLabel);
 
-      const itemClassName = ReactDOM.findDOMNode(component).className;
-
-      expect(itemClassName).to.contain(defaults.activeClassName);
+      expect(label.className).to.contain(defaults.activeClassName);
     });
   });
 });

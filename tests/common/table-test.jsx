@@ -1,23 +1,18 @@
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const then = require('../../src/utils/then');
-const Chai = require('chai');
-const expect = Chai.expect;
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Table = require('../../src/components/common/table');
+import Table from '../../src/components/common/table';
 
 
 describe('Table component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleRowClick;
 
   const defaults = {
     arrowUp: '\u25b2',
@@ -49,48 +44,52 @@ describe('Table component', () => {
     rows: [
       {
         id: 0,
-        [keys[1]]: 'value 0 1',
         [keys[0]]: 'Value 0 0',
+        [keys[1]]: 'value 0 1',
         [keys[2]]: 'Value 0 2'
       },
       {
         id: 1,
-        [keys[2]]: 'value 1 2',
         [keys[0]]: 'value 1 0',
+        [keys[2]]: 'value 1 2',
         [keys[1]]: 'Value 1 1'
+      },
+      {
+        id: 2,
+        [keys[0]]: 'value 2 0',
+        [keys[2]]: 'value 2 2',
+        [keys[1]]: 'Value 2 1'
       }
     ],
     columns: [
       columnsObject[keys[0]],
       columnsObject[keys[1]],
       columnsObject[keys[2]]
-    ],
-    handleRowClick: Sinon.spy()
+    ]
   };
 
 
-  before(() => {
-    component = TestUtils.renderIntoDocument(
+  beforeEach(() => {
+    handleRowClick = Sinon.spy();
+
+    element = (
       <Table
         rows={mocks.rows}
         columns={mocks.columns}
         initialSortingField={mocks.columns[1].key}
-        onRowClick={mocks.handleRowClick}
+        onRowClick={handleRowClick}
       />
     );
-
-    renderedDOMElement = ReactDOM.findDOMNode(component);
   });
 
-  it('sets right initial state', () => {
-    const sortingFieldKey = mocks.columns[1].key;
-
-    expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
-    expect(component).to.have.deep.property('state.sortingDirection', columnsObject[sortingFieldKey].defaultSortingDirection);
+  afterEach(() => {
+    cleanup();
   });
 
-  it('renders proper table layout', () => {
-    const columnHeaders = renderedDOMElement.querySelectorAll('th');
+  it('table has proper amount of columns', () => {
+    const { container } = render(element);
+
+    const columnHeaders = container.querySelectorAll('th');
     const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
     const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
     const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
@@ -113,99 +112,113 @@ describe('Table component', () => {
       .to.have.property('textContent')
       .that.contain(mocks.columns[2].label);
     expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
+  });
 
-    const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
+  it('renders proper amount of rows', () => {
+    const { container } = render(element);
+
+    const bodyRows = container.querySelectorAll('tbody tr');
 
     // table has proper amount of rows
     expect(bodyRows).to.have.lengthOf(mocks.rows.length);
 
     const firstRowCells = bodyRows[0].querySelectorAll('td');
     const secondRowCells = bodyRows[1].querySelectorAll('td');
+    const thirdRowCells = bodyRows[2].querySelectorAll('td');
+
 
     // each row has proper amount of columns
     expect(firstRowCells).to.have.lengthOf(mocks.columns.length);
     expect(secondRowCells).to.have.lengthOf(mocks.columns.length);
-    // cell contain is rendered in proper column
-    // second element in mocks.rows will be rendered first
-    // since sorting is descendant (sorting direction is 'false')
-    expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
-    expect(firstRowCells[1]).to.have.property('textContent', mocks.rows[1][mocks.columns[1].key]);
-    expect(firstRowCells[2]).to.have.property('textContent', mocks.rows[1][mocks.columns[2].key]);
-    expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
-    expect(secondRowCells[1]).to.have.property('textContent', mocks.rows[0][mocks.columns[1].key]);
-    expect(secondRowCells[2]).to.have.property('textContent', mocks.rows[0][mocks.columns[2].key]);
+    expect(thirdRowCells).to.have.lengthOf(mocks.columns.length);
   });
 
-  it('sorts table rows when certain column header clicked', done => {
+  it('sorts by a column initial sorting direction', () => {
+    const { container } = render(element);
+
+    const bodyRows = container.querySelectorAll('tbody tr');
+    const firstRowCells = bodyRows[0].querySelectorAll('td');
+    const secondRowCells = bodyRows[1].querySelectorAll('td');
+    const thirdRowCells = bodyRows[2].querySelectorAll('td');
+
+    // sorting is descendant (sorting direction is 'false' for initial sorting column)
+    expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[2][mocks.columns[0].key]);
+    expect(firstRowCells[1]).to.have.property('textContent', mocks.rows[2][mocks.columns[1].key]);
+    expect(firstRowCells[2]).to.have.property('textContent', mocks.rows[2][mocks.columns[2].key]);
+    expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
+    expect(secondRowCells[1]).to.have.property('textContent', mocks.rows[1][mocks.columns[1].key]);
+    expect(secondRowCells[2]).to.have.property('textContent', mocks.rows[1][mocks.columns[2].key]);
+    expect(thirdRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
+    expect(thirdRowCells[1]).to.have.property('textContent', mocks.rows[0][mocks.columns[1].key]);
+    expect(thirdRowCells[2]).to.have.property('textContent', mocks.rows[0][mocks.columns[2].key]);
+  });
+
+  it('sorts table rows when certain column header clicked', () => {
+    let columnHeaders;
+    let bodyRows;
+    let firstRowCells;
+    let secondRowCells;
+    let thirdRowCells;
+    const { container, getByText } = render(element);
+
     // Click on first column header which table is not sorted by
-    let columnHeaders = renderedDOMElement.querySelectorAll('th');
+    const firstHeader = getByText(mocks.columns[0].label);
+    fireEvent.click(firstHeader);
 
-    Simulate.click(columnHeaders[0]);
+    columnHeaders = container.querySelectorAll('th');
+    const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
+    const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
+    const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
 
-    then(() => {
-      const sortingFieldKey = mocks.columns[0].key;
+    // first column header now have sorting-arrow pointing up
+    expect(firstHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
+    expect(columnHeaders[0])
+      .to.have.property('textContent')
+      .that.contain(defaults.arrowUp); // sorted by this field, ascendant sorting direction (true)
+    // other arrows are hidden
+    expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
+    expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
 
-      // now table is sorted by 'clicked' field by its default sorting direction
-      expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
-      expect(component).to.have.deep.property('state.sortingDirection', columnsObject[sortingFieldKey].defaultSortingDirection);
+    bodyRows = container.querySelectorAll('tbody tr');
+    firstRowCells = bodyRows[0].querySelectorAll('td');
+    secondRowCells = bodyRows[1].querySelectorAll('td');
+    thirdRowCells = bodyRows[2].querySelectorAll('td');
 
-      columnHeaders = renderedDOMElement.querySelectorAll('th');
-      const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
-      const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
-      const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
+    // first element in mocks.rows will be rendered first
+    // since sorting is ascendant (default sorting direction is 'true')
+    expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
+    expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
+    expect(thirdRowCells[0]).to.have.property('textContent', mocks.rows[2][mocks.columns[0].key]);
 
-      // first column header now have sorting-arrow pointing down
-      expect(columnHeaders[0])
-        .to.have.property('textContent')
-        .that.contain(defaults.arrowUp); // sorted by this field, ascendant sorting direction (true)
-      // other arrows are hidden
-      expect(firstHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
-      expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
-      expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
 
-      const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
-      const firstRowCells = bodyRows[0].querySelectorAll('td');
-      const secondRowCells = bodyRows[1].querySelectorAll('td');
+    // Now let's click on the same column header again
+    fireEvent.click(firstHeader);
 
-      // first element in mocks.rows will be rendered first
-      // since sorting is ascendant (default sorting direction is 'true')
-      expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
-      expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
+    columnHeaders = container.querySelectorAll('th');
 
-      // Now let's click on the same column header again
-      Simulate.click(columnHeaders[0]);
-    })
-      .then(() => {
-        const sortingFieldKey = mocks.columns[0].key;
+    // first column header now have sorting-arrow pointing down
+    expect(columnHeaders[0])
+      .to.have.property('textContent')
+      .that.contain(defaults.arrowDown); // sorted by this field, ascendant sorting direction (true)
 
-        // table is still sorted by 'clicked' field, but different direction than it was
-        expect(component).to.have.deep.property('state.sortingField', sortingFieldKey);
-        expect(component).to.have.deep.property('state.sortingDirection', !columnsObject[sortingFieldKey].defaultSortingDirection);
+    bodyRows = container.querySelectorAll('tbody tr');
+    firstRowCells = bodyRows[0].querySelectorAll('td');
+    secondRowCells = bodyRows[1].querySelectorAll('td');
+    thirdRowCells = bodyRows[2].querySelectorAll('td');
 
-        columnHeaders = renderedDOMElement.querySelectorAll('th');
-        const firstHeaderTitleArrowClassName = columnHeaders[0].querySelector(`span.${defaults.arrowClass}`).className;
-        const secondHeaderTitleArrowClassName = columnHeaders[1].querySelector(`span.${defaults.arrowClass}`).className;
-        const thirdHeaderTitleArrowClassName = columnHeaders[2].querySelector(`span.${defaults.arrowClass}`).className;
+    // first element in mocks.rows will be rendered first
+    // since sorting is ascendant (default sorting direction is 'true')
+    expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[2][mocks.columns[0].key]);
+    expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
+    expect(thirdRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
+  });
 
-        // first column header now have sorting-arrow pointing up
-        expect(columnHeaders[0])
-          .to.have.property('textContent')
-          .that.contain(defaults.arrowDown); // sorted by this field, ascendant sorting direction (true)
-        // other arrows are hidden
-        expect(firstHeaderTitleArrowClassName).to.not.contain(defaults.hiddenClass);
-        expect(secondHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
-        expect(thirdHeaderTitleArrowClassName).to.contain(defaults.hiddenClass);
+  it('calls a callback when row is clicked', () => {
+    const { container } = render(element);
+    const bodyRows = container.querySelectorAll('tbody tr');
 
-        const bodyRows = renderedDOMElement.querySelectorAll('tbody tr');
-        const firstRowCells = bodyRows[0].querySelectorAll('td');
-        const secondRowCells = bodyRows[1].querySelectorAll('td');
+    fireEvent.click(bodyRows[1]);
 
-        // now second element in mocks.rows will be rendered first
-        // since sorting is descendant (sorting direction is 'false')
-        expect(firstRowCells[0]).to.have.property('textContent', mocks.rows[1][mocks.columns[0].key]);
-        expect(secondRowCells[0]).to.have.property('textContent', mocks.rows[0][mocks.columns[0].key]);
-
-        done();
-      });
+    expect(handleRowClick).to.have.been.calledWith(mocks.rows[1].id);
   });
 });

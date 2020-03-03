@@ -180,7 +180,7 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <div>
+      <div data-testid='login'>
         {this.renderMobileTopMenu()}
         {this.renderError()}
 

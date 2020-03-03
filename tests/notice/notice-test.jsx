@@ -1,24 +1,19 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = Chai.expect;
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Notice = require('../../src/components/common/notice/notice');
+import Notice from '../../src/components/common/notice/notice';
 
 
 describe('Notice component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleClick;
+  let handleClose;
 
   const defaults = {
     noticeClassName: 'notice',
@@ -29,104 +24,125 @@ describe('Notice component', () => {
   const mocks = {
     noticeText: 'test text',
     noticeType: 'success',
-    buttonText: 'test button text',
-    handleClick: Sinon.spy(),
-    handleClose: Sinon.spy()
+    buttonText: 'test button text'
   };
+
+  before(() => {
+    Sinon.stub(window, 'scrollTo');
+  });
+
+  after(() => {
+    window.scrollTo.restore();
+  });
+
+  beforeEach(() => {
+    handleClick = Sinon.spy();
+    handleClose = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
 
   describe('Defaults testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
-        <Notice text={mocks.noticeText}/>
+    beforeEach(() => {
+      element = (
+        <Notice text={mocks.noticeText} buttonText={mocks.buttonText}/>
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders notice with proper text and default class', () => {
-      const notice = renderedDOMElement.querySelector(`.${defaults.noticeClassName}`);
+      const { getByText } = render(element);
+      const notice = getByText(mocks.noticeText);
 
       expect(notice).to.be.ok;
-      expect(notice).to.have.property('textContent', mocks.noticeText);
+      expect(notice.className).to.contain(defaults.noticeClassName);
     });
 
-    it('doesn\'t show buttons if onClick events weren\'t provided', () => {
-      const inputs = renderedDOMElement.getElementsByTagName('input');
-      const closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
+    it('doesn\'t show action button if onClick callback weren\'t provided', () => {
+      const { queryByText } = render(element);
+      const button = queryByText(mocks.buttonText);
 
-      expect(inputs).to.have.lengthOf(0);
-      expect(closeButton).to.equal(null);
+      expect(button).to.not.be.ok;
+    });
+
+    it('doesn\'t show close button if onClose callback weren\'t provided', () => {
+      const { queryByText } = render(element);
+      const closeButton = queryByText('x');
+
+      expect(closeButton).to.not.be.ok;
     });
   });
 
 
   describe('Behavior testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <Notice
           text={mocks.noticeText}
           type={mocks.noticeType}
           buttonText={mocks.buttonText}
           isPadded={true}
-          onClick={mocks.handleClick}
-          onClose={mocks.handleClose}
+          onClick={handleClick}
+          onClose={handleClose}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders notice with padded container', () => {
-      const className = renderedDOMElement.className;
+      const { getByTestId } = render(element);
+      const container = getByTestId('notice');
 
-      expect(className).to.contain(defaults.paddedClassName);
+      expect(container.className).to.contain(defaults.paddedClassName);
     });
 
     it('renders notice with proper class', () => {
-      const notice = renderedDOMElement.querySelector(`.x-${mocks.noticeType}`);
+      const { getByText } = render(element);
+      const notice = getByText(mocks.noticeText);
 
-      expect(notice).to.be.ok;
+      expect(notice.className).to.contain(`x-${mocks.noticeType}`);
     });
 
-    it('renders buttons and triggers onClick functions', () => {
-      const actionButton = renderedDOMElement.querySelector('input');
-      const closeButton = renderedDOMElement.querySelector(`.${defaults.closeButtonClassName}`);
+    it('renders action button and calls onClick prop', () => {
+      const { queryByText } = render(element);
+      const button = queryByText(mocks.buttonText);
+      fireEvent.click(button);
 
-      expect(actionButton).to.have.property('value', mocks.buttonText);
-      expect(closeButton).to.be.ok;
+      expect(handleClick).to.have.been.calledOnce;
+    });
 
-      Simulate.click(actionButton);
-      Simulate.click(closeButton);
+    it('can be closed', () => {
+      const { getByText } = render(element);
+      const closeButton = getByText('x');
+      fireEvent.click(closeButton);
 
-      expect(mocks.handleClick).to.have.been.calledOnce;
-      expect(mocks.handleClose).to.have.been.calledOnce;
+      expect(handleClose).to.have.been.calledOnce;
     });
   });
 
-  describe('Enabled button testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+  describe('Disabled button testing', () => {
+    beforeEach(() => {
+      element = (
         <Notice
           text={mocks.noticeText}
           type={mocks.noticeType}
           buttonText={mocks.buttonText}
-          onClick={mocks.handleClick}
           isButtonEnabled={false}
+          onClick={handleClick}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
-    it('renders disabled buttons and doesn\'t call onClick functions', () => {
-      const actionButton = renderedDOMElement.querySelector('input');
+    it('renders disabled button', () => {
+      const { getByText } = render(element);
+      const actionButton = getByText(mocks.buttonText);
 
       expect(actionButton).to.have.property('disabled', true);
 
-      Simulate.click(actionButton);
+      fireEvent.click(actionButton);
 
-      expect(mocks.handleClick).to.have.been.calledOnce;
+      expect(handleClick).to.not.have.been.calledOnce;
     });
   });
 });

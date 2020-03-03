@@ -31,7 +31,7 @@ export default class Header extends React.Component {
   handleLogOut() {
     PilotModel
       .logout()
-      .then(() => navigationService.goToLogin)
+      .then(() => navigationService.goToLogin())
       .catch(() => window.alert('Server error. Could not log out.'));
   }
 
@@ -40,7 +40,7 @@ export default class Header extends React.Component {
     const loginHandler = this.state.isLoggedIn ? this.handleLogOut : navigationService.goToLogin;
 
     return (
-      <div className='main-header desktop'>
+      <div className='main-header desktop' data-testid='header'>
         <div className='logo'>
           <a onClick={navigationService.goToHomePage}>Koifly</a>
         </div>

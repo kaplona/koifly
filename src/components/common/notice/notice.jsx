@@ -41,7 +41,7 @@ export default class Notice extends React.Component {
     }
 
     return (
-      <div className={this.props.isPadded ? 'notice__padded-container' : ''}>
+      <div className={this.props.isPadded ? 'notice__padded-container' : ''} data-testid='notice'>
         <div className={className}>
           {this.props.text}
 

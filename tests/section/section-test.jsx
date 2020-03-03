@@ -1,82 +1,83 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const expect = Chai.expect;
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const Section = require('../../src/components/common/section/section');
-const Button = require('../../src/components/common/buttons/button');
+import Section from '../../src/components/common/section/section';
 
 
 describe('Section component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleClick;
 
   const defaults = {
-    fullScreenClass: 'x-full-screen'
+    fullScreenClass: 'x-full-screen',
+    editButtonText: 'Edit'
   };
 
   const mocks = {
-    sectionText: 'test children text',
-    handleClick: Sinon.spy()
+    sectionText: 'test children text'
   };
 
+  beforeEach(() => {
+    handleClick = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+
   describe('Defaults testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <Section>{mocks.sectionText}</Section>
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders parsed children', () => {
-      expect(renderedDOMElement).to.have.property('textContent', mocks.sectionText);
+      const { getByText } = render(element);
+      const section = getByText(mocks.sectionText);
+
+      expect(section).to.be.ok;
     });
 
     it('doesn\'t render edit button and full-screen component by default', () => {
-      const editButton = TestUtils.scryRenderedComponentsWithType(component, Button);
-      const className = renderedDOMElement.className;
+      const { container, queryByText } = render(element);
+      const editButton = queryByText(defaults.editButtonText);
+      const fullScreenSection = container.querySelector(`.${defaults.fullScreenClass}`);
 
-      expect(editButton).to.have.lengthOf(0);
-      expect(className).to.not.contain(defaults.fullScreenClass);
+      expect(editButton).to.not.be.ok;
+      expect(fullScreenSection).to.not.be.ok;
     });
   });
 
   describe('Fullscreen and edit button testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
-        <Section isFullScreen={true} onEditClick={mocks.handleClick}>
+    beforeEach(() => {
+      element = (
+        <Section isFullScreen={true} onEditClick={handleClick}>
           {mocks.sectionText}
         </Section>
       );
     });
 
-    it('renders edit button and full-screen component', () => {
-      const className = ReactDOM.findDOMNode(component).className;
+    it('renders  full-screen component', () => {
+      const { container } = render(element);
+      const fullScreenSection = container.querySelector(`.${defaults.fullScreenClass}`);
 
-      expect(className).to.contain(defaults.fullScreenClass);
+      expect(fullScreenSection).to.be.ok;
     });
 
     it('renders edit button and call proper onClick function', () => {
-      const editButton = TestUtils.findRenderedComponentWithType(component, Button);
+      const { getByText } = render(element);
+      const editButton = getByText(defaults.editButtonText);
+      fireEvent.click(editButton);
 
-      expect(editButton).to.have.deep.property('props.onClick', mocks.handleClick);
-
-      const renderedDOMButton = ReactDOM.findDOMNode(editButton);
-
-      Simulate.click(renderedDOMButton);
-
-      expect(mocks.handleClick).to.have.been.calledOnece;
+      expect(handleClick).to.have.been.calledOnce;
     });
   });
 });

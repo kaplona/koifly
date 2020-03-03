@@ -1,27 +1,21 @@
-/* eslint-disable no-unused-expressions */
-
+/* eslint-disable no-unused-expressions, no-undef */
 'use strict';
-
-require('../../src/test-dom')();
-const React = require('react');
-const ReactDOM = require('react-dom');
-const TestUtils = require('react-addons-test-utils');
-const Simulate = TestUtils.Simulate;
-const Chai = require('chai');
-const Sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const expect = Chai.expect;
+import React from 'react';
+import { cleanup, fireEvent, render } from '@testing-library/react';
+import Chai from 'chai';
+import Sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-const AltitudeInput = require('../../src/components/common/inputs/altitude-input');
-const Label = require('../../src/components/common/section/label');
-const ValidationError = require('../../src/components/common/section/validation-error');
-const Dropdown = require('../../src/components/common/inputs/dropdown');
+import AltitudeInput from '../../src/components/common/inputs/altitude-input';
 
 
 describe('AltitudeInput component', () => {
-  let component;
-  let renderedDOMElement;
+  let element;
+  let handleInputChange;
+  let handleInputFocus;
+  let handleInputBlur;
+
 
   const defaults = {
     inputClassName: 'x-number',
@@ -31,47 +25,53 @@ describe('AltitudeInput component', () => {
   };
 
   const mocks = {
-    initialInputValue: 'test input',
-    nextInputValue: 'next tst value',
+    initialInputValue: 1000,
+    nextInputValue: 2000,
     labelText: 'Test label',
     selectedAltitudeUnit: 'feet',
     nextDropdownValue: 'meters',
     errorMessage: 'test error message',
-    inputName: 'testInput',
-    handleInputChange: Sinon.spy(),
-    handleInputFocus: Sinon.spy(),
-    handleInputBlur: Sinon.spy()
+    inputName: 'testInput'
   };
 
+  beforeEach(() => {
+    handleInputChange = Sinon.spy();
+    handleInputFocus = Sinon.spy();
+    handleInputBlur = Sinon.spy();
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
 
   describe('Defaults and behavior testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <AltitudeInput
           inputValue={mocks.initialInputValue}
           labelText={mocks.labelText}
           selectedAltitudeUnit={mocks.selectedAltitudeUnit}
           inputName={mocks.inputName}
-          onChange={mocks.handleInputChange}
-          onFocus={mocks.handleInputFocus}
-          onBlur={mocks.handleInputBlur}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders label with proper text', () => {
-      const label = TestUtils.findRenderedComponentWithType(component, Label);
+      const { getByText } = render(element);
+      const label = getByText(mocks.labelText);
 
-      expect(label).to.have.deep.property('props.children', mocks.labelText);
+      expect(label).to.be.ok;
     });
 
     it('renders input with proper value, classes and attributes', () => {
-      const inputs = renderedDOMElement.getElementsByTagName('input');
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
 
       expect(inputs).to.have.lengthOf(1);
-      expect(inputs[0]).to.have.property('value', mocks.initialInputValue);
+      expect(inputs[0]).to.have.property('value', mocks.initialInputValue.toString());
       expect(inputs[0]).to.have.property('pattern', defaults.inputPattern);
 
       const className = inputs[0].className;
@@ -80,80 +80,80 @@ describe('AltitudeInput component', () => {
       expect(className).to.not.contain(defaults.errorClassName);
     });
 
-    it('renders dropdown with proper props', () => {
-      const dropdown = TestUtils.findRenderedComponentWithType(component, Dropdown);
+    it('renders dropdown with proper selected altitude input', () => {
+      const { container } = render(element);
+      const dropdown = container.querySelector('select');
 
-      expect(dropdown).to.have.deep.property('props.selectedValue', mocks.selectedAltitudeUnit);
-      expect(dropdown).to.have.deep.property('props.inputName', defaults.dropdownInputName);
-      expect(dropdown).to.have.deep.property('props.onChangeFunc', component.handleUserInput);
+      expect(dropdown).to.have.property('value', mocks.selectedAltitudeUnit);
     });
 
     it('doesn\'t show error message if wasn\'t provided', () => {
-      const errorMessages = TestUtils.scryRenderedComponentsWithType(component, ValidationError);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessages).to.have.lengthOf(0);
+      expect(errorMessages).to.not.be.ok;
     });
 
     it('triggers onChange function with proper parameters', () => {
-      const input = component.refs[mocks.inputName];
-      input.value = mocks.nextInputValue;
-      Simulate.change(input);
+      const { container } = render(element);
+      const input = container.querySelector('input');
+      fireEvent.change(input, { target: { value: mocks.nextInputValue } });
 
-      expect(mocks.handleInputChange).to.have.been.calledOnce;
-      expect(mocks.handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue);
+      expect(handleInputChange).to.have.been.calledOnce;
+      expect(handleInputChange).to.have.been.calledWith(mocks.inputName, mocks.nextInputValue.toString());
 
-      const dropdown = renderedDOMElement.querySelector('select ');
-      dropdown.value = mocks.nextDropdownValue;
-      Simulate.change(dropdown);
+      const dropdown = container.querySelector('select');
+      fireEvent.change(dropdown, { target: { value: mocks.nextDropdownValue } });
 
-      expect(mocks.handleInputChange).to.have.been.calledTwice;
-      expect(mocks.handleInputChange).to.have.been.calledWith(defaults.dropdownInputName, mocks.nextDropdownValue);
+      expect(handleInputChange).to.have.been.calledTwice;
+      expect(handleInputChange).to.have.been.calledWith(defaults.dropdownInputName, mocks.nextDropdownValue);
     });
 
     it('calls onFocus and onBlur functions', () => {
-      const input = component.refs[mocks.inputName];
-      Simulate.focus(input);
-      Simulate.blur(input);
+      const { container } = render(element);
+      const input = container.querySelector('input');
+      fireEvent.focus(input);
+      fireEvent.blur(input);
 
-      expect(mocks.handleInputFocus).to.have.been.calledOnce;
-      expect(mocks.handleInputBlur).to.have.been.calledOnce;
+      expect(handleInputFocus).to.have.been.calledOnce;
+      expect(handleInputBlur).to.have.been.calledOnce;
 
-      const dropdown = renderedDOMElement.querySelector('select ');
-      Simulate.focus(dropdown);
-      Simulate.blur(dropdown);
+      const dropdown = container.querySelector('select');
+      fireEvent.focus(dropdown);
+      fireEvent.blur(dropdown);
 
-      expect(mocks.handleInputFocus).to.have.been.calledTwice;
-      expect(mocks.handleInputBlur).to.have.been.calledTwice;
+      expect(handleInputFocus).to.have.been.calledTwice;
+      expect(handleInputBlur).to.have.been.calledTwice;
     });
   });
 
 
   describe('Error message testing', () => {
-    before(() => {
-      component = TestUtils.renderIntoDocument(
+    beforeEach(() => {
+      element = (
         <AltitudeInput
           inputValue={mocks.initialInputValue}
           labelText={mocks.labelText}
           selectedAltitudeUnit={mocks.selectedAltitudeUnit}
           errorMessage={mocks.errorMessage}
           inputName={mocks.inputName}
-          onChange={mocks.handleInputChange}
+          onChange={handleInputChange}
         />
       );
-
-      renderedDOMElement = ReactDOM.findDOMNode(component);
     });
 
     it('renders error message if provided', () => {
-      const errorMessage = TestUtils.findRenderedComponentWithType(component, ValidationError);
+      const { queryByText } = render(element);
+      const errorMessages = queryByText(mocks.errorMessage);
 
-      expect(errorMessage).to.have.deep.property('props.message', mocks.errorMessage);
+      expect(errorMessages).to.be.ok;
     });
 
     it('renders input with error classes if error message presents', () => {
-      const inputClassName = renderedDOMElement.querySelector('input').className;
+      const { container } = render(element);
+      const input = container.querySelector('input');
 
-      expect(inputClassName).to.contain(defaults.errorClassName);
+      expect(input.className).to.contain(defaults.errorClassName);
     });
   });
 });
