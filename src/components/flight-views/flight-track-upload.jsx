@@ -75,7 +75,8 @@ export default class FightTrackUpload extends React.Component {
       this.setState({ parsedIgc: parsedFile });
     };
     reader.onerror = error => {
-      this.setState({ fileReadError: error });
+      const errorMessage = `Couldn't read file "file.name". Error type: ${error.type}`;
+      this.setState({ fileReadError: { message: errorMessage } });
     };
 
     reader.readAsText(file);

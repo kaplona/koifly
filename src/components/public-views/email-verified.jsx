@@ -9,7 +9,8 @@ export default function EmailVerified() {
     <div>
       <MobileTopMenu header='Koifly'/>
       <NavigationMenu/>
-      <Notice text='Thank you, you are now logged in and can continue working with Koifly!' type='success'/>
+      <Notice text='You are now logged in and can continue working with Koifly!' type='success'/>
+      <NavigationMenu isMobile={true}/>
     </div>
   );
 }

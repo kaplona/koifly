@@ -282,7 +282,7 @@ export default class FlightEditView extends React.Component {
 
   renderProcessingError() {
     if (this.state.processingError) {
-      return <ErrorBox error={this.state.processingError}/>;
+      return <ErrorBox error={this.state.processingError} isPadded={true}/>;
     }
   }
 
@@ -432,11 +432,11 @@ export default class FlightEditView extends React.Component {
                 selectedAltitudeUnit={this.state.item.altitudeUnit}
                 labelText='Max altitude:'
                 errorMessage={this.state.validationErrors.altitude}
+                isSledRide={this.state.isSledRide}
                 onChange={this.handleInputChange}
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
                 onSledRide={this.handleSledRide}
-                isSledRide={this.state.isSledRide}
               />
             </SectionRow>
 

@@ -119,7 +119,7 @@ if (process.env.NODE_ENV === 'development') {
   /** @lends webpackConfig */
   webpackConfig = webpackMerge(webpackConfig, {
     mode: 'production',
-    devtool: 'cheap-source-map', // generate full source maps
+    devtool: 'nosources-source-map', // generate full source maps
     optimization: {
       // Setting minimizer for css overrides the defaults provided by webpack,
       // so we have to also specify a JS minimizer.

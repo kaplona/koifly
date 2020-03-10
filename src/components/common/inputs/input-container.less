@@ -39,7 +39,8 @@
     }
   }
 
-  input, select {
+  input:not([type="checkbox"]),
+  select {
     .border-box();
 
     height: @row-height;

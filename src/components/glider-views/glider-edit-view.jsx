@@ -226,7 +226,7 @@ export default class GliderEditView extends React.Component {
 
   renderProcessingError() {
     if (this.state.processingError) {
-      return <ErrorBox error={this.state.processingError}/>;
+      return <ErrorBox error={this.state.processingError} isPadded={true}/>;
     }
   }
 

@@ -3,7 +3,7 @@ import React from 'react';
 require('./input-container.less');
 
 
-export default function ValueInput(props) {
+export default function InputContainer(props) {
   return (
     <div className='input-container'>
       <div className='arrow'>{'»'}</div>

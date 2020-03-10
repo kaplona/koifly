@@ -8,8 +8,9 @@ export default function PageNotFound() {
   return (
     <div>
       <MobileTopMenu header='Koifly'/>
-      <NavigationMenu isMobile={true}/>
+      <NavigationMenu/>
       <Notice text='Oops! Page not found' type='error'/>
+      <NavigationMenu isMobile={true}/>
     </div>
   );
 }

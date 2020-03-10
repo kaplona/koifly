@@ -251,7 +251,7 @@ export default class SiteEditView extends React.Component {
 
   renderProcessingError() {
     if (this.state.processingError) {
-      return <ErrorBox error={this.state.processingError}/>;
+      return <ErrorBox error={this.state.processingError} isPadded={true}/>;
     }
   }
 

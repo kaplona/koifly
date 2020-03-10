@@ -3,16 +3,18 @@ import AppLink from '../common/app-link';
 import Button from '../common/buttons/button';
 import CompactContainer from '../common/compact-container';
 import dataService from '../../services/data-service';
+import dataServiceConstants from '../../constants/data-service-constants';
 import Description from '../common/section/description';
 import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
 import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
 import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
-import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
 import Notice from '../common/notice/notice';
 import PasswordInput from '../common/inputs/password-input';
+import PilotModel from '../../models/pilot';
+import PubSub from '../../utils/pubsub';
 import Section from '../common/section/section';
 import SectionRow from '../common/section/section-row';
 import SectionTitle from '../common/section/section-title';
@@ -37,6 +39,21 @@ export default class Signup extends React.Component {
     this.handleInputFocus = this.handleInputFocus.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    PubSub.on(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+    this.handleStoreModified();
+  }
+
+  componentWillUnmount() {
+    PubSub.removeListener(dataServiceConstants.STORE_MODIFIED_EVENT, this.handleStoreModified, this);
+  }
+
+  handleStoreModified() {
+    if (PilotModel.isLoggedIn()) {
+      navigationService.goToFlightLog();
+    }
   }
 
   handleInputChange(inputName, inputValue) {
@@ -148,15 +165,6 @@ export default class Signup extends React.Component {
     );
   }
 
-  renderNavigationMenu() {
-    return (
-      <NavigationMenu
-        isMobile={true}
-        isPositionFixed={!this.state.isInputInFocus}
-      />
-    );
-  }
-
   render() {
     return (
       <div>
@@ -230,8 +238,6 @@ export default class Signup extends React.Component {
             {this.renderMobileButtons()}
           </form>
         </CompactContainer>
-
-        {this.renderNavigationMenu()}
       </div>
     );
   }

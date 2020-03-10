@@ -6,7 +6,6 @@
   display: inline-block;
 
   @media (min-width: @medium-viewport) {
-    @arrow-padding: 18px;
 
     &::after {
       content: '▼';
@@ -14,12 +13,12 @@
       color: @dark-blue;
       pointer-events: none; // pointer event goes “through” the arrow and target “underneath” select element instead
       position: relative;
-      right: @arrow-padding;
+      right: 18px;
       top: -0.2em;
     }
 
     select {
-      padding-right: @arrow-padding;
+      padding-right: 22px;
       -webkit-appearance: none; // disables background color in Safari and arrows in Safari and Chrome
       -moz-appearance: none; // hides select arrow in Firefox (its design is meh...)
     }
