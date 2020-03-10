@@ -142,6 +142,9 @@ const chartService = {
     if (!flights || flights.error) {
       return flights;
     }
+    if (!Object.keys(flights).length) {
+      return { years: [], bySite: [] };
+    }
 
     const years = [];
     const siteList = SiteModel.getList();

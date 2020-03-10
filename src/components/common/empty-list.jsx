@@ -8,9 +8,12 @@ require('./empty-list.less');
 export default class EmptyList extends React.Component {
   render() {
     return (
-      <div className='empty-list'>
+      <div className={`empty-list ${this.props.className || ''}`}>
         <div>{'You don\'t have any ' + this.props.ofWhichItems + ' yet'}</div>
-        <div className='add-button' onClick={this.props.onAdding}>+</div>
+
+        {this.props.onAdding && (
+          <div className='add-button' onClick={this.props.onAdding}>+</div>
+        )}
       </div>
     );
   }
@@ -18,6 +21,7 @@ export default class EmptyList extends React.Component {
 
 
 EmptyList.propTypes = {
+  className: string,
   ofWhichItems: string.isRequired, // plural
-  onAdding: func.isRequired
+  onAdding: func
 };

@@ -5,6 +5,7 @@ import BubbleChart from '../common/charts/buble-chart';
 import Button from '../common/buttons/button';
 import chartService from '../../services/chart-service';
 import DropdownInput from '../common/inputs/dropdown-input';
+import EmptyList from '../common/empty-list';
 import ErrorBox from '../common/notice/error-box';
 import FlightModel from '../../models/flight';
 import HistogramChart from '../common/charts/histogram-chart';
@@ -277,6 +278,14 @@ export default class StatsView extends React.Component {
 
     if (this.state.isLoading) {
       return this.renderSimpleLayout(<SectionLoader/>);
+    }
+
+    if (this.state.flightStats && this.state.flightStats.years.length === 0) {
+      return this.renderSimpleLayout(
+        <Section>
+          <EmptyList className='stats-view__empty' ofWhichItems='flights on any sites' />
+        </Section>
+      );
     }
 
     const {

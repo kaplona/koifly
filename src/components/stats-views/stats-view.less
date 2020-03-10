@@ -41,3 +41,13 @@
     padding: 0 1em;
   }
 }
+
+.stats-view__empty {
+  @hp: (@row-height * 2); // horizontal padding
+
+  padding: @hp 0;
+
+  @media (min-width: @medium-viewport) {
+    background-color: @soft-white;
+  }
+}
