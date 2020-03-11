@@ -10,15 +10,23 @@ require('./file-input.less');
 
 
 export default class FileInput extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleFileSelect = this.handleFileSelect.bind(this);
   }
 
   handleButtonClick() {
+    // File input is always uncontrolled, so we can't remove file from the input.
+    // Resulting bug: user removes selected file in the UI, but file is still selected in the file input,
+    // resulting in the user inability to select the same file again.
+    // Fix: two different inputs are rendered depending on whether a file is selected.
+    // Effectively I replace one input in the DOM with another thus clearing the selected file.
     if (this.hiddenFileInput) {
       this.hiddenFileInput.click();
+    }
+    if (this.hiddenAnotherFileInput) {
+      this.hiddenAnotherFileInput.click();
     }
   }
 
@@ -69,6 +77,16 @@ export default class FileInput extends React.Component {
             type='file'
             accept={this.props.fileTypes}
             ref={el => this.hiddenFileInput = el}
+            tabIndex='-1'
+            onChange={this.handleFileSelect}
+          />
+        )}
+        {!!this.props.fileName && (
+          <input
+            className='hidden'
+            type='file'
+            accept={this.props.fileTypes}
+            ref={el => this.hiddenAnotherFileInput = el}
             tabIndex='-1'
             onChange={this.handleFileSelect}
           />

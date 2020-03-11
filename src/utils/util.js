@@ -63,6 +63,10 @@ const Util = {
    * @returns {boolean} - whether the parsed date in yyyy-mm-dd format
    */
   isRightDateFormat(date) {
+    if (!date || !date.split) {
+      return false;
+    }
+
     const dateElements = date.split('-');
 
     return (
