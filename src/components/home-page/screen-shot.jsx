@@ -19,5 +19,5 @@ export default function ScreenShort(props) {
 }
 
 ScreenShort.propTypes = {
-  type: oneOf(['flights', 'sites', 'gliders']).isRequired
+  type: oneOf(['flights', 'sites', 'gliders', 'stats']).isRequired
 };

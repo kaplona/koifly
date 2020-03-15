@@ -8,42 +8,42 @@ This app is designed for hang gliding and paragliding pilots who want to keep re
 ## Features
 
 * Keep a log of your flights
-* Store information about your flying spots (sites)
-* See a nice map view of your sites
-* Check pilot statistics: your number of flights, total airtime and more
-* Access from anywhere, on any smartphone or computer
+* Store information about your flying spots (sites) and gliders
+* See your flights and sites on the map
+* Analyze your progress with app statistics
+* Access from anywhere, on any device
 
 
 ## Coming Soon
 
-* Data export/import
-* GPS uploading
+* Flight tagging and advanced search
 * More fields, more statistics
+* Data export
 * Offline app
 
 
 ## Tech Stack
 
-* Node.js, Hapi.js, Webpack, Babel, React, React-router
-* Mocha, Chai, Sinon, jsDOM test setup
+* Node, Hapi, Webpack, Babel, React, React Router
+* test setup: Testing Library, Mocha, Chai, Sinon, jsDOM
 
 #### Hosting your own Koifly
 
 * `git clone` this project
 * `npm install` to download dependencies
-* `cp -i src/secrets-sample.js src/secrets.js`, then add your database credentials etc. to this file.
+* `cp -i src/secrets-sample.js src/secrets.js`, then add your database credentials and other app setting to this file.
 * Create MySQL database, then run `npm run init_db` to create DB tables (note: this requires all previous steps to be done)
 
 Run in Development Mode:
 * `npm run dev` to start Hapi application server
 * `npm run webpack` in another terminal session to start webpack dev server
 * Keep these terminal sessions open while developing. Hot Module Reloading will pick up your code changes and reload your app.
-* You might need to manually restart the webpack process if you make changes to webpack configuration.
+* You need to restart the webpack process if you make changes to the webpack configuration.
 
 Simple Production Setup:
-* `npm install -g forever` (once)
-* `npm run build` to generate frontend asset bundles (whenever you push new frontend code)
-* `npm run forever_start` to start up application server
+* `npm install -g forever` globally
+* `npm run build` to generate frontend bundles
+* `npm run forever_start` to start the application server
 
 
 

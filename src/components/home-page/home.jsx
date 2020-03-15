@@ -45,7 +45,7 @@ export default class Home extends React.Component {
         <div className='about-koifly'>
           <p>
             Koifly is a free, <a href='https://github.com/kaplona/koifly'>open-source</a>, online flight logbook for
-            freeflight pilots. If you are a hang glider or paraglider pilot this app is for you!
+            freeflight pilots. If you are a hang glider or paraglider pilot – this app is for you!
           </p>
           <p>
             No more paper or spreadsheets which are inefficient and limit your ability to analyze your flights. Keeping
@@ -68,11 +68,12 @@ export default class Home extends React.Component {
             <ul>
               <li>Your flights are securely stored online, access them whenever and wherever you want</li>
               <li>
+                Upload IGC flight tracks and see it on the map. Who doesn't want to store GPS tracks along with
+                the other flight information?
+              </li>
+              <li>
                 Be aware of your progress: check how often and where you fly, and whether you have enough flights and
                 airtime for the next pilot rating
-              </li>
-              <li>Recording flights could not be easier: new flight form is prefilled with your preferences, previous
-                flight and site information
               </li>
             </ul>
           </FeatureColumn>
@@ -108,6 +109,28 @@ export default class Home extends React.Component {
 
         <HomeBlock>
           <FeatureColumn>
+            <h2>Analyze your flights</h2>
+            <ul>
+              <li>
+                See individual flight statistics: how high you were during a flight, your climb rate, how far from
+                the launch, what glide ratio to the landing zone.
+              </li>
+              <li>
+                Get more insights from your data: your highest/longest flight for the season, what site you fly
+                more often, which weather condition induce to longer flights, just to name a few.
+              </li>
+            </ul>
+          </FeatureColumn>
+
+          <FeatureColumn>
+            <ScreenShort type='stats'/>
+          </FeatureColumn>
+        </HomeBlock>
+
+        <Separator/>
+
+        <HomeBlock>
+          <FeatureColumn>
             <h2>Save your gliders' info</h2>
             <ul>
               <li>
@@ -121,7 +144,7 @@ export default class Home extends React.Component {
             </ul>
           </FeatureColumn>
 
-          <FeatureColumn>
+          <FeatureColumn float='right'>
             <ScreenShort type='gliders'/>
           </FeatureColumn>
         </HomeBlock>
@@ -137,7 +160,7 @@ export default class Home extends React.Component {
             </ul>
           </FeatureColumn>
 
-          <FeatureColumn float='right'>
+          <FeatureColumn>
             <div className='mobile-friendly-pic'/>
           </FeatureColumn>
         </HomeBlock>
@@ -151,21 +174,16 @@ export default class Home extends React.Component {
           <FeatureColumn>
             <ul>
               <li>
-                <b>Data export/import</b>
+                <b>Data export</b>
                 <br/>
-                We want you to be able to upload your previous experience. We also understand that your data shouldn't
-                be locked in the app.
+                We understand that your data shouldn't be locked in the app. It's convenient to store everything
+                in one place but if you need your flights or IGC tracks elsewhere – just download them.
               </li>
               <li>
-                <b>GPS uploading</b>
+                <b>Tagging and advanced search</b>
                 <br/>
-                Who doesn't want to store GPS tracks along with the other flight information?
-              </li>
-              <li>
-                <b>Statistics</b>
-                <br/>
-                Your highest/longest flight for the season, what site you fly more often, which weather condition induce
-                to longer flights, just to name a few.
+                Tag your flights: was it winch tow or a foot launch, powered or unpowered flight. Filter through
+                your flights, see if you have enough flights of various kinds for that instructor rating.
               </li>
               <li>
                 <b>More fields for each data type</b>
@@ -200,7 +218,7 @@ export default class Home extends React.Component {
           <FeatureColumn>
             <div className='about-me-text'>
               <h2>About me</h2>
-              <p>My husband and I are hang gliding pilots in British Columbia, Canada.</p>
+              <p>My husband and I are hang gliding pilots in beautiful British Columbia, Canada.</p>
               <p>
                 Hang gliding and paragliding is a spirit freeing sport, for most of us it’s a lifestyle. But it comes
                 with its own perils. For me, safety is a key factor for enjoyable flights. I use a flight log to refresh
