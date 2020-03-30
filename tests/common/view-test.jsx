@@ -62,11 +62,11 @@ describe('View component.', () => {
 
     it('sets default state and renders only parsed children', () => {
       const { getByText, queryByTestId, queryAllByTestId } = render(element);
-      const ChildrenContent = getByText(mocks.childText);
+      const childrenContent = getByText(mocks.childText);
       const loginForm = queryByTestId('login');
       const notices = queryAllByTestId('notice');
 
-      expect(ChildrenContent).to.be.ok;
+      expect(childrenContent).to.be.ok;
       expect(loginForm).to.not.be.ok;
       expect(notices).to.have.lengthOf(0);
     });
@@ -118,6 +118,7 @@ describe('View component.', () => {
   describe('Authentication error testing', () => {
     beforeEach(() => {
       Sinon.stub(PilotModel, 'getEmailVerificationNoticeStatus');
+      Sinon.stub(PilotModel, 'isLoggedIn').returns(false);
 
       element = (
         <View error={mocks.authError} onStoreModified={handleStoreModified}>
@@ -128,15 +129,16 @@ describe('View component.', () => {
 
     afterEach(() => {
       PilotModel.getEmailVerificationNoticeStatus.restore();
+      PilotModel.isLoggedIn.restore();
     });
 
     it('renders login form instead of parsed children', () => {
       const { queryByText, getByTestId } = render(element);
       const loginForm = getByTestId('login');
-      const ChildrenContent = queryByText(mocks.childText);
+      const childrenContent = queryByText(mocks.childText);
 
       expect(loginForm).to.be.ok;
-      expect(ChildrenContent).to.not.be.ok;
+      expect(childrenContent).to.not.be.ok;
     });
   });
 });
