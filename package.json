@@ -23,7 +23,7 @@
     "dev": "NODE_ENV=development      node src/scripts/make.js  &&  NODE_ENV=development  nodemon src/server.js",
     "make": "NODE_ENV=development     node src/scripts/make.js",
     "db_init": "MYSQL_ADMIN=true      node src/orm/init.js",
-    "db_migrate": "MYSQL_ADMIN=true      /node_modules/.bin/sequelize db:migrate",
+    "db_migrate": "MYSQL_ADMIN=true      ./node_modules/.bin/sequelize db:migrate",
     "lint": "eslint . --ext .js --ext .jsx",
     "lint_fix": "eslint . --ext .js --ext .jsx --fix",
     "test": "NODE_ENV=testing ./node_modules/.bin/mocha --config .mocharc.json --recursive ./tests/"

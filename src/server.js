@@ -36,7 +36,7 @@ async function start() {
   // all connections
   const serverOptions = {
     host: config.server.host,
-    port: config.server.httpPort
+    port: secrets.shouldUseSSL ? config.server.httpsPort : config.server.httpPort
   };
 
   // https connection
@@ -110,15 +110,19 @@ async function start() {
       type: 'onRequest',
       method: (request, reply) => {
         const isBareHostname = (request.info.hostname === config.server.bareHost);
-        const isHttp = (request.info.remotePort !== config.server.httpsPort); // TODO is it the right way to get request port ???
 
-        if (isBareHostname || isHttp) {
-          return reply.redirect(Url.format({
+        if (isBareHostname) {
+          const url = Url.format({
             protocol: config.server.protocol,
-            hostname: !isBareHostname ? request.info.hostname : config.server.host,
+            hostname: config.server.host,
             pathname: request.path,
             port: config.server.httpsPort
-          }));
+          });
+
+          return reply
+            .redirect(url)
+            .code(301)
+            .takeover();
         }
 
         return reply.continue;
