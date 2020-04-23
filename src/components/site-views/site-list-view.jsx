@@ -10,9 +10,10 @@ import navigationService from '../../services/navigation-service';
 import Section from '../common/section/section';
 import SectionLoader from '../common/section/section-loader';
 import SiteModel from '../../models/site';
-import Switcher from '../common/switcher';
 import Table from '../common/table';
 import View from '../common/view';
+
+require('./site-list-view.less');
 
 
 export default class SiteListView extends React.Component {
@@ -73,14 +74,16 @@ export default class SiteListView extends React.Component {
     );
   }
 
-  renderSwitcher() {
+  renderSwitch() {
     return (
-      <Switcher
-        leftButtonCaption='List'
-        rightButtonCaption='Map'
-        onRightClick={navigationService.goToSiteMapView}
-        initialPosition='left'
-      />
+      <div className='site-view-switch' onClick={navigationService.goToSiteMapView}>
+        <div className='switch-icon map-icon'>
+          <img src='/static/icons/site-map-switch.svg' width='30px'/>
+        </div>
+        <div className='switch-text map-text'>
+          <div>Map</div>
+        </div>
+      </div>
     );
   }
 
@@ -156,7 +159,7 @@ export default class SiteListView extends React.Component {
         <Section>
           <DesktopTopGrid
             leftElement={this.renderAddItemButton()}
-            middleElement={this.renderSwitcher()}
+            rightElement={this.renderSwitch()}
           />
           {content}
           {this.renderLoader()}
