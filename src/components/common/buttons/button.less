@@ -17,6 +17,7 @@
     padding: 0 1em;
     border: none;
     background-color: @dark-blue;
+    border-radius: 2px;
     color: @light-blue;
     text-align: center;
     font-size: @row-height * 0.45;
@@ -24,6 +25,11 @@
     outline: none;
     cursor: pointer;
     display: block;
+
+    &:hover,
+    &:active {
+      background-color: lighten(@dark-blue, 7%);
+    }
 
     &.x-content-width {
       width: auto;
@@ -37,39 +43,38 @@
     &.x-primary {
       background-color: darken(@grass-color, 5%);
 
+      &:hover,
       &:active {
-        background-color: darken(@grass-color, 10%);
+        background-color: @grass-hover;
       }
     }
 
     &.x-secondary {
       background-color: @grey-blue;
 
+      &:hover,
       &:active {
-        background-color: darken(@grey-blue, 10%);
+        background-color: @grey-blue-hover;
       }
     }
 
     &.x-warning {
       background-color: @brick-color;
 
+      &:hover,
       &:active {
-        background-color: darken(@brick-color, 5%);
+        background-color: @brick-hover;
       }
     }
 
     &:disabled {
       background-color: lighten(@mild-base, 17%);
       color: darken(@mild-base, 5%);
-    }
 
-    &:hover {
-      box-shadow: 0 0 5px 1px @dark-base;
-    }
-
-    &:active {
-      background-color: lighten(@dark-blue, 7%);
-      box-shadow: none;
+      &:hover,
+      &:active {
+        background-color: lighten(@mild-base, 17%);
+      }
     }
   }
 }

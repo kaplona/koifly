@@ -2,9 +2,11 @@
 
 .home-block {
   padding: 0 30px;
+  margin-top: 70px;
+  margin-bottom: 70px;
 
   @media (min-width: @medium-viewport) {
-    margin: 0 auto;
+    margin: 120px auto 70px;
     max-width: 1020px;
 
     /* float style */
@@ -17,5 +19,14 @@
     &:after {
       clear: both;
     }
+  }
+}
+
+.home-block.no-margin {
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (min-width: @medium-viewport) {
+    margin: 0 auto;
   }
 }

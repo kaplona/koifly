@@ -41,10 +41,10 @@ export default class Home extends React.Component {
           <SignupButton/>
         </div>
 
-        <h1>What is Koifly?</h1>
+        <h1 className='main-header'>What is Koifly?</h1>
         <div className='about-koifly'>
           <p>
-            Koifly is a free, <a href='https://github.com/kaplona/koifly'>open-source</a>, online flight logbook for
+            Koifly is a free, <a className='home-page-link' href='https://github.com/kaplona/koifly'>open-source</a>, online flight logbook for
             freeflight pilots. If you are a hang glider or paraglider pilot – this app is for you!
           </p>
           <p>
@@ -57,9 +57,6 @@ export default class Home extends React.Component {
             will be!
           </p>
         </div>
-        <SignupButton/>
-
-        <Separator/>
 
         <HomeBlock>
           <h1>Features</h1>
@@ -83,13 +80,11 @@ export default class Home extends React.Component {
           </FeatureColumn>
         </HomeBlock>
 
-        <Separator/>
-
         <HomeBlock>
           <FeatureColumn float='right'>
             <h2>Map your flying spots</h2>
             <ul>
-              <li>Store and organize your sites' information in one place, switch to map view for more convenience</li>
+              <li>Store and organize your sites information in one place, switch to map view for more convenience</li>
               <li>
                 Track how familiar you are with the spot: check how often you fly at the site and what is the best
                 time of the year to fly there
@@ -104,8 +99,6 @@ export default class Home extends React.Component {
             <ScreenShort type='sites'/>
           </FeatureColumn>
         </HomeBlock>
-
-        <Separator/>
 
         <HomeBlock>
           <FeatureColumn>
@@ -127,11 +120,9 @@ export default class Home extends React.Component {
           </FeatureColumn>
         </HomeBlock>
 
-        <Separator/>
-
         <HomeBlock>
-          <FeatureColumn>
-            <h2>Save your gliders' info</h2>
+          <FeatureColumn float='right'>
+            <h2>Save your gliders info</h2>
             <ul>
               <li>
                 Be aware of your bird's condition: check how many flights you have on the glider and whether it needs
@@ -149,13 +140,11 @@ export default class Home extends React.Component {
           </FeatureColumn>
         </HomeBlock>
 
-        <Separator/>
-
         <HomeBlock>
-          <FeatureColumn float='right'>
+          <FeatureColumn>
             <h2>Mobile friendly</h2>
             <ul>
-              <li>Works on any device, just go to <a href='/flights'>koifly.com/flights</a></li>
+              <li>Works on any device, just go to <a className='home-page-link' href='/flights'>koifly.com/flights</a></li>
               <li>Get fully functional application on your smartphone with intuitive navigation controls</li>
             </ul>
           </FeatureColumn>
@@ -169,30 +158,26 @@ export default class Home extends React.Component {
 
         <Separator/>
 
-        <HomeBlock>
+        <HomeBlock noMargin={true}>
           <h1>Coming soon</h1>
           <FeatureColumn>
             <ul>
               <li>
-                <b>Data export</b>
-                <br/>
+                <div className='coming-title'>Data export</div>
                 We understand that your data shouldn't be locked in the app. It's convenient to store everything
                 in one place but if you need your flights or IGC tracks elsewhere – just download them.
               </li>
               <li>
-                <b>Tagging and advanced search</b>
-                <br/>
+                <div className='coming-title'>Tagging and advanced search</div>
                 Tag your flights: was it winch tow or a foot launch, powered or unpowered flight. Filter through
                 your flights, see if you have enough flights of various kinds for that instructor rating.
               </li>
               <li>
-                <b>More fields for each data type</b>
-                <br/>
+                <div className='coming-title'>More fields for each data type</div>
                 Wind strength and direction, landing zone coordinates and more.
               </li>
               <li>
-                <b>Offline app</b>
-                <br/>
+                <div className='coming-title'>Offline app</div>
                 Our passion for flying can bring us to some remote places with no Internet connection, we plan to solve
                 this problem too.
               </li>
@@ -239,10 +224,12 @@ export default class Home extends React.Component {
         </div>
 
         <div className='footer'>
-          {'\u00A9'}
-          {new Date().getFullYear()} Anastasia Kaplina
+          <div className='copyright'>
+            {'\u00A9'}
+            2015-{new Date().getFullYear()} Anastasia Kaplina
+          </div>
           <div className='icons-credits'>
-            icons by <a href='http://www.flaticon.com/authors/hand-drawn-goods' title='Hand Drawn Goods'> Hand Drawn Goods </a>
+            icons by Hand Drawn Goods
             <br/>
             from <a href='http://www.flaticon.com' title='Flaticon'>www.flaticon.com</a> is licensed by <a href='http://creativecommons.org/licenses/by/3.0/' title='Creative Commons BY 3.0'> CC BY 3.0 </a>
             <br/>

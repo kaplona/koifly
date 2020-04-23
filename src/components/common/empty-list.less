@@ -2,11 +2,13 @@
 @import (reference) '../general';
 
 .empty-list {
-  @color: darken(@base-color, 15%);
+  @text-color: #c3dce6;
+  @button-color: #d5eaf2;
 
   margin: (@menu-height * 2) auto;
   font-size: 2em;
-  color: @color;
+  font-weight: 200;
+  color: @text-color;
   text-align: center;
 
   @media (max-width: (@medium-viewport - 1)) {
@@ -14,14 +16,20 @@
   }
 
   .add-button {
-    width: @menu-height * 1.5;
-    height: @menu-height * 1.5;
     margin: @menu-height * 0.5 auto 0 auto;
-    padding: 0;
-    border: 3px solid @color;
+    width: 60px;
+    height: 60px;
+    border: 1px solid @button-color;
     border-radius: 50%;
-    color: @color;
-    font-size: @menu-height * 1.1;
+    padding: 0 0 0 2px;
+    font-size: 39px;
+    font-weight: 200;
+    color: @button-color;
+    box-sizing: border-box;
     cursor: pointer;
+
+    @media (min-width: @medium-viewport) {
+      border: 2px solid @button-color;
+    }
   }
 }

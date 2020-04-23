@@ -21,7 +21,8 @@ app.use(webpackDevMiddleware(compiler, {
   publicPath: webpackConfig.output.publicPath,
   noInfo: true,
   stats: {
-    colors: true
+    colors: true,
+    children: false
   }
 }));
 

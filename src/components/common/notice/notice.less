@@ -18,9 +18,10 @@
   padding-right: @row-height * 0.7;
   background-color: @sand-color;
   position: relative;
+  z-index: @notice-z-index;
 
   @media (min-width: @medium-viewport) {
-    .box-shadow();
+    .box-shadow-light();
 
     @row-height: @row-height-desktop;
     @vp: @row-height * 0.23;
@@ -41,13 +42,16 @@
     margin-top: @row-height * 0.2;
     padding: (@row-height * 0.1) (@row-height * 0.2);
     border: 1px solid @mild-base;
+    border-radius: 2px;
     background: none;
     font-size: 0.9em;
     display: block;
     cursor: pointer;
 
     @media (min-width: @medium-viewport) {
-      .box-shadow();
+      -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     &:active {
