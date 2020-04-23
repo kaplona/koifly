@@ -229,7 +229,7 @@ export default class Home extends React.Component {
             2015-{new Date().getFullYear()} Anastasia Kaplina
           </div>
           <div className='icons-credits'>
-            icons by Hand Drawn Goods
+            icons by Hand Drawn Goods, <a href='https://www.flaticon.com/authors/monkik' title='monkik'>monkik</a> and <a href='https://www.flaticon.com/authors/freepik' title='freepik'>freepik</a>
             <br/>
             from <a href='http://www.flaticon.com' title='Flaticon'>www.flaticon.com</a> is licensed by <a href='http://creativecommons.org/licenses/by/3.0/' title='Creative Commons BY 3.0'> CC BY 3.0 </a>
             <br/>
