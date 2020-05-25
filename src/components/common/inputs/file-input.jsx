@@ -69,6 +69,7 @@ export default class FileInput extends React.Component {
           caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
           isFitContent={true}
           onClick={this.handleButtonClick}
+          isAllScreens={true}
         />
 
         {!this.props.fileName && (
