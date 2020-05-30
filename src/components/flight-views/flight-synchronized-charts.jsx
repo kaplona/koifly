@@ -80,7 +80,7 @@ export default class FlightSynchronizedCharts extends React.Component {
       renderTo: 'launch-distance-chart',
       title: 'Distance from launch',
       tooltipPointFormatter: function() {
-        return `<span>${this.y} ${pilotDistanceUnit}</span>`;
+        return `<span>${this.y.toFixed(3)} ${pilotDistanceUnit}</span>`;
       },
       series: chartService.getDistanceFromLaunchSeries(this.props.flightPoints, pilotDistanceUnit)
     };

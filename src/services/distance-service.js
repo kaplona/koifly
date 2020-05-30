@@ -5,8 +5,8 @@ const distanceService = {
   },
 
   unitConverter: {
-    km: 1,
-    mile: 0.621371
+    km: 0.001,
+    mile: 0.000621371
   },
 
   /**
@@ -54,7 +54,7 @@ const distanceService = {
    */
   getDistanceInGivenUnits: function(distance, units) {
     const multiplier = this.unitConverter[units];
-    return Math.round(parseFloat(distance) * multiplier);
+    return parseFloat(distance) * multiplier;
   }
 };
 
