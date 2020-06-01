@@ -164,10 +164,17 @@ export default class PilotView extends React.Component {
 
           <SectionTitle>Settings</SectionTitle>
 
-          <SectionRow isLast={true}>
+          <SectionRow>
             <RowContent
               label='Altitude units:'
               value={this.state.pilot.altitudeUnit}
+            />
+          </SectionRow>
+
+          <SectionRow isLast={true}>
+            <RowContent
+              label='Distance units:'
+              value={this.state.pilot.distanceUnit}
             />
           </SectionRow>
 

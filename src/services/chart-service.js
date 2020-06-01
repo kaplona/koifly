@@ -1,4 +1,5 @@
 import Altitude from '../utils/altitude';
+import Distance from '../utils/distance';
 import distanceService from './distance-service';
 import FlightModel from '../models/flight';
 import Highcharts from 'highcharts';
@@ -97,7 +98,7 @@ const chartService = {
       const distance = distanceService.getDistance(launchCoords.lat, launchCoords.lng, point.lat, point.lng);
       return {
         x: point.airtimeInSeconds,
-        y: distanceService.getDistanceInGivenUnits(distance, unit)
+        y: Distance.getDistanceInGivenUnits(distance, unit)
       };
     });
 

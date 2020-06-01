@@ -1,16 +1,7 @@
 const distanceService = {
-  distanceUnits: {
-    km: 'km',
-    mile: 'mile'
-  },
-
-  unitConverter: {
-    km: 0.001,
-    mile: 0.000621371
-  },
 
   /**
-   * Returns distance between two points in km.
+   * Returns distance between two points in m.
    * Stolen from here: https://www.geodatasource.com/developers/javascript
    * Theory: https://en.wikipedia.org/wiki/Great-circle_distance
    * @param {number} lat1
@@ -44,17 +35,6 @@ const distanceService = {
     const meterDist = radDist * earthRadiusInMeters;
 
     return meterDist;
-  },
-
-  /**
-   * Converts distance in km into provided units
-   * @param {number|string} distance – Distance in km
-   * @param {string} units – Units to convert into
-   * @returns {number} – Altitude velocity in given units
-   */
-  getDistanceInGivenUnits: function(distance, units) {
-    const multiplier = this.unitConverter[units];
-    return parseFloat(distance) * multiplier;
   }
 };
 
