@@ -398,6 +398,14 @@ export default class FlightEditView extends React.Component {
               Edit Flight
             </SectionTitle>
 
+            <SectionTitle isSubtitle={true}>
+              Upload IGC:
+            </SectionTitle>
+
+            <SectionRow>
+              <FightTrackUpload igc={this.state.item.igc} onLoad={this.handleFlightTrackData}/>
+            </SectionRow>
+
             <SectionRow>
               <DateInput
                 inputValue={this.state.item.date}
@@ -481,14 +489,6 @@ export default class FlightEditView extends React.Component {
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
               />
-            </SectionRow>
-
-            <SectionTitle isSubtitle={true} isDesktopOnly={true}>
-              Upload IGC:
-            </SectionTitle>
-
-            <SectionRow isDesktopOnly={true}>
-              <FightTrackUpload igc={this.state.item.igc} onLoad={this.handleFlightTrackData}/>
             </SectionRow>
 
             {this.renderDesktopButtons()}

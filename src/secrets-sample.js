@@ -41,7 +41,7 @@ const secrets = {
   googleMapsApiKey: 'key',
 
   // your google analytics tracking id
-  googleTrackingId: 'UI-*******-**',
+  googleTrackingId: 'UI-*******-**', // empty string to disable tracking script 
 
   // SSL assets
   shouldUseSSL: false, // true for production server with SSL certificate
