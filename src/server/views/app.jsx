@@ -1,7 +1,6 @@
 import React from 'react';
 import config from '../../config/variables';
 import getWebpackAssets from '../../tools/get-webpack-assets';
-import trackingCodeSnippet from '../../constants/tracking-code-snippet';
 
 
 export default class App extends React.Component {
@@ -20,9 +19,7 @@ export default class App extends React.Component {
           <script src={getWebpackAssets().runtime.js} />
           <script src={getWebpackAssets().vendors.js} />
           <script src={getWebpackAssets().app.js} />
-          {require('../../secrets').googleTrackingId &&
-          <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
-          }
+
           <link rel='stylesheet' type='text/css' href={getWebpackAssets().app.css}/>
 
           <link rel='icon' type='image/png' sizes='32x32' href='/static/icons/koifly-icon-32x32-round.png'/>
