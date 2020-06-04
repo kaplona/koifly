@@ -30,8 +30,8 @@ export default class About extends React.Component {
           <meta property='og:image:width' content='480'/>
           <meta property='og:image:height' content='248'/>
 
-          {require('../../secrets').googleTrackingId &&
-          <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
+          {trackingCodeSnippet &&
+            <script dangerouslySetInnerHTML={{ __html: trackingCodeSnippet }}/>
           }
         </head>
 
