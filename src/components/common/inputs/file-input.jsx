@@ -57,19 +57,21 @@ export default class FileInput extends React.Component {
           <div className='selected-file'>
             <Label>Selected file:</Label>
             <InputContainer>
-              <span className='file-name'>{this.props.fileName}</span>
-              <span className='remove-file' onClick={this.props.onRemove}>
-                {'\u274C'}
-              </span>
+              <div className='file-name-container'>
+                <span className='file-name'>{this.props.fileName}</span>
+                <span className='remove-file' onClick={this.props.onRemove}>
+                  {'\u274C'}
+                </span>
+              </div>
             </InputContainer>
           </div>
         )}
 
         <Button
           caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
+          isAllScreens={!this.props.fileName}
           isFitContent={true}
           onClick={this.handleButtonClick}
-          isAllScreens={true}
         />
 
         {!this.props.fileName && (

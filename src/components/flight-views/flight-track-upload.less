@@ -1,5 +1,12 @@
+@import (reference) '../constants';
+
 .flight-track-upload-component {
-  padding-bottom: 20px;
+  padding-top: 10px;
+  padding-bottom: 30px;
+
+  @media (min-width: @medium-viewport) {
+    padding-top: 0;
+  }
 
   .map {
     margin-top: 10px;

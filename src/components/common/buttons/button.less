@@ -2,79 +2,77 @@
 @import (reference) '../../general';
 
 .button {
+  .box-shadow();
+
+  width: 100%;
+  height: @row-height;
+  padding: 0 1em;
+  border: none;
+  background-color: @dark-blue;
+  border-radius: 2px;
+  color: @light-blue;
+  text-align: center;
+  font-size: @row-height * 0.45;
+  font-weight: 400;
+  outline: none;
+  cursor: pointer;
+  display: block;
+
+  &:hover,
+  &:active {
+    background-color: lighten(@dark-blue, 7%);
+  }
+
+  &.x-content-width {
+    width: auto;
+  }
+
+  &.x-small {
+    height: auto;
+    padding: 0.2em 0.5em;
+    font-size: @row-height * 0.35;
+  }
+
+  &.x-primary {
+    background-color: darken(@grass-color, 5%);
+
+    &:hover,
+    &:active {
+      background-color: @grass-hover;
+    }
+  }
+
+  &.x-secondary {
+    background-color: @grey-blue;
+
+    &:hover,
+    &:active {
+      background-color: @grey-blue-hover;
+    }
+  }
+
+  &.x-warning {
+    background-color: @brick-color;
+
+    &:hover,
+    &:active {
+      background-color: @brick-hover;
+    }
+  }
+
+  &:disabled {
+    background-color: lighten(@mild-base, 17%);
+    color: darken(@mild-base, 5%);
+
+    &:hover,
+    &:active {
+      background-color: lighten(@mild-base, 17%);
+    }
+  }
 
   @media (max-width: (@medium-viewport - 1)) {
     &.desktop-only {
       display: none;
-    }
-  }
-
-  @media (min-width: @medium-viewport) {
-    .box-shadow();
-
-    width: 100%;
-    height: @row-height;
-    padding: 0 1em;
-    border: none;
-    background-color: @dark-blue;
-    border-radius: 2px;
-    color: @light-blue;
-    text-align: center;
-    font-size: @row-height * 0.45;
-    font-weight: 400;
-    outline: none;
-    cursor: pointer;
-    display: block;
-
-    &:hover,
-    &:active {
-      background-color: lighten(@dark-blue, 7%);
-    }
-
-    &.x-content-width {
-      width: auto;
-    }
-
-    &.x-small {
-      height: auto;
-      padding: 0.2em 0.5em;
-    }
-
-    &.x-primary {
-      background-color: darken(@grass-color, 5%);
-
-      &:hover,
-      &:active {
-        background-color: @grass-hover;
-      }
-    }
-
-    &.x-secondary {
-      background-color: @grey-blue;
-
-      &:hover,
-      &:active {
-        background-color: @grey-blue-hover;
-      }
-    }
-
-    &.x-warning {
-      background-color: @brick-color;
-
-      &:hover,
-      &:active {
-        background-color: @brick-hover;
-      }
-    }
-
-    &:disabled {
-      background-color: lighten(@mild-base, 17%);
-      color: darken(@mild-base, 5%);
-
-      &:hover,
-      &:active {
-        background-color: lighten(@mild-base, 17%);
-      }
     }
   }
 }
