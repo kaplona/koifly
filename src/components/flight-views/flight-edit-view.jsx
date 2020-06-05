@@ -402,7 +402,7 @@ export default class FlightEditView extends React.Component {
               Upload IGC:
             </SectionTitle>
 
-            <SectionRow>
+            <SectionRow isMobileLast={true}>
               <FightTrackUpload igc={this.state.item.igc} onLoad={this.handleFlightTrackData}/>
             </SectionRow>
 

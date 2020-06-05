@@ -3,16 +3,14 @@
 
 .section-row {
   .border-box();
-  @hp: (@row-height * 0.3); // horizontal padding
   @bb: 1px; // border-bottom
 
   min-height: @row-height + @bb;
-  padding: 0 @hp;
-  border-bottom: 1px solid @mild-base;
+  padding: 0 (@row-height * 0.3);
+  border-bottom: @bb solid @light-base;
 
   @media (min-width: @medium-viewport) {
-    @hp: (@row-height * 0.6); // horizontal padding (desktop)
-    padding: (@row-height * 0.2) @hp;
+    padding: (@row-height * 0.2) (@row-height * 0.6);
     border-bottom: @bb solid @base-color;
   }
 
