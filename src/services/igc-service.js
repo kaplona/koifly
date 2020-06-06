@@ -261,7 +261,13 @@ const igcService = {
    * @return {number} – Returns altitude in meters.
    */
   getAltitudeFromBRecord(BRecord) {
-    return Number(BRecord.substr(25, 5));
+    let altitude = Number(BRecord.substr(25, 5));
+    if (altitude === 0) {
+      // fall back to GPS data
+      // ... well, for real pressure altitude of '0', it will be wrong but this should not happen too often ;-)
+      altitude = Number(BRecord.substr(30, 5));
+    }
+    return altitude;
   },
 
   /**
