@@ -14,12 +14,8 @@ require('./models/sites');
 require('./models/gliders');
 require('./models/flights');
 
-
-// Inits your Data Base. Creates tables for new Sequelize models if they don't exist and synchronise indexes.
-// With "force" flag will drop all tables and replace them with new ones.
-// Use this script for initial run of your application: "npm run db_init"
-// For consequent runs use migration scripts: "npm run db_migrate"
-// You still can sync your tables after running migration scripts in order to sync table indexes.
+// You can use this script for synchronizing tables' and models' indexes, but better create a proper migration for it.
+// For database initialization and consequent updates run migration script: "npm run db_migrate"
 db
   .sync()
   .then(() => console.log(chalk.green('db sync succeeded')))
