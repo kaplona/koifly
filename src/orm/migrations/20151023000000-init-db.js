@@ -158,7 +158,7 @@ module.exports = {
       }
     };
 
-    const pilotsOptions= {
+    const pilotsOptions = {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -226,21 +226,21 @@ module.exports = {
 
     try {
       await queryInterface.createTable('pilots', pilotsOptions, { transaction });
-      await queryInterface.addIndex('pilots', { fields: ['email'], name: 'pilotEmail', unique: true, transaction });
+      await queryInterface.addIndex('pilots', { fields: [ 'email' ], name: 'pilotEmail', unique: true, transaction });
 
       await queryInterface.createTable('sites', sitesOptions, { transaction });
-      await queryInterface.addIndex('sites', { fields: ['pilotId'], name: 'sitePilotId', transaction });
-      await queryInterface.addIndex('sites', { fields: ['updatedAt'], name: 'siteUpdatedAt', transaction });
+      await queryInterface.addIndex('sites', { fields: [ 'pilotId' ], name: 'sitePilotId', transaction });
+      await queryInterface.addIndex('sites', { fields: [ 'updatedAt' ], name: 'siteUpdatedAt', transaction });
 
       await queryInterface.createTable('gliders', glidersOptions, { transaction });
-      await queryInterface.addIndex('gliders', { fields: ['pilotId'], name: 'gliderPilotId', transaction });
-      await queryInterface.addIndex('gliders', { fields: ['updatedAt'], name: 'gliderUpdatedAt', transaction });
+      await queryInterface.addIndex('gliders', { fields: [ 'pilotId' ], name: 'gliderPilotId', transaction });
+      await queryInterface.addIndex('gliders', { fields: [ 'updatedAt' ], name: 'gliderUpdatedAt', transaction });
 
       await queryInterface.createTable('flights', flightsOptions, { transaction });
-      await queryInterface.addIndex('flights', { fields: ['pilotId'], name: 'flightPilotId', transaction });
-      await queryInterface.addIndex('flights', { fields: ['siteId'], name: 'flightSiteId', transaction });
-      await queryInterface.addIndex('flights', { fields: ['gliderId'], name: 'flightGliderId', transaction });
-      await queryInterface.addIndex('flights', { fields: ['updatedAt'], name: 'flightUpdatedAt', transaction });
+      await queryInterface.addIndex('flights', { fields: [ 'pilotId' ], name: 'flightPilotId', transaction });
+      await queryInterface.addIndex('flights', { fields: [ 'siteId' ], name: 'flightSiteId', transaction });
+      await queryInterface.addIndex('flights', { fields: [ 'gliderId' ], name: 'flightGliderId', transaction });
+      await queryInterface.addIndex('flights', { fields: [ 'updatedAt' ], name: 'flightUpdatedAt', transaction });
 
       await transaction.commit();
     } catch (err) {
