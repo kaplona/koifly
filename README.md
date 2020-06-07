@@ -32,7 +32,7 @@ This app is designed for hang gliding and paragliding pilots who want to keep re
 * `git clone` this project
 * `npm install` to download dependencies
 * `cp -i src/secrets-sample.js src/secrets.js`, then add your database credentials and other app setting to this file.
-* Create MySQL database, then run `npm run db_init` to create DB tables (note: this requires all previous steps to be done)
+* Create MySQL database, then run `npm run db_migrate` to create DB tables (note: this requires all previous steps to be done)
 
 Run in Development Mode:
 * `npm run dev` to start Hapi application server
