@@ -147,10 +147,10 @@ const igcService = {
     const hoursOffset = sign * Math.floor(Math.abs(lng) * 12 / 180);
     const hours = (timeInSec / 3600) + hoursOffset;
     if (hours > 24) {
-      DD += 1;
+      DD = Number(DD) + 1;
     }
     if (hours < 0) {
-      DD += -1;
+      DD = Number(DD) - 1;
     }
 
     // Using JS Date object to get a valid date in case day of the month is zero or greater that days in the month.
