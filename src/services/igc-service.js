@@ -29,6 +29,7 @@ const igcService = {
   parseIgc(fileText) {
     const records = fileText.split('\n');
     const startIndex = this.findStartIndex(records);
+    const gpsAltIndexes = this.findGpsAltitudeIndexes(records);
 
     const fixedRecords = records.filter((record, index) => {
       return (index > startIndex) && record.startsWith('B');
@@ -48,7 +49,7 @@ const igcService = {
       }
 
       const { lat, lng } = this.getDecimalCoordsFromBRecord(record);
-      const altitude = this.getAltitudeFromBRecord(record);
+      const altitude = this.getAltitudeFromBRecord(record, gpsAltIndexes);
       const altInPilotUnit = Altitude.getAltitudeInPilotUnits(altitude);
 
       maxAltitude = (!maxAltitude || maxAltitude < altInPilotUnit) ? altInPilotUnit : maxAltitude;
@@ -111,10 +112,10 @@ const igcService = {
       }
       if (record.substring(2, 5) === 'DTE') {
         if(record.substring(5, 9) === 'DATE') {
-          // new spec long format
+          // new spec long format (v2)
           dateRecord = record.substring(10, 16);
         } else {
-          // original spec format
+          // original spec format (v1)
           dateRecord = record.substring(5);
         }
         break;
@@ -177,25 +178,36 @@ const igcService = {
    * @return {{start: number, end: number}|null} – Returns object with start and end indexes (bytes) for GPS altitude
    * in B record. Or null if B records don't include GPS altitude.
    */
-  findGpsIndexes(records) {
-    let gpsAltitudeIndexes = null;
+  findGpsAltitudeIndexes(records) {
+    const standardGpsAltIndexes = { start: 30, end: 35 };
     const fixedExtensionRecord = records.find(record => record.startsWith('I'));
 
-    if (fixedExtensionRecord) {
-      // Check that I record contain GAL (GPS Altitude) mnemonic.
-      if (fixedExtensionRecord.includes('GAL')) {
-        const indexesString = fixedExtensionRecord.match(/(\d\d\d\d)GAL/)[1];
-        gpsAltitudeIndexes = {
-          start: Number(indexesString.substr(0, 2)),
-          end: Number(indexesString.substr(2, 2))
-        };
-        // If no GAL mnemonic, check that B record follow recommended format and 31-35 bytes are reserved for GAL.
-      } else if (Number(fixedExtensionRecord.substr(3, 2)) > 35) {
-        gpsAltitudeIndexes = { start: 31, end: 35 };
-      }
+    // If no I record, assume that B records follow standard format and all have GPS altitude.
+    // Potentially GPS altitude can be missing in B records in IGC spec v1,
+    // but it will be used only if barometer altitude is not provided,
+    // so it's very unlikely that a B record misses both altitude measurements.
+    if (!fixedExtensionRecord) {
+      return standardGpsAltIndexes;
     }
 
-    return gpsAltitudeIndexes;
+    // IGC spec v1 had GPS altitude recommended but not mandatory,
+    // Check that I record contains GAL (GPS Altitude) mnemonic, and get B record indexes for GPS altitude.
+    if (fixedExtensionRecord.includes('GAL')) {
+      const indexesString = fixedExtensionRecord.match(/(\d\d\d\d)GAL/)[1];
+      return {
+        start: Number(indexesString.substr(0, 2)),
+        end: Number(indexesString.substr(2, 2)) + 1
+      };
+    }
+
+    // If no GAL mnemonic, check indexes for the first extension of a B record,
+    // if it starts from 36 it means that B records follow recommended format and have GPS altitude.
+    if (Number(fixedExtensionRecord.substr(3, 2)) >= standardGpsAltIndexes.end) {
+      return standardGpsAltIndexes;
+    }
+
+    // If we are here, we are parsing old format IGC with B records which lack GPS altitude.
+    return null;
   },
 
   /**
@@ -257,14 +269,15 @@ const igcService = {
 
   /**
    * @param {string} BRecord – IGC B record (Fixed record).
+   * @param {{start:number, end:number}|null} gpsAltIndexes – Indexes of GPS altitude in B record
    * @return {number} – Returns altitude in meters.
    */
-  getAltitudeFromBRecord(BRecord) {
+  getAltitudeFromBRecord(BRecord, gpsAltIndexes) {
     let altitude = Number(BRecord.substr(25, 5));
-    if (altitude === 0) {
+    if (altitude === 0 && gpsAltIndexes) {
       // fall back to GPS data
       // ... well, for real pressure altitude of '0', it will be wrong but this should not happen too often ;-)
-      altitude = Number(BRecord.substr(30, 5));
+      altitude = Number(BRecord.substring(gpsAltIndexes.start, gpsAltIndexes.end));
     }
     return altitude;
   },
