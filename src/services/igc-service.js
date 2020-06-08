@@ -112,9 +112,8 @@ const igcService = {
       if (record.substring(2, 5) === 'DTE') {
         if(record.substring(5, 9) === 'DATE') {
           // new spec long format
-          dateRecord = record.substring(10,16);
-        }
-        else {
+          dateRecord = record.substring(10, 16);
+        } else {
           // original spec format
           dateRecord = record.substring(5);
         }
