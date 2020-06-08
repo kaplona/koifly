@@ -1,18 +1,12 @@
 {
-  "name": "koifly-flight-loging-app",
-  "version": "0.2.0",
-  "description": "Flight loging app for hang glider and paraglider pilots",
-  "keywords": [
-    "hapi",
-    "react",
-    "webpack",
-    "HMR"
-  ],
+  "name": "koifly",
+  "version": "1.0.0",
+  "description": "Flight logging app for hang glider and paraglider pilots",
   "license": "MIT",
   "author": "Anastasia Kaplina <nkaplina@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kaplona/koifly-flight-loging-app"
+    "url": "https://github.com/kaplona/koifly"
   },
   "main": "src/server.js",
   "scripts": {
