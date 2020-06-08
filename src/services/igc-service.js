@@ -161,13 +161,13 @@ const igcService = {
 
   /**
    * Searches for E record (Event record) which signifies that flight began and all followed records belong to
-   * the flight. E record should include STA (Start) or ATS (Activity Tracking System) mnemonic.
+   * the flight. E record should include STA (Start) mnemonic.
    * @param {Array} records – List of igc file lines.
    * @return {number} – Returns start index, or -1 if igc doesn't have start event in its records.
    */
   findStartIndex(records) {
     return records.findIndex(record => {
-      return record.startsWith('E') && (record.includes('STA') || record.includes('ATS'));
+      return record.startsWith('E') && record.includes('STA');
     });
   },
 
