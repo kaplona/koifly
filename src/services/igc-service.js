@@ -102,14 +102,21 @@ const igcService = {
   findFlightDate(records, timeInSec, lng) {
     let dateRecord;
     for (let i = 0; i < records.length; i++) {
+
       const record = records[i];
       const isHeaderRecord = (record[0] === 'H') || (record[0] === 'A');
       if (!isHeaderRecord) {
+        // header section is finished and it is not worth looking further ...
         break;
       }
-      const isDateRecord = (record.substring(2, 5) === 'DTE');
-      if (isDateRecord) {
-        dateRecord = record;
+      if (record.substring(2, 5) === 'DTE') {
+        if(record.substring(5, 9) === 'DATE') {
+          // new spec long format
+          dateRecord = record.substring(10, 16);
+        } else {
+          // original spec format
+          dateRecord = record.substring(5);
+        }
         break;
       }
     }
@@ -118,9 +125,9 @@ const igcService = {
       return null;
     }
 
-    let DD = dateRecord.substring(5, 7);
-    const MM = dateRecord.substring(7, 9);
-    const YY = dateRecord.substring(9);
+    let DD = dateRecord.substring(0, 2);
+    const MM = dateRecord.substring(2, 4);
+    const YY = dateRecord.substring(4);
     // Hoping that IGC format will start saving year in 4 digits in 2100
     const YYYY = ('20' + YY);
 
@@ -253,7 +260,13 @@ const igcService = {
    * @return {number} – Returns altitude in meters.
    */
   getAltitudeFromBRecord(BRecord) {
-    return Number(BRecord.substr(25, 5));
+    let altitude = Number(BRecord.substr(25, 5));
+    if (altitude === 0) {
+      // fall back to GPS data
+      // ... well, for real pressure altitude of '0', it will be wrong but this should not happen too often ;-)
+      altitude = Number(BRecord.substr(30, 5));
+    }
+    return altitude;
   },
 
   /**
