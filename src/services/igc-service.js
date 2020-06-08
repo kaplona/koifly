@@ -103,7 +103,6 @@ const igcService = {
   findFlightDate(records, timeInSec, lng) {
     let dateRecord;
     for (let i = 0; i < records.length; i++) {
-
       const record = records[i];
       const isHeaderRecord = (record[0] === 'H') || (record[0] === 'A');
       if (!isHeaderRecord) {
@@ -111,7 +110,7 @@ const igcService = {
         break;
       }
       if (record.substring(2, 5) === 'DTE') {
-        if(record.substring(5, 9) === 'DATE') {
+        if (record.substring(5, 9) === 'DATE') {
           // new spec long format (v2)
           dateRecord = record.substring(10, 16);
         } else {
