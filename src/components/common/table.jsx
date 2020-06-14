@@ -28,10 +28,10 @@ export default class Table extends React.Component {
       return;
     }
 
-    const newsortingDirection = this.getDefaultSortingDirection(newSortingField);
+    const newSortingDirection = this.getDefaultSortingDirection(newSortingField);
     this.setState({
       sortingField: newSortingField,
-      sortingDirection: newsortingDirection
+      sortingDirection: newSortingDirection
     });
   }
 
@@ -57,6 +57,22 @@ export default class Table extends React.Component {
     return sortingDirection;
   }
 
+  getSortingRows() {
+    const sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
+    // Sort is case insensitive
+    const iteratees = [ row => Util.upperCaseString(row[this.state.sortingField]) ];
+    const orders = [ sortingOrder ];
+
+    const sortingColumn = this.props.columns.find(({ sortingKey }) => sortingKey === this.state.sortingField);
+    const secondarySortingKey = sortingColumn.secondarySortingKey;
+    if (secondarySortingKey) {
+      iteratees.push(row => Util.upperCaseString(row[secondarySortingKey]));
+      orders.push(sortingOrder);
+    }
+
+    return orderBy(this.props.rows, iteratees, orders);
+  }
+
   render() {
     const headerNodes = this.props.columns.map(column => {
       let arrow = '\u25bc';
@@ -80,14 +96,7 @@ export default class Table extends React.Component {
       );
     });
 
-
-    const sortingOrder = this.state.sortingDirection ? 'asc' : 'desc';
-    const sortedRows = orderBy(
-      this.props.rows,
-      // Sort is case insensitive
-      [ row => Util.upperCaseString(row[this.state.sortingField]) ],
-      [ sortingOrder ]
-    );
+    const sortedRows = this.getSortingRows();
 
     const rowNodes = sortedRows.map(row => {
       const rowToDisplay = [];

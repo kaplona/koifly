@@ -95,7 +95,8 @@ export default class FlightListView extends React.Component {
         key: 'formattedDate',
         label: 'Date',
         defaultSortingDirection: false,
-        sortingKey: 'date'
+        sortingKey: 'date',
+        secondarySortingKey: 'createdAt'
       },
       {
         key: 'siteName',

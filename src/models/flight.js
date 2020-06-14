@@ -74,7 +74,8 @@ let FlightModel = {
         date: flight.date.substring(0, 10),
         siteName: flight.siteId ? SiteModel.getSiteName(flight.siteId) : null,
         altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
-        airtime: flight.airtime
+        airtime: flight.airtime,
+        createdAt: flight.createdAt
       };
     });
   },
