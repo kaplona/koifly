@@ -1,6 +1,5 @@
 import Altitude from '../utils/altitude';
 import Distance from '../utils/distance';
-import distanceService from './distance-service';
 import FlightModel from '../models/flight';
 import Highcharts from 'highcharts';
 import SiteModel from '../models/site';
@@ -95,7 +94,7 @@ const chartService = {
     const launchCoords = { lat: firstPoint.lat, lng: firstPoint.lng };
 
     const distancePoints = flightPoints.map(point => {
-      const distance = distanceService.getDistance(launchCoords.lat, launchCoords.lng, point.lat, point.lng);
+      const distance = Distance.getDistance(launchCoords.lat, launchCoords.lng, point.lat, point.lng);
       return {
         x: point.airtimeInSeconds,
         y: Distance.getDistanceInGivenUnits(distance, unit)
@@ -122,7 +121,7 @@ const chartService = {
     const landingAlt = lastPoint.altitude;
 
     const glideRatioPoints = flightPoints.map(point => {
-      const distance = distanceService.getDistance(landingCoords.lat, landingCoords.lng, point.lat, point.lng);
+      const distance = Distance.getDistance(landingCoords.lat, landingCoords.lng, point.lat, point.lng);
       const altitude = (point.altitude - landingAlt);
       return {
         x: point.airtimeInSeconds,

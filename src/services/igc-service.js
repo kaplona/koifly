@@ -1,5 +1,5 @@
 import Altitude from '../utils/altitude';
-import distanceService from './distance-service';
+import Distance from '../utils/distance';
 import errorTypes from '../errors/error-types';
 import KoiflyError from '../errors/error';
 import SiteModel from '../models/site';
@@ -278,7 +278,7 @@ const igcService = {
         return (Math.abs(lat - launchLat) < 0.1) && (Math.abs(lng - launchLng) < 0.1);
       })
       .forEach(site => {
-        const distance = distanceService.getDistance(launchLat, launchLng, site.lat, site.lng);
+        const distance = Distance.getDistance(launchLat, launchLng, site.lat, site.lng);
         // Take only sites within 1 km radius.
         if ((distance < 1000) && (!nearestSite || distance < nearestSite.distance)) {
           nearestSite = {

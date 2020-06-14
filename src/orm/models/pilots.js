@@ -78,10 +78,10 @@ const Pilot = db.define(
     },
 
     distanceUnit: {
-      type: Sequelize.ENUM('meters', 'kilometers', 'miles'), // eslint-disable-line new-cap
+      type: Sequelize.ENUM('kilometers', 'miles'), // eslint-disable-line new-cap
       allowNull: false,
       defaultValue: 'kilometers',
-      validate: { isIn: [ ['meters', 'kilometers', 'miles'] ] }
+      validate: { isIn: [ ['kilometers', 'miles'] ] }
     },
 
     token: {

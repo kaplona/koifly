@@ -3,7 +3,6 @@ import { arrayOf, func, number, shape } from 'prop-types';
 import Altitude from '../../utils/altitude';
 import chartService from '../../services/chart-service';
 import Distance from '../../utils/distance';
-import distanceService from '../../services/distance-service';
 import Highcharts from 'highcharts';
 
 require('./flight-synchronized-charts.less');
@@ -81,7 +80,7 @@ export default class FlightSynchronizedCharts extends React.Component {
       renderTo: 'launch-distance-chart',
       title: 'Distance from launch',
       tooltipPointFormatter: function() {
-        return pilotDistanceUnit == 'm' ? `<span>${Math.round(this.y)} ${pilotDistanceUnit}</span>` : `<span>${this.y.toFixed(3)} ${pilotDistanceUnit}</span>`;
+        return `<span>${this.y.toFixed(3)} ${pilotDistanceUnit}</span>`;
       },
       series: chartService.getDistanceFromLaunchSeries(this.props.flightPoints, pilotDistanceUnit)
     };

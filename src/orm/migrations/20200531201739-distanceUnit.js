@@ -7,7 +7,7 @@ module.exports = {
       'pilots',
       'distanceUnit',
       {
-        type: Sequelize.ENUM('meters', 'kilometers', 'miles'),
+        type: Sequelize.ENUM('kilometers', 'miles'),
         allowNull: false,
         defaultValue: 'kilometers',
         after: 'altitudeUnit'
