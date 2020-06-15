@@ -10,6 +10,7 @@ export default function getPilotValuesForFrontend(pilot) {
     initialFlightNum: pilot.get('initialFlightNum'),
     initialAirtime: pilot.get('initialAirtime'),
     altitudeUnit: pilot.get('altitudeUnit'),
+    distanceUnit: pilot.get('distanceUnit'),
     updatedAt: pilot.get('updatedAt'),
     isActivated: pilot.get('isActivated') // true / false
   };

@@ -244,7 +244,8 @@ function savePilotInfo(data, pilot) {
     userName: data.userName,
     initialFlightNum: data.initialFlightNum,
     initialAirtime: data.initialAirtime,
-    altitudeUnit: data.altitudeUnit
+    altitudeUnit: data.altitudeUnit,
+    distanceUnit: data.distanceUnit
   };
 
   return pilot.update(data);
