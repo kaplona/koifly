@@ -33,7 +33,7 @@
     "@hapi/hapi": "18.4.1",
     "@hapi/inert": "5.2.0",
     "@hapi/vision": "5.5.2",
-    "bcrypt": "3.0.6",
+    "bcrypt": "5.0.0",
     "chalk": "2.4.2",
     "csvtojson": "1.1.9",
     "eventemitter3": "4.0.0",
