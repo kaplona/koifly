@@ -3,14 +3,21 @@ import { shape, string } from 'prop-types';
 import { Link } from 'react-router-dom';
 import Altitude from '../../utils/altitude';
 import BreadCrumbs from '../common/bread-crumbs';
+import Button from '../common/buttons/button';
+import DesktopTopGrid from '../common/grids/desktop-top-grid';
 import ErrorBox from '../common/notice/error-box';
 import FightMapAndCharts from './flight-map-and-charts';
 import FlightModel from '../../models/flight';
+import igcService from '../../services/igc-service';
+import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
+import PilotModel from '../../models/pilot';
+import pilotNameToIGCShort from '../../utils/pilot-name-igc';
 import RemarksRow from '../common/section/remarks-row';
 import RowContent from '../common/section/row-content';
+import { saveAs } from 'file-saver';
 import Section from '../common/section/section';
 import SectionLoader from '../common/section/section-loader';
 import SectionRow from '../common/section/section-row';
@@ -29,6 +36,7 @@ export default class FlightView extends React.Component {
 
     this.handleStoreModified = this.handleStoreModified.bind(this);
     this.handleEditItem = this.handleEditItem.bind(this);
+    this.handleDownloadIGC = this.handleDownloadIGC.bind(this);
   }
 
   /**
@@ -55,6 +63,20 @@ export default class FlightView extends React.Component {
 
   handleEditItem() {
     navigationService.goToEditView(FlightModel.keys.single, this.props.match.params.id);
+  }
+
+  handleDownloadIGC() {
+    let filename = this.state.item.igcFileName;
+    if (filename === '') { // fall back to guessed name in usual XCT format
+      const { pilotName, flightNumber } = igcService.findPilotNameFlightNumber(this.state.item.igc);
+      const thisFlightNumber = (flightNumber ? flightNumber : '1').toString().padStart(2, '0');
+      const pilot = PilotModel.getPilotOutput();
+      const pilotShort = pilotNameToIGCShort(pilotName ? pilotName : pilot.userName);
+      // do not know where the '-XCT-' comes from, but this is in all file names I have seen so far ...
+      filename = this.state.item.date + '-XCT-' + pilotShort + '-' + thisFlightNumber + '.igc';
+    }
+    const blob = new Blob([ this.state.item.igc ], { type: 'text/plain;charset=utf-8' });
+    saveAs(blob, filename);
   }
 
   renderNavigationMenu() {
@@ -94,6 +116,33 @@ export default class FlightView extends React.Component {
       />
     );
   }
+
+  renderDownloadIGCButton() {
+    if (this.state.item.igc) {
+      return (
+        <div>
+          <Button
+            caption='Download IGC'
+            onClick={this.handleDownloadIGC}
+          />
+        </div>
+      );
+    }
+  }
+
+  renderMobileButtons() {
+    if (this.state.item.igc) {
+      return (
+        <div>
+          <MobileButton
+            caption='Download IGC'
+            onClick={this.handleDownloadIGC}
+          />
+        </div>
+      );
+    }
+  }
+
 
   render() {
     if (this.state.loadingError) {
@@ -172,7 +221,12 @@ export default class FlightView extends React.Component {
             igc={this.state.item.igc}
             siteId={this.state.item.siteId}
           />
+
+          <DesktopTopGrid leftElement={this.renderDownloadIGCButton()}/>
+          {this.renderMobileButtons()}
+
         </Section>
+
       </View>
     );
   }

@@ -93,6 +93,32 @@ const igcService = {
   },
 
   /**
+   * Extract pilots name and flight number from igc file (used for saving igc file).
+   * @param {string} fileText – IGC file content as text.
+   * @return {string|null} – Name of pilot in charge or null if entry is not found.
+   */
+  findPilotNameFlightNumber(fileText) {
+    let pilotName = null;
+    let flightNumber = null;
+    const records = fileText.split('\n');
+    for (let i = 0; i < records.length; i++) {
+      const record = records[i];
+      const isHeaderRecord = (record[0] === 'H') || (record[0] === 'A');
+      if (!isHeaderRecord) {
+        // header section is finished and it is not worth looking further ...
+        break;
+      }
+      if (record.substring(1, 18) === 'FPLTPILOTINCHARGE') {
+          pilotName = record.substring(19);
+      }
+      if (record.substring(1, 9) === 'FDTEDATE') {
+          flightNumber = record.substring(17);
+      }
+    }
+    return { pilotName: pilotName, flightNumber: flightNumber };
+  },
+
+  /**
    * Searches for header record "H" with date mnemonic "DTE".
    * Extracts date from the record, adjust date depending on timezone (longitude where flight took place).
    * @param {array.<string>} records

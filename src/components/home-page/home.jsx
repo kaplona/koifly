@@ -163,11 +163,6 @@ export default class Home extends React.Component {
           <FeatureColumn>
             <ul>
               <li>
-                <div className='coming-title'>Data export</div>
-                We understand that your data shouldn't be locked in the app. It's convenient to store everything
-                in one place but if you need your flights or IGC tracks elsewhere – just download them.
-              </li>
-              <li>
                 <div className='coming-title'>Tagging and advanced search</div>
                 Tag your flights: was it winch tow or a foot launch, powered or unpowered flight. Filter through
                 your flights, see if you have enough flights of various kinds for that instructor rating.
@@ -175,6 +170,10 @@ export default class Home extends React.Component {
               <li>
                 <div className='coming-title'>More fields for each data type</div>
                 Wind strength and direction, landing zone coordinates and more.
+              </li>
+              <li>
+                <div className='coming-title'>Glider inspection periods</div>
+                Track your glider inspections and get a reminder, when it is time again to get your gear tested again.
               </li>
               <li>
                 <div className='coming-title'>Offline app</div>
