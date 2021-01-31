@@ -120,8 +120,8 @@ export default class PilotFlightsUpload extends React.Component {
     if (file.type !== 'text/csv') {
       errors.push('File must be .csv format.');
     }
-    if (file.size > 1048576) {
-      errors.push('File must be less than 1MB');
+    if (file.size > 2097152) {
+      errors.push('File must be less than 2MB');
     }
 
     return errors.length ? new KoiflyError(errorTypes.VALIDATION_ERROR, errors.join(' ')) : null;
