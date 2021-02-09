@@ -13,8 +13,6 @@ import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
-import PilotModel from '../../models/pilot';
-import pilotNameToIGCShort from '../../utils/pilot-name-igc';
 import RemarksRow from '../common/section/remarks-row';
 import RowContent from '../common/section/row-content';
 import { saveAs } from 'file-saver';
@@ -67,13 +65,9 @@ export default class FlightView extends React.Component {
 
   handleDownloadIGC() {
     let filename = this.state.item.igcFileName;
-    if (filename === '') { // fall back to guessed name in usual XCT format
-      const { pilotName, flightNumber } = igcService.findPilotNameFlightNumber(this.state.item.igc);
-      const thisFlightNumber = (flightNumber ? flightNumber : '1').toString().padStart(2, '0');
-      const pilot = PilotModel.getPilotOutput();
-      const pilotShort = pilotNameToIGCShort(pilotName ? pilotName : pilot.userName);
-      // do not know where the '-XCT-' comes from, but this is in all file names I have seen so far ...
-      filename = this.state.item.date + '-XCT-' + pilotShort + '-' + thisFlightNumber + '.igc';
+    // fall back to guessed name in standard format
+    if (!filename) {
+      filename = igcService.composeIGCFileName(this.state.item.igc, this.state.item.date);
     }
     const blob = new Blob([ this.state.item.igc ], { type: 'text/plain;charset=utf-8' });
     saveAs(blob, filename);

@@ -93,13 +93,19 @@ const igcService = {
   },
 
   /**
-   * Extract pilots name and flight number from igc file (used for saving igc file).
+   * Extracts FR serial number, pilots name and flight number from igc file (used for saving igc file).
    * @param {string} fileText – IGC file content as text.
-   * @return {string|null} – Name of pilot in charge or null if entry is not found.
+   * @return {{
+   *   pilotName: string|null,
+   *   flightNumber: string|null,
+   *   serialNumber: string|null
+   * }} – Name of pilot in charge or null if entry is not found.
    */
-  findPilotNameFlightNumber(fileText) {
+  findIGCFileAssets(fileText) {
     let pilotName = null;
     let flightNumber = null;
+    let serialNumber = null;
+
     const records = fileText.split('\n');
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
@@ -108,14 +114,54 @@ const igcService = {
         // header section is finished and it is not worth looking further ...
         break;
       }
+      if (record[0] === 'A') {
+        serialNumber = record.substring(1, 4);
+      }
       if (record.substring(1, 18) === 'FPLTPILOTINCHARGE') {
-          pilotName = record.substring(19);
+        pilotName = record.substring(19);
+      } else if (record.substring(1, 10) === 'FPLTPILOT') {
+        pilotName = record.substring(11);
       }
       if (record.substring(1, 9) === 'FDTEDATE') {
-          flightNumber = record.substring(17);
+        flightNumber = record.substring(17);
       }
     }
-    return { pilotName: pilotName, flightNumber: flightNumber };
+    return { pilotName, flightNumber, serialNumber };
+  },
+
+  /**
+   * IGC files have a special file naming format:
+   * https://xp-soaring.github.io/igc_file_format/igc_format_2008.html#link_2.5
+   * @param {string} fileText – IGC file content as text.
+   * @param {string} flightDate – Date in yyyy-mm-dd format
+   * @return {string} – Name of the IGC file close to the standard guidelines
+   */
+  composeIGCFileName(fileText, flightDate) {
+    let { pilotName, flightNumber, serialNumber } = this.findIGCFileAssets(fileText);
+
+    const paddedFlightNumber = (flightNumber || 1).toString().padStart(2, '0');
+
+    let pilotNameShort = null;
+    if (pilotName) {
+      const nameParts = pilotName.split(' ');
+      // if pilot name consist of several words – take 1st char of the first name and 2 chars of the last name
+      if (nameParts.length > 1) {
+        const firstName = nameParts[0];
+        const lastName = nameParts[nameParts.length - 1];
+        pilotNameShort = `${firstName.substring(0, 1)}${lastName.substring(0, 2)}`.toUpperCase();
+      } else {
+        // if only one name (or no spaces), use first 3 letters of this
+        pilotNameShort = nameParts[0].substring(0, 3).toUpperCase();
+      }
+    }
+
+    const fileParts = [flightDate, serialNumber, pilotNameShort, paddedFlightNumber];
+    const fileName = fileParts
+      .filter(part => Boolean(part))
+      .join('-')
+      .replace(/[^0-9a-z-]/gi, '');
+
+    return `${fileName}.igc`;
   },
 
   /**
