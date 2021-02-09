@@ -126,7 +126,11 @@ const igcService = {
         flightNumber = record.substring(17);
       }
     }
-    return { pilotName, flightNumber, serialNumber };
+    return {
+      pilotName: pilotName && pilotName.trim(),
+      flightNumber: flightNumber && flightNumber.trim(),
+      serialNumber
+    };
   },
 
   /**
