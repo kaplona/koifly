@@ -141,7 +141,7 @@ const igcService = {
    * @return {string} – Name of the IGC file close to the standard guidelines
    */
   composeIGCFileName(fileText, flightDate) {
-    let { pilotName, flightNumber, serialNumber } = this.findIGCFileAssets(fileText);
+    const { pilotName, flightNumber, serialNumber } = this.findIGCFileAssets(fileText);
 
     const paddedFlightNumber = (flightNumber || 1).toString().padStart(2, '0');
 
