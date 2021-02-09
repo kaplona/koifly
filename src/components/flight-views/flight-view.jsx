@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Altitude from '../../utils/altitude';
 import BreadCrumbs from '../common/bread-crumbs';
 import Button from '../common/buttons/button';
-import DesktopTopGrid from '../common/grids/desktop-top-grid';
+import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
 import ErrorBox from '../common/notice/error-box';
 import FightMapAndCharts from './flight-map-and-charts';
 import FlightModel from '../../models/flight';
@@ -120,12 +120,14 @@ export default class FlightView extends React.Component {
   renderDownloadIGCButton() {
     if (this.state.item.igc) {
       return (
-        <div>
-          <Button
-            caption='Download IGC'
-            onClick={this.handleDownloadIGC}
-          />
-        </div>
+        <DesktopBottomGrid
+          leftElements={[
+            <Button
+              caption='Download IGC'
+              onClick={this.handleDownloadIGC}
+            />
+          ]}
+        />
       );
     }
   }
@@ -222,10 +224,10 @@ export default class FlightView extends React.Component {
             siteId={this.state.item.siteId}
           />
 
-          <DesktopTopGrid leftElement={this.renderDownloadIGCButton()}/>
-          {this.renderMobileButtons()}
-
+          {this.renderDownloadIGCButton()}
         </Section>
+
+        {this.renderMobileButtons()}
 
       </View>
     );
