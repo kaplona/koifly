@@ -87,6 +87,12 @@ const Flight = db.define(
       defaultValue: null
     },
 
+    igcFileName: {
+      type: Sequelize.TEXT,
+      allowNull: true,
+      defaultValue: null
+    },
+
     see: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
