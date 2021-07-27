@@ -106,7 +106,8 @@ function saveFlight(data, pilotId) {
       airtime: data.airtime,
       gliderId: data.gliderId,
       remarks: data.remarks,
-      igc: data.igc
+      igc: data.igc,
+      igcFileName: data.igcFileName,
     };
   }
 

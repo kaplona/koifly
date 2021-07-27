@@ -71,7 +71,7 @@ export default class FightTrackUpload extends React.Component {
         return;
       }
 
-      this.props.onLoad(parsedFile, igc);
+      this.props.onLoad(parsedFile, igc, this.state.fileName);
       this.setState({ parsedIgc: parsedFile });
     };
     reader.onerror = error => {
