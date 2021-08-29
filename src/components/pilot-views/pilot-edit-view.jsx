@@ -4,6 +4,7 @@ import Altitude from '../../utils/altitude';
 import AppLink from '../common/app-link';
 import Button from '../common/buttons/button';
 import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
+import Distance from '../../utils/distance';
 import DomUtil from '../../utils/dom-util';
 import DropdownInput from '../common/inputs/dropdown-input';
 import ErrorBox from '../common/notice/error-box';
@@ -32,6 +33,7 @@ export default class PilotEditView extends React.Component {
       initialFlightNum: null,
       initialAirtime: null,
       altitudeUnit: null,
+      distanceUnit: null,
       hours: null,
       minutes: null
     };
@@ -350,13 +352,25 @@ export default class PilotEditView extends React.Component {
               My settings:
             </SectionTitle>
 
-            <SectionRow isLast={true}>
+            <SectionRow>
               <DropdownInput
                 selectedValue={this.state.item.altitudeUnit}
                 options={Altitude.getAltitudeUnitsValueTextList()}
                 labelText='Altitude units:'
                 inputName='altitudeUnit'
                 errorMessage={this.state.validationErrors.altitudeUnit}
+                onChangeFunc={this.handleInputChange}
+                onFocus={this.handleInputFocus}
+                onBlur={this.handleInputBlur}
+              />
+            </SectionRow>
+            <SectionRow isLast={true}>
+              <DropdownInput
+                selectedValue={this.state.item.distanceUnit}
+                options={Distance.getDistanceUnitsValueTextList()}
+                labelText='Distance units:'
+                inputName='distanceUnit'
+                errorMessage={this.state.validationErrors.distanceUnit}
                 onChangeFunc={this.handleInputChange}
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}

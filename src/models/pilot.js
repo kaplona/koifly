@@ -81,6 +81,7 @@ let PilotModel = {
       siteNum: siteNum,
       gliderNum: gliderNum,
       altitudeUnit: pilot.altitudeUnit,
+      distanceUnit: pilot.distanceUnit,
       daysSinceLastFlight: daysSinceLastFlight
     };
   },
@@ -107,6 +108,7 @@ let PilotModel = {
       userName: pilot.userName,
       initialFlightNum: initialFlightNum.toString(),
       altitudeUnit: pilot.altitudeUnit,
+      distanceUnit: pilot.distanceUnit,
       hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
       minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : ''
     };
@@ -127,7 +129,8 @@ let PilotModel = {
       userName: newPilotInfo.userName,
       initialFlightNum: parseInt(newPilotInfo.initialFlightNum),
       initialAirtime: parseInt(newPilotInfo.hours) * 60 + parseInt(newPilotInfo.minutes),
-      altitudeUnit: newPilotInfo.altitudeUnit
+      altitudeUnit: newPilotInfo.altitudeUnit,
+      distanceUnit: newPilotInfo.distanceUnit
     };
   },
 
