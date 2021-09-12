@@ -64,9 +64,8 @@ export default class Table extends React.Component {
     const orders = [ sortingOrder ];
 
     const sortingColumn = this.props.columns.find(({ sortingKey }) => sortingKey === this.state.sortingField);
-    const secondarySortingKey = sortingColumn.secondarySortingKey;
-    if (secondarySortingKey) {
-      iteratees.push(row => Util.upperCaseString(row[secondarySortingKey]));
+    if (sortingColumn && sortingColumn.secondarySortingKey) {
+      iteratees.push(row => Util.upperCaseString(row[sortingColumn.secondarySortingKey]));
       orders.push(sortingOrder);
     }
 
