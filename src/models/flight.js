@@ -19,6 +19,12 @@ let FlightModel = {
         field: 'Date'
       }
     },
+    time: {
+      method: 'text',
+      rules: {
+        field: 'Time'
+      }
+    },
     altitude: {
       method: 'number',
       rules: {
@@ -72,6 +78,7 @@ let FlightModel = {
       return {
         id: flight.id,
         date: flight.date.substring(0, 10),
+        time: flight.time ? ' ' + flight.time.substring(0, 5) : '',
         siteName: flight.siteId ? SiteModel.getSiteName(flight.siteId) : null,
         altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
         airtime: flight.airtime,
@@ -99,6 +106,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
+      time: flight.time ? ' ' + flight.time.substring(0, 5) : '',
       flightNum: flightNumbers.flightNum,
       flightNumYear: flightNumbers.flightNumYear,
       flightNumDay: flightNumbers.flightNumDay,
@@ -140,6 +148,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
+      time: flight.time,
       siteId: (flight.siteId === null) ? null : flight.siteId.toString(),
       altitude: altitude.toString(),
       altitudeUnit: Altitude.getUserAltitudeUnit(),
@@ -174,6 +183,7 @@ let FlightModel = {
 
     return {
       date: Util.today(),
+      time: null,
       // null if no sites yet otherwise last added site id
       siteId: (lastFlight.siteId === null) ? null : lastFlight.siteId.toString(),
       altitude: '',
@@ -202,6 +212,7 @@ let FlightModel = {
     const flight = {
       id: newFlight.id,
       date: newFlight.date,
+      time: newFlight.time,
       siteId: (newFlight.siteId === null) ? null : parseInt(newFlight.siteId),
       gliderId: (newFlight.gliderId === null) ? null : parseInt(newFlight.gliderId),
       airtime: parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes),

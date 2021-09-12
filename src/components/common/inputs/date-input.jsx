@@ -6,13 +6,13 @@ import ValidationError from '../section/validation-error';
 
 
 export default class DateInput extends React.Component {
-  constructor() {
-    super();
-    this.handleUserInput = this.handleUserInput.bind(this);
-  }
-
-  handleUserInput(e) {
-    this.props.onChange(this.props.inputName, e.target.value);
+  handleUserInput(e, inputName) {
+    let value = e.target.value;
+    if (inputName === 'time' && value === '') {
+      value = null;
+      e.target.value = null;
+    }
+    this.props.onChange(inputName, value);
   }
 
   render() {
@@ -32,14 +32,25 @@ export default class DateInput extends React.Component {
         </Label>
 
         <InputContainer>
-          <input
-            className={className}
-            value={this.props.inputValue}
-            type='date'
-            onChange={this.handleUserInput}
-            onFocus={this.props.onFocus}
-            onBlur={this.props.onBlur}
-          />
+          <div className='col-of-two'>
+            <input
+              className={className}
+              value={this.props.inputDateValue}
+              type='date'
+              onChange={e => this.handleUserInput(e, 'date')}
+              onFocus={this.props.onFocus}
+              onBlur={this.props.onBlur}
+            />
+            &nbsp;&nbsp;
+            <input
+              className={className}
+              value={this.props.inputTimeValue}
+              type='time'
+              onChange={e => this.handleUserInput(e, 'time')}
+              onFocus={this.props.onFocus}
+              onBlur={this.props.onBlur}
+            />
+          </div>
         </InputContainer>
       </div>
     );
@@ -48,12 +59,12 @@ export default class DateInput extends React.Component {
 
 
 DateInput.propTypes = {
-  inputValue: string.isRequired,
+  inputDateValue: string.isRequired,
+  inputTimeValue: string,
   labelText: oneOfType([
     string,
     element
   ]),
-  inputName: string.isRequired,
   errorMessage: string,
   onChange: func.isRequired,
   onFocus: func,

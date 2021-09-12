@@ -34,6 +34,7 @@ export default class FlightEditView extends React.Component {
     super();
     this.formFields = {
       date: null,
+      time: null,
       siteId: null,
       altitude: null,
       airtime: null,
@@ -408,9 +409,9 @@ export default class FlightEditView extends React.Component {
 
             <SectionRow>
               <DateInput
-                inputValue={this.state.item.date}
+                inputDateValue={this.state.item.date}
+                inputTimeValue={this.state.item.time || ''}
                 labelText='Date*:'
-                inputName='date'
                 errorMessage={this.state.validationErrors.date}
                 onChange={this.handleInputChange}
                 onFocus={this.handleInputFocus}
