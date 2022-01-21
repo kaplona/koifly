@@ -25,6 +25,16 @@ let webpackConfig = {
     // Webpack tries appending these extensions when you import your modules
     extensions: ['.js', '.jsx']
   },
+  node: {
+    // geo-tz requires fs, which seems not to be supported with angular
+    // so this is to prevent "Module not found: Error: Can't resolve 'fs'" on start
+    // unfortunately, this leads to errors when looking up coordinates with geo-tz sometimes so it would be great to find a better solution
+    // maybe some starting points how to tackle that? - I lack the skills and knowledge :-|
+    //   https://blog.khophi.co/angular-12-fixing-module-not-found-error-cant-resolve-fs/
+    //   https://webpack.js.org/configuration/node/#node -> https://webpack.js.org/configuration/resolve/#resolvefallback
+    //   https://github.com/evansiroky/node-geo-tz/issues/86
+    fs: 'empty'
+  },
   output: {
     publicPath: config.publicPaths.build, // Expose bundles in this web directory (Note: only dev server uses this option)
     filename: config.webpack.outputFilename, // Bundle filename pattern
@@ -125,7 +135,7 @@ if (process.env.NODE_ENV === 'development') {
       // so we have to also specify a JS minimizer.
       minimize: true,
       minimizer: [new TerserPlugin({ sourceMap: true }), new OptimizeCSSAssetsPlugin({})]
-    }
+    },
   });
 }
 

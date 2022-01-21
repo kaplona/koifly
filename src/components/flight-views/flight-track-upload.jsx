@@ -131,6 +131,10 @@ export default class FightTrackUpload extends React.Component {
             <div className='stats'>
               Date: {Util.formatDate(this.state.parsedIgc.date) || 'Unknown'}
               ,{'\u0020'}
+              Time: {this.state.parsedIgc.time || 'Unknown'} {this.state.parsedIgc.tz ? '' : ' UTC(!)'}
+              {'\u0020'}
+              (time zone: {this.state.parsedIgc.tz || 'Unknown'}
+              ),{'\u0020'}
               airtime: {Util.formatTime(this.state.parsedIgc.airtime)}
               ,{'\u0020'}
               max altitude: {Altitude.formatAltitude(this.state.parsedIgc.maxAltitude)}

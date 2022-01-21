@@ -132,6 +132,16 @@ const Util = {
     return new Date(year, month, 0).getDate();
   },
 
+  /**
+   * @param {Date} date
+   * @returns {string} - time (of day) in hh:mm format.
+   */
+  timeToString(date) {
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+
+    return `${hh}:${mm}`;
+  },
 
   /**
    * @param {number} timeInMinutes

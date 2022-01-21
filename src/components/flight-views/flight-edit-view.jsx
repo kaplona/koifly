@@ -181,11 +181,13 @@ export default class FlightEditView extends React.Component {
       return;
     }
 
-    const { altitude, date, hours, minutes, siteId } = this.state.item;
+    const { altitude, date, time, hours, minutes, siteId } = this.state.item;
     const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
 
     const newItem = Object.assign({}, this.state.item, {
       date: flightTrackData.date || date,
+      time: (flightTrackData.tz && flightTrackData.time) ? flightTrackData.time : time,
+      tz: flightTrackData.tz,
       siteId: flightTrackData.siteId || siteId,
       altitude: flightTrackData.maxAltitude || altitude,
       hours: flightTrackData.airtime ? flightTrackHoursMinutes.hours : hours,

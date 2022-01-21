@@ -37,6 +37,7 @@
     "chalk": "2.4.2",
     "csvtojson": "1.1.9",
     "eventemitter3": "4.0.0",
+    "geo-tz": "^7.0.1",
     "google-maps-api": "2.0.1",
     "hapi-react-views": "10.0.1",
     "highcharts": "7.0.2",
