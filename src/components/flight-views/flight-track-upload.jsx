@@ -71,7 +71,7 @@ export default class FightTrackUpload extends React.Component {
         return;
       }
 
-      this.props.onLoad(parsedFile, igc);
+      this.props.onLoad(parsedFile, igc, this.state.fileName);
       this.setState({ parsedIgc: parsedFile });
     };
     reader.onerror = error => {
@@ -99,8 +99,8 @@ export default class FightTrackUpload extends React.Component {
     if (!lowerCaseName.includes('.igc')) {
       errors.push('File must be .igc format.');
     }
-    if (file.size > 1048576) {
-      errors.push('File must be less than 1MB');
+    if (file.size > 2097152) {
+      errors.push('File must be less than 2MB');
     }
 
     return errors.length ? new KoiflyError(errorTypes.VALIDATION_ERROR, errors.join(' ')) : null;

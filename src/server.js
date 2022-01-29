@@ -235,7 +235,10 @@ async function start() {
     path: '/api/data',
     options: {
       auth: 'session',
-      pre: [ checkCsrfToken ]
+      pre: [ checkCsrfToken ],
+      payload: {
+        maxBytes: 2097152 // 2MB
+      }
     },
     handler: queryHandler
   });
@@ -247,7 +250,7 @@ async function start() {
       auth: 'session',
       pre: [ checkCsrfToken ],
       payload: {
-        maxBytes: 1048576 // 1MB
+        maxBytes: 2097152 // 2MB
       }
     },
     handler: importFlightsHandler

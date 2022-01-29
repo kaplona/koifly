@@ -118,7 +118,8 @@ let FlightModel = {
       altitudeAboveLaunch: this.getAltitudeAboveLaunch(flight.siteId, flight.altitude),
       airtime: flight.airtime,
       remarks: flight.remarks,
-      igc: flight.igc
+      igc: flight.igc,
+      igcFileName: flight.igcFileName
     };
   },
 
@@ -156,7 +157,8 @@ let FlightModel = {
       hours: hoursMinutes.hours ? hoursMinutes.hours.toString() : '',
       minutes: hoursMinutes.minutes ? hoursMinutes.minutes.toString() : '',
       remarks: flight.remarks,
-      igc: flight.igc
+      igc: flight.igc,
+      igcFileName: flight.igcFileName
     };
   },
 
@@ -193,7 +195,8 @@ let FlightModel = {
       hours: '',
       minutes: '',
       remarks: '',
-      igc: null
+      igc: null,
+      igcFileName: null
     };
   },
 
@@ -217,7 +220,8 @@ let FlightModel = {
       gliderId: (newFlight.gliderId === null) ? null : parseInt(newFlight.gliderId),
       airtime: parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes),
       remarks: newFlight.remarks,
-      igc: newFlight.igc
+      igc: newFlight.igc,
+      igcFileName: newFlight.igcFileName
     };
 
     const currentAltitude = (newFlight.id !== undefined) ? this.getStoreContent(newFlight.id).altitude : 0;

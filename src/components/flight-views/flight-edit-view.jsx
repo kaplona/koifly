@@ -174,7 +174,7 @@ export default class FlightEditView extends React.Component {
     });
   }
 
-  handleFlightTrackData(flightTrackData, igc) {
+  handleFlightTrackData(flightTrackData, igc, igcFileName) {
     if (!flightTrackData || !igc) {
       const newItem = Object.assign({}, this.state.item, { igc: null });
       this.setState({ item: newItem });
@@ -183,7 +183,7 @@ export default class FlightEditView extends React.Component {
 
     const { altitude, date, time, hours, minutes, siteId } = this.state.item;
     const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
-
+    
     const newItem = Object.assign({}, this.state.item, {
       date: flightTrackData.date || date,
       time: (flightTrackData.tz && flightTrackData.time) ? flightTrackData.time : time,
@@ -192,7 +192,8 @@ export default class FlightEditView extends React.Component {
       altitude: flightTrackData.maxAltitude || altitude,
       hours: flightTrackData.airtime ? flightTrackHoursMinutes.hours : hours,
       minutes: flightTrackData.airtime ? flightTrackHoursMinutes.minutes : minutes,
-      igc
+      igc,
+      igcFileName
     });
 
     this.setState({ item: newItem }, () => {
