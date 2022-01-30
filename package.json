@@ -38,7 +38,6 @@
     "csvtojson": "1.1.9",
     "eventemitter3": "4.0.0",
     "file-saver": "^2.0.5",
-    "geo-tz": "^7.0.1",
     "google-maps-api": "2.0.1",
     "hapi-react-views": "10.0.1",
     "highcharts": "7.0.2",
