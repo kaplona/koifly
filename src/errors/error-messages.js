@@ -10,7 +10,8 @@ const errorMessages = {
   NOT_VALID_EMAIL: 'You provided not valid email',
   NUMBER: '%field must be a number',
   POSITIVE_NUMBER: '%field must be number greater than 0',
-  POSITIVE_ROUND: '%field must be round number greater than 0'
+  POSITIVE_ROUND: '%field must be round number greater than 0',
+  TIME_FORMAT: 'Time must be in hh:mm format'
 };
 
 export default errorMessages;

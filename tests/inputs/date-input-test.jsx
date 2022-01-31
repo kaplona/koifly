@@ -17,17 +17,20 @@ describe('DateInput component', () => {
   let handleInputBlur;
 
   const defaults = {
-    inputType: 'date',
+    dateInputName: 'date',
+    dateInputType: 'date',
+    timeInputName: 'time',
+    timeInputType: 'time',
     inputClassName: 'x-date',
     errorClassName: 'x-error'
   };
 
   const mocks = {
-    initialInputValue: new Date(),
-    nextInputValue: '2020-02-29T12:32:00',
+    initialDateValue: '2020-01-12',
+    nextDateValue: '2020-02-29',
+    nextTimeValue: '12:42:00',
     labelText: 'Test label',
-    errorMessage: 'test error message',
-    inputName: 'testInput'
+    errorMessage: 'test error message'
   };
 
   beforeEach(() => {
@@ -45,7 +48,7 @@ describe('DateInput component', () => {
     beforeEach(() => {
       element = (
         <DateInput
-          inputValue={mocks.initialInputValue}
+          inputDateValue={mocks.initialDateValue}
           labelText={mocks.labelText}
           inputName={mocks.inputName}
           onChange={handleInputChange}
@@ -62,17 +65,21 @@ describe('DateInput component', () => {
       expect(label).to.be.ok;
     });
 
-    it('renders input with proper type and classes', () => {
+    it('renders inputs with proper type and classes', () => {
       const { container } = render(element);
       const inputs = container.getElementsByTagName('input');
 
-      expect(inputs).to.have.lengthOf(1);
-      expect(inputs[0]).to.have.property('type', defaults.inputType);
+      expect(inputs).to.have.lengthOf(2);
+      expect(inputs[0]).to.have.property('type', defaults.dateInputType);
+      expect(inputs[1]).to.have.property('type', defaults.timeInputType);
 
-      const className = inputs[0].className;
+      const dateClassName = inputs[0].className;
+      expect(dateClassName).to.contain(defaults.inputClassName);
+      expect(dateClassName).to.not.contain(defaults.errorClassName);
 
-      expect(className).to.contain(defaults.inputClassName);
-      expect(className).to.not.contain(defaults.errorClassName);
+      const timeClassName = inputs[0].className;
+      expect(timeClassName).to.contain(defaults.inputClassName);
+      expect(timeClassName).to.not.contain(defaults.errorClassName);
     });
 
     it('doesn\'t show error message if wasn\'t provided', () => {
@@ -82,19 +89,43 @@ describe('DateInput component', () => {
       expect(errorMessages).to.not.be.ok;
     });
 
-    it('triggers onChange function when changed', () => {
+    it('triggers onChange function when date changed', () => {
       const { container } = render(element);
-      const input = container.querySelector('input');
-      fireEvent.change(input);
+      const inputs = container.getElementsByTagName('input');
+      const dateInput = inputs[0];
+      fireEvent.change(dateInput, { target: { value: mocks.nextDateValue } });
 
       expect(handleInputChange).to.have.been.calledOnce;
+      expect(handleInputChange).to.have.been.calledWith(defaults.dateInputName, mocks.nextDateValue);
     });
 
-    it('calls onFocus and onBlur functions', () => {
+    it('triggers onChange function when time changed', () => {
       const { container } = render(element);
-      const input = container.querySelector('input');
-      fireEvent.focus(input);
-      fireEvent.blur(input);
+      const inputs = container.getElementsByTagName('input');
+      const timeInput = inputs[1];
+      fireEvent.change(timeInput, { target: { value: mocks.nextTimeValue } });
+
+      expect(handleInputChange).to.have.been.calledOnce;
+      expect(handleInputChange).to.have.been.calledWith(defaults.timeInputName, mocks.nextTimeValue);
+    });
+
+    it('calls onFocus and onBlur functions for date input', () => {
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
+      const dateInput = inputs[0];
+      fireEvent.focus(dateInput);
+      fireEvent.blur(dateInput);
+
+      expect(handleInputFocus).to.have.been.calledOnce;
+      expect(handleInputBlur).to.have.been.calledOnce;
+    });
+
+    it('calls onFocus and onBlur functions for time input', () => {
+      const { container } = render(element);
+      const inputs = container.getElementsByTagName('input');
+      const timeInput = inputs[1];
+      fireEvent.focus(timeInput);
+      fireEvent.blur(timeInput);
 
       expect(handleInputFocus).to.have.been.calledOnce;
       expect(handleInputBlur).to.have.been.calledOnce;
@@ -106,7 +137,7 @@ describe('DateInput component', () => {
     beforeEach(() => {
       element = (
         <DateInput
-          inputValue={mocks.initialInputValue}
+          inputDateValue={mocks.initialDateValue}
           labelText={mocks.labelText}
           errorMessage={mocks.errorMessage}
           inputName={mocks.inputName}
@@ -124,9 +155,10 @@ describe('DateInput component', () => {
 
     it('renders input with error classes if error message presents', () => {
       const { container } = render(element);
-      const input = container.querySelector('input');
+      const inputs = container.getElementsByTagName('input');
 
-      expect(input.className).to.contain(defaults.errorClassName);
+      expect(inputs[0].className).to.contain(defaults.errorClassName);
+      expect(inputs[1].className).to.contain(defaults.errorClassName);
     });
   });
 });

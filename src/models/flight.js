@@ -20,7 +20,7 @@ let FlightModel = {
       }
     },
     time: {
-      method: 'text',
+      method: 'time',
       rules: {
         field: 'Time'
       }
@@ -78,7 +78,7 @@ let FlightModel = {
       return {
         id: flight.id,
         date: flight.date.substring(0, 10),
-        time: flight.time ? ' ' + flight.time.substring(0, 5) : '',
+        time: flight.time ? flight.time.substring(0, 5) : '',
         siteName: flight.siteId ? SiteModel.getSiteName(flight.siteId) : null,
         altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
         airtime: flight.airtime,
@@ -106,7 +106,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
-      time: flight.time ? ' ' + flight.time.substring(0, 5) : '',
+      time: flight.time ? flight.time.substring(0, 5) : '',
       flightNum: flightNumbers.flightNum,
       flightNumYear: flightNumbers.flightNumYear,
       flightNumDay: flightNumbers.flightNumDay,
@@ -149,7 +149,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
-      time: flight.time,
+      time: flight.time ? flight.time.substring(0, 5) : '',
       siteId: (flight.siteId === null) ? null : flight.siteId.toString(),
       altitude: altitude.toString(),
       altitudeUnit: Altitude.getUserAltitudeUnit(),
