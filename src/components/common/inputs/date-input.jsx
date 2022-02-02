@@ -7,16 +7,11 @@ import ValidationError from '../section/validation-error';
 
 export default class DateInput extends React.Component {
   handleUserInput(e, inputName) {
-    let value = e.target.value;
-    if (inputName === 'time' && value === '') {
-      value = null;
-      e.target.value = null;
-    }
-    this.props.onChange(inputName, value);
+    this.props.onChange(inputName, e.target.value || null);
   }
 
   render() {
-    let className = 'x-date';
+    let className = 'col-of-two x-date';
     if (this.props.errorMessage) {
       className += ' x-error';
     }
@@ -32,25 +27,23 @@ export default class DateInput extends React.Component {
         </Label>
 
         <InputContainer>
-          <div className='col-of-two'>
-            <input
-              className={className}
-              value={this.props.inputDateValue}
-              type='date'
-              onChange={e => this.handleUserInput(e, 'date')}
-              onFocus={this.props.onFocus}
-              onBlur={this.props.onBlur}
-            />
-            &nbsp;&nbsp;
-            <input
-              className={className}
-              value={this.props.inputTimeValue}
-              type='time'
-              onChange={e => this.handleUserInput(e, 'time')}
-              onFocus={this.props.onFocus}
-              onBlur={this.props.onBlur}
-            />
-          </div>
+          <input
+            className={className}
+            value={this.props.inputDateValue}
+            type='date'
+            onChange={e => this.handleUserInput(e, 'date')}
+            onFocus={this.props.onFocus}
+            onBlur={this.props.onBlur}
+          />
+          <div className='arrow x-secondary'>{'»'}</div>
+          <input
+            className={className}
+            value={this.props.inputTimeValue}
+            type='time'
+            onChange={e => this.handleUserInput(e, 'time')}
+            onFocus={this.props.onFocus}
+            onBlur={this.props.onBlur}
+          />
         </InputContainer>
       </div>
     );

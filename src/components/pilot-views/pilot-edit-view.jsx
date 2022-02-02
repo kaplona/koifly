@@ -20,7 +20,7 @@ import SectionLoader from '../common/section/section-loader';
 import SectionRow from '../common/section/section-row';
 import SectionTitle from '../common/section/section-title';
 import TextInput from '../common/inputs/text-input';
-import TimeInput from '../common/inputs/time-input';
+import AirtimeInput from '../common/inputs/airtime-input';
 import Validation from '../../utils/validation';
 import View from '../common/view';
 
@@ -329,7 +329,7 @@ export default class PilotEditView extends React.Component {
             </SectionRow>
 
             <SectionRow isLast={true}>
-              <TimeInput
+              <AirtimeInput
                 hours={this.state.item.hours}
                 minutes={this.state.item.minutes}
                 labelText='Airtime:'

@@ -7,7 +7,7 @@ import ValidationError from '../section/validation-error';
 require('./four-input-elements.less');
 
 
-export default class TimeInput extends React.Component {
+export default class AirtimeInput extends React.Component {
   handleUserInput(e, inputName) {
     this.props.onChange(inputName, e.target.value);
   }
@@ -60,7 +60,7 @@ export default class TimeInput extends React.Component {
 }
 
 
-TimeInput.propTypes = {
+AirtimeInput.propTypes = {
   hours: oneOfType([number, string]),
   minutes: oneOfType([number, string]),
   labelText: string,

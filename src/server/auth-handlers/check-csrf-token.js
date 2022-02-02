@@ -16,7 +16,7 @@ export default function checkCsrfToken(request, reply) {
   const cookieCsrfToken = request.state.csrf;
 
   if (request.method === 'get') {
-    requestCsrfToken = JSON.parse(request.query.csrf);
+    requestCsrfToken = request.query.csrf;
   }
 
   if (request.method === 'post') {

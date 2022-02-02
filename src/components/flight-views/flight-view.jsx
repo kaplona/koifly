@@ -166,7 +166,9 @@ export default class FlightView extends React.Component {
           />
 
           <SectionTitle>
-            <div>{Util.formatDate(this.state.item.date)}{this.state.item.time}</div>
+            <div>
+              {Util.formatDateAndTime(this.state.item.date, this.state.item.time)}
+            </div>
             <div>{this.state.item.siteName}</div>
           </SectionTitle>
 

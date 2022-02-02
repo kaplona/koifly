@@ -55,6 +55,19 @@ const Validation = {
       return null;
     },
 
+    /**
+     * Check whether value is HH:MM time format
+     * @param {object} formData - data from html form { fieldName: userInput }
+     * @param {string} fieldName
+     * @returns {string|null} - error message or null if validation passed
+     */
+    time(formData, fieldName) {
+      if (!Util.isRightTimeFormat(formData[fieldName])) {
+        return errorMessages.TIME_FORMAT;
+      }
+      return null;
+    },
+
 
     /**
      * Check if the value is a number

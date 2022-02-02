@@ -1,10 +1,11 @@
 import React from 'react';
-import { func, string } from 'prop-types';
+import { bool, func, string } from 'prop-types';
 import Button from '../buttons/button';
 import InputContainer from './input-container';
 import Label from '../section/label';
 import Notice from '../notice/notice';
 import ValidationError from '../section/validation-error';
+import Loader from '../loader';
 
 require('./file-input.less');
 
@@ -67,12 +68,18 @@ export default class FileInput extends React.Component {
           </div>
         )}
 
-        <Button
-          caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
-          isAllScreens={!this.props.fileName}
-          isFitContent={true}
-          onClick={this.handleButtonClick}
-        />
+        <div className='button-container'>
+          <Button
+            caption={this.props.fileName ? 'Choose Another File' : 'Choose File'}
+            isAllScreens={!this.props.fileName}
+            isFitContent={true}
+            onClick={this.handleButtonClick}
+          />
+
+          {this.props.isLoading && (
+            <Loader className='loader' />
+          )}
+        </div>
 
         {!this.props.fileName && (
           <input
@@ -104,6 +111,7 @@ FileInput.propTypes = {
   fileName: string,
   fileTypes: string.isRequired, // comma separated types, which input[type='file'] expects in "accepts" attr
   errorMessage: string,
+  isLoading: bool,
   onSelect: func.isRequired,
   onRemove: func.isRequired
 };
