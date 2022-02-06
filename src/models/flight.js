@@ -280,12 +280,19 @@ let FlightModel = {
         return;
       }
 
-      // If two flights took place on the same date
-      // increment counters only if it's record was created prior to our target flight
       if (flight.date.substring(0, 10) === targetFlight.date.substring(0, 10)) {
         flightNumbers.numOfFlightsThatDay++;
 
-        if (flight.createdAt < targetFlight.createdAt) {
+        // If two flights took place on the same date,
+        // increment counters only if it's time is earlier.
+        // If some records don't have time, imply that they took place after those with time.
+        const bothHaveTime = flight.time && targetFlight.time;
+        const bothDontHaveTime = !flight.time && !targetFlight.time;
+        if (
+          (bothHaveTime && flight.time < targetFlight.time) ||
+          (flight.time && !targetFlight.time) ||
+          (bothDontHaveTime && flight.createdAt < targetFlight.createdAt)
+        ) {
           flightNumbers.flightNum++;
           flightNumbers.flightNumYear++;
           flightNumbers.flightNumDay++;
