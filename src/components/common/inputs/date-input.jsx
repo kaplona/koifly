@@ -7,7 +7,7 @@ import ValidationError from '../section/validation-error';
 
 export default class DateInput extends React.Component {
   handleUserInput(e, inputName) {
-    this.props.onChange(inputName, e.target.value || null);
+    this.props.onChange(inputName, e.target.value);
   }
 
   render() {
