@@ -22,6 +22,7 @@ let FlightModel = {
     time: {
       method: 'time',
       rules: {
+        defaultVal: null,
         field: 'Time'
       }
     },
@@ -185,7 +186,7 @@ let FlightModel = {
 
     return {
       date: Util.today(),
-      time: null,
+      time: '',
       // null if no sites yet otherwise last added site id
       siteId: (lastFlight.siteId === null) ? null : lastFlight.siteId.toString(),
       altitude: '',
