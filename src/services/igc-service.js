@@ -365,12 +365,12 @@ const igcService = {
           return response.timeZoneId;
         }
         // eslint-disable-next-line no-console
-        console.log('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + response);
+        console.error('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + JSON.stringify(response));
         return null;
       })
       .catch(err => {
         // eslint-disable-next-line no-console
-        console.log('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + err);
+        console.error('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + JSON.stringify(err));
         return null;
       });
   },
