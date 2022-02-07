@@ -25,6 +25,7 @@ const changePasswordHandler = require('./server/handlers/change-password-handler
 const importFlightsHandler = require('./server/handlers/import-flights-handler').default;
 const loginHandler = require('./server/handlers/login-handler').default;
 const queryHandler = require('./server/handlers/query-handler').default;
+const timeZoneHandler = require('./server/handlers/time-zone-handler').default;
 const resendAuthTokenHandler = require('./server/handlers/resend-auth-token-handler').default;
 const resetPasswordHandler = require('./server/handlers/reset-password-handler').default;
 const sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler').default;
@@ -241,6 +242,16 @@ async function start() {
       }
     },
     handler: queryHandler
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/timezone',
+    options: {
+      auth: 'session',
+      pre: [ checkCsrfToken ]
+    },
+    handler: timeZoneHandler
   });
 
   server.route({

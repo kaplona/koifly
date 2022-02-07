@@ -37,8 +37,10 @@ const secrets = {
   mailgunLogin: 'mailgun-login',
   mailgunPassword: 'mailgun-password',
 
-  // your google-maps-api key
-  googleMapsApiKey: 'key',
+  // your google maps api key which is restricted to your server IP address
+  // to be used on the backend.
+  // For development, you can use the same unrestricted key as for the frontend.
+  googleServerSideApiKey: 'key',
 
   // your google analytics tracking id
   googleTrackingId: 'UI-*******-**', // empty string to disable tracking script

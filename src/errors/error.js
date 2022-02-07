@@ -23,6 +23,8 @@ function getDefaultMessage(errorType) {
       return 'You need to verify your email before performing this operation.';
     case errorTypes.RECORD_NOT_FOUND:
       return 'There is no such record in the database.';
+    case errorTypes.THIRD_PARTY_ERROR:
+      return 'There is a problem with third party service.';
     case errorTypes.UNSUPPORTED_BROWSER_VERSION:
       return 'You need to upgrade your browser in order to use this feature.';
     case errorTypes.USER_MISMATCH:

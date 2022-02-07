@@ -1,11 +1,10 @@
-import ajaxService from './ajax-service';
+import dataService from './data-service';
 import Altitude from '../utils/altitude';
 import Distance from '../utils/distance';
 import errorTypes from '../errors/error-types';
 import KoiflyError from '../errors/error';
 import SiteModel from '../models/site';
 import Util from '../utils/util';
-import mapConstants from '../constants/map-constants';
 
 /**
  * @name igcService
@@ -352,22 +351,15 @@ const igcService = {
    * @param {number} lat
    * @param {number} lng
    * @param {Date} flightDate
-   * @return {Promise<string>}
+   * @return {Promise<string | null>}
    */
   fetchTimezoneByLatLng(lat, lng, flightDate) {
-    const url = 'https://maps.googleapis.com/maps/api/timezone/json';
-
+    const latLngString = `${lat},${lng}`;
     const timestampInMillisec = flightDate.getTime();
     const timestampInSec = Math.round(timestampInMillisec / 1000);
-    const queryParams = {
-      location: `${lat},${lng}`,
-      timestamp: timestampInSec,
-      key: mapConstants.GOOGLE_MAPS_API_KEY
-    };
 
-    const isThirdPartyRequest = true;
-    return ajaxService
-      .get(url, queryParams, isThirdPartyRequest)
+    return dataService
+      .getTimezone(latLngString, timestampInSec)
       .then(response => {
         if (response.status === 'OK' && response.timeZoneId) {
           return response.timeZoneId;

@@ -201,6 +201,19 @@ DataService.prototype.importFlights = function(dataUri) {
     });
 };
 
+/**
+ * Gets timezone details from coordinates and timestamp. Currently, server uses Google Maps API.
+ * @param {string} latLngString – Coordinates in "lat,lng" format.
+ * @param {number} timestampInSec
+ * @return {Promise.<{status: string, timeZoneId: string}>}
+ */
+DataService.prototype.getTimezone = function(latLngString, timestampInSec) {
+  return ajaxService.get('/api/timezone', {
+    latLngString,
+    timestampInSec
+  });
+};
+
 
 /**
  * Once new user signed up we don't query the DB for his data (because he has none)
