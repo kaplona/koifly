@@ -212,7 +212,7 @@ let FlightModel = {
     // Set default values to empty fields
     newFlight = this.setDefaultValues(newFlight);
 
-    // Create a flight only with fields which will be send to the server
+    // Create a flight only with fields which will be sent to the server
     const flight = {
       id: newFlight.id,
       date: newFlight.date,
