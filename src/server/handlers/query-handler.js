@@ -54,10 +54,6 @@ function queryHandler(request) {
       }
     })
     .catch(error => {
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Error => ', error); // eslint-disable-line no-console
-      }
-
       return { error: normalizeError(error) };
     });
 }

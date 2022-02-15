@@ -45,7 +45,7 @@ export default function normalizeError(error, defaultErrorType = errorTypes.DB_R
   }
 
   if (process.env.NODE_ENV === 'development') {
-    console.log(error);
+    console.log('Error => ', error); // eslint-disable-line no-console
   }
 
   if (error && error.output && error.output.payload.error === 'Unauthorized') {
