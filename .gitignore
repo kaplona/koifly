@@ -7,6 +7,7 @@ nodemon.json
 .eslintignore
 webpack-assets.json
 src/secrets.js
+src/frontend-assets.js
 public/.well-known/*
 
 node_modules/*

@@ -13,7 +13,7 @@ export default class FightMapAndCharts extends React.Component {
     super();
     this.state = {
       highlightedIndex: null,
-      parsedIgc: null
+      trackDetails: null
     };
 
     this.handleChartPointHover = this.handleChartPointHover.bind(this);
@@ -21,12 +21,10 @@ export default class FightMapAndCharts extends React.Component {
 
   componentDidMount() {
     if (this.props.igc) {
-      const parsedIgc = igcService.parseIgc(this.props.igc);
+      const trackDetails = igcService.getIgcTrackDetails(this.props.igc);
 
-      if (!(parsedIgc instanceof Error)) {
-        this.setState({ parsedIgc });
-        this.trackCoords = parsedIgc.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
-      }
+      this.setState({ trackDetails });
+      this.trackCoords = trackDetails.flightPoints.map(({ lat, lng }) => ({ lat, lng }));
     }
   }
 
@@ -52,7 +50,7 @@ export default class FightMapAndCharts extends React.Component {
   }
 
   render() {
-    if (!this.state.parsedIgc) {
+    if (!this.state.trackDetails) {
       return this.renderSiteMap();
     }
 
@@ -68,8 +66,8 @@ export default class FightMapAndCharts extends React.Component {
           markerCoords={highlightedCoords}
         />
         <FlightSynchronizedCharts
-          flightPoints={this.state.parsedIgc.flightPoints}
-          minAltitude={this.state.parsedIgc.minAltitude}
+          flightPoints={this.state.trackDetails.flightPoints}
+          minAltitude={this.state.trackDetails.minAltitude}
           onPointHover={this.handleChartPointHover}
         />
       </div>

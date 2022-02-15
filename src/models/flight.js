@@ -19,6 +19,13 @@ let FlightModel = {
         field: 'Date'
       }
     },
+    time: {
+      method: 'time',
+      rules: {
+        defaultVal: null,
+        field: 'Time'
+      }
+    },
     altitude: {
       method: 'number',
       rules: {
@@ -72,9 +79,11 @@ let FlightModel = {
       return {
         id: flight.id,
         date: flight.date.substring(0, 10),
+        time: flight.time ? flight.time.substring(0, 5) : '',
         siteName: flight.siteId ? SiteModel.getSiteName(flight.siteId) : null,
         altitude: Altitude.getAltitudeInPilotUnits(flight.altitude),
-        airtime: flight.airtime
+        airtime: flight.airtime,
+        createdAt: flight.createdAt
       };
     });
   },
@@ -98,6 +107,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
+      time: flight.time ? flight.time.substring(0, 5) : '',
       flightNum: flightNumbers.flightNum,
       flightNumYear: flightNumbers.flightNumYear,
       flightNumDay: flightNumbers.flightNumDay,
@@ -140,6 +150,7 @@ let FlightModel = {
     return {
       id: flight.id,
       date: flight.date.substring(0, 10),
+      time: flight.time ? flight.time.substring(0, 5) : '',
       siteId: (flight.siteId === null) ? null : flight.siteId.toString(),
       altitude: altitude.toString(),
       altitudeUnit: Altitude.getUserAltitudeUnit(),
@@ -175,6 +186,7 @@ let FlightModel = {
 
     return {
       date: Util.today(),
+      time: '',
       // null if no sites yet otherwise last added site id
       siteId: (lastFlight.siteId === null) ? null : lastFlight.siteId.toString(),
       altitude: '',
@@ -200,10 +212,11 @@ let FlightModel = {
     // Set default values to empty fields
     newFlight = this.setDefaultValues(newFlight);
 
-    // Create a flight only with fields which will be send to the server
+    // Create a flight only with fields which will be sent to the server
     const flight = {
       id: newFlight.id,
       date: newFlight.date,
+      time: newFlight.time,
       siteId: (newFlight.siteId === null) ? null : parseInt(newFlight.siteId),
       gliderId: (newFlight.gliderId === null) ? null : parseInt(newFlight.gliderId),
       airtime: parseInt(newFlight.hours) * 60 + parseInt(newFlight.minutes),
@@ -267,12 +280,19 @@ let FlightModel = {
         return;
       }
 
-      // If two flights took place on the same date
-      // increment counters only if it's record was created prior to our target flight
       if (flight.date.substring(0, 10) === targetFlight.date.substring(0, 10)) {
         flightNumbers.numOfFlightsThatDay++;
 
-        if (flight.createdAt < targetFlight.createdAt) {
+        // If two flights took place on the same date,
+        // increment counters only if it's time is earlier.
+        // If some records don't have time, imply that they took place after those with time.
+        const bothHaveTime = flight.time && targetFlight.time;
+        const bothDontHaveTime = !flight.time && !targetFlight.time;
+        if (
+          (bothHaveTime && flight.time < targetFlight.time) ||
+          (flight.time && !targetFlight.time) ||
+          (bothDontHaveTime && flight.createdAt < targetFlight.createdAt)
+        ) {
           flightNumbers.flightNum++;
           flightNumbers.flightNumYear++;
           flightNumbers.flightNumDay++;

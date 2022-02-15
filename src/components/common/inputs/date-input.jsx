@@ -6,17 +6,12 @@ import ValidationError from '../section/validation-error';
 
 
 export default class DateInput extends React.Component {
-  constructor() {
-    super();
-    this.handleUserInput = this.handleUserInput.bind(this);
-  }
-
-  handleUserInput(e) {
-    this.props.onChange(this.props.inputName, e.target.value);
+  handleUserInput(e, inputName) {
+    this.props.onChange(inputName, e.target.value);
   }
 
   render() {
-    let className = 'x-date';
+    let className = 'col-of-two x-date';
     if (this.props.errorMessage) {
       className += ' x-error';
     }
@@ -34,9 +29,18 @@ export default class DateInput extends React.Component {
         <InputContainer>
           <input
             className={className}
-            value={this.props.inputValue}
+            value={this.props.inputDateValue}
             type='date'
-            onChange={this.handleUserInput}
+            onChange={e => this.handleUserInput(e, 'date')}
+            onFocus={this.props.onFocus}
+            onBlur={this.props.onBlur}
+          />
+          <div className='arrow x-secondary'>{'»'}</div>
+          <input
+            className={className}
+            value={this.props.inputTimeValue}
+            type='time'
+            onChange={e => this.handleUserInput(e, 'time')}
             onFocus={this.props.onFocus}
             onBlur={this.props.onBlur}
           />
@@ -48,12 +52,12 @@ export default class DateInput extends React.Component {
 
 
 DateInput.propTypes = {
-  inputValue: string.isRequired,
+  inputDateValue: string.isRequired,
+  inputTimeValue: string,
   labelText: oneOfType([
     string,
     element
   ]),
-  inputName: string.isRequired,
   errorMessage: string,
   onChange: func.isRequired,
   onFocus: func,

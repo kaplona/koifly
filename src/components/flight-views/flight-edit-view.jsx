@@ -23,7 +23,7 @@ import SectionLoader from '../common/section/section-loader';
 import SectionRow from '../common/section/section-row';
 import SectionTitle from '../common/section/section-title';
 import SiteModel from '../../models/site';
-import TimeInput from '../common/inputs/time-input';
+import AirtimeInput from '../common/inputs/airtime-input';
 import Util from '../../utils/util';
 import Validation from '../../utils/validation';
 import View from '../common/view';
@@ -34,6 +34,7 @@ export default class FlightEditView extends React.Component {
     super();
     this.formFields = {
       date: null,
+      time: null,
       siteId: null,
       altitude: null,
       airtime: null,
@@ -180,11 +181,13 @@ export default class FlightEditView extends React.Component {
       return;
     }
 
-    const { altitude, date, hours, minutes, siteId } = this.state.item;
+    const { altitude, date, time, hours, minutes, siteId } = this.state.item;
     const flightTrackHoursMinutes = Util.getHoursMinutes(flightTrackData.airtime);
-    
+
     const newItem = Object.assign({}, this.state.item, {
       date: flightTrackData.date || date,
+      time: (flightTrackData.tz && flightTrackData.time) ? flightTrackData.time : time,
+      tz: flightTrackData.tz,
       siteId: flightTrackData.siteId || siteId,
       altitude: flightTrackData.maxAltitude || altitude,
       hours: flightTrackData.airtime ? flightTrackHoursMinutes.hours : hours,
@@ -409,10 +412,13 @@ export default class FlightEditView extends React.Component {
 
             <SectionRow>
               <DateInput
-                inputValue={this.state.item.date}
+                inputDateValue={this.state.item.date}
+                inputTimeValue={this.state.item.time}
                 labelText='Date*:'
-                inputName='date'
-                errorMessage={this.state.validationErrors.date}
+                errorMessage={
+                  this.state.validationErrors.date ||
+                  this.state.validationErrors.time
+                }
                 onChange={this.handleInputChange}
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
@@ -450,7 +456,7 @@ export default class FlightEditView extends React.Component {
             </SectionRow>
 
             <SectionRow>
-              <TimeInput
+              <AirtimeInput
                 hours={this.state.item.hours}
                 minutes={this.state.item.minutes}
                 labelText='Airtime:'

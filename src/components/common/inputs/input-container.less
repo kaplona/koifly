@@ -18,11 +18,18 @@
     }
 
     .x-number {
-      width: @number-input-width
+      width: @number-input-width;
     }
 
     .x-date {
-      width: @date-input-width
+      width: @date-input-width;
+    }
+  }
+
+  @media (max-width: (@small-viewport - 1)) {
+    input[type="date"].x-date,
+    input[type="time"].x-date {
+      .column-width(0.9);
     }
   }
 
@@ -36,6 +43,12 @@
 
     @media (min-width: @medium-viewport) {
       display: none;
+    }
+
+    &.x-secondary {
+      @media (min-width: @small-viewport) {
+        display: none;
+      }
     }
   }
 

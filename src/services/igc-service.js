@@ -1,3 +1,4 @@
+import dataService from './data-service';
 import Altitude from '../utils/altitude';
 import Distance from '../utils/distance';
 import errorTypes from '../errors/error-types';
@@ -21,13 +22,23 @@ import Util from '../utils/util';
  */
 const igcService = {
   /**
+   * @typedef {Object} ParsedIgc
+   * @property {string|null} date – Date in yyyy-mm-dd format.
+   * @property {string|null} [time] – Time in HH:MM format.
+   * @property {string|null} [tz] – Time Zone as specified in Unicode CLDR project, it's a user-friendly string.
+   * @property {igcRecord[]} flightPoints
+   * @property {number} maxAltitude
+   * @property {number} minAltitude
+   * @property {number} airtime
+   * @property {string} [siteId] – id of the nearest site from the pilot's library.
+   *
    * Parses IGC file into list of flight points with IGC B record (Fixed record) information.
    * Extract date, airtime, max altitude, and nearest site from the records.
-   * @param {string} fileText – IGC file content as text.
-   * @return {{flightPoints: igcRecord[], maxAltitude: number, airtime: number}|KoiflyError} – Parsed igc file or error.
+   * @param {string} igcFileText – IGC file content as text.
+   * @return {Promise<ParsedIgc>} – Parsed igc file or error.
    */
-  parseIgc(fileText) {
-    const records = fileText.split('\n');
+  parseIgc(igcFileText) {
+    const records = igcFileText.split('\n');
     const startIndex = this.findStartIndex(records);
     const gpsAltIndexes = this.findGpsAltitudeIndexes(records);
 
@@ -36,16 +47,65 @@ const igcService = {
     });
 
     if (!fixedRecords.length) {
-      return new KoiflyError(errorTypes.VALIDATION_ERROR, 'No flight records in IGC file.');
+      return Promise.reject(new KoiflyError(errorTypes.VALIDATION_ERROR, 'No flight records in IGC file.'));
     }
 
-    let flightStartTime;
-    let maxAltitude;
-    let minAltitude;
+    const {
+      flightPoints,
+      maxAltitude,
+      minAltitude
+    } = this.getIgcTrackDetailsFromBRecords(fixedRecords, gpsAltIndexes);
+
+    const firstRecord = flightPoints[0];
+    const lastRecord = flightPoints[flightPoints.length - 1];
+    const airtimeInMinutes = Math.ceil(lastRecord.airtimeInSeconds / 60);
+    const nearestSite = this.findNearestSite(firstRecord.lat, firstRecord.lng) || {};
+
+    return this.findFlightDate(records, firstRecord.timeInSeconds, firstRecord.lat, firstRecord.lng)
+      .then(({ date, time, tz }) => {
+        return {
+          date,
+          time,
+          tz,
+          flightPoints,
+          maxAltitude,
+          minAltitude,
+          airtime: airtimeInMinutes,
+          siteId: nearestSite.id ? nearestSite.id.toString() : null
+        };
+      });
+  },
+
+  /**
+   * Returns flight points and their overall altitude stats.
+   * @param {string} igcFileText – IGC file content as text.
+   * @return {{flightPoints: igcRecord[], maxAltitude: number, minAltitude: number}}
+   */
+  getIgcTrackDetails(igcFileText) {
+    const records = igcFileText.split('\n');
+    const startIndex = this.findStartIndex(records);
+    const gpsAltIndexes = this.findGpsAltitudeIndexes(records);
+    const fixedRecords = records.filter((record, index) => {
+      return (index > startIndex) && record.startsWith('B');
+    });
+    return this.getIgcTrackDetailsFromBRecords(fixedRecords, gpsAltIndexes);
+  },
+
+  /**
+   * Given a list of B records, it returns parsed flight points and altitude stats of those records.
+   * @param {string[]} fixedRecords
+   * @param {{start: number, end: number}|null} gpsAltIndexes – At what position in a B record,
+   * we can find a number corresponded to GPS altitude.
+   * @return {{flightPoints: igcRecord[], maxAltitude: number, minAltitude: number}}
+   */
+  getIgcTrackDetailsFromBRecords(fixedRecords, gpsAltIndexes) {
+    let flightStartTimeSeconds;
+    let maxAltitude = 0;
+    let minAltitude = 0;
     const parsedFixedRecords = fixedRecords.map((record, index) => {
-      const { airtimeInSeconds, timeInSeconds } = this.getAirtimeFromBRecord(record, flightStartTime);
+      const { airtimeInSeconds, timeInSeconds } = this.getAirtimeFromBRecord(record, flightStartTimeSeconds);
       if (index === 0) {
-        flightStartTime = timeInSeconds;
+        flightStartTimeSeconds = timeInSeconds;
       }
 
       const { lat, lng } = this.getDecimalCoordsFromBRecord(record);
@@ -65,12 +125,6 @@ const igcService = {
       };
     });
 
-    const firstRecord = parsedFixedRecords[0];
-    const lastRecord = parsedFixedRecords[parsedFixedRecords.length - 1];
-    const date = this.findFlightDate(records, firstRecord.timeInSeconds, firstRecord.lng);
-    const airtimeInMinutes = Math.ceil(lastRecord.airtimeInSeconds / 60);
-    const nearestSite = this.findNearestSite(firstRecord.lat, firstRecord.lng) || {};
-
     // If min altitude is less than zero, a vario was not adjusted to atmospheric pressure before the flight,
     // thus make adjustment now by increasing altitude of each flight point so min altitude equals zero.
     if (minAltitude < 0) {
@@ -83,12 +137,9 @@ const igcService = {
     }
 
     return {
-      date,
       flightPoints: parsedFixedRecords,
       maxAltitude,
-      minAltitude,
-      airtime: airtimeInMinutes,
-      siteId: nearestSite.id ? nearestSite.id.toString() : null
+      minAltitude
     };
   },
 
@@ -169,18 +220,79 @@ const igcService = {
   },
 
   /**
+   * @typedef {Object} DateAndTimeInfo
+   * @property {string|null} date – Date in yyyy-mm-dd format.
+   * @property {string|null} [time] – Time in HH:MM format.
+   * @property {string|null} [tz] – Time Zone as specified in Unicode CLDR project, it's a user-friendly string.
+   *
    * Searches for header record "H" with date mnemonic "DTE".
-   * Extracts date from the record, adjust date depending on timezone (longitude where flight took place).
+   * Extracts date from the record, adjust date depending on the time zone.
    * @param {array.<string>} records
-   * @param {number} timeInSec
+   * @param {number} flightStartTimeInSec
+   * @param {number} lat
    * @param {number} lng
-   * @return {string|null} – Date in "YYYY-MM-DD" format when the flight took place or null if no date record exist.
+   * @return {Promise<DateAndTimeInfo>} – Date in "YYYY-MM-DD" and time in "HH:MM" format when the flight took place
+   * or null if record is not found.
    */
-  findFlightDate(records, timeInSec, lng) {
-    let dateRecord;
+  findFlightDate(records, flightStartTimeInSec, lat, lng) {
+    const dateAndTimeInfo = {
+      date: null,
+      time: null,
+      tz: null
+    };
+    const dateRecord = this.findDateInHeaderRecords(records);
+
+    // If header record with date wasn't found, return empty date and time info.
+    if (!dateRecord) {
+      return dateAndTimeInfo;
+    }
+
+    const DD = dateRecord.substring(0, 2);
+    const MM = dateRecord.substring(2, 4);
+    const YY = dateRecord.substring(4);
+
+    // If header record with date is corrupt and doesn't contain date, return empty date and time info.
+    if (!DD || !MM || !YY || !Number(DD) | !Number(MM)) {
+      return dateAndTimeInfo;
+    }
+
+    const day = Number(DD);
+    const month = Number(MM);
+    // Hoping that IGC format will start saving year in 4 digits in 2100
+    const year = Number('20' + YY);
+
+    const hours = Math.floor(flightStartTimeInSec / 3600);
+    const min = Math.round(flightStartTimeInSec % 60);
+
+    // adapt to date from UTC to timezone
+    const utcDate = new Date(Date.UTC(year, month - 1, day, hours, min));
+
+    return this.fetchTimezoneByLatLng(lat, lng, utcDate)
+      .then(tz => {
+        if (tz) {
+          const localDate = new Date(utcDate.toLocaleString('en-US', { timeZone: tz }));
+          dateAndTimeInfo.date = Util.dateToString(localDate);
+          dateAndTimeInfo.time = Util.timeToString(localDate);
+          dateAndTimeInfo.tz = tz;
+        } else {
+          dateAndTimeInfo.date = this.approximateFlightDate(lng, day, month, year, flightStartTimeInSec);
+          dateAndTimeInfo.time = Util.timeToString(utcDate);
+        }
+        return dateAndTimeInfo;
+      });
+  },
+
+  /**
+   * Finds date string in the provided header records.
+   * @param {string[]} records
+   * @return {string|null} – String representing a flight date or null if header record wasn't found.
+   */
+  findDateInHeaderRecords(records) {
+    let dateRecord = null;
+
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
-      const isHeaderRecord = (record[0] === 'H') || (record[0] === 'A');
+      const isHeaderRecord = (['A', 'C', 'H', 'I'].includes(record[0]));
       if (!isHeaderRecord) {
         // header section is finished and it is not worth looking further ...
         break;
@@ -196,43 +308,71 @@ const igcService = {
         break;
       }
     }
+    return dateRecord;
+  },
 
-    if (!dateRecord) {
-      return null;
-    }
-
-    let DD = dateRecord.substring(0, 2);
-    const MM = dateRecord.substring(2, 4);
-    const YY = dateRecord.substring(4);
-    // Hoping that IGC format will start saving year in 4 digits in 2100
-    const YYYY = ('20' + YY);
-
-    if (!DD || !MM || !YYYY) {
-      return null;
-    }
-
-    // Very simplified calculation of time offset depending on launch longitude.
-    // I don't use standard time zones for a specific longitude,
-    // and simply divide globe into 24 geographical time zones.
-    // I need only date without hours, so this approach can lead to one day errors if a flight starts very late
-    // in the evening or very early in the morning in an area which spreads across several geographical time zones.
-    // Since standard time zones can be differ from geographical time zones no more than 3 hours,
-    // flight should star later than 9pm or earlier than 3am for calculation error to appear.
-    // Decision was made to consider this error negligible.
+  /**
+   * Very simplified calculation of time offset depending on launch longitude.
+   * It doesn't use standard time zones for a specific longitude,
+   * and simply divide globe into 24 geographical time zones.
+   * This is an approximation approach and can lead to one day errors if a flight starts very late
+   * in the evening or very early in the morning in an area which spreads across several geographical time zones.
+   * Since standard time zones can differ from geographical time zones no more than 3 hours,
+   * flight should star later than 9pm or earlier than 3am for calculation error to appear.
+   * Decision was made to consider this error very unlikely to happen and negligible.
+   *
+   * @param {number} lng
+   * @param {number} day – Digits from the Date record representing a day of the flight.
+   * @param {number} month – Digits from the Date record representing minutes of the flight start.
+   * @param {number} year – Digits from the Date record representing a year of the flight.
+   * @param {number} flightStartTimeInSec
+   * @return {string} – Date in yyyy-mm-dd format.
+   */
+  approximateFlightDate(lng, day, month, year, flightStartTimeInSec) {
     const sign = Math.sign(lng) || 1;
     const hoursOffset = sign * Math.floor(Math.abs(lng) * 12 / 180);
-    const hours = (timeInSec / 3600) + hoursOffset;
+    const hours = (flightStartTimeInSec / 3600) + hoursOffset;
     if (hours > 24) {
-      DD = Number(DD) + 1;
+      day = day + 1;
     }
     if (hours < 0) {
-      DD = Number(DD) - 1;
+      day = day - 1;
     }
 
     // Using JS Date object to get a valid date in case day of the month is zero or greater that days in the month.
-    const flightDate = new Date(YYYY, Number(MM) - 1, DD);
+    return Util.dateToString(new Date(year, month - 1, day));
+  },
 
-    return Util.dateToString(flightDate);
+  /**
+   * Fetches time zone id using Google Time Zone API.
+   * Time zone ids are defined by Unicode Common Locale Data Repository (CLDR) project
+   * @see https://developers.google.com/maps/documentation/timezone/requests-timezone
+   *
+   * @param {number} lat
+   * @param {number} lng
+   * @param {Date} flightDate
+   * @return {Promise<string | null>}
+   */
+  fetchTimezoneByLatLng(lat, lng, flightDate) {
+    const latLngString = `${lat},${lng}`;
+    const timestampInMillisec = flightDate.getTime();
+    const timestampInSec = Math.round(timestampInMillisec / 1000);
+
+    return dataService
+      .getTimezone(latLngString, timestampInSec)
+      .then(response => {
+        if (response.status === 'OK' && response.timeZoneId) {
+          return response.timeZoneId;
+        }
+        // eslint-disable-next-line no-console
+        console.error('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + JSON.stringify(response));
+        return null;
+      })
+      .catch(err => {
+        // eslint-disable-next-line no-console
+        console.error('ERROR: Unable to get timezone for ' + lat + '/' + lng + ': ' + JSON.stringify(err));
+        return null;
+      });
   },
 
   /**
@@ -289,22 +429,22 @@ const igcService = {
    * Takes bytes from B record corresponding to flight time (format is hhmmss from the beginning of the day in UTC),
    * and parses it into airtime in seconds.
    * @param {string} BRecord – IGC B record (Fixed record).
-   * @param {number|null} [flightStartTime] – Flight start time in seconds from the beginning of the day. If not provided,
+   * @param {number|null} [flightStartTimeSeconds] – Flight start time in seconds from the beginning of the day. If not provided,
    * consider B record being the first one.
    * @return {{airtimeInSeconds: number, timeInSeconds: number}} – Returns airtime in seconds from the beginning of
    * the flight, and time in seconds from the beginning of the day.
    */
-  getAirtimeFromBRecord(BRecord, flightStartTime = null) {
+  getAirtimeFromBRecord(BRecord, flightStartTimeSeconds = null) {
     const hours = Number(BRecord.substr(1, 2));
     const minutes = Number(BRecord.substr(3, 2));
     const seconds = Number(BRecord.substr(5, 2));
     let timeInSeconds = hours * 3600 + minutes * 60 + seconds;
     // Time is in UTC, so potentially it can "overflow" to next day,
     // in this case we add 24 hours the flight timestamp in order to calculate airtime correctly.
-    if (flightStartTime && timeInSeconds < flightStartTime) {
+    if (flightStartTimeSeconds && timeInSeconds < flightStartTimeSeconds) {
       timeInSeconds += 24 * 3600;
     }
-    const airtimeInSeconds = (flightStartTime !== null) ? (timeInSeconds - flightStartTime) : 0;
+    const airtimeInSeconds = (flightStartTimeSeconds !== null) ? (timeInSeconds - flightStartTimeSeconds) : 0;
 
     return { airtimeInSeconds, timeInSeconds };
   },

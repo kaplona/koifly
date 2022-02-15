@@ -15,6 +15,7 @@ const ajaxService = {
    *   @param {string} options.method - get or post
    *   @param {object} [options.queryParams] - for get requests
    *   @param {object} [options.data] - for post requests
+   *   @param {object} [options.isThirdPartyRequest] - whether to include csrf token or not
    *
    * @param {boolean} [isRetry] - is used to prevent csrf attacks,
    * each request to server shall have csrf cookie which value is send to the server along with the request
@@ -31,7 +32,10 @@ const ajaxService = {
     if (options.method === 'get') {
       // Make valid query string from params object
       // Add csrf token to prevent csrf attack to the server
-      url = url + '?' + this.buildQuery(Object.assign({}, options.queryParams, { csrf: csrfCookie }));
+      const queryParams = options.isThirdPartyRequest
+        ? options.queryParams
+        : Object.assign({}, options.queryParams, { csrf: csrfCookie });
+      url = url + '?' + this.buildQuery(queryParams);
     }
 
     if (options.method === 'post') {
@@ -100,10 +104,16 @@ const ajaxService = {
   /**
    * @param {string} url
    * @param {Object} [queryParams]
+   * @param {Boolean} [isThirdPartyRequest]
    * @returns {Promise} - resolved with server respond or rejected with  server error
    */
-  get(url, queryParams) {
-    return this.send({ url: url, method: 'get', queryParams: queryParams });
+  get(url, queryParams, isThirdPartyRequest = false) {
+    return this.send({
+      url: url,
+      method: 'get',
+      queryParams: queryParams,
+      isThirdPartyRequest: isThirdPartyRequest
+    });
   },
 
 
@@ -126,7 +136,9 @@ const ajaxService = {
     return Object
       .keys(queryParams)
       .map(key => {
-        return encodeURIComponent(key) + '=' + encodeURIComponent(JSON.stringify(queryParams[key]));
+        const queryValue = queryParams[key];
+        const queryValueString = typeof queryValue === 'string' ? queryValue : JSON.stringify(queryValue);
+        return encodeURIComponent(key) + '=' + encodeURIComponent(queryValueString);
       })
       .join('&');
   },

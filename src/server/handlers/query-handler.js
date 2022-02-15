@@ -100,6 +100,7 @@ function saveFlight(data, pilotId) {
   } else {
     data = {
       id: data.id,
+      time: data.time,
       date: data.date,
       siteId: data.siteId,
       altitude: data.altitude,

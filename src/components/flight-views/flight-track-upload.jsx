@@ -22,6 +22,7 @@ export default class FightTrackUpload extends React.Component {
       parsedIgc: null,
       validationError: null
     };
+    this.__isMounted__ = true;
 
     this.handleFile = this.handleFile.bind(this);
     this.handleRemoveFile = this.handleRemoveFile.bind(this);
@@ -31,15 +32,11 @@ export default class FightTrackUpload extends React.Component {
     if (!this.props.igc) {
       return;
     }
-    let validationError = null;
-    let parsedFile = igcService.parseIgc(this.props.igc);
+    this.parseIgc(this.props.igc);
+  }
 
-    if (parsedFile instanceof Error) {
-      parsedFile = null;
-      validationError = parsedFile;
-    }
-
-    this.setState({ parsedIgc: parsedFile, validationError });
+  componentWillUnmount() {
+    this.__isMounted__ = false;
   }
 
   handleFile(file) {
@@ -61,24 +58,19 @@ export default class FightTrackUpload extends React.Component {
     const reader = new FileReader();
     reader.onload = upload => {
       const igc = upload.target.result;
-      const parsedFile = igcService.parseIgc(igc);
 
-      if (parsedFile instanceof Error) {
-        this.setState({
-          parsedIgc: null,
-          validationError: parsedFile
+      this.parseIgc(igc)
+        .then(parsedFile => {
+          if (!this.__isMounted__) return;
+          this.props.onLoad(parsedFile, igc, this.state.fileName);
         });
-        return;
-      }
-
-      this.props.onLoad(parsedFile, igc, this.state.fileName);
-      this.setState({ parsedIgc: parsedFile });
     };
     reader.onerror = error => {
       const errorMessage = `Couldn't read file "file.name". Error type: ${error.type}`;
       this.setState({ fileReadError: { message: errorMessage } });
     };
 
+    this.setState({ isLoading: true });
     reader.readAsText(file);
   }
 
@@ -90,6 +82,32 @@ export default class FightTrackUpload extends React.Component {
       validationError: null
     });
     this.props.onLoad();
+  }
+
+  parseIgc(igc) {
+    this.setState({ isLoading: true });
+    return igcService
+      .parseIgc(igc)
+      .then(parsedIgc => {
+        if (!this.__isMounted__) return;
+        this.setState({
+          parsedIgc,
+          validationError: null,
+          isLoading: false
+        });
+        return parsedIgc;
+      })
+      .catch(err => {
+        if (!this.__isMounted__) return;
+        const validationError = err instanceof KoiflyError
+          ? err
+          : new Error('Couldn\'t parse your IGC file.');
+        this.setState({
+          parsedIgc: null,
+          validationError,
+          isLoading: false
+        });
+      });
   }
 
   validateFile(file) {
@@ -121,6 +139,7 @@ export default class FightTrackUpload extends React.Component {
           fileName={this.state.fileName}
           fileTypes='.igc'
           errorMessage={this.state.validationError ? this.state.validationError.message : null}
+          isLoading={this.state.isLoading}
           onSelect={this.handleFile}
           onRemove={this.handleRemoveFile}
         />
@@ -131,6 +150,10 @@ export default class FightTrackUpload extends React.Component {
             <div className='stats'>
               Date: {Util.formatDate(this.state.parsedIgc.date) || 'Unknown'}
               ,{'\u0020'}
+              Time: {this.state.parsedIgc.time || 'Unknown'} {this.state.parsedIgc.tz ? '' : ' UTC(!)'}
+              {'\u0020'}
+              (time zone: {this.state.parsedIgc.tz || 'Unknown'}
+              ),{'\u0020'}
               airtime: {Util.formatTime(this.state.parsedIgc.airtime)}
               ,{'\u0020'}
               max altitude: {Altitude.formatAltitude(this.state.parsedIgc.maxAltitude)}

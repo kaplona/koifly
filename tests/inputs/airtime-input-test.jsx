@@ -7,7 +7,7 @@ import Sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 Chai.use(sinonChai);
 
-import TimeInput from '../../src/components/common/inputs/time-input';
+import AirtimeInput from '../../src/components/common/inputs/airtime-input';
 
 
 describe('TimeInput component', () => {
@@ -47,7 +47,7 @@ describe('TimeInput component', () => {
   describe('Defaults and behavior testing', () => {
     beforeEach(() => {
       element = (
-        <TimeInput
+        <AirtimeInput
           hours={mocks.hoursValue}
           minutes={mocks.minutesValue}
           labelText={mocks.labelText}
@@ -131,7 +131,7 @@ describe('TimeInput component', () => {
   describe('Error message testing', () => {
     beforeEach(() => {
       element = (
-        <TimeInput
+        <AirtimeInput
           hours={mocks.hoursValue}
           minutes={mocks.minutesValue}
           labelText={mocks.labelText}

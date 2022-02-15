@@ -95,7 +95,8 @@ export default class FlightListView extends React.Component {
         key: 'formattedDate',
         label: 'Date',
         defaultSortingDirection: false,
-        sortingKey: 'date'
+        sortingKey: 'date',
+        secondarySortingKey: 'time'
       },
       {
         key: 'siteName',
@@ -118,7 +119,7 @@ export default class FlightListView extends React.Component {
 
     const rows = (this.state.items || []).map(flight => (
       Object.assign({}, flight, {
-        formattedDate: Util.formatDate(flight.date),
+        formattedDate: Util.formatDateAndTime(flight.date, flight.time),
         formattedAltitude: Altitude.formatAltitudeShort(flight.altitude),
         formattedAirtime: Util.formatTime(flight.airtime)
       })

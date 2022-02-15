@@ -9,6 +9,7 @@ const errorTypes = {
   FILE_IMPORT_ERROR: 'fileImportError',
   NEED_EMAIL_VERIFICATION: 'needEmailVerification',
   RECORD_NOT_FOUND: 'recordNotFound',
+  THIRD_PARTY_ERROR: 'thirdPartyError',
   UNSUPPORTED_BROWSER_VERSION: 'unsupportedBrowserVersion',
   USER_MISMATCH: 'userMismatch',
   VALIDATION_ERROR: 'validationError'

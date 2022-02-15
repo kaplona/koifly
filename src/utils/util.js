@@ -94,6 +94,23 @@ const Util = {
     return `${this.getMonthName(dateElements[1])} ${parseInt(dateElements[2])}, ${dateElements[0]}`;
   },
 
+  /**
+   * @param {string} date
+   * @param {string} time
+   * @return {string|null} – Date in 'Jan 23, 2016 10:42' format
+   */
+  formatDateAndTime(date, time) {
+    const formattedDate = this.formatDate(date);
+    if (!formattedDate) {
+      return null;
+    }
+
+    if (!this.isRightTimeFormat(time)) {
+      return formattedDate;
+    }
+
+    return `${formattedDate} ${time}`;
+  },
 
   /**
    * @param {string} date
@@ -132,6 +149,41 @@ const Util = {
     return new Date(year, month, 0).getDate();
   },
 
+  /**
+   * Returns whether a string is in a HH:MM format,
+   * @param {string} time
+   * @return {boolean}
+   */
+  isRightTimeFormat(time) {
+    if (!time || !time.split) {
+      return false;
+    }
+
+    const timeElements = time.split(':');
+    const hh = timeElements[0];
+    const mm = timeElements[1];
+
+    return (
+      timeElements.length === 2 &&
+      hh.length === 2 &&
+      mm.length === 2 &&
+      Number(hh) >= 0 &&
+      Number(hh) <= 24 &&
+      Number(mm) >= 0 &&
+      Number(mm) < 60
+    );
+  },
+
+  /**
+   * @param {Date} date
+   * @returns {string} - time (of day) in hh:mm format.
+   */
+  timeToString(date) {
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+
+    return `${hh}:${mm}`;
+  },
 
   /**
    * @param {number} timeInMinutes

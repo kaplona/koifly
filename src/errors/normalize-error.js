@@ -44,6 +44,10 @@ export default function normalizeError(error, defaultErrorType = errorTypes.DB_R
     return error;
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    console.log(error);
+  }
+
   if (error && error.output && error.output.payload.error === 'Unauthorized') {
     return new KoiflyError(errorTypes.AUTHENTICATION_ERROR);
   }
