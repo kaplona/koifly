@@ -411,6 +411,29 @@ const Util = {
     }
 
     return { lat: parseFloat(lat), lng: parseFloat(lng) };
+  },
+
+  /**
+   * Takes google location API response object and
+   * parses location string (mostly [known issue with language specifics]) equivalent to google maps picker
+   * @param {object} responseObject
+   * @return {string}
+   */
+  getLocationFromGoogleObject(responseObject) {
+    let country;
+    let region;
+    let province;
+
+    for (const i in responseObject.results) {
+      if (responseObject.results[i].types.includes('country')) {
+        country = responseObject.results[i].formatted_address;
+      } else if (responseObject.results[i].types.includes('administrative_area_level_1')) {
+        region = responseObject.results[i].address_components[0].short_name;
+      } else if (responseObject.results[i].types.includes('administrative_area_level_2')) {
+        province = responseObject.results[i].address_components[0].long_name;
+      }
+    }
+    return [province, region, country].filter(Boolean).join(', ');
   }
 };
 

@@ -23,6 +23,7 @@ const checkCsrfToken = require('./server/auth-handlers/check-csrf-token').defaul
 
 const changePasswordHandler = require('./server/handlers/change-password-handler').default;
 const importFlightsHandler = require('./server/handlers/import-flights-handler').default;
+const locationHandler = require('./server/handlers/location-handler').default;
 const loginHandler = require('./server/handlers/login-handler').default;
 const queryHandler = require('./server/handlers/query-handler').default;
 const timeZoneHandler = require('./server/handlers/time-zone-handler').default;
@@ -30,6 +31,8 @@ const resendAuthTokenHandler = require('./server/handlers/resend-auth-token-hand
 const resetPasswordHandler = require('./server/handlers/reset-password-handler').default;
 const sendAuthTokenHandler = require('./server/handlers/send-auth-token-handler').default;
 const signupHandler = require('./server/handlers/signup-handler').default;
+const siteProposalHandler = require('./server/handlers/site-proposal-handler').default;
+
 const verifyAuthToken = require('./server/helpers/verify-auth-token').default;
 
 
@@ -252,6 +255,26 @@ async function start() {
       pre: [ checkCsrfToken ]
     },
     handler: timeZoneHandler
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/location',
+    options: {
+      auth: 'session',
+      pre: [ checkCsrfToken ]
+    },
+    handler: locationHandler
+  });
+
+  server.route({
+    method: 'GET',
+    path: '/api/site-proposal',
+    options: {
+      auth: 'session',
+      pre: [ checkCsrfToken ]
+    },
+    handler: siteProposalHandler
   });
 
   server.route({

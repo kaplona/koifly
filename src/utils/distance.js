@@ -67,10 +67,10 @@ const Distance = {
   /**
    * Modifies distance in meters into current user's distance units
    * @param {number|string} distance in meters
-   * @returns {number} distance in pilot's altitude units
+   * @returns {number} distance in pilot's distance units
    */
   getDistanceInPilotUnits(distance) {
-    const increment = this.unitConverter[this.getUserDistanceUnit()];
+    const increment = this.unitConverter[this.distanceUnitsShort[this.getUserDistanceUnit()]];
     return parseFloat(distance) * increment;
   },
 

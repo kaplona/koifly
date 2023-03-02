@@ -1,8 +1,11 @@
 import React from 'react';
 import { shape, string } from 'prop-types';
+import Altitude from '../../utils/altitude';
 import AltitudeInput from '../common/inputs/altitude-input';
 import Button from '../common/buttons/button';
 import CoordinatesInput from '../common/inputs/coordinates-input';
+import dataService from '../../services/data-service';
+import Distance from '../../utils/distance';
 import DesktopBottomGrid from '../common/grids/desktop-bottom-grid';
 import DomUtil from '../../utils/dom-util';
 import ErrorBox from '../common/notice/error-box';
@@ -20,6 +23,7 @@ import SectionLoader from '../common/section/section-loader';
 import SectionRow from '../common/section/section-row';
 import SectionTitle from '../common/section/section-title';
 import SiteModel from '../../models/site';
+import SiteProposalNotice from '../common/notice/site-proposal-notice';
 import TextInput from '../common/inputs/text-input';
 import Util from '../../utils/util';
 import Validation from '../../utils/validation';
@@ -39,11 +43,15 @@ export default class SiteEditView extends React.Component {
 
     this.state = {
       item: null, // no data received
+      proposals: null,
+      proposalError: null,
+      proposalMaxDist: 2,
       loadingError: null,
       processingError: null,
       isSaving: false,
       isDeleting: false,
       isInputInFocus: false,
+      isSiteProposalsShown: [],
       validationErrors: Object.assign({}, this.formFields)
     };
 
@@ -57,6 +65,7 @@ export default class SiteEditView extends React.Component {
     this.handleDeleteItem = this.handleDeleteItem.bind(this);
     this.handleMapShow = this.handleMapShow.bind(this);
     this.handleMapHide = this.handleMapHide.bind(this);
+    this.handleIncreaseProposalMaxDist = this.handleIncreaseProposalMaxDist.bind(this);
   }
 
   /**
@@ -96,6 +105,10 @@ export default class SiteEditView extends React.Component {
     this.setState({ item: newItem }, () => {
       this.updateValidationErrors(this.getValidationErrors(true));
     });
+
+    if (inputName === 'coordinates' && Util.isEmptyString(this.state.item.name)) {
+      this.fetchSiteProposal();
+    }
   }
 
   handleInputFocus() {
@@ -148,16 +161,97 @@ export default class SiteEditView extends React.Component {
 
   handleMapShow() {
     this.setState({ isMapShown: true });
+    this.handleSiteProposalHide('all');
   }
 
   handleMapHide() {
     this.setState({ isMapShown: false });
   }
 
+  handleIncreaseProposalMaxDist() {
+    this.setState({ proposalMaxDist: this.state.proposalMaxDist * 2 });
+    this.fetchSiteProposal();
+  }
+
+  // set site proposal with index or 'all' invisible
+  handleSiteProposalHide(index) {
+    const isSiteProposalsShownTemp = this.state.isSiteProposalsShown;
+    if (index === 'all') {
+      this.setState({ isSiteProposalsShown: isSiteProposalsShownTemp.fill(false) });
+    } else {
+      isSiteProposalsShownTemp[index] = false;
+      this.setState({ isSiteProposalsShown: isSiteProposalsShownTemp });
+    }
+  }
+
+  handleUseSiteProposal(index) {
+    const name = this.state.proposals[index].properties.name;
+    const lat = this.state.proposals[index].geometry.coordinates[1];
+    const lng = this.state.proposals[index].geometry.coordinates[0];
+    const alt = Altitude.getAltitudeInGivenUnits(this.state.proposals[index].properties.takeoff_altitude, this.state.item.altitudeUnit);
+
+    const newItem = Object.assign({}, this.state.item, {
+      name: name,
+      coordinates: Util.coordinatesToString({ lat: lat, lng: lng }),
+      launchAltitude: alt
+    });
+
+    this.setState({ item: newItem }, () => {
+      this.updateValidationErrors(this.getValidationErrors(true));
+    });
+    this.handleSiteProposalHide('all');
+
+    dataService
+      .getLocation(lat + ',' + lng)
+      .then(response => {
+        this.handleInputChange('location', Util.getLocationFromGoogleObject(response));
+      });
+  }
+
+  /**
+   * fetch and display proposal for launch site from paragliding.earth API for given coordinates.
+   */
+  fetchSiteProposal() {
+    const markerPosition = this.getMarkerPosition();
+    if (markerPosition) {
+      const lat = markerPosition.lat;
+      const lng = markerPosition.lng;
+      // Distance.getDistanceInPilotUnits expects meters
+      const dist = Distance.getDistanceInPilotUnits(this.state.proposalMaxDist * 1000);
+      dataService
+        .getSiteProposal(lat, lng, dist)
+        .then(response => {
+          if (response.type === 'FeatureCollection') {
+            this.setState({ proposalError: null });
+            if (response.features.length > 0) {
+              this.setState({
+                proposals: response.features,
+                isSiteProposalsShown: new Array(response.features.length).fill(true)
+              });
+            } else {
+              this.setState({
+                proposals: [],
+                isSiteProposalsShown: [ true ]
+              });
+            }
+          } else {
+          this.setState({ proposals: null });
+          this.setState({ proposalError: 'ERROR: Unable to get site proposal: ' + JSON.stringify(response) });
+          }
+        })
+        .catch(err => {
+          this.setState({ proposals: null });
+          this.setState({ proposalError: 'ERROR: Unable to get site proposal for ' + lat + '/' + lng + ': ' + JSON.stringify(err) });
+        });
+    }
+  }
+
   getMarkerPosition() {
     if (!Util.isEmptyString(this.state.item.coordinates)) {
       // Hard validation in order to check coordinates format
       const validationErrors = this.getValidationErrors();
+      // eslint-disable-next-line no-console
+      console.error(validationErrors);
       if (!validationErrors || !validationErrors.coordinates) {
         // Change user input in { lat: 56.56734543, lng: 123.4567543 } format
         return Util.stringToCoordinates(this.state.item.coordinates);
@@ -367,6 +461,55 @@ export default class SiteEditView extends React.Component {
     );
   }
 
+  renderSiteProposalNotices() {
+    if (this.state.proposals) {
+      if (this.state.proposals.length > 0) {
+        const propNotices = [];
+        for (const index in this.state.proposals) {
+          if (this.state.isSiteProposalsShown[index]) {
+            const proposalMessage = 'We found the site "' + this.state.proposals[index].properties.name +
+                                    '" at ' + Distance.getDistanceInPilotUnits(this.state.proposals[index].properties.distance).toFixed(2) +
+                                    Distance.getUserDistanceUnitShort() + ' distance';
+            propNotices.push(
+              <SiteProposalNotice
+                key={index}
+                text={proposalMessage}
+                buttonText={'Use this data'}
+                onClick={() => this.handleUseSiteProposal(index)}
+                onClose={() => this.handleSiteProposalHide(index)}
+              />
+            );
+          }
+        }
+        return propNotices;
+      }
+      // no proposals found
+      if (this.state.proposals.length === 0 && this.state.isSiteProposalsShown[0]) {
+        const proposalMessage = 'No site found within a distance of ' +
+                                 this.state.proposalMaxDist + Distance.getUserDistanceUnitShort();
+        return (
+          <SiteProposalNotice
+            key={0}
+            text={proposalMessage}
+            buttonText={'Increase search radius'}
+            onClick={this.handleIncreaseProposalMaxDist}
+            onClose={() => this.handleSiteProposalHide(0)}
+          />
+        );
+      }
+    }
+    if (this.state.proposalError) {
+      return (
+        <SiteProposalNotice
+          key={0}
+          text={this.state.proposalError}
+          onClose={() => this.handleSiteProposalHide(0)}
+        />
+      );
+    }
+    return null;
+  }
+
   render() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
@@ -447,6 +590,8 @@ export default class SiteEditView extends React.Component {
                 onBlur={this.handleInputBlur}
               />
             </SectionRow>
+
+            {this.renderSiteProposalNotices()}
 
             {this.renderDesktopButtons()}
 

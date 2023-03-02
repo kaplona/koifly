@@ -214,6 +214,31 @@ DataService.prototype.getTimezone = function(latLngString, timestampInSec) {
   });
 };
 
+/**
+ * Get nearest site details from coordinates. Currently, server uses paragliding.earth API.
+ * @param {number} lat
+ * @param {number} lng
+ * @param {number} dist
+ * @return {Promise.<{status: string, site: Object}>}
+ */
+DataService.prototype.getSiteProposal = function(lat, lng, dist) {
+  return ajaxService.get('/api/site-proposal', {
+    lat,
+    lng,
+    dist
+  });
+};
+
+/**
+  * Get location details from coordinates. Currently, server uses google API.
+  * @param {string} latLngString – Coordinates in "lat,lng" format.
+  * @return {Promise.<{status: string, location: Object}>}
+  */
+ DataService.prototype.getLocation = function(latLngString) {
+   return ajaxService.get('/api/location', {
+     latLngString
+   });
+ };
 
 /**
  * Once new user signed up we don't query the DB for his data (because he has none)
