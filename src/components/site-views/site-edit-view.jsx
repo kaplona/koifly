@@ -517,7 +517,8 @@ export default class SiteEditView extends React.Component {
       // no proposals found
       if (this.state.proposals.length === 0 && this.state.isSiteProposalsShown[0]) {
         const proposalMessage = 'No site found within a distance of ' +
-                                 this.state.proposalMaxDist + Distance.getUserDistanceUnitShort();
+                                 this.state.proposalMaxDist + Distance.getUserDistanceUnitShort() +
+                                 '. Consider adding new site data to paraglidingearth.com or increase search radius.';
         return (
           <SiteProposalNotice
             key={0}
