@@ -2,6 +2,10 @@ import browserHistory from './browser-history';
 
 
 const navigationService = {
+  goBack() {
+    browserHistory.goBack();
+  },
+
   goToFlightLog() {
     browserHistory.push('/flights');
   },

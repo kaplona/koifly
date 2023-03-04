@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, string } from 'prop-types';
+import { object, shape, string } from 'prop-types';
 import Altitude from '../../utils/altitude';
 import AltitudeInput from '../common/inputs/altitude-input';
 import Button from '../common/buttons/button';
@@ -51,6 +51,7 @@ export default class SiteEditView extends React.Component {
       isSaving: false,
       isDeleting: false,
       isInputInFocus: false,
+      isTakeoffCoordsApplied: false,
       isSiteProposalsShown: [],
       validationErrors: Object.assign({}, this.formFields)
     };
@@ -66,6 +67,13 @@ export default class SiteEditView extends React.Component {
     this.handleMapShow = this.handleMapShow.bind(this);
     this.handleMapHide = this.handleMapHide.bind(this);
     this.handleIncreaseProposalMaxDist = this.handleIncreaseProposalMaxDist.bind(this);
+  }
+
+  /**
+  * Apply takeoff coordinates when supplied from flight-edit when page is loading
+  */
+  componentDidUpdate() {
+    this.applyTakeoffCoords();
   }
 
   /**
@@ -120,7 +128,9 @@ export default class SiteEditView extends React.Component {
   }
 
   handleCancelEdit() {
-    if (this.props.match.params.id) {
+    if (this.state.isTakeoffCoordsApplied) {
+      navigationService.goBack();
+    } else if (this.props.match.params.id) {
       navigationService.goToItemView(SiteModel.keys.single, this.props.match.params.id);
     } else {
       navigationService.goToListView(SiteModel.keys.plural);
@@ -243,6 +253,27 @@ export default class SiteEditView extends React.Component {
           this.setState({ proposals: null });
           this.setState({ proposalError: 'ERROR: Unable to get site proposal for ' + lat + '/' + lng + ': ' + JSON.stringify(err) });
         });
+    }
+  }
+
+  /*
+  * If takeoff coordinates where supplied from flight-edit-view, do apply them
+  */
+  applyTakeoffCoords() {
+    if (!this.state.isTakeoffCoordsApplied &&
+        this.props.location &&
+        this.props.location.state &&
+        this.props.location.state.takeoffCoords) {
+      const newItem = Object.assign({}, this.state.item, {
+        coordinates: this.props.location.state.takeoffCoords
+      });
+      this.setState({
+        item: newItem,
+        isTakeoffCoordsApplied: true
+        }, () => {
+          this.updateValidationErrors(this.getValidationErrors(true));
+          this.fetchSiteProposal();
+      });
     }
   }
 
@@ -614,5 +645,6 @@ SiteEditView.propTypes = {
     params: shape({
       id: string // url args
     })
-  }).isRequired
+  }).isRequired,
+  location: object
 };

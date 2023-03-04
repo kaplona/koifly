@@ -1,5 +1,5 @@
 import React from 'react';
-import { shape, string } from 'prop-types';
+import { object, shape, string } from 'prop-types';
 import Altitude from '../../utils/altitude';
 import AltitudeInput from '../common/inputs/altitude-input';
 import Button from '../common/buttons/button';
@@ -17,6 +17,7 @@ import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
 import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
+import Notice from '../common/notice/notice';
 import RemarksInput from '../common/inputs/remarks-input';
 import Section from '../common/section/section';
 import SectionLoader from '../common/section/section-loader';
@@ -52,6 +53,8 @@ export default class FlightEditView extends React.Component {
       item: null, // no data received
       loadingError: null,
       processingError: null,
+      showNewSiteNotice: false,
+      takeoffCoords: null,
       validationErrors: Object.assign({}, this.formFields)
     };
 
@@ -62,6 +65,7 @@ export default class FlightEditView extends React.Component {
     this.handleCancelEdit = this.handleCancelEdit.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteItem = this.handleDeleteItem.bind(this);
+    this.handleAddNewSite = this.handleAddNewSite.bind(this);
     this.handleSledRide = this.handleSledRide.bind(this);
     this.handleFlightTrackData = this.handleFlightTrackData.bind(this);
   }
@@ -153,6 +157,13 @@ export default class FlightEditView extends React.Component {
     }
   }
 
+  handleAddNewSite() {
+    this.props.history.push({
+      pathname: `/${encodeURIComponent(SiteModel.keys.single)}/0/edit`,
+      state: { takeoffCoords: this.state.takeoffCoords }
+    });
+  }
+
   handleSledRide(isSledRide) {
     if (!isSledRide) {
       this.setState({ isSledRide: false });
@@ -179,6 +190,14 @@ export default class FlightEditView extends React.Component {
       const newItem = Object.assign({}, this.state.item, { igc: null });
       this.setState({ item: newItem });
       return;
+    }
+
+    if (!flightTrackData.siteId) {
+      this.setState({
+        showNewSiteNotice: true,
+        takeoffCoords: flightTrackData.flightPoints[0].lat + ' ' + flightTrackData.flightPoints[0].lng
+      });
+      this.handleInputChange('siteId', 0);
     }
 
     const { altitude, date, time, hours, minutes, siteId } = this.state.item;
@@ -378,6 +397,20 @@ export default class FlightEditView extends React.Component {
     );
   }
 
+  renderNewSiteNotice() {
+    if (this.state.showNewSiteNotice && this.state.takeoffCoords) {
+      return (
+        <Notice
+          isPadded={true}
+          text={'No site near takeoff coordinates (' + this.state.takeoffCoords + ') found. Create new site?'}
+          buttonText={'Create new'}
+          onClick={this.handleAddNewSite}
+          onClose={() => this.setState({ showNewSiteNotice: false })}
+        />
+      );
+    }
+  }
+
   render() {
     if (this.state.loadingError) {
       return this.renderLoadingError();
@@ -439,6 +472,7 @@ export default class FlightEditView extends React.Component {
                 onFocus={this.handleInputFocus}
                 onBlur={this.handleInputBlur}
               />
+              {this.renderNewSiteNotice()}
             </SectionRow>
 
             <SectionRow>
@@ -518,5 +552,6 @@ FlightEditView.propTypes = {
     params: shape({
       id: string // url args
     })
-  }).isRequired
+  }).isRequired,
+  history: object
 };
