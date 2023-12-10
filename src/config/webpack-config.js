@@ -55,7 +55,7 @@ let webpackConfig = {
             loader: "less-loader",
             options: {
               lessOptions: {
-                strictMath: true,
+                math: 'always',
               }
             }
           }
