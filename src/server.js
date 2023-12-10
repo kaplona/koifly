@@ -86,7 +86,7 @@ async function start() {
     },
     redirectTo: false,
     keepAlive: true, // reset expiry date every time
-    validateFunc: checkAuthCookie
+    validate: checkAuthCookie
   });
 
 

@@ -19,7 +19,6 @@ const compiler = webpack(webpackConfig);
 
 app.use(webpackDevMiddleware(compiler, {
   publicPath: webpackConfig.output.publicPath,
-  noInfo: true,
   stats: {
     colors: true,
     children: false

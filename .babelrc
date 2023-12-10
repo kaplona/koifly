@@ -1,13 +1,11 @@
 {
   "presets": [
-    "@babel/preset-react",
     [
-      "@babel/env",
+      "@babel/preset-env",
       {
         "targets": {
           "chrome": "29",
           "edge": "12",
-          "ie": "10",
           "firefox": "28",
           "node": true,
           "opera": "58",
@@ -16,7 +14,8 @@
         "useBuiltIns": "usage",
         "corejs": 2
       }
-    ]
+    ],
+    "@babel/preset-react"
   ],
   "plugins": [
     [

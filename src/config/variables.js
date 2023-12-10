@@ -51,7 +51,7 @@ const config = {
   },
   webpack: {
     // Webpack bundle filename for stylesheets
-    stylesFilename: '[name]-[hash].css',
+    stylesFilename: '[name]-[contenthash].css',
     // Assets-webpack-plugin generates a JSON file containing actual
     // webpack bundle filenames on every webpack emit event.
     // To get the actual bundle filenames, use config/webpack-assets.js
@@ -75,7 +75,7 @@ if (process.env.NODE_ENV === 'development') {
     port: WEBPACK_DEV_SERVER_PORT,
     devServerUrl: DEV_SERVER_PROTOCOL + '://' + DEV_SERVER_HOST + ':' + WEBPACK_DEV_SERVER_PORT,
     // Webpack bundle filename
-    outputFilename: '[name]-bundle-[hash].js'
+    outputFilename: '[name]-bundle-[contenthash].js'
   });
 } else if (process.env.NODE_ENV === 'production') {
   Object.assign(config.server, {
