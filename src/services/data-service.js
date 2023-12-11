@@ -41,7 +41,7 @@ DataService.prototype.requestServerData = function(isRetry = false) {
 
   this.isRequestPending = true;
   ajaxService
-    .get('/api/data', { lastModified: this.lastModified })
+    .get('/api/data', this.lastModified ? { lastModified: this.lastModified } : undefined)
     .then(serverResponse => {
       this.isRequestPending = false;
       this.populateStore(serverResponse);

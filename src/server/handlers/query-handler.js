@@ -21,7 +21,7 @@ function queryHandler(request) {
     .then(pilot => {
       if (request.method === 'get') {
         // Get all data from the DB since lastModified
-        return getAllData(pilot, JSON.parse(request.query.lastModified));
+        return getAllData(pilot, request.query.lastModified || null);
       }
 
       if (request.method === 'post') {
