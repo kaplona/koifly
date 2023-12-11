@@ -20,7 +20,7 @@
     "db_migrate": "MYSQL_ADMIN=true      ./node_modules/.bin/sequelize db:migrate",
     "lint": "eslint . --ext .js --ext .jsx",
     "lint_fix": "eslint . --ext .js --ext .jsx --fix",
-    "test": "NODE_ENV=testing ./node_modules/.bin/mocha --config .mocharc.json --recursive ./tests/"
+    "test": "NODE_ENV=testing ./node_modules/.bin/mocha --config .mocharc.json --recursive ./tests/ --exit"
   },
   "dependencies": {
     "@babel/core": "7.23.5",
