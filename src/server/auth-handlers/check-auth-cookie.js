@@ -10,7 +10,7 @@ import setAuthCookie from '../helpers/set-auth-cookie';
  */
 export default function checkAuthCookie(request, session) {
   if (!session.userId || session.expiryDate < Date.now()) {
-    return { valid: false };
+    return { isValid: false };
   }
 
   let pilot; // so we have reference to current pilot from several then callbacks
@@ -32,9 +32,9 @@ export default function checkAuthCookie(request, session) {
       return setAuthCookie(request, pilot.id, pilot.password);
     })
     .then(() => {
-      return { valid: true }; // All OK!
+      return { isValid: true }; // All OK!
     })
     .catch(() => {
-      return { valid: false };
+      return { isValid: false };
     });
 }

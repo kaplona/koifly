@@ -9,6 +9,7 @@ import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
 import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
+import NavigationMenu from "../common/menu/navigation-menu";
 import navigationService from '../../services/navigation-service';
 import Notice from '../common/notice/notice';
 import PasswordInput from '../common/inputs/password-input';
@@ -48,7 +49,8 @@ export default class ResetPassword extends React.Component {
   }
 
   handleStoreModified() {
-    if (PilotModel.isLoggedIn()) {
+    const isPasswordResettingInProgress = this.state.isSending || this.state.successNotice;
+    if (PilotModel.isLoggedIn() && !isPasswordResettingInProgress) {
       navigationService.goToFlightLog();
     }
   }
@@ -87,7 +89,7 @@ export default class ResetPassword extends React.Component {
     const authToken = this.props.match.params.authToken;
     dataService
       .resetPassword(password, pilotId, authToken)
-      .then(() => this.setState({ successNotice: true }))
+      .then(() => this.setState({ successNotice: true, isSending: false }))
       .catch(error => this.updateError(error));
   }
 
@@ -159,7 +161,7 @@ export default class ResetPassword extends React.Component {
     return (
       <div>
         {this.renderMobileTopMenu()}
-        {this.renderNavigationMenu()}
+        <NavigationMenu currentView={PilotModel.getModelKey()}/>
         <Notice
           text='Your password was successfully reset'
           type='success'
