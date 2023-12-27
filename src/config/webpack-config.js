@@ -126,7 +126,7 @@ if (process.env.NODE_ENV === 'development') {
       // Setting minimizer for css overrides the defaults provided by webpack,
       // so we have to also specify a JS minimizer.
       minimize: true,
-      minimizer: [new TerserPlugin({ sourceMap: true }), new CssMinimizerPlugin({})]
+      minimizer: [new TerserPlugin(), new CssMinimizerPlugin({})]
     },
   });
 }
