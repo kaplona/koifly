@@ -9,9 +9,11 @@ const secrets = {
     https: 443,
     http: 80
   },
-  // set this parameter if your Node server is run behind another one, e.g. nginx,
-  // this public root url will be used to in emails as link to your application
+  // Set these parameters if your Node server is run behind another one, e.g. nginx, otherwise leave empty.
+  // This public root url will be used in emails as link to your application
   publicRootUrl: 'http://example.com',
+  // Cookie set on example.com domain will be available for www.example.com too.
+  cookieDomain: 'example.com',
 
   // your DB config
   // Admin user is used for initial tables creation (has CREATE, ALTER, DROP privileges)

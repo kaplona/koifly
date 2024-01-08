@@ -78,6 +78,7 @@ async function start() {
       password: secrets.cookiePassword,
       ttl: secrets.cookieLifeTime,
       // no domain - browser will use the domain that cookie was created on
+      domain: process.env.NODE_ENV === 'development' ? null : config.server.cookieDomain,
       path: '/',
       clearInvalid: true,
       isSecure: false, // cookie allows to be transmitted over insecure connection
@@ -93,6 +94,7 @@ async function start() {
   server.state('csrf', {
     ttl: secrets.cookieLifeTime,
     // no domain - browser will use the domain that cookie was created on
+    domain: process.env.NODE_ENV === 'development' ? null : config.server.cookieDomain,
     path: '/',
     isSecure: false, // cookie allows to be transmitted over insecure connection
     isHttpOnly: false, // scrf cookie is available to js
