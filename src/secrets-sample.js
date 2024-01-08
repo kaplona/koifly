@@ -9,6 +9,9 @@ const secrets = {
     https: 443,
     http: 80
   },
+  // set this parameter if your Node server is run behind another one, e.g. nginx,
+  // this public root url will be used to in emails as link to your application
+  publicRootUrl: 'http://example.com',
 
   // your DB config
   // Admin user is used for initial tables creation (has CREATE, ALTER, DROP privileges)
