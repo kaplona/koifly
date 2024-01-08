@@ -77,8 +77,7 @@ async function start() {
       name: 'koifly',
       password: secrets.cookiePassword,
       ttl: secrets.cookieLifeTime,
-      // domain: null - the domain that cookie was created
-      domain: process.env.NODE_ENV === 'development' ? null : config.server.host,
+      // no domain - browser will use the domain that cookie was created on
       path: '/',
       clearInvalid: true,
       isSecure: false, // cookie allows to be transmitted over insecure connection
@@ -93,8 +92,7 @@ async function start() {
   // Register csrf cookie
   server.state('csrf', {
     ttl: secrets.cookieLifeTime,
-    // domain: null - the domain that cookie was created
-    domain: process.env.NODE_ENV === 'development' ? null : config.server.host,
+    // no domain - browser will use the domain that cookie was created on
     path: '/',
     isSecure: false, // cookie allows to be transmitted over insecure connection
     isHttpOnly: false, // scrf cookie is available to js

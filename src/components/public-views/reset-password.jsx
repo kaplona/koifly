@@ -9,7 +9,7 @@ import errorTypes from '../../errors/error-types';
 import KoiflyError from '../../errors/error';
 import MobileButton from '../common/buttons/mobile-button';
 import MobileTopMenu from '../common/menu/mobile-top-menu';
-import NavigationMenu from "../common/menu/navigation-menu";
+import NavigationMenu from '../common/menu/navigation-menu';
 import navigationService from '../../services/navigation-service';
 import Notice from '../common/notice/notice';
 import PasswordInput from '../common/inputs/password-input';
