@@ -20,6 +20,7 @@ const SERVER_BARE_HOST = secrets.bareDomain;
 const SERVER_PROTOCOL = secrets.protocol;
 const SERVER_HTTPS_PORT = secrets.port.https;
 const SERVER_HTTP_PORT = secrets.port.http;
+const PUBLIC_ROOT_URL = secrets.publicRootUrl;
 
 const DEV_SERVER_HOST = '0.0.0.0';
 const DEV_SERVER_PROTOCOL = 'http';
@@ -84,7 +85,7 @@ if (process.env.NODE_ENV === 'development') {
     httpsPort: SERVER_HTTPS_PORT,
     httpPort: SERVER_HTTP_PORT,
     protocol: SERVER_PROTOCOL,
-    rootUrl: SERVER_PROTOCOL + '://' + SERVER_HOST
+    rootUrl: PUBLIC_ROOT_URL || SERVER_PROTOCOL + '://' + SERVER_HOST
   });
   Object.assign(config.webpack, {
     // Webpack bundle filename
