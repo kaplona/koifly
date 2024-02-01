@@ -2,7 +2,7 @@
 
 This app is designed for hang gliding and paragliding pilots who want to keep records of their flights.
 
-#### [koifly.com](https://www.koifly.com) - Live app
+#### [logbook.koifly.com](https://logbook.koifly.com) - Live app
 
 
 ## Features
