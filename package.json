@@ -30,6 +30,9 @@
     "@babel/preset-react": "7.23.3",
     "@babel/register": "7.22.15",
     "@hapi/cookie": "12.0.1",
+    "@hapi/good": "^9.0.1",
+    "@hapi/good-console": "^9.0.1",
+    "@hapi/good-squeeze": "^6.0.0",
     "@hapi/hapi": "21.3.2",
     "@hapi/inert": "7.1.0",
     "@hapi/vision": "7.0.3",
@@ -93,5 +96,14 @@
   },
   "peerDependencies": {
     "forever": "0.x"
+  },
+  "allowScripts": {
+    "bcrypt@5.1.1": true,
+    "core-js@2.6.12": true,
+    "core-js@1.2.7": true,
+    "es5-ext@0.10.62": true,
+    "fsevents@2.1.2": true,
+    "fsevents@2.3.2": true,
+    "nodemon@2.0.15": true
   }
 }

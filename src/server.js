@@ -8,6 +8,7 @@ require('@babel/register');
 
 const config = require('./config/variables');
 const fs = require('fs');
+const Good = require('@hapi/good');
 const Hapi = require('@hapi/hapi');
 const HapiReactViews = require('hapi-react-views');
 const Inert = require('@hapi/inert');
@@ -62,14 +63,34 @@ async function start() {
     Vision, // enables rendering views with custom engines (view handler)
     AuthCookie // cookie authentication scheme
   ];
-  // Enable proxying requests to webpack dev server (proxy handler)
+
   if (process.env.NODE_ENV === 'development') {
+    // Enable proxying requests to webpack dev server (proxy handler)
     const H2o2 = require('@hapi/h2o2');
     plugins.push(H2o2);
+
+    // Enable request logging
+    plugins.push({
+      plugin: require('@hapi/good'),
+      options: {
+            reporters: {
+                myConsoleReporter: [
+                    {
+                        module: '@hapi/good-squeeze',
+                        name: 'Squeeze',
+                        args: [{ log: '*', response: '*', ops: '*' }]
+                    },
+                    {
+                        module: '@hapi/good-console'
+                    },
+                    'stdout'
+                ]
+            }
+        }
+    })
   }
 
   await server.register(plugins);
-
 
   // Register cookie authentication scheme
   server.auth.strategy('session', 'cookie', {
